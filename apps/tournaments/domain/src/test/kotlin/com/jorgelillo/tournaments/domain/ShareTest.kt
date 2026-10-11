@@ -52,6 +52,9 @@ class ShareTest {
         assertTrue(link.startsWith("https://jorgelillo7.github.io/t/#1"))
         assertEquals(t, Share.decode(Share.codeFromLink(link)!!))
         assertEquals(t, Share.decode(Share.codeFromLink(Share.encode(t))!!))
+        // The website's "open in the app" button passes it as ?d= (URL-encoded).
+        val viaWebsite = "https://jorgelillo7.github.io/t/?d=" + java.net.URLEncoder.encode(Share.encode(t), "UTF-8")
+        assertEquals(t, Share.decode(Share.codeFromLink(viaWebsite)!!))
     }
 
     @Test

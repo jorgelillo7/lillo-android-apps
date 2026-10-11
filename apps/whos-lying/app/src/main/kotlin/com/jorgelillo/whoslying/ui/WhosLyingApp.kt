@@ -1,5 +1,6 @@
 package com.jorgelillo.whoslying.ui
 
+import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -9,6 +10,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -45,7 +47,7 @@ import com.jorgelillo.whoslying.ui.screens.VotingScreen
 private const val NEW = "new"
 
 @Composable
-fun WhosLyingApp(app: WhosLyingApplication) {
+fun WhosLyingApp(app: WhosLyingApplication, incomingText: String? = null, onIncomingHandled: () -> Unit = {}) {
     val language = LocalConfiguration.current.locales[0].language
     // Keyed by language so the built-in packs follow a language change while the app is open.
     val vm: GameViewModel = viewModel(key = "game-$language", factory = GameViewModel.factory(app.repository, language))
@@ -56,6 +58,21 @@ fun WhosLyingApp(app: WhosLyingApplication) {
     var showAbout by rememberSaveable { mutableStateOf(false) }
     var showModes by rememberSaveable { mutableStateOf(false) }
     var showReport by rememberSaveable { mutableStateOf(false) }
+    val context = LocalContext.current
+    val resources = LocalResources.current
+    val importPack: (String) -> Unit = { text ->
+        val pack = vm.importPack(text)
+        val message = if (pack != null) resources.getString(R.string.pack_imported, pack.name) else resources.getString(R.string.pack_import_invalid)
+        Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+    }
+    // A pack shared from another phone: add it and show the packs.
+    LaunchedEffect(incomingText) {
+        if (incomingText != null) {
+            importPack(incomingText)
+            onIncomingHandled()
+            nav.navigate("packs") { launchSingleTop = true }
+        }
+    }
 
     NavHost(nav, startDestination = "home") {
         composable("home") {
@@ -197,7 +214,7 @@ fun WhosLyingApp(app: WhosLyingApplication) {
             )
         }
         composable("packs") {
-            PacksScreen(vm.builtInPacks, state.customPacks, onEdit = { id -> nav.navigate("pack/${id ?: NEW}") }, onBack = { nav.popBackStack() })
+            PacksScreen(vm.builtInPacks, state.customPacks, onEdit = { id -> nav.navigate("pack/${id ?: NEW}") }, onImport = importPack, onBack = { nav.popBackStack() })
         }
         composable("pack/{id}") { entry ->
             val id = entry.arguments?.getString("id").orEmpty()

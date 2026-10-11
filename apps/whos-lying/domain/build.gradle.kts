@@ -5,5 +5,6 @@ plugins {
 
 dependencies {
     api(libs.kotlinx.serialization.json)
+    implementation(projects.core.sharelink)
     testImplementation(libs.kotlin.test)
 }
