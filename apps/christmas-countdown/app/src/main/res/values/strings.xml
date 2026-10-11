@@ -68,30 +68,45 @@
     </plurals>
     <string name="widget_christmas">Merry Christmas!</string>
 
-    <string-array name="advent_entries">
-        <item>Write your letter to Santa or the Three Wise Men. Dream big!</item>
-        <item>\"Jingle Bells\" was the first song ever played in space, on Gemini 6 in December 1965.</item>
-        <item>Cut out paper snowflakes and stick them on a window.</item>
-        <item>Christmas trees became fashionable in Britain after an 1848 picture of Queen Victoria and Prince Albert around one.</item>
-        <item>Movie night: a Christmas film, a blanket and hot chocolate.</item>
-        <item>Spain\'s Christmas lottery, \"El Gordo\", has been drawn every year since 1812.</item>
-        <item>Bake Christmas cookies and share a few with a neighbour.</item>
-        <item>Every snowflake has six arms because ice crystals are hexagonal.</item>
-        <item>Call or message someone you haven\'t spoken to in a while.</item>
-        <item>The poinsettia is named after Joel Poinsett, who brought it from Mexico to the United States.</item>
-        <item>Make a decoration from pine cones, ribbon or anything you find on a walk.</item>
-        <item>In Catalonia, children feed the \"Caga Tió\", a wooden log that \"gives\" sweets on Christmas.</item>
-        <item>Donate a toy, a book or some food to someone who needs it.</item>
-        <item>\"Silent Night\" was first sung on Christmas Eve 1818 in Oberndorf, Austria.</item>
-        <item>Learn to say it in other languages: Joyeux Noël, Buon Natale, Feliz Natal, Frohe Weihnachten!</item>
-        <item>In Spain, people eat twelve grapes at midnight on New Year\'s Eve, one per chime.</item>
-        <item>Go for an evening walk to see the Christmas lights.</item>
-        <item>Rudolph the red-nosed reindeer was created in 1939 by Robert L. May for a store booklet.</item>
-        <item>Wrap presents while listening to carols. Tap the music note to play some!</item>
-        <item>The first tinsel, made in Germany around 1610, was real shredded silver.</item>
-        <item>Write a thank-you note to someone who made your year better.</item>
-        <item>NORAD has tracked Santa since 1955, all thanks to a misprinted phone number.</item>
-        <item>Board game night! Losers make the hot chocolate.</item>
-        <item>Tonight\'s the night! Leave cookies and milk for Santa, and a carrot for the reindeer. 🎅</item>
-    </string-array>
+    <!-- Advent: one per AdventActivity (domain); which ones show each year is decided by AdventPlan. -->
+    <string name="advent_letter">Write your letter to Santa or the Three Wise Men. Dream big!</string>
+    <string name="advent_paper_snowflakes">Cut out paper snowflakes and stick them on a window.</string>
+    <string name="advent_nativity_or_tree">Put up the nativity scene or the Christmas tree together.</string>
+    <string name="advent_door_garland">Decorate the front door with a garland you made yourself.</string>
+    <string name="advent_paper_chain">Make a colourful paper chain to decorate your room.</string>
+    <string name="advent_stocking">Make a Christmas stocking with your name on it to hang up.</string>
+    <string name="advent_tree_ornament">Make a homemade ornament for the tree.</string>
+    <string name="advent_window_lights">Put Christmas lights in your window or on the balcony.</string>
+    <string name="advent_paper_stars">Make paper stars to hang from the ceiling.</string>
+    <string name="advent_glitter_pinecones">Paint pine cones with glitter for a table centrepiece.</string>
+    <string name="advent_table_wreath">Make a Christmas wreath for the table with branches and ribbons.</string>
+    <string name="advent_movie_night">Movie night: a Christmas film, a blanket and hot chocolate.</string>
+    <string name="advent_cookies">Bake Christmas cookies and share a few with a neighbour.</string>
+    <string name="advent_christmas_cards">Write Christmas cards to family or friends.</string>
+    <string name="advent_chocolate_churros">Make hot chocolate and churros for a family treat.</string>
+    <string name="advent_drawing_gift">Make a Christmas drawing and give it to someone.</string>
+    <string name="advent_sing_a_carol">Sing a carol all together (with the app\'s music!).</string>
+    <string name="advent_sock_snowman">Make a snowman from a sock, rice and a few buttons.</string>
+    <string name="advent_jar_lantern">Make a lantern from a glass jar and a battery candle.</string>
+    <string name="advent_family_story">Make up a Christmas story with your family, one sentence each.</string>
+    <string name="advent_tree_pizza">Make a pizza shaped like a Christmas tree.</string>
+    <string name="advent_snow_globe">Make a snow globe from a jar, water and glitter.</string>
+    <string name="advent_polvorones">Make homemade polvorones, Spanish Christmas shortbread.</string>
+    <string name="advent_donate">Donate a toy, a book or some food to someone who needs it.</string>
+    <string name="advent_lights_walk">Go for an evening walk to see the Christmas lights.</string>
+    <string name="advent_board_games">Board game night! Losers make the hot chocolate.</string>
+    <string name="advent_secret_santa">Organise a Secret Santa with family or friends.</string>
+    <string name="advent_christmas_market">Visit a Christmas market.</string>
+    <string name="advent_ugly_sweaters">Christmas jumper contest at home: the ugliest one wins!</string>
+    <string name="advent_parade_or_concert">Go and see a parade, a living nativity or a carol concert.</string>
+    <string name="advent_ice_skating">Go ice skating.</string>
+    <string name="advent_visit_nativity">Visit the nativity scene at your town hall or a church.</string>
+    <string name="advent_family_photo">Take a Christmas family photo in Santa hats.</string>
+    <string name="advent_carol_karaoke">Christmas carol karaoke!</string>
+    <string name="advent_christmas_eve">Tonight\'s the night! Leave cookies and milk for Santa, and a carrot for the reindeer. 🎅</string>
+    <string name="advent_song_title">🎶 Music day</string>
+    <string name="advent_song_text">Today\'s song: “%1$s”, by %2$s.</string>
+    <string name="advent_song_play">Listen on YouTube</string>
+    <string name="advent_share">Share</string>
+    <string name="advent_share_text">🎄 Day %1$d of the Advent calendar! %2$s\nWhat are you up to today? Get “Is it Christmas yet?”: %3$s</string>
 </resources>

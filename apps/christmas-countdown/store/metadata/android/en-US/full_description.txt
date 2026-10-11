@@ -7,7 +7,7 @@ Days, hours, minutes and seconds until Christmas Day, always counting towards th
 Switch to "sleeps" and count the nights left, just like kids do. In the last two weeks, a little moon appears for every night to go.
 
 🎁 ADVENT CALENDAR
-24 doors to open, one for each day of December until Christmas Eve. Behind every door there is an idea for the family, a Christmas tradition from around the world or a fun fact.
+24 doors to open, one for each day of December until Christmas Eve. Behind every door there is a family activity (getting the house ready first, then things to do together, then getting together) or a Christmas song to play. They change every year, and you can share each day's surprise with your friends.
 
 🏠 HOME-SCREEN WIDGET
 Add the widget and see the days (or sleeps) left without opening the app.

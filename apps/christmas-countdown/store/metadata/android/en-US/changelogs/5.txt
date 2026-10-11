@@ -1,4 +1,5 @@
 New name! 🎄 It's now "Is it Christmas yet?"
-- Same countdown, advent calendar, widget and carols
+- New Advent calendar: 35 family activities that change every year
+- Music days with Christmas songs to play on YouTube 🎶
+- Share each day's surprise with your friends
 - Refreshed About screen
-- Under-the-hood improvements so everything keeps working just as well

@@ -84,7 +84,8 @@ Project skills in `.claude/skills/`: `new-android-app` (competitor study → des
 - Strings ship in English (`values/`) and Spanish (`values-es/`); keep both in sync, including
   plurals (Spanish needs `one`/`many`/`other`).
 - Snapshot tests pin anything users already see that is derived algorithmically (e.g. Christmas
-  Countdown's yearly advent door order); don't change those algorithms.
+  Countdown's yearly advent door order and `AdventPlan` contents); don't change those algorithms. Add
+  advent activities or songs only outside December: later years are recomputed from the pool.
 
 ## Releasing (any app)
 

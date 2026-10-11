@@ -14,11 +14,10 @@ Lines are pruned as items ship. What has **shipped** lives in `apps/<app>/releas
 
 | | What is missing | Waiting on |
 |---|---|---|
-| 👤 | Upload v5 (4.1, new name "¿Ya es Navidad? Cuenta atrás" / "Is it Christmas yet? Countdown") and, with it, the new titles and feature graphics from `store/metadata` | You · bundle built from master, notes in `changelogs/5.txt` |
+| 👤 | Upload v5 (4.1: new name "¿Ya es Navidad? Cuenta atrás" / "Is it Christmas yet? Countdown", new advent calendar with music days and sharing) and, with it, the new titles, full description and feature graphics from `store/metadata` | You · bundle built from master, notes in `changelogs/5.txt` |
 | ⏳ | Check v4 on a real phone after Play approval: the 3 new carols (transcribed from memory), share text in both modes, widget | Google's review of v4 |
-| 👤 | Review the 24 advent entries (EN + ES): content, tone, and facts flagged as shaky (day 8 snowflakes "all six arms", day 20 tinsel ~1610, day 22 NORAD founded 1958, CONAD in 1955) | You · entries in `app/src/main/res/values{,-es}/strings.xml` (`advent_entries`) |
 | 👤 | Spanish carols (Los peces en el río, Campana sobre campana, Fum fum fum, Marimorena) | Reliable public-domain scores from you · *El burrito sabanero* is copyrighted (1972), not allowed |
-| 🔨 | More advent entries (48–72, EN + ES) rotating by year | Before December of a later year |
+| ⏳ | Grow the advent pool (activities and songs) between January and November, never during an Advent in progress | Ideas from you · `AdventActivity` / `AdventSong` in the domain |
 | ⏳ | Raise `targetSdk` to 37 (Android 17 behaviour changes, test on an API 37 emulator) | Google Play announcing API 37 as the requirement (usually each August) |
 
 ## decision-wheel
