@@ -20,6 +20,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -36,14 +37,19 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalResources
-import androidx.compose.ui.res.stringArrayResource
+import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jorgelillo.christmascountdown.R
+import com.jorgelillo.christmascountdown.domain.AdventDoor
+import com.jorgelillo.christmascountdown.ui.about.PLAY_STORE_URL
 import com.jorgelillo.christmascountdown.ui.theme.ChristmasColors
 import com.jorgelillo.core.designsystem.GlassCard
+import com.jorgelillo.core.designsystem.TestTagsAsResourceIds
+import com.jorgelillo.core.platform.shareText
 
 private enum class DoorState { Locked, Openable, Opened }
 
@@ -56,7 +62,6 @@ fun AdventScreen(
 ) {
     val context = LocalContext.current
     val resources = LocalResources.current
-    val entries = stringArrayResource(R.array.advent_entries)
     var shownDoor by rememberSaveable { mutableStateOf<Int?>(null) }
 
     LazyVerticalGrid(
@@ -98,12 +103,43 @@ fun AdventScreen(
     }
 
     shownDoor?.let { door ->
+        val content = state.plan[door] ?: return@let
+        val uriHandler = LocalUriHandler.current
         AlertDialog(
             onDismissRequest = { shownDoor = null },
-            confirmButton = { TextButton(onClick = { shownDoor = null }) { Text(stringResource(R.string.advent_close)) } },
-            icon = { Text("🎁", fontSize = 40.sp) },
+            modifier = TestTagsAsResourceIds,
+            confirmButton = {
+                TextButton(onClick = { shownDoor = null }, modifier = Modifier.testTag("advent_close")) {
+                    Text(stringResource(R.string.advent_close))
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = {
+                        context.shareText(resources.getString(R.string.advent_share_text, door, resources.doorText(content), PLAY_STORE_URL))
+                    },
+                    modifier = Modifier.testTag("advent_share"),
+                ) { Text(stringResource(R.string.advent_share)) }
+            },
+            icon = { Text(if (content is AdventDoor.Song) "🎶" else "🎁", fontSize = 40.sp) },
             title = { Text(stringResource(R.string.advent_door, door)) },
-            text = { Text(entries[door - 1], textAlign = TextAlign.Center) },
+            text = {
+                when (content) {
+                    is AdventDoor.Activity -> Text(stringResource(content.activity.text()), textAlign = TextAlign.Center)
+                    is AdventDoor.Song -> Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(stringResource(R.string.advent_song_title), style = MaterialTheme.typography.titleMedium)
+                        Text(
+                            stringResource(R.string.advent_song_text, content.song.title, content.song.artist),
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.padding(top = 8.dp),
+                        )
+                        Button(
+                            onClick = { uriHandler.openUri(content.song.url) },
+                            modifier = Modifier.padding(top = 12.dp).testTag("advent_play"),
+                        ) { Text("▶ " + stringResource(R.string.advent_song_play)) }
+                    }
+                }
+            },
         )
     }
 }

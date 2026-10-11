@@ -67,30 +67,45 @@
     </plurals>
     <string name="widget_christmas">¡Feliz Navidad!</string>
 
-    <string-array name="advent_entries">
-        <item>Escribe tu carta a Papá Noel o a los Reyes Magos. ¡Sueña a lo grande!</item>
-        <item>\"Jingle Bells\" fue la primera canción que sonó en el espacio, en la Gemini 6, en diciembre de 1965.</item>
-        <item>Recorta copos de nieve de papel y pégalos en una ventana.</item>
-        <item>El árbol de Navidad se puso de moda en Reino Unido tras un grabado de 1848 de la reina Victoria y el príncipe Alberto junto a uno.</item>
-        <item>Noche de peli: una película navideña, una manta y chocolate caliente.</item>
-        <item>El sorteo de \"El Gordo\" de Navidad se celebra todos los años desde 1812.</item>
-        <item>Haz galletas navideñas y comparte unas cuantas con algún vecino.</item>
-        <item>Todos los copos de nieve tienen seis brazos porque los cristales de hielo son hexagonales.</item>
-        <item>Llama o escribe a alguien con quien hace tiempo que no hablas.</item>
-        <item>La flor de Pascua se llama \"poinsettia\" en inglés por Joel Poinsett, que la llevó de México a Estados Unidos.</item>
-        <item>Haz un adorno con piñas, cintas o lo que encuentres en un paseo.</item>
-        <item>En Cataluña los niños dan de comer al \"Caga Tió\", un tronco que en Navidad \"regala\" dulces.</item>
-        <item>Dona un juguete, un libro o algo de comida a quien lo necesite.</item>
-        <item>\"Noche de paz\" se cantó por primera vez la Nochebuena de 1818 en Oberndorf, Austria.</item>
-        <item>Aprende a decirlo en otros idiomas: Joyeux Noël, Buon Natale, Feliz Natal, Frohe Weihnachten.</item>
-        <item>En España tomamos doce uvas a medianoche en Nochevieja, una por campanada.</item>
-        <item>Sal a pasear de noche para ver las luces de Navidad.</item>
-        <item>Rudolph, el reno de la nariz roja, lo creó Robert L. May en 1939 para un folleto de unos grandes almacenes.</item>
-        <item>Envuelve regalos escuchando villancicos. ¡Toca la nota musical para ponerlos!</item>
-        <item>El primer espumillón, hecho en Alemania hacia 1610, era de plata de verdad.</item>
-        <item>Escribe una nota de agradecimiento a alguien que te ha alegrado el año.</item>
-        <item>El NORAD sigue a Papá Noel desde 1955, todo por un número de teléfono mal impreso.</item>
-        <item>¡Noche de juegos de mesa! Quien pierda prepara el chocolate.</item>
-        <item>¡Esta noche es la noche! Deja leche y galletas para Papá Noel y una zanahoria para los renos. 🎅</item>
-    </string-array>
+    <!-- Advent: one per AdventActivity (domain); which ones show each year is decided by AdventPlan. -->
+    <string name="advent_letter">Escribe tu carta a Papá Noel o a los Reyes Magos. ¡Sueña a lo grande!</string>
+    <string name="advent_paper_snowflakes">Recorta copos de nieve de papel y pégalos en una ventana.</string>
+    <string name="advent_nativity_or_tree">Montad juntos el belén o el árbol de Navidad.</string>
+    <string name="advent_door_garland">Decora la puerta de casa con una guirnalda hecha por ti.</string>
+    <string name="advent_paper_chain">Haz una cadena de papel de colores para decorar tu cuarto.</string>
+    <string name="advent_stocking">Haz un calcetín navideño con tu nombre para colgarlo.</string>
+    <string name="advent_tree_ornament">Haz un adorno navideño casero para el árbol.</string>
+    <string name="advent_window_lights">Pon luces de Navidad en tu ventana o en el balcón.</string>
+    <string name="advent_paper_stars">Haz estrellas de papel para colgar del techo.</string>
+    <string name="advent_glitter_pinecones">Pinta piñas con purpurina y ponlas en un centro de mesa.</string>
+    <string name="advent_table_wreath">Haz una corona de Navidad para la mesa con ramas y lazos.</string>
+    <string name="advent_movie_night">Noche de peli: una película navideña, una manta y chocolate caliente.</string>
+    <string name="advent_cookies">Haz galletas navideñas y comparte unas cuantas con algún vecino.</string>
+    <string name="advent_christmas_cards">Escribe crismas a familiares o amigos.</string>
+    <string name="advent_chocolate_churros">Prepara chocolate con churros para merendar en familia.</string>
+    <string name="advent_drawing_gift">Haz un dibujo navideño y regálaselo a alguien.</string>
+    <string name="advent_sing_a_carol">Cantad un villancico todos juntos (¡con la música de la app!).</string>
+    <string name="advent_sock_snowman">Haz un muñeco de nieve con un calcetín, arroz y unos botones.</string>
+    <string name="advent_jar_lantern">Haz un farolillo con un tarro de cristal y una vela de pilas.</string>
+    <string name="advent_family_story">Inventa con tu familia un cuento de Navidad, una frase cada uno.</string>
+    <string name="advent_tree_pizza">Prepara una pizza con forma de árbol de Navidad.</string>
+    <string name="advent_snow_globe">Haz una bola de nieve con un tarro, agua y purpurina.</string>
+    <string name="advent_polvorones">Haz polvorones o mantecados caseros.</string>
+    <string name="advent_donate">Dona un juguete, un libro o algo de comida a quien lo necesite.</string>
+    <string name="advent_lights_walk">Sal a pasear de noche para ver las luces de Navidad.</string>
+    <string name="advent_board_games">¡Noche de juegos de mesa! Quien pierda prepara el chocolate.</string>
+    <string name="advent_secret_santa">Organiza un amigo invisible con la familia o los amigos.</string>
+    <string name="advent_christmas_market">Visita un mercadillo navideño.</string>
+    <string name="advent_ugly_sweaters">Concurso de jerséis navideños en casa: ¡gana el más feo!</string>
+    <string name="advent_parade_or_concert">Id a ver una cabalgata, un belén viviente o un concierto de villancicos.</string>
+    <string name="advent_ice_skating">Id a patinar sobre hielo.</string>
+    <string name="advent_visit_nativity">Visita el belén de tu ayuntamiento o de una iglesia.</string>
+    <string name="advent_family_photo">Haced una foto de familia navideña con gorros de Papá Noel.</string>
+    <string name="advent_carol_karaoke">¡Karaoke de villancicos!</string>
+    <string name="advent_christmas_eve">¡Esta noche es la noche! Deja leche y galletas para Papá Noel y una zanahoria para los renos. 🎅</string>
+    <string name="advent_song_title">🎶 Día de música</string>
+    <string name="advent_song_text">Hoy toca escuchar «%1$s», de %2$s.</string>
+    <string name="advent_song_play">Escuchar en YouTube</string>
+    <string name="advent_share">Compartir</string>
+    <string name="advent_share_text">🎄 ¡Día %1$d del calendario de adviento! %2$s\n¿Y tú qué haces hoy? Descárgate «¿Ya es Navidad?»: %3$s</string>
 </resources>
