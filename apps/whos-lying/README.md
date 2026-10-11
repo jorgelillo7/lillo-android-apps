@@ -23,6 +23,7 @@
 - 📘 In-app guide to every mode (home → Modes, or "Which mode?" in setup)
 - ⚙️ Settings: in-app language (Android 13+), share with friends, rate, privacy
 - 🚫 No ads, no accounts, no network, no data collected
+- 🔗 Share your own word packs by link or QR code (`jorgelillo7.github.io/p/#…`, the pack travels in the link): open it, share it to the app from a chat, or paste it in Packs → Import
 
 ## 🏗️ Architecture
 

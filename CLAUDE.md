@@ -79,7 +79,9 @@ Project skills in `.claude/skills/`: `new-android-app` (competitor study → des
 - `:core:designsystem` holds `LilloTheme` (each app passes its own `ColorScheme`) and what two or
   more apps share: `LilloPage` / `LilloBigButton` (apps wrap them with their colours in
   `ui/…/Common.kt`), `isShortScreen()` for landscape and handhelds, `TestTagsAsResourceIds`,
-  `ConfettiBurst`, plus Christmas's `GlassCard` / `GradientBackground`. Move code here only once a
+  `ConfettiBurst`, `LilloQrCode`, plus Christmas's `GlassCard` / `GradientBackground`. `:core:platform` has
+  `JsonStore`, sharing and links; `:core:sharelink` (pure Kotlin) puts any serializable value in a
+  `jorgelillo7.github.io/<path>/#…` link (tournaments `/t/`, impostor packs `/p/`). Move code here only once a
   second app needs it.
 - Strings ship in English (`values/`) and Spanish (`values-es/`); keep both in sync, including
   plurals (Spanish needs `one`/`many`/`other`).

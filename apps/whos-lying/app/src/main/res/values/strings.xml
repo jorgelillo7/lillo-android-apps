@@ -91,6 +91,15 @@
         <item quantity="one">%d word</item>
         <item quantity="other">%d words</item>
     </plurals>
+    <string name="pack_import">Import</string>
+    <string name="pack_import_title">Import a pack</string>
+    <string name="pack_import_body">Paste the link someone sent you (or the whole message). You can also share it straight to this app from the chat.</string>
+    <string name="pack_imported">Pack “%1$s” added to your packs</string>
+    <string name="pack_import_invalid">That isn\'t a word pack link (or it got cut off)</string>
+    <string name="pack_share">Share pack</string>
+    <string name="pack_share_qr_help">Scan it with the other phone\'s camera. The whole pack is inside the code: no internet or account needed.</string>
+    <string name="pack_share_send">Send link</string>
+    <string name="pack_share_message">%1$s Word pack “%2$s” for Who\'s lying?: %3$s</string>
     <string name="pack_name">Pack name</string>
     <string name="pack_words_label">One per line: word / similar / similar…</string>
     <string name="pack_words_help">Similar words are optional and you can add several (Beach / Pool / Lake): the impostor gets one at random. Without them, they get another word from the pack.</string>

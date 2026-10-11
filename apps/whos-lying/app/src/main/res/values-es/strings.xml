@@ -84,6 +84,15 @@
         <item quantity="many">%d palabras</item>
         <item quantity="other">%d palabras</item>
     </plurals>
+    <string name="pack_import">Importar</string>
+    <string name="pack_import_title">Importar un paquete</string>
+    <string name="pack_import_body">Pega el enlace que te han mandado (o el mensaje entero). También puedes compartirlo directamente a esta app desde el chat.</string>
+    <string name="pack_imported">Paquete «%1$s» añadido a tus paquetes</string>
+    <string name="pack_import_invalid">Eso no es un enlace de paquete de palabras (o ha llegado cortado)</string>
+    <string name="pack_share">Compartir paquete</string>
+    <string name="pack_share_qr_help">Escanéalo con la cámara del otro móvil. El paquete entero va dentro del código: no hace falta internet ni cuenta.</string>
+    <string name="pack_share_send">Enviar enlace</string>
+    <string name="pack_share_message">%1$s Paquete de palabras «%2$s» para ¿Quién miente?: %3$s</string>
     <string name="pack_name">Nombre del paquete</string>
     <string name="pack_words_label">Una por línea: palabra / parecida / parecida…</string>
     <string name="pack_words_help">Las parecidas son opcionales y puedes poner varias (Playa / Piscina / Lago): el impostor recibe una al azar. Sin ellas, recibe otra palabra del paquete.</string>

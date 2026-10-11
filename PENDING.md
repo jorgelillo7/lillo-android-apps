@@ -30,10 +30,10 @@ Lines are pruned as items ship. What has **shipped** lives in `apps/<app>/releas
 
 | | What is missing | Waiting on |
 |---|---|---|
-| 👤 | Upload v4 (new icon, fixes) to internal testing and test with 4–5 friends: word pairs, flow, readability | You · bundle built from master, notes in `changelogs/4.txt` |
+| 👤 | Upload v4 (new icon, share packs by link / QR, fixes) to internal testing and test with 4–5 friends: word pairs, flow, readability | You · bundle built from master, notes in `changelogs/4.txt` |
 | ⏳ | A tester got "Item not found" on the opt-in link: likely the first review still pending or the wrong Google account in Play | Their next try |
 | ⏳ | Open-source license (GPL-3.0 was the candidate) | Your decision · not licensed for now |
-| ⏳ | Sharing packs between phones (QR or text) | Feedback after real use |
+| 🔨 | Pack links: publish `/p/` and the impostor entry of `assetlinks.json` (both ready locally in the website repo; add the Play signing SHA-256 from Play Console → App integrity). Until then packs travel by share-to-app or Import → paste | You · the SHA-256, then a website commit |
 | 👤 | New icon (a line-up, the liar in a fedora): upload `store/play-icon-512.png` and the feature graphics to the listing | You · Play Console → Main store listing |
 | ⏳ | Play Console suggests "Integrate Play Games Services" (shown because the app is in the Games category). Optional: sign-in, achievements, leaderboards. Little value for a one-phone party game with no account; decide whether to dismiss it or add a few achievements later | Your decision |
 
@@ -50,7 +50,7 @@ Lines are pruned as items ship. What has **shipped** lives in `apps/<app>/releas
 | | What is missing | Waiting on |
 |---|---|---|
 | 👤 | Create the app in Play Console (`com.jorgelillo.tournaments`, App · Tools or Board games) and its upload key (`scripts/new-upload-key.sh tournaments`); then I rebuild the signed bundle. Listing texts, screenshots and feature graphics are ready in `store/metadata` | You |
-| 🔨 | Then: Play signing SHA-256 in `assetlinks.json`, the `/t/` fallback page on the website (privacy page already live), internal test | The step above · plan in [docs/plans/tournaments.md](docs/plans/tournaments.md) |
+| 🔨 | Then: Play signing SHA-256 in `assetlinks.json` and publish `/t/` (ready locally in the website repo: shows the tournament in the browser) with it, internal test | The step above · plan in [docs/plans/tournaments.md](docs/plans/tournaments.md) |
 | ⏳ | Double elimination and round robin | Feedback after real use |
 
 ## repo

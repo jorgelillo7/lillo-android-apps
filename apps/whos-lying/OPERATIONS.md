@@ -39,7 +39,7 @@ Releases follow the `release-android-app` skill.
 | 1 | 1.0 | 2026-10-07 | — | Uploaded to the bundle library by mistake, never released. **Code 1 is burnt.** |
 | 2 | 1.0 | 2026-10-07 | Internal testing | First test with friends. Word packs without alcohol / drinking games, for a PEGI 3 rating |
 | 3 | 1.0 | 2026-10-08 | Internal testing | Landscape / short screens (AYN Thor): compact reveal curtain and secret card, drawing canvas beside the tools, voting grid without the header, start button inside the setup list |
-| 4 | 1.0 | 2026-10-11 | Internal testing (to upload) | New icon, lint fixes, shared core code (JsonStore, sharing, links) |
+| 4 | 1.0 | 2026-10-12 | Internal testing (to upload) | New icon, share packs by link / QR, lint fixes, shared core code |
 
 Upload key (created 5 Oct 2026 with `scripts/new-upload-key.sh`, see [docs/signing.md](../../docs/signing.md)):
 

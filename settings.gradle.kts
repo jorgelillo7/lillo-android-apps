@@ -22,6 +22,7 @@ rootProject.name = "lillo-android-apps"
 // Shared modules
 include(":core:designsystem")
 include(":core:platform")
+include(":core:sharelink")
 
 // Christmas Countdown
 include(":apps:christmas-countdown:app")

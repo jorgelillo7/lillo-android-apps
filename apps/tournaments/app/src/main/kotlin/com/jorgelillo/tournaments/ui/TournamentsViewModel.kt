@@ -44,7 +44,7 @@ class TournamentsViewModel(private val repository: LibraryRepository) : ViewMode
 
     /** A link, a bare code or a chat message containing a link. */
     fun importText(text: String) {
-        val tournament = Share.codeFromLink(extractLink(text))?.let(Share::decode)
+        val tournament = Share.codeFromLink(text)?.let(Share::decode)
         viewModelScope.launch {
             if (tournament == null) {
                 importEvents.send(ImportEvent(null, null))
@@ -55,8 +55,6 @@ class TournamentsViewModel(private val repository: LibraryRepository) : ViewMode
         }
     }
 
-    private fun extractLink(text: String): String =
-        text.split(Regex("\\s+")).firstOrNull { "${Share.HOST}${Share.PATH}" in it } ?: text.trim()
 
     private fun launchUpdate(transform: (Library) -> Library) {
         viewModelScope.launch { repository.update(transform) }

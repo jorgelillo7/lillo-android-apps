@@ -18,6 +18,7 @@ import com.jorgelillo.whoslying.domain.GameSettings
 import com.jorgelillo.whoslying.domain.Match
 import com.jorgelillo.whoslying.domain.Rules
 import com.jorgelillo.whoslying.domain.Scoring
+import com.jorgelillo.whoslying.domain.PackShare
 import com.jorgelillo.whoslying.domain.WordPack
 import com.jorgelillo.whoslying.domain.WordPacks
 import com.jorgelillo.whoslying.domain.WordPicker
@@ -106,6 +107,13 @@ class GameViewModel(private val repository: StateRepository, language: String) :
     fun savePack(pack: WordPack) = update { s ->
         val others = s.customPacks.filterNot { it.id == pack.id }
         s.copy(customPacks = others + pack.copy(custom = true))
+    }
+
+    /** A pack shared from another phone (link, chat message or code); null if the text has none. */
+    fun importPack(text: String): WordPack? {
+        val pack = PackShare.fromText(text) ?: return null
+        savePack(pack)
+        return pack
     }
 
     fun deletePack(id: String) = update { s ->

@@ -14,4 +14,5 @@ dependencies {
     api(libs.androidx.compose.ui)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.core.splashscreen)
+    implementation(libs.zxing.core)
 }

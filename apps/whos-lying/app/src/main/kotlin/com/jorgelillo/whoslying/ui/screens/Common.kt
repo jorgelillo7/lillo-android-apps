@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -46,9 +47,10 @@ fun Page(
     onBack: (() -> Unit)?,
     modifier: Modifier = Modifier,
     background: Brush = Neon.Backdrop,
+    actions: @Composable RowScope.() -> Unit = {},
     bottom: @Composable ColumnScope.() -> Unit = {},
     content: @Composable ColumnScope.() -> Unit,
-) = LilloPage(title, onBack, background, Neon.Ink, modifier, bottom = bottom, content = content)
+) = LilloPage(title, onBack, background, Neon.Ink, modifier, actions = actions, bottom = bottom, content = content)
 
 @Composable
 fun BigButton(

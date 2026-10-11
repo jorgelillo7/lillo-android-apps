@@ -1,56 +1,26 @@
 package com.jorgelillo.tournaments.domain
 
-import kotlinx.serialization.json.Json
-import java.io.ByteArrayOutputStream
-import java.util.Base64
-import java.util.zip.Deflater
-import java.util.zip.Inflater
+import com.jorgelillo.core.sharelink.ShareLink
 
 /**
- * A whole tournament inside a link, so it moves to another phone with no account or server:
- * compact JSON, deflated, base64url. A 16-player bracket with comments is well under 1 KB,
- * small enough for a QR code.
+ * A whole tournament inside a link (`https://jorgelillo7.github.io/t/#…`), so it moves to another
+ * phone with no account or server. A 16-player bracket with comments is well under 1 KB, small
+ * enough for a QR code. Format: core/sharelink.
  */
 object Share {
-    const val HOST = "jorgelillo7.github.io"
+    const val HOST = ShareLink.HOST
     const val PATH = "/t/"
-    private const val VERSION = "1"
+    const val QR_MAX_CHARS = ShareLink.QR_MAX_CHARS
 
-    /** Longer links are still shared as text, but no QR code: it would be too dense to scan off a screen. */
-    const val QR_MAX_CHARS = 1_800
+    private val links = ShareLink(Tournament.serializer(), PATH)
 
-    private val json = Json { ignoreUnknownKeys = true; encodeDefaults = false }
-
-    fun encode(t: Tournament): String {
-        val bytes = json.encodeToString(Tournament.serializer(), t).toByteArray()
-        val deflater = Deflater(Deflater.BEST_COMPRESSION, true).apply { setInput(bytes); finish() }
-        val out = ByteArrayOutputStream()
-        val buffer = ByteArray(1024)
-        while (!deflater.finished()) out.write(buffer, 0, deflater.deflate(buffer))
-        deflater.end()
-        return VERSION + Base64.getUrlEncoder().withoutPadding().encodeToString(out.toByteArray())
-    }
+    fun encode(t: Tournament): String = links.encode(t)
 
     /** The tournament in [code], or null if it isn't one of ours (truncated, other version…). */
-    fun decode(code: String): Tournament? = runCatching {
-        require(code.startsWith(VERSION))
-        val bytes = Base64.getUrlDecoder().decode(code.substring(VERSION.length))
-        val inflater = Inflater(true).apply { setInput(bytes) }
-        val out = ByteArrayOutputStream()
-        val buffer = ByteArray(1024)
-        while (!inflater.finished()) {
-            val n = inflater.inflate(buffer)
-            if (n == 0 && (inflater.needsInput() || inflater.needsDictionary())) error("truncated")
-            out.write(buffer, 0, n)
-        }
-        inflater.end()
-        json.decodeFromString(Tournament.serializer(), out.toString(Charsets.UTF_8.name()))
-    }.getOrNull()
+    fun decode(code: String): Tournament? = links.decode(code)
 
-    /** The fragment keeps the data out of server logs: GitHub Pages never sees it. */
-    fun link(t: Tournament): String = "https://$HOST$PATH#${encode(t)}"
+    fun link(t: Tournament): String = links.link(t)
 
-    fun codeFromLink(link: String): String? =
-        link.substringAfter("$HOST$PATH", "").substringAfter('#', "").takeIf { it.isNotBlank() }
-            ?: link.trim().takeIf { it.startsWith(VERSION) && ' ' !in it }
+    /** The code in a shared link, the website's `?d=` link, a chat message or a bare code. */
+    fun codeFromLink(link: String): String? = links.codeFromLink(link)
 }

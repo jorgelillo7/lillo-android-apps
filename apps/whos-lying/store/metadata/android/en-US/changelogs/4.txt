@@ -1,4 +1,4 @@
-New icon 🕵️ and small fixes
+New icon 🕵️ and shareable packs
 - New icon: which of the three is the impostor?
+- Share your word packs with a link or a QR code, no accounts
 - Clearer round and score texts
-- Under-the-hood improvements
