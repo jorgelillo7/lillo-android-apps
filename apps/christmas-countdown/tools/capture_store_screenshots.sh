@@ -25,7 +25,7 @@ label() {
   esac
 }
 
-"$ROOT/scripts/emulator.sh" date 121210002026   # 12 December: advent calendar half open
+"$ROOT/scripts/emulator.sh" date 121810002026   # 18 December 2026: most doors open, music days 17 and 18 unlocked
 "$ROOT/scripts/emulator.sh" demo on
 "$ADB" shell pm clear "$PKG" >/dev/null
 
@@ -40,15 +40,16 @@ for locale in en-US es-ES; do
   tap "$(label $locale sleeps)"; shot "$locale" 02-sleeps
   tap "$(label $locale advent)" 6
   if [ "$first" = 1 ]; then
-    # Open the unlocked doors visible on screen (the layout changes every year) so the grid shows
-    # some gifts; door 2 stays closed for the "door" screenshot and door 12 (today) too.
-    for door in 1 3 4 5 6 7 8 9 10 11; do
+    # Open some unlocked doors (the layout changes every year) so the grid shows gifts; the music
+    # doors 17 and 18 of the 2026 calendar stay closed for the "door" screenshots, and 18 is today.
+    for door in 1 2 3 4 5 6 7 8 9 10 11 12 13 14; do
       if tap "$door" 4 2>/dev/null; then back; fi
     done
     first=0
   fi
   shot "$locale" 03-advent
-  if [ "$locale" = en-US ]; then tap "2" 5; else tap "🎁" 5; fi   # door 2: closed in en-US, opened afterwards
+  # A music day: Jingle Bell Rock (door 18) in English, Campana sobre campana (door 17) in Spanish.
+  if [ "$locale" = en-US ]; then tap "18" 5; else tap "17" 5; fi
   shot "$locale" 04-door; back
   tap "$(label $locale about)" 6; shot "$locale" 05-about; back
   tap "$(label $locale home)"
