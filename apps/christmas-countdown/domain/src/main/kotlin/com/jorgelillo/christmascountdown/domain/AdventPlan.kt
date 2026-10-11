@@ -62,7 +62,7 @@ enum class AdventSong(val title: String, val artist: String, val videoId: String
     ALL_I_WANT("All I Want for Christmas Is You", "Mariah Carey", "yXQViqx6GMY"),
     LAST_CHRISTMAS("Last Christmas", "Wham!", "E8gmARGvPlI"),
     TAMBORILERO("El tamborilero", "Raphael", "sIjRW60Fqyc"),
-    BURRITO_SABANERO("Mi burrito sabanero", "David Bisbal", "cbgCFy8YR7E"),
+    BURRITO_SABANERO("Mi burrito sabanero", "La Rondallita", "xYX6pS3TvcU"),
     JINGLE_BELL_ROCK("Jingle Bell Rock", "Bobby Helms", "ZnDmmiiFSUU"),
     CAMPANA_SOBRE_CAMPANA("Campana sobre campana", "Mundo Canticuentos", "IhO3Y1unYGE"),
     ;
