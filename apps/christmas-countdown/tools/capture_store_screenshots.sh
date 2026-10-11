@@ -40,18 +40,21 @@ for locale in en-US es-ES; do
   tap "$(label $locale sleeps)"; shot "$locale" 02-sleeps
   tap "$(label $locale advent)" 6
   if [ "$first" = 1 ]; then
-    # Open some unlocked doors (the layout changes every year) so the grid shows gifts; the music
-    # doors 17 and 18 of the 2026 calendar stay closed for the "door" screenshots, and 18 is today.
+    # Open some unlocked doors (the layout changes every year) so the grid shows gifts; doors 15-18
+    # of the 2026 calendar stay closed for the plan and music screenshots (18 is today).
     for door in 1 2 3 4 5 6 7 8 9 10 11 12 13 14; do
       if tap "$door" 4 2>/dev/null; then back; fi
     done
     first=0
   fi
   shot "$locale" 03-advent
+  # A plan: movie night (door 15) in English, the sock snowman (door 16) in Spanish.
+  if [ "$locale" = en-US ]; then tap "15" 5; else tap "16" 5; fi
+  shot "$locale" 04-plan; back
   # A music day: Jingle Bell Rock (door 18) in English, Campana sobre campana (door 17) in Spanish.
   if [ "$locale" = en-US ]; then tap "18" 5; else tap "17" 5; fi
-  shot "$locale" 04-door; back
-  tap "$(label $locale about)" 6; shot "$locale" 05-about; back
+  shot "$locale" 05-music; back
+  tap "$(label $locale about)" 6; shot "$locale" 06-about; back
   tap "$(label $locale home)"
 done
 

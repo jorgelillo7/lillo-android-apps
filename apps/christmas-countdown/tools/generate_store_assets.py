@@ -23,8 +23,9 @@ LOCALES = {
             "01-countdown": ("Every second", "until Christmas"),
             "02-sleeps": ("Count the sleeps,", "just like kids do"),
             "03-advent": ("A surprise every day", "of December"),
-            "04-door": ("Plans and carols", "for every day"),
-            "05-about": ("No ads.", "No tracking."),
+            "04-plan": ("A family plan", "every day"),
+            "05-music": ("Music days", "with Christmas songs"),
+            "06-about": ("No ads.", "No tracking."),
         },
     },
     "es-ES": {
@@ -34,8 +35,9 @@ LOCALES = {
             "01-countdown": ("Cada segundo", "hasta Navidad"),
             "02-sleeps": ("Cuenta las noches,", "como los peques"),
             "03-advent": ("Una sorpresa cada día", "de diciembre"),
-            "04-door": ("Planes y villancicos", "para cada día"),
-            "05-about": ("Sin anuncios.", "Sin rastreo."),
+            "04-plan": ("Un plan en familia", "cada día"),
+            "05-music": ("Días de música", "con villancicos"),
+            "06-about": ("Sin anuncios.", "Sin rastreo."),
         },
     },
 }
