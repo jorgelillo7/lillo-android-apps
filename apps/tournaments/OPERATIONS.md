@@ -37,8 +37,21 @@ Opening the link in the app needs `jorgelillo7.github.io/.well-known/assetlinks.
 `com.jorgelillo.tournaments` with the SHA-256 of every signing certificate (debug key, upload key,
 Play app signing key), like group-polls. Until then: share to the app, or Import → paste.
 
-## Release history
+## Release
+
+Upload key (created 13 Oct 2026 with `scripts/new-upload-key.sh`, see [docs/signing.md](../../docs/signing.md)):
+
+| | |
+|---|---|
+| File | `~/Projects/documentation/keys/tournaments/upload-tournaments.jks` (+ off-Mac backup) |
+| Alias | `upload` |
+| Serial | `8de29d28a34bc4ad` |
+| SHA-1 | `B9:30:1A:DE:50:39:BA:FF:5F:D9:70:02:94:21:FF:07:8B:90:61:87` |
+| SHA-256 | `2F:3A:F8:8E:A6:79:17:86:09:7F:7B:1D:AA:9A:0B:EF:F9:54:02:29:EB:26:B7:BD:DD:E0:8E:89:ED:A6:FF:47` |
+
+The App Links in `assetlinks.json` need the **Play app signing** key's SHA-256 (Play Console →
+App integrity), not this one: Play re-signs the bundle.
 
 | versionCode | Version | Notes |
 |---|---|---|
-| 1 | 1.0 | Not uploaded yet (needs the upload key) |
+| 1 | 1.0 | Signed bundle ready; to upload once the app exists in Play Console |

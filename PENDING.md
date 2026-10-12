@@ -41,7 +41,7 @@ Lines are pruned as items ship. What has **shipped** lives in `apps/<app>/releas
 
 | | What is missing | Waiting on |
 |---|---|---|
-| 👤 | Create the app in Play Console (`com.jorgelillo.grouppolls`, App · Social) and its upload key (`scripts/new-upload-key.sh group-polls`). Listing texts and graphics are ready in `store/metadata`; don't upload a bundle until Firebase exists (without it the app runs on sample polls) | You · answers in `apps/group-polls/OPERATIONS.md` → "Play Console answers" |
+| 👤 | Create the app in Play Console (`com.jorgelillo.grouppolls`, App · Social); the upload key exists. Listing texts and graphics are ready in `store/metadata`; don't upload a bundle until Firebase exists (without it the app runs on sample polls) | You · answers in `apps/group-polls/OPERATIONS.md` → "Play Console answers" |
 | 👤 | Create the Firebase project and give the OK | You · lillorepo `packages/group_polls/OPERATIONS.md` → "Create the project" |
 | 🔨 | Then: `firebase.properties`, App Check (Play Integrity + debug token), Play signing SHA-256 in `assetlinks.json`, publish `/q/` and `assetlinks.json` on the website (privacy page already live), Terraform on, internal test | The two steps above · plan in [docs/plans/group-polls.md](docs/plans/group-polls.md) |
 
@@ -49,7 +49,7 @@ Lines are pruned as items ship. What has **shipped** lives in `apps/<app>/releas
 
 | | What is missing | Waiting on |
 |---|---|---|
-| 👤 | Create the app in Play Console (`com.jorgelillo.tournaments`, App · Tools or Board games) and its upload key (`scripts/new-upload-key.sh tournaments`); then I rebuild the signed bundle. Listing texts, screenshots and feature graphics are ready in `store/metadata` | You |
+| 👤 | Create the app in Play Console (`com.jorgelillo.tournaments`, App · Tools or Board games) and upload the signed bundle (`build/releases/torneos-v1.aab`) to internal testing. Listing texts, screenshots and feature graphics are ready in `store/metadata` | You |
 | 🔨 | Then: Play signing SHA-256 in `assetlinks.json` and publish `/t/` (ready locally in the website repo: shows the tournament in the browser) with it, internal test | The step above · plan in [docs/plans/tournaments.md](docs/plans/tournaments.md) |
 | ⏳ | Double elimination and round robin | Feedback after real use |
 
