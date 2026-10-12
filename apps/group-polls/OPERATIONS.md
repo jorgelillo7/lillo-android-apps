@@ -69,4 +69,19 @@ Check on a device: `adb shell pm get-app-links com.jorgelillo.grouppolls` → `v
 
 ## Release
 
-Not published yet. Releases follow the `release-android-app` skill.
+Not published yet. Releases follow the `release-android-app` skill. Build the first bundle only
+with `firebase.properties` in place: without it the app runs on sample polls.
+
+Upload key (created 13 Oct 2026 with `scripts/new-upload-key.sh`, see [docs/signing.md](../../docs/signing.md)):
+
+| | |
+|---|---|
+| File | `~/Projects/documentation/keys/group-polls/upload-group-polls.jks` (+ off-Mac backup) |
+| Alias | `upload` |
+| Serial | `894fef0886550d4b` |
+| SHA-1 | `EF:FD:A3:9E:90:82:D7:30:06:7F:36:CE:26:AA:7E:F5:AF:C8:ED:8A` |
+| SHA-256 | `29:AF:83:65:3D:54:C2:AD:1B:C1:5B:2F:CB:9F:F6:3F:CA:C0:33:9E:A6:77:DA:37:FE:D8:59:53:56:22:37:2B` |
+
+The App Links in `assetlinks.json` need the **Play app signing** key's SHA-256 (Play Console →
+App integrity), not this one: Play re-signs the bundle.
+
