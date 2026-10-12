@@ -102,5 +102,9 @@ Project skills in `.claude/skills/`: `new-android-app` (competitor study → des
 - Store listing texts/images live in `apps/<app>/store/metadata/android/<locale>/` (fastlane
   supply layout). Publish the listing together with the release that adds what it describes.
 - `targetSdk` must meet Google Play's current requirement (API 36 since Aug 2026).
+- Share links and App Links use `jorgelillo7.github.io` (`/q/`, `/t/`, `/p/` and
+  `/.well-known/assetlinks.json` live in that repo): free static GitHub Pages, data in the link
+  fragment, no server. The domain is tied to the GitHub username, which the user keeps for good,
+  so no custom domain is planned; changing it would break every link already shared.
 - Privacy policies are served from the separate repo `jorgelillo7/jorgelillo7.github.io`
   (`/privacy/<app>/`), never from this repo, so renaming this repo can't break them.
