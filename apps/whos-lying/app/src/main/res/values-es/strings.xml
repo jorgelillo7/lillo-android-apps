@@ -93,6 +93,10 @@
     <string name="pack_share_qr_help">Escanéalo con la cámara del otro móvil. El paquete entero va dentro del código: no hace falta internet ni cuenta.</string>
     <string name="pack_share_send">Enviar enlace</string>
     <string name="pack_share_message">%1$s Paquete de palabras «%2$s» para ¿Quién miente?: %3$s</string>
+    <string name="pack_copy_title">¿Editar «%1$s»?</string>
+    <string name="pack_copy_body">Los paquetes incluidos no se pueden cambiar, pero puedes hacer una copia tuya y editarla como quieras. El original sigue disponible; puedes desmarcarlo al elegir los paquetes de la partida.</string>
+    <string name="pack_copy_ok">Hacer una copia</string>
+    <string name="pack_copy_name">%1$s (mío)</string>
     <string name="pack_name">Nombre del paquete</string>
     <string name="pack_words_label">Una por línea: palabra / parecida / parecida…</string>
     <string name="pack_words_help">Las parecidas son opcionales y puedes poner varias (Playa / Piscina / Lago): el impostor recibe una al azar. Sin ellas, recibe otra palabra del paquete.</string>

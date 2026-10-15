@@ -156,10 +156,12 @@ fun PacksScreen(
     builtIn: List<WordPack>,
     custom: List<WordPack>,
     onEdit: (String?) -> Unit,
+    onCopy: (WordPack) -> Unit,
     onImport: (String) -> Unit,
     onBack: () -> Unit,
 ) {
     var sharing by remember { mutableStateOf<WordPack?>(null) }
+    var copying by remember { mutableStateOf<WordPack?>(null) }
     var importing by rememberSaveable { mutableStateOf(false) }
     Page(
         title = stringResource(R.string.packs),
@@ -177,10 +179,25 @@ fun PacksScreen(
                 items(custom, key = { it.id }) { PackRow(it, onClick = { onEdit(it.id) }, onShare = { sharing = it }) }
             }
             item { SectionTitle(stringResource(R.string.packs_builtin)) }
-            items(builtIn, key = { it.id }) { PackRow(it, onClick = null) }
+            items(builtIn, key = { it.id }) { PackRow(it, onClick = { copying = it }) }
         }
     }
     sharing?.let { PackShareSheet(it, onDismiss = { sharing = null }) }
+    copying?.let { pack ->
+        // Built-in packs ship with the app (and change with updates): edit a copy of your own.
+        AlertDialog(
+            onDismissRequest = { copying = null },
+            modifier = TestTagsAsResourceIds,
+            title = { Text(stringResource(R.string.pack_copy_title, pack.name)) },
+            text = { Text(stringResource(R.string.pack_copy_body)) },
+            confirmButton = {
+                TextButton(onClick = { copying = null; onCopy(pack) }, modifier = Modifier.testTag("copy_pack_ok")) {
+                    Text(stringResource(R.string.pack_copy_ok))
+                }
+            },
+            dismissButton = { TextButton(onClick = { copying = null }) { Text(stringResource(R.string.vote_cancel)) } },
+        )
+    }
     if (importing) PackImportDialog(onImport = { onImport(it); importing = false }, onDismiss = { importing = false })
 }
 
@@ -197,7 +214,8 @@ private fun PackRow(pack: WordPack, onClick: (() -> Unit)?, onShare: (() -> Unit
             .clip(MaterialTheme.shapes.large)
             .background(Neon.Card)
             .let { if (onClick != null) it.clickable(onClick = onClick) else it }
-            .padding(16.dp),
+            .padding(16.dp)
+            .testTag("pack_${pack.id}"),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(pack.emoji, style = MaterialTheme.typography.headlineSmall)

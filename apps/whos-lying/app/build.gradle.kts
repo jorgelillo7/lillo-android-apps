@@ -10,7 +10,7 @@ android {
     defaultConfig {
         applicationId = "com.jorgelillo.whoslying"
         minSdk = 24 // navigation-compose needs API 24
-        versionCode = 4
+        versionCode = 5
         versionName = "1.0"
     }
 
