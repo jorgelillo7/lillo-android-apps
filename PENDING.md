@@ -30,7 +30,7 @@ Lines are pruned as items ship. What has **shipped** lives in `apps/<app>/releas
 
 | | What is missing | Waiting on |
 |---|---|---|
-| 👤 | Upload v4 (new icon, share packs by link / QR, fixes) to internal testing and test with 4–5 friends: word pairs, flow, readability | You · bundle built from master, notes in `changelogs/4.txt` |
+| 👤 | Upload v5 (editable copies of the included packs, plus v4: new icon, share packs by link / QR, fixes) to internal testing and test with 4–5 friends: word pairs, flow, readability | You · bundle built from master, notes in `changelogs/4.txt` |
 | ⏳ | A tester got "Item not found" on the opt-in link: likely the first review still pending or the wrong Google account in Play | Their next try |
 | ⏳ | Open-source license (GPL-3.0 was the candidate) | Your decision · not licensed for now |
 | 🔨 | Pack links: publish `/p/` and the impostor entry of `assetlinks.json` (both ready locally in the website repo; add the Play signing SHA-256 from Play Console → App integrity). Until then packs travel by share-to-app or Import → paste | You · the SHA-256, then a website commit |

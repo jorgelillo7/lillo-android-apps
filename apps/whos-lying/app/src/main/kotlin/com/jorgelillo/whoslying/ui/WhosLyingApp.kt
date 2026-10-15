@@ -45,6 +45,7 @@ import com.jorgelillo.whoslying.ui.screens.TimeUpScreen
 import com.jorgelillo.whoslying.ui.screens.VotingScreen
 
 private const val NEW = "new"
+private const val COPY_OF = "copy-of-"
 
 @Composable
 fun WhosLyingApp(app: WhosLyingApplication, incomingText: String? = null, onIncomingHandled: () -> Unit = {}) {
@@ -214,13 +215,28 @@ fun WhosLyingApp(app: WhosLyingApplication, incomingText: String? = null, onInco
             )
         }
         composable("packs") {
-            PacksScreen(vm.builtInPacks, state.customPacks, onEdit = { id -> nav.navigate("pack/${id ?: NEW}") }, onImport = importPack, onBack = { nav.popBackStack() })
+            PacksScreen(
+                vm.builtInPacks,
+                state.customPacks,
+                onEdit = { id -> nav.navigate("pack/${id ?: NEW}") },
+                onCopy = { pack -> nav.navigate("pack/$COPY_OF${pack.id}") },
+                onImport = importPack,
+                onBack = { nav.popBackStack() },
+            )
         }
         composable("pack/{id}") { entry ->
             val id = entry.arguments?.getString("id").orEmpty()
-            val isNew = id == NEW
+            val copyOf = id.removePrefix(COPY_OF).takeIf { id.startsWith(COPY_OF) }
+            val isNew = id == NEW || copyOf != null
+            val copyName = stringResource(R.string.pack_copy_name, vm.builtInPacks.firstOrNull { it.id == copyOf }?.name.orEmpty())
             val initial = remember(id) {
-                if (isNew) WordPack(vm.newPackId(), "", "📝", emptyList(), custom = true) else state.customPacks.firstOrNull { it.id == id }
+                when {
+                    // A built-in pack as a starting point; nothing is saved until "Save".
+                    copyOf != null -> vm.builtInPacks.firstOrNull { it.id == copyOf }
+                        ?.copy(id = vm.newPackId(), name = copyName, custom = true)
+                    id == NEW -> WordPack(vm.newPackId(), "", "📝", emptyList(), custom = true)
+                    else -> state.customPacks.firstOrNull { it.id == id }
+                }
             } ?: return@composable LaunchedEffect(Unit) { nav.popBackStack() }
             PackEditScreen(
                 initial = initial,
