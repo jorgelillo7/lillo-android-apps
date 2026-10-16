@@ -86,3 +86,10 @@ in Google Forms. Field ids don't change, so the app keeps working.
 Opening the `Prefilled:` link yourself shows the placeholders (PALABRA, PARECIDA…); that's
 expected. The app replaces them with the real values.
 
+## Decided against
+
+- **Play Games Services / achievements** (suggested by Play Console because the app is a game):
+  it needs the internet permission and identifies players by their Google account, which breaks
+  the "no data, no accounts" promise (privacy policy, Data safety, welcome note), and achievements
+  fit badly a one-phone party game where the phone owner isn't the only player. Dismiss the
+  suggestion in the console.
