@@ -258,4 +258,13 @@
     <string name="report_comment">More details (optional)</string>
     <string name="report_privacy">A Google form opens in your browser with this word and what you wrote, ready to send. Nothing else is shared.</string>
     <string name="report_send">Open the form</string>
+    <!-- Welcome note (first launch, and Settings → About this app) -->
+    <string name="welcome_title">Hey, friend! 👋</string>
+    <string name="welcome_friends">We made this app for friends who just want to have a good time together: no ads, no fuss.</string>
+    <string name="welcome_free">Zero profit motive: no ads, no purchases and none of your data.</string>
+    <string name="welcome_testers">Our two beta testers went as far as they could 😅, so you may find the odd bug. If you do, tell us: we\'ll be really grateful!</string>
+    <string name="welcome_dont_show">Don\'t show this again</string>
+    <string name="welcome_ok">Let\'s play!</string>
+    <string name="welcome_feedback">Send feedback</string>
+    <string name="welcome_settings">About this app</string>
 </resources>

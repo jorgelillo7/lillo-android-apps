@@ -7,6 +7,7 @@
 set -euo pipefail
 source "$(dirname "$0")/../../../scripts/smoke_lib.sh"
 smoke_start whos-lying com.jorgelillo.whoslying
+tap welcome_ok 2   # first-launch welcome note
 
 shot home
 tap play 3

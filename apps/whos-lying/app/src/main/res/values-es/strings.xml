@@ -253,4 +253,13 @@
     <string name="report_comment">Más detalles (opcional)</string>
     <string name="report_privacy">Se abrirá un formulario de Google en el navegador con esta palabra y lo que escribas, listo para enviar. No se comparte nada más.</string>
     <string name="report_send">Abrir el formulario</string>
+    <!-- Bienvenida (primera vez, y Ajustes → Sobre esta app) -->
+    <string name="welcome_title">¡Hola, colega! 👋</string>
+    <string name="welcome_friends">Hemos hecho esta app para los amigos que solo quieren pasar un buen rato juntos: sin anuncios ni historias.</string>
+    <string name="welcome_free">Cero ánimo de lucro: ni anuncios, ni compras, ni datos tuyos.</string>
+    <string name="welcome_testers">Nuestros dos betatesters han llegado hasta donde han podido 😅, así que puede que encuentres algún fallo. Si lo ves, cuéntanoslo: ¡te lo agradeceremos un montón!</string>
+    <string name="welcome_dont_show">No volver a mostrar</string>
+    <string name="welcome_ok">¡A jugar!</string>
+    <string name="welcome_feedback">Contarnos algo</string>
+    <string name="welcome_settings">Sobre esta app</string>
 </resources>

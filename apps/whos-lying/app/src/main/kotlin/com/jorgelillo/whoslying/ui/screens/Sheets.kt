@@ -175,7 +175,7 @@ fun ReportSheet(word: String, decoy: String?, pack: String, language: String, on
 /** Settings and about: language, rules, sharing, rating and privacy. */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsSheet(onHowTo: () -> Unit, onModes: () -> Unit, onDismiss: () -> Unit) {
+fun SettingsSheet(onHowTo: () -> Unit, onModes: () -> Unit, onWelcome: () -> Unit, onDismiss: () -> Unit) {
     val context = LocalContext.current
     val uriHandler = LocalUriHandler.current
     var pickLanguage by rememberSaveable { mutableStateOf(false) }
@@ -195,6 +195,7 @@ fun SettingsSheet(onHowTo: () -> Unit, onModes: () -> Unit, onDismiss: () -> Uni
             SettingsRow("💌", stringResource(R.string.settings_share), stringResource(R.string.settings_share_desc), "share") {
                 context.shareText(shareText)
             }
+            SettingsRow("🤝", stringResource(R.string.welcome_settings), null, "settings_welcome") { onDismiss(); onWelcome() }
             SettingsRow("⭐", stringResource(R.string.about_rate), null, "rate") { uriHandler.openUri(PLAY_STORE_URL) }
             SettingsRow("🔒", stringResource(R.string.about_privacy), null, "privacy") { uriHandler.openUri(PRIVACY_POLICY_URL) }
             Text(

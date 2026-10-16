@@ -18,6 +18,8 @@ data class SavedState(
     val scores: Map<String, Int> = emptyMap(),
     /** Games finished in the current match. */
     val roundsPlayed: Int = 0,
+    /** The welcome note was dismissed with "don't show again". */
+    val welcomeSeen: Boolean = false,
 )
 
 /** The whole saved state as one JSON document. */
