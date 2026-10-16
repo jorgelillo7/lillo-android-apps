@@ -35,7 +35,6 @@ Lines are pruned as items ship. What has **shipped** lives in `apps/<app>/releas
 | ⏳ | Open-source license (GPL-3.0 was the candidate) | Your decision · not licensed for now |
 | 🔨 | Pack links: publish `/p/` and the impostor entry of `assetlinks.json` (both ready locally in the website repo; add the Play signing SHA-256 from Play Console → App integrity). Until then packs travel by share-to-app or Import → paste | You · the SHA-256, then a website commit |
 | 👤 | New icon (a line-up, the liar in a fedora): upload `store/play-icon-512.png` and the feature graphics to the listing | You · Play Console → Main store listing |
-| ⏳ | Play Console suggests "Integrate Play Games Services" (shown because the app is in the Games category). Optional: sign-in, achievements, leaderboards. Little value for a one-phone party game with no account; decide whether to dismiss it or add a few achievements later | Your decision |
 
 ## group-polls (new app)
 
