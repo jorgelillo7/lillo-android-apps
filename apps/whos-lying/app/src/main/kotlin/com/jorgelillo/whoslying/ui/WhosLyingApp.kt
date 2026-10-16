@@ -43,6 +43,7 @@ import com.jorgelillo.whoslying.ui.screens.SettingsSheet
 import com.jorgelillo.whoslying.ui.screens.SetupScreen
 import com.jorgelillo.whoslying.ui.screens.TimeUpScreen
 import com.jorgelillo.whoslying.ui.screens.VotingScreen
+import com.jorgelillo.whoslying.ui.screens.WelcomeDialog
 
 private const val NEW = "new"
 private const val COPY_OF = "copy-of-"
@@ -59,6 +60,9 @@ fun WhosLyingApp(app: WhosLyingApplication, incomingText: String? = null, onInco
     var showAbout by rememberSaveable { mutableStateOf(false) }
     var showModes by rememberSaveable { mutableStateOf(false) }
     var showReport by rememberSaveable { mutableStateOf(false) }
+    // The welcome note: until "don't show again", once per app start; also from Settings.
+    var welcomeClosedThisTime by rememberSaveable { mutableStateOf(false) }
+    var showWelcomeAgain by rememberSaveable { mutableStateOf(false) }
     val context = LocalContext.current
     val resources = LocalResources.current
     val importPack: (String) -> Unit = { text ->
@@ -248,8 +252,22 @@ fun WhosLyingApp(app: WhosLyingApplication, incomingText: String? = null, onInco
         }
     }
 
+    if ((!state.welcomeSeen && !welcomeClosedThisTime) || showWelcomeAgain) {
+        WelcomeDialog(showCheckbox = !state.welcomeSeen) { dontShowAgain ->
+            welcomeClosedThisTime = true
+            showWelcomeAgain = false
+            if (dontShowAgain) vm.markWelcomeSeen()
+        }
+    }
     if (showHowTo) HowToSheet(onDismiss = { showHowTo = false })
-    if (showAbout) SettingsSheet(onHowTo = { showHowTo = true }, onModes = { showModes = true }, onDismiss = { showAbout = false })
+    if (showAbout) {
+        SettingsSheet(
+            onHowTo = { showHowTo = true },
+            onModes = { showModes = true },
+            onWelcome = { showWelcomeAgain = true },
+            onDismiss = { showAbout = false },
+        )
+    }
     if (showModes) ModesSheet(onDismiss = { showModes = false })
     val reported = vm.game
     if (showReport && reported != null) {

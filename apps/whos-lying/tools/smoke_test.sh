@@ -7,6 +7,7 @@
 set -euo pipefail
 source "$(dirname "$0")/../../../scripts/smoke_lib.sh"
 smoke_start whos-lying com.jorgelillo.whoslying
+sleep 5; tap welcome_ok 2   # first-launch welcome note (slow to get its tags on a cold release start)
 
 shot home
 tap play 3
@@ -28,7 +29,9 @@ shot countdown
 sleep 5
 shot debate
 tap go_vote 2
-tap vote_Ana 1
+# Vote for the first player on screen (the emulator keyboard sometimes doubles a letter of a name).
+first_vote="$("$ADB" shell uiautomator dump /sdcard/ui.xml >/dev/null; "$ADB" shell cat /sdcard/ui.xml | grep -o 'resource-id="vote_[^"]*"' | head -1 | sed 's/resource-id="//;s/"//')"
+tap "$first_vote" 1
 shot vote
 tap confirm_vote 1
 sleep 1; shot expose

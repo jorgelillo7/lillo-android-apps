@@ -90,6 +90,7 @@ for locale in en-US es-ES; do
   "$ADB" shell cmd locale set-app-locales "$PKG" --locales "$locale"
   "$ADB" shell am start -W -n "$PKG/.MainActivity" >/dev/null
   sleep 4
+  tap welcome_ok 2   # first-launch welcome note
   shot "$locale" 07-home
 
   tap play 2

@@ -98,6 +98,8 @@ class GameViewModel(private val repository: StateRepository, language: String) :
         s.copy(settings = s.settings.copy(packIds = ids))
     }
 
+    fun markWelcomeSeen() = update { it.copy(welcomeSeen = true) }
+
     fun selectAllPacks() = update { it.copy(settings = it.settings.copy(packIds = emptySet())) }
 
     // --- Custom packs ---------------------------------------------------------------------------
