@@ -56,7 +56,7 @@ Lines are pruned as items ship. What has **shipped** lives in `apps/<app>/releas
 
 | | What is missing | Waiting on |
 |---|---|---|
-| ⏳ | An action game: the slipper runner or a tilt-and-roll puzzle like Kula World | Every current app on the store · ideas in [docs/plans/game-ideas.md](docs/plans/game-ideas.md) |
+| ⏳ | A game: the slipper runner, a tilt-and-roll puzzle like Kula World, or our fantasy league as swipe cards | Every current app on the store · ideas in [docs/plans/game-ideas.md](docs/plans/game-ideas.md) |
 
 ## repo
 

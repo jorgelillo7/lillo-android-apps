@@ -1,6 +1,6 @@
 # Game ideas
 
-Two action games for after every current app is on the store. Not started: pick one, then write
+Game ideas for after every current app is on the store. Not started: pick one, then write
 its own plan here like [tournaments.md](tournaments.md). Same family rules as the apps: no ads,
 no account, no server, "question + what it is" names.
 
@@ -34,3 +34,33 @@ Roll a ball through levels by tilting the phone: a puzzle more than a reflex gam
   in Compose and in this repo but loses the gravity-flip trick.
 - The cost is level design, not code: a level format (text or JSON) and an in-app or desktop
   editor early on, and playtests to tune each level.
+
+## 3. Our fantasy league, as swipe cards (working name "¿Quién llora esta jornada?")
+
+A game about our Biwenger league and its people, built as *Reigns*-style cards so the in-jokes
+are the game itself instead of interrupting it.
+
+- **Turn = matchday.** 3–5 cards, each a league member with a situation; swipe left or right.
+  Examples: lillogafe signs Isco → next matchday "injured for 5 months"; Fabio, between beers,
+  triggers your release clause (pay to keep the star or let him go); Nostrajavi "sees team X
+  winning" → they lose 3‑0; lilloelección de capitán → ‑16; Pablo complaining there are no
+  shady deals; the Argentinian's complaints.
+- **Four meters** like Reigns: 💰 money, ⚽ points, 🩹 squad fitness, 😤 the league's patience.
+  One hitting zero (or maxing out) ends the season in a silly way ("kicked out of the WhatsApp
+  group").
+- **End of matchday** screen with the "llorómetro": the moaning or bragging messages ("this
+  matchday nothing", "100 points!") go here, never mid-decision.
+- **Season** = 38 matchdays; win the league against bots with each member's personality.
+- **Content in JSON** (text, character, effects of each choice, optional follow-up card), so
+  anyone in the league can propose cards. The user has message screenshots to mine.
+- **Action variant** (if cards feel too calm): a runner dodging injuries while everyone chases
+  the star striker; the messages only between matchdays (levels).
+
+**Names: the Pro Evolution Soccer way.** PES without licences had "Roberto Larcos", "Man Red"
+and "London FC": recognisable, not the real thing. Same here, from day one:
+
+- Footballers and clubs: parody names (e.g. a "Lamal" or "Mbapi"), no real crests, kits or photos.
+- No "Biwenger" name or logo: it's "the league", a fantasy league in general.
+- League members: nicknames, and only with each one's OK.
+- Distribute through Play closed testing for the league only; with parody names it could
+  later go public without changes.
