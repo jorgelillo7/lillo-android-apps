@@ -18,7 +18,12 @@ class GameTest {
     private fun card(id: String, right: Choice = Choice("Sí"), left: Choice = Choice("No"), followUpOnly: Boolean = false) =
         Card(id, "a", "texto $id", left, right, followUpOnly = followUpOnly)
 
-    private fun league(cards: List<Card>, events: List<MatchdayEvent> = emptyList(), joker: Joker? = null) = League(
+    private fun league(
+        cards: List<Card>,
+        events: List<MatchdayEvent> = emptyList(),
+        joker: Joker? = null,
+        achievements: List<Achievement> = emptyList(),
+    ) = League(
         name = "test",
         matchdays = 3,
         cardsPerMatchday = 2,
@@ -28,6 +33,7 @@ class GameTest {
         events = events,
         joker = joker,
         endings = Endings("ml", "mh", "sl", "sh", "pl", "ph", "tl", "th", "champion", "{position}"),
+        achievements = achievements,
     )
 
     /** Plays until the season ends, choosing with [pick]. */
@@ -150,5 +156,59 @@ class GameTest {
         assertTrue(position in 1..2)
         assertEquals(if (position == 1) "champion" else "2", end.ending!!.text)
         assertEquals(4, end.matchday)
+    }
+
+    @Test
+    fun `an achievement unlocks after its count of choices, once`() {
+        val l = league(
+            listOf(card("x", right = Choice("Sí", achievement = "a")), card("y", right = Choice("Sí", achievement = "a"))),
+            achievements = listOf(Achievement("a", "A", "two yeses", count = 2)),
+        )
+        var s = Game.choose(l, Game.newSeason(l, 1), right = true)
+        assertEquals(emptyList(), s.unlocked)
+        s = Game.choose(l, s, right = true)
+        assertEquals(listOf("a"), s.unlocked)
+        assertEquals(listOf("a"), s.justUnlocked)
+        s = Game.choose(l, Game.dismissReport(s), right = true)
+        assertEquals(listOf("a"), s.unlocked)
+        assertEquals(emptyList(), s.justUnlocked)
+    }
+
+    @Test
+    fun `a gamble counts its own achievement, not the choice's`() {
+        val risky = Choice("Corazonada", achievement = "safe", risk = Risk(1.0, Effects(points = -16), "‑16", achievement = "flop"))
+        val l = league(
+            listOf(card("x", right = risky), card("y", right = risky)),
+            achievements = listOf(Achievement("safe", "S", "s"), Achievement("flop", "F", "f")),
+        )
+        val s = Game.choose(l, Game.newSeason(l, 1), right = true)
+        assertEquals(listOf("flop"), s.unlocked)
+    }
+
+    @Test
+    fun `the end of the season unlocks the built-in achievements and is recorded once`() {
+        val l = league(
+            listOf(card("x"), card("y")),
+            achievements = listOf(Achievement("survivor", "S", "s"), Achievement("podium", "P", "p")),
+        )
+        var saved = Saved()
+        var s = Game.newSeason(l, 11)
+        while (!s.over) {
+            s = if (s.reportPending) Game.dismissReport(s) else Game.choose(l, s, false)
+            saved = saved.with(l, s, today = 100)
+        }
+        saved = saved.with(l, Game.dismissReport(s), today = 100)
+        assertEquals(listOf("survivor", "podium"), s.unlocked)
+        assertEquals(setOf("survivor", "podium"), saved.achievements)
+        assertEquals(1, saved.seasonsPlayed)
+        assertEquals(1, saved.history.size)
+        assertEquals(setOf(s.ending!!.key), saved.endingsSeen)
+        assertEquals(3, saved.history.single().matchdaysPlayed)
+    }
+
+    @Test
+    fun `every ending key has a text`() {
+        assertEquals(10, sample.endings.keys.size)
+        sample.endings.keys.forEach { assertTrue(sample.endings.text(it).isNotBlank(), it) }
     }
 }

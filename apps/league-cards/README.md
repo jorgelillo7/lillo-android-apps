@@ -17,7 +17,11 @@
 - 💬 After every matchday, the league's group chat: your points, the day's events (recálculo,
   corralito, invalid line-up…) and the members' messages, names in their chat colours
 - 🏆 A table against computer rivals with personalities (the eternal competitor, the
-  all-or-nothing one who abandons half the seasons…), 38 matchdays, a joker once a season
+  all-or-nothing one who abandons half the seasons…), a 19-matchday season (~5 minutes), a joker
+  once a season
+- 🏅 Trophies: collect the ten endings (locked until seen), achievements tied to cards (“the
+  fastest moan in the West”, “three goalkeepers”…) or to how the season ends, the last 30 seasons;
+  sharing the result lists the achievements of that season
 - 🚫 No permissions, no account, no ads: the season is saved on the phone
 
 ## 🔒 The deck: sample in the repo, the league's own outside it
@@ -38,7 +42,7 @@ Store screenshots, if ever needed, must come from a build without the private de
 |---|---|
 | Deck model, validation (`League.problems()`) | `domain/League.kt` |
 | Season engine: deal, choose, gamble, matchday, rivals, endings | `domain/Season.kt` (`Game`) |
-| Saved state and record | `domain/Saved.kt` |
+| Saved state, record, trophies, history | `domain/Saved.kt` |
 | Screens: home, card, group chat, end, table | `app/…/ui/` |
 
 All randomness comes from the season's seed plus where it happens (matchday, card), so a saved

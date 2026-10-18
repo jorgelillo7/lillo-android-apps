@@ -92,6 +92,7 @@ fun PlayScreen(
     ) {
         MetersRow(season, leaning?.effects)
         Spacer(Modifier.height(12.dp))
+        season.justUnlocked.forEach { id -> league.achievement(id)?.let { AchievementBanner(it) } }
         season.lastOutcome?.let { ChatBubble(league, it.character, it.text, Modifier.testTag("outcome")) }
         Spacer(Modifier.height(12.dp))
         SwipeCard(league, card, drag, leaning?.label, onChoose, Modifier.weight(1f))

@@ -1,1 +1,1 @@
-Primera versión de prueba: cartas, cuatro barras, el chat de la liga tras cada jornada, clasificación y comodín.
+Primera versión de prueba: cartas, cuatro barras, el chat de la liga tras cada jornada, clasificación, comodín, logros, colección de finales e historial.

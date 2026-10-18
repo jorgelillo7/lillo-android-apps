@@ -25,6 +25,7 @@ import androidx.core.graphics.toColorInt
 import com.jorgelillo.core.designsystem.LilloBigButton
 import com.jorgelillo.core.designsystem.LilloPage
 import com.jorgelillo.leaguecards.R
+import com.jorgelillo.leaguecards.domain.Achievement
 import com.jorgelillo.leaguecards.domain.League
 import com.jorgelillo.leaguecards.domain.YOU
 import com.jorgelillo.leaguecards.ui.theme.Chat
@@ -82,5 +83,25 @@ fun SystemNotice(text: String, modifier: Modifier = Modifier) {
                 .background(Chat.System, RoundedCornerShape(8.dp))
                 .padding(horizontal = 12.dp, vertical = 6.dp),
         )
+    }
+}
+
+/** "New achievement" banner, in gold. */
+@Composable
+fun AchievementBanner(a: Achievement, modifier: Modifier = Modifier) {
+    Row(
+        modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp)
+            .background(Chat.Gold.copy(alpha = 0.16f), RoundedCornerShape(12.dp))
+            .padding(horizontal = 12.dp, vertical = 8.dp)
+            .testTag("achievement_unlocked"),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(a.emoji, style = MaterialTheme.typography.headlineSmall)
+        Column(Modifier.padding(start = 10.dp)) {
+            Text(stringResource(R.string.achievement_new), color = Chat.Gold, style = MaterialTheme.typography.labelSmall)
+            Text(a.title, color = Chat.Text, fontWeight = FontWeight.Bold)
+        }
     }
 }

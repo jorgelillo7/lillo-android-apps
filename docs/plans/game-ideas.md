@@ -53,7 +53,7 @@ are the game itself instead of interrupting it.
   group").
 - **End of matchday** screen with the "llorómetro": the moaning or bragging messages ("this
   matchday nothing", "100 points!") go here, never mid-decision.
-- **Season** = 38 matchdays; win the league against bots with each member's personality.
+- **Season** = 19 matchdays (one round, ~5 minutes; 38 repeated the cards too much); win the league against bots with each member's personality.
 - **Content in JSON** (text, character, effects of each choice, optional follow-up card), so
   anyone in the league can propose cards. The user has message screenshots to mine.
 - **Action variant** (if cards feel too calm): a runner dodging injuries while everyone chases

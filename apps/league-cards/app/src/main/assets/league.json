@@ -1,6 +1,6 @@
 {
   "name": "Liga de ejemplo",
-  "matchdays": 38,
+  "matchdays": 19,
   "cardsPerMatchday": 3,
   "characters": [
     {
@@ -136,14 +136,16 @@
         "effects": {
           "tears": 15,
           "squad": -12
-        }
+        },
+        "achievement": "efecto-gafe"
       },
       "right": {
         "label": "Aguantar",
         "effects": {
           "squad": -12,
           "patience": 5
-        }
+        },
+        "achievement": "efecto-gafe"
       }
     },
     {
@@ -167,7 +169,8 @@
             "points": -16,
             "tears": 10
           },
-          "outcome": "Tu capitán: ‑16. Elección de campeón."
+          "outcome": "Tu capitán: ‑16. Elección de campeón.",
+          "achievement": "eleccion-campeon"
         }
       }
     },
@@ -193,8 +196,10 @@
             "points": -10,
             "tears": 8
           },
-          "outcome": "La IA ha alineado a tres porteros."
-        }
+          "outcome": "La IA ha alineado a tres porteros.",
+          "achievement": "ia-porteros"
+        },
+        "achievement": "ia-borda"
       }
     },
     {
@@ -275,7 +280,8 @@
         "effects": {
           "points": 8
         },
-        "outcome": "Jugó y marcó. Era una vacilada."
+        "outcome": "Jugó y marcó. Era una vacilada.",
+        "achievement": "no-me-la-cuelas"
       },
       "right": {
         "label": "Trato hecho",
@@ -358,7 +364,8 @@
             "money": -15,
             "patience": -10
           },
-          "outcome": "La liga lo ha visto. Sanción para los dos."
+          "outcome": "La liga lo ha visto. Sanción para los dos.",
+          "achievement": "pillado"
         }
       }
     },
@@ -422,7 +429,8 @@
           "points": 6,
           "tears": 6
         },
-        "outcome": "Diez minutos de tu vida. Pero tenía razón."
+        "outcome": "Diez minutos de tu vida. Pero tenía razón.",
+        "achievement": "podcast"
       }
     },
     {
@@ -441,7 +449,8 @@
         "effects": {
           "money": -25,
           "squad": 15
-        }
+        },
+        "achievement": "sin-miedo"
       }
     },
     {
@@ -460,7 +469,8 @@
           "tears": 12,
           "patience": -6
         },
-        "outcome": "El lloro más rápido del oeste. Es récord."
+        "outcome": "El lloro más rápido del oeste. Es récord.",
+        "achievement": "lloro-rapido"
       }
     }
   ],
@@ -549,9 +559,92 @@
     "squadHigh": "Tu plantilla es tan buena que los demás se borran de la liga. Te quedas solo.",
     "patienceLow": "Te han echado del grupo de WhatsApp.",
     "patienceHigh": "Caes tan bien que te hacen administrador. Ahora organizas tú todo. Se acabó el juego.",
-    "tearsLow": "No has llorado en toda la temporada. Nadie se cree que sigas jugando.",
+    "tearsLow": "No has llorado en toda la vuelta. Nadie se cree que sigas jugando.",
     "tearsHigh": "Te han silenciado el grupo durante un año.",
     "champion": "¡Campeón de liga! Que lloren ellos.",
     "notChampion": "Temporada terminada: {position}º. El año que viene, más."
-  }
+  },
+  "achievements": [
+    {
+      "id": "lloro-rapido",
+      "title": "El lloro más rápido del oeste",
+      "description": "Llorar en el grupo al minuto de jornada",
+      "emoji": "🏃"
+    },
+    {
+      "id": "sin-miedo",
+      "title": "Sin miedo al éxito",
+      "description": "Pujar fuerte 3 veces en una temporada",
+      "emoji": "💸",
+      "count": 3
+    },
+    {
+      "id": "efecto-gafe",
+      "title": "Efecto gafe",
+      "description": "Fichar a 2 jugadores que se lesionan al día siguiente",
+      "emoji": "🐈‍⬛",
+      "count": 2
+    },
+    {
+      "id": "eleccion-campeon",
+      "title": "Elección de campeón",
+      "description": "Que tu capitán de corazonada haga ‑16",
+      "emoji": "🤡"
+    },
+    {
+      "id": "ia-borda",
+      "title": "La IA me quitó el trabajo",
+      "description": "Que la IA te haga una alineación perfecta",
+      "emoji": "🤖"
+    },
+    {
+      "id": "ia-porteros",
+      "title": "Tres porteros",
+      "description": "Que la IA alinee a tres porteros",
+      "emoji": "🧤"
+    },
+    {
+      "id": "podcast",
+      "title": "Oyente fiel",
+      "description": "Escuchar 2 audios de 10 minutos en una temporada",
+      "emoji": "🎧",
+      "count": 2
+    },
+    {
+      "id": "pillado",
+      "title": "Pillado",
+      "description": "Que la liga te pille un chanchullo",
+      "emoji": "🚨"
+    },
+    {
+      "id": "no-me-la-cuelas",
+      "title": "No me la cuelas",
+      "description": "No caer en un chivatazo falso",
+      "emoji": "🕵️"
+    },
+    {
+      "id": "survivor",
+      "title": "Aguantar la vuelta",
+      "description": "Llegar a la última jornada",
+      "emoji": "🧱"
+    },
+    {
+      "id": "podium",
+      "title": "Podio",
+      "description": "Acabar entre los tres primeros",
+      "emoji": "🥉"
+    },
+    {
+      "id": "champion",
+      "title": "Campeón",
+      "description": "Ganar la liga",
+      "emoji": "🏆"
+    },
+    {
+      "id": "champion_no_joker",
+      "title": "Campeón sin comodín",
+      "description": "Ganar la liga sin borrarte la cuenta",
+      "emoji": "🥇"
+    }
+  ]
 }

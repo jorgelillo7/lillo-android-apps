@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 import kotlin.random.Random
 
 /** Single ViewModel for the whole (small) app: the saved state and every move. */
@@ -31,12 +32,14 @@ class LeagueViewModel(val league: League, private val store: JsonStore<Saved>) :
     fun dismissReport() = updateSeason(Game::dismissReport)
 
     private fun updateSeason(change: (Season) -> Season) = viewModelScope.launch {
-        store.update { saved -> saved.season?.let { saved.with(league, change(it)) } ?: saved }
+        store.update { saved -> saved.season?.let { saved.with(league, change(it), today()) } ?: saved }
     }
 
     private fun update(next: () -> Season) = viewModelScope.launch {
-        store.update { it.with(league, next()) }
+        store.update { it.with(league, next(), today()) }
     }
+
+    private fun today() = LocalDate.now().toEpochDay()
 
     companion object {
         fun factory(league: League, store: JsonStore<Saved>): ViewModelProvider.Factory = viewModelFactory {
