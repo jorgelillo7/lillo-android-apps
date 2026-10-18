@@ -46,6 +46,7 @@ fun CountdownScreen(
     state: CountdownUiState,
     onSleepsModeChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
+    reminderPrompt: (@Composable () -> Unit)? = null,
 ) {
     Column(
         modifier = modifier
@@ -73,6 +74,10 @@ fun CountdownScreen(
                 )
                 Spacer(Modifier.height(28.dp))
                 ModeSelector(sleepsMode = state.sleepsMode, onChange = onSleepsModeChange)
+                if (reminderPrompt != null) {
+                    Spacer(Modifier.height(28.dp))
+                    reminderPrompt()
+                }
             }
         }
     }

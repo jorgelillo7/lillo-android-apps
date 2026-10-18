@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <!-- Season reminders (1 month / 1 week left, Advent, the door of the day, Christmas Day). -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
     <application
         android:name=".ChristmasCountdownApplication"
         android:allowBackup="true"

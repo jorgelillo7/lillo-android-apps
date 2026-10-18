@@ -15,6 +15,7 @@ class SettingsRepository(private val context: Context) {
 
     private val sleepsModeKey = booleanPreferencesKey("sleeps_mode")
     private val musicEnabledKey = booleanPreferencesKey("music_enabled")
+    private val reminderPromptDismissedKey = booleanPreferencesKey("reminder_prompt_dismissed")
 
     // Opened doors are stored per year so the calendar starts fresh every December.
     private fun openedDoorsKey(year: Int) = stringSetPreferencesKey("advent_opened_$year")
@@ -22,6 +23,13 @@ class SettingsRepository(private val context: Context) {
     val sleepsMode: Flow<Boolean> = context.dataStore.data.map { it[sleepsModeKey] ?: false }
 
     val musicEnabled: Flow<Boolean> = context.dataStore.data.map { it[musicEnabledKey] ?: false }
+
+    /** The "shall we remind you?" card was answered (or the permission denied): don't ask again. */
+    val reminderPromptDismissed: Flow<Boolean> = context.dataStore.data.map { it[reminderPromptDismissedKey] ?: false }
+
+    suspend fun dismissReminderPrompt() {
+        context.dataStore.edit { it[reminderPromptDismissedKey] = true }
+    }
 
     fun openedDoors(year: Int): Flow<Set<Int>> =
         context.dataStore.data.map { prefs -> prefs[openedDoorsKey(year)].orEmpty().mapNotNull { it.toIntOrNull() }.toSet() }

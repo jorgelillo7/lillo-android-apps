@@ -108,4 +108,27 @@
     <string name="advent_song_play">Escuchar en YouTube</string>
     <string name="advent_share">Compartir</string>
     <string name="advent_share_text">🎄 ¡Día %1$d del calendario de adviento! %2$s\n¿Y tú qué haces hoy? Descárgate «¿Ya es Navidad?»: %3$s</string>
+
+    <!-- Avisos de la temporada -->
+    <string name="channel_countdown">Hitos de la cuenta atrás</string>
+    <string name="channel_countdown_desc">Un mes y una semana antes de Navidad</string>
+    <string name="channel_advent">Calendario de adviento</string>
+    <string name="channel_advent_desc">Cuando se abre el calendario y, por la tarde, si la puerta del día sigue cerrada</string>
+    <string name="channel_christmas">Día de Navidad</string>
+    <string name="channel_christmas_desc">El gran día</string>
+    <string name="reminder_month_title">¡Queda un mes! 🎄</string>
+    <string name="reminder_month_text">Falta un mes para Navidad. Ve pensando en los regalos…</string>
+    <string name="reminder_week_title">¡Solo queda una semana! ✨</string>
+    <string name="reminder_week_text">7 noches para Navidad. ¿Ya está puesto el árbol?</string>
+    <string name="reminder_advent_title">Hoy se abre el calendario de adviento 🎁</string>
+    <string name="reminder_advent_text">Tu primera puerta te espera. ¡Una nueva cada día hasta Nochebuena!</string>
+    <string name="reminder_door_title">La puerta %1$d sigue cerrada 🎁</string>
+    <string name="reminder_door_text">El plan de hoy te espera. ¡Ábrela antes de que acabe el día!</string>
+    <string name="reminder_door_music_text">Hoy es día de música 🎶 ¡Abre tu puerta y dale al play!</string>
+    <string name="reminder_christmas_title">¡Feliz Navidad! 🎄🎅</string>
+    <string name="reminder_christmas_text">¡Hoy es el día! Que paséis una Navidad preciosa con los vuestros.</string>
+    <string name="reminder_prompt_title">¿Te avisamos? 🔔</string>
+    <string name="reminder_prompt_text">Un mes y una semana antes, cuando se abra el calendario de adviento, si te dejas una puerta y el día de Navidad.</string>
+    <string name="reminder_prompt_yes">Activar avisos</string>
+    <string name="reminder_prompt_no">No, gracias</string>
 </resources>

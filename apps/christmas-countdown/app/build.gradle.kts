@@ -32,4 +32,5 @@ dependencies {
     implementation(libs.androidx.glance.material3)
     implementation(libs.androidx.lifecycle.runtimeCompose)
     implementation(libs.androidx.lifecycle.viewModelCompose)
+    implementation(libs.androidx.work.runtime)
 }

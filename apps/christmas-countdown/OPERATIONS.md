@@ -73,3 +73,13 @@ apps/christmas-countdown/tools/capture_store_screenshots.sh               # raw 
 ```
 
 Release history and notes: [release-notes.md](release-notes.md).
+
+## Reminders
+
+Rules in `domain/Reminders.kt` (unit tested); `reminders/ReminderScheduler` keeps one WorkManager
+job at the next slot (10:00 or 18:00 of a day with a possible reminder) and `ReminderWorker` shows
+it if it still applies, then schedules the next. Re-planned on every app start.
+
+Try one on the emulator: `scripts/emulator.sh date 120517582026` (5 Dec, 17:58), start the app,
+accept the reminders card, wait two minutes for "Door 5 is still closed"; `date 122509592026` for
+Christmas Day. `scripts/emulator.sh date auto` afterwards.
