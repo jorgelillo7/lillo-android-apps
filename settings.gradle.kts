@@ -43,3 +43,7 @@ include(":apps:group-polls:domain")
 // ¿Quién gana? (tournaments)
 include(":apps:tournaments:app")
 include(":apps:tournaments:domain")
+
+// ¿Quién llora esta jornada? (fantasy-league card game)
+include(":apps:league-cards:app")
+include(":apps:league-cards:domain")

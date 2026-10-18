@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Spanish only: a game for a Spanish group of friends, the jokes don't translate. -->
+<resources>
+    <string name="app_name">¿Quién llora esta jornada?</string>
+    <string name="you">Tú</string>
+    <string name="matchday_of">Jornada %1$d/%2$d</string>
+    <string name="position_short">%dº ▾</string>
+    <string name="joker_once">una vez por temporada</string>
+    <string name="card_points">Puntos por tus decisiones esta jornada: %s</string>
+    <string name="meter_money">Dinero</string>
+    <string name="meter_squad">Plantilla</string>
+    <string name="meter_patience">Paciencia</string>
+    <string name="meter_tears">Lloros</string>
+    <string name="table">Clasificación</string>
+    <string name="report_title">JORNADA %d</string>
+    <string name="report_points">Jornada %1$d · tus puntos: %2$d · puesto del día: %3$d/%4$d</string>
+    <string name="report_top">El mejor de la jornada: %1$s con %2$d</string>
+    <string name="next_matchday">Siguiente jornada</string>
+    <string name="see_ending">Ver cómo acaba</string>
+    <string name="new_season">Nueva temporada</string>
+    <string name="continue_season">Seguir (jornada %d)</string>
+    <string name="how_to_play">Cada jornada te escriben los de la liga. Desliza la carta a la izquierda o a la derecha para decidir.\n\nVigila las cuatro barras: 💰 dinero, 💪 plantilla, 🙄 paciencia de la liga y 😭 lloros. Si una se vacía o se llena del todo, se acabó tu temporada.\n\nAguanta 38 jornadas y gana la liga.</string>
+    <string name="stat_seasons">temporadas</string>
+    <string name="stat_titles">ligas</string>
+    <string name="stat_best">mejor puesto</string>
+    <string name="characters">LA LIGA</string>
+    <string name="ending_stats">Jornadas aguantadas: %1$d · puesto final: %2$dº</string>
+    <string name="record">Temporadas jugadas: %1$d · ligas ganadas: %2$d</string>
+    <string name="share">Compartir</string>
+    <string name="share_text">%1$s 😭⚽\n%2$s\n(jornadas: %3$d · puesto: %4$dº)</string>
+    <string name="about_version">Versión %s</string>
+    <string name="about_body">Un juego de cartas para una liga fantasy entre amigos. Sin cuentas, sin anuncios: la temporada se guarda solo en tu móvil.</string>
+    <string name="about_privacy">Política de privacidad</string>
+</resources>

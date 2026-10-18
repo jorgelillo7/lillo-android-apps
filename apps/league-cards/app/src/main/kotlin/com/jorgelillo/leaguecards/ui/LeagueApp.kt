@@ -1,0 +1,240 @@
+package com.jorgelillo.leaguecards.ui
+
+import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.jorgelillo.core.designsystem.AboutTexts
+import com.jorgelillo.core.designsystem.ConfettiBurst
+import com.jorgelillo.core.designsystem.LilloAboutSheet
+import com.jorgelillo.core.designsystem.TestTagsAsResourceIds
+import com.jorgelillo.core.platform.LilloLinks
+import com.jorgelillo.core.platform.shareText
+import com.jorgelillo.leaguecards.BuildConfig
+import com.jorgelillo.leaguecards.R
+import com.jorgelillo.leaguecards.domain.Game
+import com.jorgelillo.leaguecards.domain.League
+import com.jorgelillo.leaguecards.domain.Saved
+import com.jorgelillo.leaguecards.domain.Season
+import com.jorgelillo.leaguecards.domain.YOU
+import com.jorgelillo.leaguecards.ui.theme.Chat
+
+/** Home, or the season: a card, the matchday's group chat, or how it ended. */
+@Composable
+fun LeagueApp(vm: LeagueViewModel) {
+    val saved = vm.saved.collectAsStateWithLifecycle().value ?: return
+    val league = vm.league
+    var playing by rememberSaveable { mutableStateOf(false) }
+    var table by rememberSaveable { mutableStateOf(false) }
+    val season = saved.season?.takeIf { saved.deck == league.name }
+
+    Box(Modifier.fillMaxSize().background(Chat.Ink).then(TestTagsAsResourceIds)) {
+        if (!playing || season == null) {
+            HomeScreen(league, saved, onContinue = { playing = true }, onNew = { vm.newSeason(); playing = true })
+        } else {
+            BackHandler { playing = false }
+            val report = season.report
+            when {
+                season.reportPending && report != null -> ReportScreen(
+                    league, report, season.over, onNext = vm::dismissReport, onTable = { table = true }, onBack = { playing = false },
+                )
+                season.over -> EndScreen(league, saved, season, onNew = vm::newSeason, onHome = { playing = false })
+                else -> PlayScreen(
+                    league, season, onChoose = vm::choose, onJoker = vm::useJoker, onTable = { table = true }, onBack = { playing = false },
+                )
+            }
+            if (table) TableSheet(league, season) { table = false }
+        }
+    }
+}
+
+@Composable
+private fun HomeScreen(league: League, saved: Saved, onContinue: () -> Unit, onNew: () -> Unit) {
+    var about by rememberSaveable { mutableStateOf(false) }
+    val inProgress = saved.seasonFor(league)
+    Page(
+        title = null,
+        onBack = null,
+        actions = {
+            TextButton(onClick = { about = true }, modifier = Modifier.testTag("about")) { Text("ⓘ", fontSize = 22.sp, color = Chat.Muted) }
+        },
+        bottom = {
+            if (inProgress != null) {
+                BigButton(stringResource(R.string.continue_season, inProgress.matchday), onContinue, "continue")
+                Spacer(Modifier.height(12.dp))
+                OutlinedButton(onClick = onNew, modifier = Modifier.fillMaxWidth().height(52.dp).testTag("new_season")) {
+                    Text(stringResource(R.string.new_season), color = Chat.Text)
+                }
+            } else {
+                BigButton(stringResource(R.string.new_season), onNew, "new_season")
+            }
+        },
+    ) {
+        Column(Modifier.fillMaxWidth().verticalScroll(rememberScrollState()), horizontalAlignment = Alignment.CenterHorizontally) {
+            Text("😭⚽", fontSize = 64.sp)
+            Text(
+                stringResource(R.string.app_name),
+                style = MaterialTheme.typography.headlineMedium,
+                fontWeight = FontWeight.Black,
+                textAlign = TextAlign.Center,
+            )
+            Text(league.name, color = Chat.Green, fontWeight = FontWeight.Bold)
+            Spacer(Modifier.height(20.dp))
+            ChatBubble(league, "", stringResource(R.string.how_to_play))
+            Spacer(Modifier.height(16.dp))
+            Row(horizontalArrangement = Arrangement.spacedBy(20.dp)) {
+                Stat(stringResource(R.string.stat_seasons), saved.seasonsPlayed.toString())
+                Stat(stringResource(R.string.stat_titles), saved.titles.toString())
+                Stat(stringResource(R.string.stat_best), saved.bestPosition?.let { "${it}º" } ?: "–")
+            }
+            Spacer(Modifier.height(16.dp))
+            Text(stringResource(R.string.characters), color = Chat.Muted, style = MaterialTheme.typography.labelLarge)
+            Spacer(Modifier.height(8.dp))
+            league.characters.forEach { c ->
+                Row(Modifier.fillMaxWidth().padding(vertical = 4.dp), verticalAlignment = Alignment.CenterVertically) {
+                    Avatar(c.emoji.ifBlank { c.name }, league.colorOf(c.id), size = 36)
+                    Spacer(Modifier.width(12.dp))
+                    Column {
+                        Text(c.name, color = league.colorOf(c.id), fontWeight = FontWeight.Bold)
+                        if (c.tagline.isNotBlank()) Text(c.tagline, color = Chat.Muted, style = MaterialTheme.typography.bodySmall)
+                    }
+                }
+            }
+        }
+    }
+    if (about) {
+        LilloAboutSheet(
+            icon = painterResource(R.drawable.ic_launcher_foreground),
+            iconBackground = Chat.InkTop,
+            containerColor = Chat.Raised,
+            texts = AboutTexts(
+                title = stringResource(R.string.app_name),
+                version = stringResource(R.string.about_version, BuildConfig.VERSION_NAME),
+                body = stringResource(R.string.about_body),
+                rate = null,
+                privacy = stringResource(R.string.about_privacy),
+            ),
+            privacyUrl = LilloLinks.privacyPolicy("league-cards"),
+            playStoreUrl = null,
+            onDismiss = { about = false },
+        )
+    }
+}
+
+@Composable
+private fun Stat(label: String, value: String) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Text(value, style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Black)
+        Text(label, color = Chat.Muted, style = MaterialTheme.typography.labelMedium)
+    }
+}
+
+@Composable
+private fun EndScreen(league: League, saved: Saved, season: Season, onNew: () -> Unit, onHome: () -> Unit) {
+    val ending = season.ending ?: return
+    val context = LocalContext.current
+    val resources = LocalResources.current
+    val position = Game.position(season)
+    Box(Modifier.fillMaxSize()) {
+        Page(
+            title = null,
+            onBack = onHome,
+            bottom = {
+                BigButton(stringResource(R.string.new_season), onNew, "new_season")
+                Spacer(Modifier.height(8.dp))
+                OutlinedButton(
+                    onClick = {
+                        val text = resources.getString(R.string.share_text, resources.getString(R.string.app_name), ending.text, season.matchday - 1, position)
+                        context.shareText(text)
+                    },
+                    modifier = Modifier.fillMaxWidth().height(52.dp).testTag("share"),
+                ) { Text(stringResource(R.string.share), color = Chat.Text) }
+            },
+        ) {
+            Column(Modifier.fillMaxWidth().verticalScroll(rememberScrollState()), horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(if (ending.champion) "🏆" else "😭", fontSize = 80.sp)
+                Spacer(Modifier.height(12.dp))
+                Text(
+                    ending.text,
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.testTag("ending"),
+                )
+                Spacer(Modifier.height(8.dp))
+                Text(stringResource(R.string.ending_stats, season.matchday - 1, position), color = Chat.Muted, textAlign = TextAlign.Center)
+                Spacer(Modifier.height(20.dp))
+                Standings(league, season)
+                Spacer(Modifier.height(12.dp))
+                Text(stringResource(R.string.record, saved.seasonsPlayed, saved.titles), color = Chat.Muted, style = MaterialTheme.typography.bodySmall)
+            }
+        }
+        ConfettiBurst(key = ending.takeIf { it.champion }, colors = Chat.Confetti, modifier = Modifier.fillMaxSize())
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun TableSheet(league: League, season: Season, onDismiss: () -> Unit) {
+    ModalBottomSheet(onDismissRequest = onDismiss, containerColor = Chat.Raised, modifier = TestTagsAsResourceIds) {
+        Column(Modifier.verticalScroll(rememberScrollState()).padding(horizontal = 24.dp).padding(bottom = 32.dp).testTag("standings")) {
+            Text(stringResource(R.string.table), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+            Spacer(Modifier.height(12.dp))
+            Standings(league, season)
+        }
+    }
+}
+
+@Composable
+private fun Standings(league: League, season: Season) {
+    Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+        Game.standings(season).forEachIndexed { i, (id, points) ->
+            val mine = id == YOU
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .background(if (mine) Chat.Mine else Chat.Bubble, RoundedCornerShape(10.dp))
+                    .padding(horizontal = 14.dp, vertical = 8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text("${i + 1}", modifier = Modifier.width(28.dp), color = Chat.Muted, fontWeight = FontWeight.Bold)
+                Text(league.nameOf(id), color = league.colorOf(id), fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f))
+                Text("$points", fontWeight = FontWeight.Black)
+            }
+        }
+    }
+}

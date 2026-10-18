@@ -22,6 +22,7 @@
 | 🕵️ [Who's lying? · Impostor game](apps/whos-lying) | In development | `apps/whos-lying` |
 | 🔴🔵 [What do you vote? · Group polls](apps/group-polls) | In development (needs its Firebase project) | `apps/group-polls` |
 | 👑 [Last one standing? · Tournaments](apps/tournaments) | In development | `apps/tournaments` |
+| 😭 [¿Quién llora esta jornada? · Fantasy-league card game](apps/league-cards) | In development | `apps/league-cards` |
 
 ## 🗂️ Repository layout
 

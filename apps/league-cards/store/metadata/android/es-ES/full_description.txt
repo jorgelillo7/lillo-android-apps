@@ -1,0 +1,11 @@
+Un juego de cartas sobre la vida en una liga fantasy entre amigos.
+
+Cada jornada te escriben los de la liga: el que te vende un jugador que se lesiona al día siguiente, el que lo ve clarísimo y falla, el que inventa copas nuevas, el de los chanchullos al límite del reglamento, el que te manda audios de diez minutos… Desliza la carta a la izquierda o a la derecha para decidir.
+
+Vigila las cuatro barras: 💰 dinero, 💪 plantilla, 🙄 paciencia de la liga y 😭 lloros. Si una se vacía o se llena del todo, se acabó tu temporada (y de formas bastante ridículas).
+
+Al acabar cada jornada llega el chat de la liga: tus puntos, los recálculos, el corralito y los lloros de todos. Aguanta las 38 jornadas y gana la liga.
+
+• Partidas cortas, con un dedo
+• Un comodín por temporada
+• Sin cuentas, sin anuncios y sin conexión: todo se guarda en tu móvil

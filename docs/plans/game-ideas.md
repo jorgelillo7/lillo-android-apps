@@ -37,6 +37,9 @@ Roll a ball through levels by tilting the phone: a puzzle more than a reflex gam
 
 ## 3. Our fantasy league, as swipe cards (working name "¿Quién llora esta jornada?")
 
+**Started:** [`apps/league-cards`](../../apps/league-cards) (v0.1, internal test). The league's own
+deck stays private, outside this repo.
+
 A game about our Biwenger league and its people, built as *Reigns*-style cards so the in-jokes
 are the game itself instead of interrupting it.
 

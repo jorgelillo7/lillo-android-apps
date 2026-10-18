@@ -52,11 +52,19 @@ Lines are pruned as items ship. What has **shipped** lives in `apps/<app>/releas
 | 🔨 | Then: Play signing SHA-256 in `assetlinks.json` and publish `/t/` (ready locally in the website repo: shows the tournament in the browser) with it, internal test | The step above · plan in [docs/plans/tournaments.md](docs/plans/tournaments.md) |
 | ⏳ | Double elimination and round robin | Feedback after real use |
 
+## league-cards (new game, internal test with the league)
+
+| | What is missing | Waiting on |
+|---|---|---|
+| 👤 | Upload key (`scripts/new-upload-key.sh league-cards`), create the app in Play Console (`com.jorgelillo.leaguecards`, Game · Card), internal testing only, add the tester's Gmail; then the bundle built here with the private deck | You · [OPERATIONS.md](apps/league-cards/OPERATIONS.md) |
+| 👤 | Each league member's OK to appear in the private deck | You |
+| ⏳ | More cards and chat lines from the group | Ideas from the league · private deck, never in this repo |
+
 ## next game (idea)
 
 | | What is missing | Waiting on |
 |---|---|---|
-| ⏳ | A game: the slipper runner, a tilt-and-roll puzzle like Kula World, or our fantasy league as swipe cards | Every current app on the store · ideas in [docs/plans/game-ideas.md](docs/plans/game-ideas.md) |
+| ⏳ | An action game: the slipper runner or a tilt-and-roll puzzle like Kula World | Every current app on the store · ideas in [docs/plans/game-ideas.md](docs/plans/game-ideas.md) |
 
 ## repo
 
