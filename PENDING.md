@@ -52,6 +52,12 @@ Lines are pruned as items ship. What has **shipped** lives in `apps/<app>/releas
 | 🔨 | Then: Play signing SHA-256 in `assetlinks.json` and publish `/t/` (ready locally in the website repo: shows the tournament in the browser) with it, internal test | The step above · plan in [docs/plans/tournaments.md](docs/plans/tournaments.md) |
 | ⏳ | Double elimination and round robin | Feedback after real use |
 
+## next game (idea)
+
+| | What is missing | Waiting on |
+|---|---|---|
+| ⏳ | An action game: the slipper runner or a tilt-and-roll puzzle like Kula World | Every current app on the store · ideas in [docs/plans/game-ideas.md](docs/plans/game-ideas.md) |
+
 ## repo
 
 | | What is missing | Waiting on |
