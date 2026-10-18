@@ -85,7 +85,10 @@ object Game {
         val effects = gamble?.effects ?: choice.effects
         val outcome = (gamble?.outcome ?: choice.outcome).takeIf { it.isNotBlank() }
         val achievement = if (choice.risk != null && gamble == null) choice.achievement else gamble?.achievement ?: choice.achievement
+        // A story that goes on: its next card is dealt straight after this one.
+        val hand = choice.next?.let { s.hand.take(s.handIndex + 1) + it + s.hand.drop(s.handIndex + 1) } ?: s.hand
         val next = s.copy(
+            hand = hand,
             meters = s.meters + effects,
             matchdayPoints = s.matchdayPoints + effects.points,
             followUps = s.followUps + listOfNotNull(choice.followUp),
