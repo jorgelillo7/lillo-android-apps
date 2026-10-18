@@ -20,6 +20,7 @@
 - ❄️ **Falling snow** drawn with Compose Canvas
 - 📤 **Share** the countdown with friends
 - 🌍 English and Spanish · 🚫 no ads, no tracking, no data collected
+- 🔔 **Reminders**: one month and one week before (25 Nov, 18 Dec at 10:00), the day the Advent calendar opens (1 Dec, 10:00), the door of the day if still closed (2–24 Dec, 18:00) and Christmas Day (25 Dec, 10:00). Local only (WorkManager), one channel per kind; asked for in context with a card, never at install
 
 ## 🏗️ Architecture
 

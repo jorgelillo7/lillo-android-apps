@@ -109,4 +109,27 @@
     <string name="advent_song_play">Listen on YouTube</string>
     <string name="advent_share">Share</string>
     <string name="advent_share_text">🎄 Day %1$d of the Advent calendar! %2$s\nWhat are you up to today? Get “Is it Christmas yet?”: %3$s</string>
+
+    <!-- Season reminders -->
+    <string name="channel_countdown">Countdown milestones</string>
+    <string name="channel_countdown_desc">One month and one week before Christmas</string>
+    <string name="channel_advent">Advent calendar</string>
+    <string name="channel_advent_desc">When the calendar opens, and in the evening if today\'s door is still closed</string>
+    <string name="channel_christmas">Christmas Day</string>
+    <string name="channel_christmas_desc">The big day</string>
+    <string name="reminder_month_title">One month to go! 🎄</string>
+    <string name="reminder_month_text">Christmas is one month away. Time to start thinking about presents…</string>
+    <string name="reminder_week_title">Only one week left! ✨</string>
+    <string name="reminder_week_text">7 sleeps until Christmas. Is the tree up yet?</string>
+    <string name="reminder_advent_title">The Advent calendar opens today 🎁</string>
+    <string name="reminder_advent_text">Your first door is waiting. A new one every day until Christmas Eve!</string>
+    <string name="reminder_door_title">Door %1$d is still closed 🎁</string>
+    <string name="reminder_door_text">Today\'s plan is waiting for you. Open it before the day is over!</string>
+    <string name="reminder_door_music_text">Today is a music day 🎶 Open your door and press play!</string>
+    <string name="reminder_christmas_title">Merry Christmas! 🎄🎅</string>
+    <string name="reminder_christmas_text">Today\'s the day! Have a wonderful Christmas with your loved ones.</string>
+    <string name="reminder_prompt_title">Shall we remind you? 🔔</string>
+    <string name="reminder_prompt_text">One month and one week before, when the Advent calendar opens, if you forget a door, and on Christmas Day.</string>
+    <string name="reminder_prompt_yes">Turn on reminders</string>
+    <string name="reminder_prompt_no">No, thanks</string>
 </resources>
