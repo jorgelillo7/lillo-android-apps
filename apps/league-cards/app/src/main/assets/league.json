@@ -1,0 +1,557 @@
+{
+  "name": "Liga de ejemplo",
+  "matchdays": 38,
+  "cardsPerMatchday": 3,
+  "characters": [
+    {
+      "id": "gafe",
+      "name": "El Gafe",
+      "color": "#FF25D366",
+      "tagline": "A quien ficha, se lesiona",
+      "emoji": "🐈‍⬛"
+    },
+    {
+      "id": "profeta",
+      "name": "El Profeta",
+      "color": "#FF53BDEB",
+      "tagline": "Lo ve clarísimo",
+      "emoji": "🔮"
+    },
+    {
+      "id": "excel",
+      "name": "El del Excel",
+      "color": "#FF4CC38A",
+      "tagline": "Inventa copas nuevas",
+      "emoji": "📊"
+    },
+    {
+      "id": "competidor",
+      "name": "El Competidor",
+      "color": "#FFE86F9C",
+      "tagline": "Quiere ganarlo todo",
+      "emoji": "🏆"
+    },
+    {
+      "id": "reportero",
+      "name": "El Reportero",
+      "color": "#FFA791F5",
+      "tagline": "Sabe quién va a por ti",
+      "emoji": "📰"
+    },
+    {
+      "id": "trapichero",
+      "name": "El Trapichero",
+      "color": "#FF2EC4B6",
+      "tagline": "Al límite del reglamento",
+      "emoji": "🤝"
+    },
+    {
+      "id": "todoonada",
+      "name": "Todo o Nada",
+      "color": "#FFE5B33E",
+      "tagline": "O abandona o arrasa",
+      "emoji": "🎲"
+    },
+    {
+      "id": "audios",
+      "name": "El de los Audios",
+      "color": "#FFF28B6B",
+      "tagline": "Audios de 10 minutos",
+      "emoji": "🎤"
+    }
+  ],
+  "rivals": [
+    {
+      "character": "competidor",
+      "skill": 46,
+      "swing": 18
+    },
+    {
+      "character": "gafe",
+      "skill": 36,
+      "swing": 22
+    },
+    {
+      "character": "profeta",
+      "skill": 37,
+      "swing": 20,
+      "invalidLineupChance": 0.06
+    },
+    {
+      "character": "excel",
+      "skill": 40,
+      "swing": 16
+    },
+    {
+      "character": "reportero",
+      "skill": 38,
+      "swing": 20
+    },
+    {
+      "character": "trapichero",
+      "skill": 41,
+      "swing": 20,
+      "invalidLineupChance": 0.04
+    },
+    {
+      "character": "todoonada",
+      "skill": 40,
+      "swing": 25,
+      "allOrNothing": true
+    },
+    {
+      "character": "audios",
+      "skill": 37,
+      "swing": 20
+    }
+  ],
+  "cards": [
+    {
+      "id": "gafe-ficha",
+      "character": "gafe",
+      "text": "Te vendo a Rodolfo Golazo baratito. Está como un toro, te lo juro.",
+      "left": {
+        "label": "Ni de broma",
+        "effects": {
+          "patience": -5
+        },
+        "outcome": "El Gafe se ofende un poquito."
+      },
+      "right": {
+        "label": "Me lo quedo",
+        "effects": {
+          "money": -15,
+          "squad": 10
+        },
+        "followUp": "gafe-lesion"
+      }
+    },
+    {
+      "id": "gafe-lesion",
+      "character": "gafe",
+      "followUpOnly": true,
+      "text": "Oye, lo de Golazo… se ha roto en el calentamiento. Cinco meses.",
+      "left": {
+        "label": "Llorar",
+        "effects": {
+          "tears": 15,
+          "squad": -12
+        }
+      },
+      "right": {
+        "label": "Aguantar",
+        "effects": {
+          "squad": -12,
+          "patience": 5
+        }
+      }
+    },
+    {
+      "id": "capitan",
+      "character": "gafe",
+      "text": "¿A quién pones de capitán esta jornada?",
+      "left": {
+        "label": "Al de siempre",
+        "effects": {
+          "points": 6
+        }
+      },
+      "right": {
+        "label": "Corazonada",
+        "effects": {
+          "points": 20
+        },
+        "risk": {
+          "chance": 0.5,
+          "effects": {
+            "points": -16,
+            "tears": 10
+          },
+          "outcome": "Tu capitán: ‑16. Elección de campeón."
+        }
+      }
+    },
+    {
+      "id": "ia",
+      "character": "gafe",
+      "text": "¿Y si dejas que la IA haga la alineación?",
+      "left": {
+        "label": "Yo mismo",
+        "effects": {
+          "patience": 2
+        }
+      },
+      "right": {
+        "label": "Que decida la IA",
+        "effects": {
+          "points": 18
+        },
+        "outcome": "La IA lo borda. Da hasta miedo.",
+        "risk": {
+          "chance": 0.45,
+          "effects": {
+            "points": -10,
+            "tears": 8
+          },
+          "outcome": "La IA ha alineado a tres porteros."
+        }
+      }
+    },
+    {
+      "id": "profeta-apuesta",
+      "character": "profeta",
+      "text": "Qué bien veo al Real Pepinillo esta jornada. Mete a sus delanteros, hazme caso.",
+      "left": {
+        "label": "Paso",
+        "effects": {
+          "patience": -3
+        }
+      },
+      "right": {
+        "label": "Te hago caso",
+        "effects": {
+          "points": 12
+        },
+        "risk": {
+          "chance": 0.7,
+          "effects": {
+            "points": -6,
+            "tears": 8
+          },
+          "outcome": "Real Pepinillo pierde 3‑0. Lo veía clarísimo."
+        }
+      }
+    },
+    {
+      "id": "excel-copa",
+      "character": "excel",
+      "text": "He montado una copa nueva entre jornadas. Inscripción: 5 millones.",
+      "left": {
+        "label": "Paso de copas",
+        "effects": {
+          "patience": -8
+        }
+      },
+      "right": {
+        "label": "Me apunto",
+        "effects": {
+          "money": -5,
+          "patience": 8,
+          "points": 4
+        }
+      }
+    },
+    {
+      "id": "excel-regla",
+      "character": "excel",
+      "text": "Propuesta: las próximas jornadas el capitán puntúa triple. ¿Votas que sí?",
+      "left": {
+        "label": "En contra",
+        "effects": {
+          "patience": -6
+        }
+      },
+      "right": {
+        "label": "A favor",
+        "effects": {
+          "patience": 6
+        },
+        "risk": {
+          "chance": 0.5,
+          "effects": {
+            "points": -9,
+            "patience": 6
+          },
+          "outcome": "Tu capitán puntúa triple… en negativo."
+        }
+      }
+    },
+    {
+      "id": "competidor-chivatazo",
+      "character": "competidor",
+      "text": "Mis contactos me dicen que tu estrella no juega el domingo. Te lo cambio por mi suplente.",
+      "left": {
+        "label": "No me fío",
+        "effects": {
+          "points": 8
+        },
+        "outcome": "Jugó y marcó. Era una vacilada."
+      },
+      "right": {
+        "label": "Trato hecho",
+        "effects": {
+          "squad": -10,
+          "money": 8
+        },
+        "risk": {
+          "chance": 0.35,
+          "effects": {
+            "squad": 5,
+            "points": 5
+          },
+          "outcome": "Era verdad: tu estrella no jugó."
+        }
+      }
+    },
+    {
+      "id": "competidor-clausula",
+      "character": "competidor",
+      "text": "Te he clausulado a tu mejor jugador. Nada personal, es competición.",
+      "left": {
+        "label": "Dejarlo ir",
+        "effects": {
+          "squad": -15,
+          "money": 15,
+          "tears": 10
+        }
+      },
+      "right": {
+        "label": "Blindarlo",
+        "effects": {
+          "money": -20
+        }
+      }
+    },
+    {
+      "id": "reportero-aviso",
+      "character": "reportero",
+      "text": "Última hora: alguien va a clausular a tu delantero esta noche.",
+      "left": {
+        "label": "Bulos",
+        "effects": {},
+        "risk": {
+          "chance": 0.6,
+          "effects": {
+            "squad": -12,
+            "tears": 10
+          },
+          "outcome": "Clausulazo a las 3:07. Avisado estabas."
+        }
+      },
+      "right": {
+        "label": "Subir cláusula",
+        "effects": {
+          "money": -10,
+          "patience": 3
+        }
+      }
+    },
+    {
+      "id": "trapi-cesion",
+      "character": "trapichero",
+      "text": "Te cedo a mi central con un acuerdo… digamos creativo. Me pagas dentro de tres jornadas.",
+      "left": {
+        "label": "Eso es ilegal",
+        "effects": {
+          "patience": 5
+        }
+      },
+      "right": {
+        "label": "Hecho",
+        "effects": {
+          "squad": 12
+        },
+        "risk": {
+          "chance": 0.3,
+          "effects": {
+            "squad": -5,
+            "money": -15,
+            "patience": -10
+          },
+          "outcome": "La liga lo ha visto. Sanción para los dos."
+        }
+      }
+    },
+    {
+      "id": "trapi-queja",
+      "character": "trapichero",
+      "text": "Esta liga es un chanchullo y yo no estoy en ninguno. ¿Me das la razón?",
+      "left": {
+        "label": "Ignorar",
+        "effects": {
+          "patience": -4
+        }
+      },
+      "right": {
+        "label": "Toda la razón",
+        "effects": {
+          "patience": 6,
+          "tears": 5
+        }
+      }
+    },
+    {
+      "id": "todoonada",
+      "character": "todoonada",
+      "text": "Esta temporada voy con todo. O lo dejo. Aún no lo sé. ¿Me vendes a tu portero?",
+      "left": {
+        "label": "No",
+        "effects": {
+          "patience": -2
+        }
+      },
+      "right": {
+        "label": "Vendido",
+        "effects": {
+          "money": 15,
+          "squad": -8
+        }
+      }
+    },
+    {
+      "id": "audios",
+      "character": "audios",
+      "text": "🎤 Audio de 9:47 sobre la alineación de esta jornada.",
+      "left": {
+        "label": "Saltarlo",
+        "effects": {
+          "patience": -5
+        },
+        "risk": {
+          "chance": 0.5,
+          "effects": {
+            "points": -8,
+            "patience": -5
+          },
+          "outcome": "En el minuto 8 decía que tu lateral estaba sancionado."
+        }
+      },
+      "right": {
+        "label": "Escucharlo",
+        "effects": {
+          "points": 6,
+          "tears": 6
+        },
+        "outcome": "Diez minutos de tu vida. Pero tenía razón."
+      }
+    },
+    {
+      "id": "puja",
+      "character": "excel",
+      "text": "Mercado: sale un delantero top. ¿Pujas fuerte?",
+      "left": {
+        "label": "Puja de cagón",
+        "effects": {
+          "money": -3
+        },
+        "outcome": "Te lo quitan por 100 000 €."
+      },
+      "right": {
+        "label": "Todo al rojo",
+        "effects": {
+          "money": -25,
+          "squad": 15
+        }
+      }
+    },
+    {
+      "id": "lloro-rapido",
+      "character": "audios",
+      "text": "Llevamos un minuto de jornada y ya te ves perdiendo. ¿Lloras en el grupo?",
+      "left": {
+        "label": "Aguantar",
+        "effects": {
+          "tears": -5
+        }
+      },
+      "right": {
+        "label": "Llorar ya",
+        "effects": {
+          "tears": 12,
+          "patience": -6
+        },
+        "outcome": "El lloro más rápido del oeste. Es récord."
+      }
+    }
+  ],
+  "events": [
+    {
+      "id": "recalculo",
+      "text": "Recálculo: tus jugadores han perdido puntos después del partido.",
+      "chance": 0.12,
+      "effects": {
+        "tears": 6
+      }
+    },
+    {
+      "id": "corralito",
+      "text": "Corralito: esta jornada no se cobra.",
+      "chance": 0.08,
+      "effects": {
+        "money": -8
+      }
+    },
+    {
+      "id": "indebida",
+      "text": "Alineación indebida: esta jornada no puntúas.",
+      "chance": 0.03,
+      "noPoints": true,
+      "effects": {
+        "tears": 15
+      }
+    }
+  ],
+  "chat": [
+    {
+      "character": "competidor",
+      "text": "{points} puntos. Así no se gana una liga, campeón.",
+      "mood": "BAD"
+    },
+    {
+      "character": "profeta",
+      "text": "Ya está llorando…",
+      "mood": "BAD"
+    },
+    {
+      "character": "audios",
+      "text": "🎤 Audio de 8:12",
+      "mood": "ANY"
+    },
+    {
+      "character": "excel",
+      "text": "Esta jornada he actualizado el Excel con una copa nueva.",
+      "mood": "ANY"
+    },
+    {
+      "character": "trapichero",
+      "text": "Esta liga está comprada.",
+      "mood": "GOOD"
+    },
+    {
+      "character": "gafe",
+      "text": "{points} puntos… alguien ha hecho trampas.",
+      "mood": "GOOD"
+    },
+    {
+      "character": "reportero",
+      "text": "Os lo dije: hay movimientos raros en el mercado.",
+      "mood": "ANY"
+    },
+    {
+      "character": "todoonada",
+      "text": "Que vergüenza de equipo.",
+      "mood": "BAD"
+    }
+  ],
+  "joker": {
+    "character": "reportero",
+    "label": "Borrarme la cuenta",
+    "text": "Te borras la cuenta indignado. Vuelves al rato, pero nadie te ha clausulado nada.",
+    "effects": {
+      "patience": -10,
+      "tears": 10
+    }
+  },
+  "endings": {
+    "moneyLow": "Bancarrota. Tu plantilla la componen tres juveniles y un portero cedido.",
+    "moneyHigh": "Tanto dinero en caja que la liga abre una investigación. Expulsado por sospechoso.",
+    "squadLow": "Te quedan seis jugadores. Latigazos habilitados.",
+    "squadHigh": "Tu plantilla es tan buena que los demás se borran de la liga. Te quedas solo.",
+    "patienceLow": "Te han echado del grupo de WhatsApp.",
+    "patienceHigh": "Caes tan bien que te hacen administrador. Ahora organizas tú todo. Se acabó el juego.",
+    "tearsLow": "No has llorado en toda la temporada. Nadie se cree que sigas jugando.",
+    "tearsHigh": "Te han silenciado el grupo durante un año.",
+    "champion": "¡Campeón de liga! Que lloren ellos.",
+    "notChampion": "Temporada terminada: {position}º. El año que viene, más."
+  }
+}

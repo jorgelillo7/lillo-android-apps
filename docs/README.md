@@ -32,6 +32,7 @@ One entry per document. Runbooks first, then setup, then reference.
 | Who's lying? (impostor game) | [`OPERATIONS.md`](../apps/whos-lying/OPERATIONS.md) | [`release-notes.md`](../apps/whos-lying/release-notes.md) |
 | What do you vote? (group polls) | [`OPERATIONS.md`](../apps/group-polls/OPERATIONS.md) | [`release-notes.md`](../apps/group-polls/release-notes.md) |
 | Last one standing? (tournaments) | [`OPERATIONS.md`](../apps/tournaments/OPERATIONS.md) | [`release-notes.md`](../apps/tournaments/release-notes.md) |
+| ¿Quién llora esta jornada? (league cards) | [`OPERATIONS.md`](../apps/league-cards/OPERATIONS.md) | [`release-notes.md`](../apps/league-cards/release-notes.md) |
 
 ## Plans
 
