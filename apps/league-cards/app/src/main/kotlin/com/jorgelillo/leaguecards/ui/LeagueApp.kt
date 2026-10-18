@@ -279,7 +279,11 @@ private fun Standings(league: League, season: Season) {
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text("${i + 1}", modifier = Modifier.width(28.dp), color = Chat.Muted, fontWeight = FontWeight.Bold)
-                Text(league.nameOf(id), color = league.colorOf(id), fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f))
+                Column(Modifier.weight(1f)) {
+                    val team = league.character(id)?.team.orEmpty()
+                    Text(team.ifBlank { league.nameOf(id) }, color = league.colorOf(id), fontWeight = FontWeight.Bold)
+                    if (team.isNotBlank()) Text(league.nameOf(id), color = Chat.Muted, style = MaterialTheme.typography.labelSmall)
+                }
                 Text("$points", fontWeight = FontWeight.Black)
             }
         }

@@ -11,12 +11,13 @@
 ## ✨ Features
 
 - 🃏 Each matchday the league's members write to you: swipe the card left or right to decide
-  (or tap the buttons); some choices are gambles, some bring a follow-up card next matchday
+  (or tap the buttons); some choices are gambles, some go on as a story — the next card straight
+  away ("choose your own adventure") or a follow-up next matchday
 - 📊 Four meters — 💰 money, 💪 squad, 🙄 the league's patience, 😭 tears. Any of them at 0 or 100
   ends the season with its own silly ending; they drift back towards the middle every matchday
 - 💬 After every matchday, the league's group chat: your points, the day's events (recálculo,
   corralito, invalid line-up…) and the members' messages, names in their chat colours
-- 🏆 A table against computer rivals with personalities (the eternal competitor, the
+- 🏆 A table (by team name) against computer rivals with personalities (the eternal competitor, the
   all-or-nothing one who abandons half the seasons…), a 19-matchday season (~5 minutes), a joker
   once a season
 - 🏅 Trophies: collect the ten endings (locked until seen), achievements tied to cards (“the

@@ -23,7 +23,9 @@ UI test tags: `new_season`, `continue`, `about`, `card`, `choose_left|right`, `j
 
 ## Editing the deck
 
-Cards are JSON (see `domain/League.kt` for every field). After editing, run the domain tests:
+Cards are JSON (see `domain/League.kt` for every field). A choice's `next` deals another card
+straight after it (stories); `followUp` deals one at the start of the next matchday; story cards
+that should never come up on their own are `followUpOnly`. After editing, run the domain tests:
 they fail on broken references (unknown character, missing follow-up) and print how often a
 careful and a random player reach the last matchday. A season that is too hard or too easy shows
 there first. A season saved on a phone keeps working while the deck's `name` stays the same.

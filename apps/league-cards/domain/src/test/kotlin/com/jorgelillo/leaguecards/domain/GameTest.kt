@@ -211,4 +211,17 @@ class GameTest {
         assertEquals(10, sample.endings.keys.size)
         sample.endings.keys.forEach { assertTrue(sample.endings.text(it).isNotBlank(), it) }
     }
+
+    @Test
+    fun `a next card comes straight after, this matchday`() {
+        val l = league(listOf(card("x", right = Choice("Sí", next = "story")), card("y", right = Choice("Sí", next = "story")), card("story", followUpOnly = true)))
+        var s = Game.newSeason(l, 1)
+        s = Game.choose(l, s, right = true)
+        assertEquals("story", s.currentCard)
+        assertEquals(3, s.hand.size)
+        s = Game.choose(l, s, right = true)
+        assertFalse(s.reportPending)
+        s = Game.choose(l, s, right = false)
+        assertTrue(s.reportPending)
+    }
 }

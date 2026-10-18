@@ -43,6 +43,7 @@ data class League(
             if (card.fromMatchday > card.toMatchday) add("card ${card.id}: matchday range is empty")
             listOf(card.left, card.right).forEach { choice ->
                 choice.followUp?.let { if (it !in cardIds) add("card ${card.id}: unknown follow-up '$it'") }
+                choice.next?.let { if (it !in cardIds) add("card ${card.id}: unknown next card '$it'") }
                 choice.risk?.let { if (it.chance !in 0.0..1.0) add("card ${card.id}: risk chance out of 0..1") }
                 listOfNotNull(choice.achievement, choice.risk?.achievement).forEach {
                     if (achievement(it) == null) add("card ${card.id}: unknown achievement '$it'")
@@ -76,6 +77,8 @@ data class Character(
     val tagline: String = "",
     /** Shown in their avatar instead of the initial. */
     val emoji: String = "",
+    /** Their team's name, shown in the table ("Rayo Entrebirras"); the alias when blank. */
+    val team: String = "",
 )
 
 /**
@@ -154,6 +157,8 @@ data class Choice(
     val outcome: String = "",
     /** A card to deal at the start of the next matchday. */
     val followUp: String? = null,
+    /** A card that comes straight after this one, this matchday: a story that goes on. */
+    val next: String? = null,
     val risk: Risk? = null,
     /** Counts towards this achievement when chosen (and the gamble, if any, didn't go the other way). */
     val achievement: String? = null,
