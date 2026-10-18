@@ -18,7 +18,8 @@ Package: `com.jorgelillo.leaguecards`. Spanish only.
 | Check which deck a build carries | `unzip -l apps/league-cards/app/build/outputs/apk/release/app-release.apk \| grep assets/league` |
 
 UI test tags: `new_season`, `continue`, `about`, `card`, `choose_left|right`, `joker`, `outcome`,
-`meter_money|squad|patience|tears`, `table`, `standings`, `chat`, `next`, `ending`, `share`, `back`.
+`meter_money|squad|patience|tears`, `table`, `standings`, `chat`, `next`, `ending`, `share`,
+`trophies`, `ending_<key>`, `achievement_<id>`, `achievement_unlocked`, `back`.
 
 ## Editing the deck
 
@@ -26,6 +27,10 @@ Cards are JSON (see `domain/League.kt` for every field). After editing, run the 
 they fail on broken references (unknown character, missing follow-up) and print how often a
 careful and a random player reach the last matchday. A season that is too hard or too easy shows
 there first. A season saved on a phone keeps working while the deck's `name` stays the same.
+
+Achievements are part of the deck (`achievements`, and `achievement` on a choice or a gamble);
+the ids `survivor`, `podium`, `champion` and `champion_no_joker` are unlocked by how the season
+ends. Renaming an achievement id loses it on the phones that had it.
 
 ## Release
 

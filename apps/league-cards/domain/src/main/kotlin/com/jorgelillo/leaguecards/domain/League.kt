@@ -21,9 +21,11 @@ data class League(
     val chat: List<ChatLine> = emptyList(),
     val joker: Joker? = null,
     val endings: Endings,
+    val achievements: List<Achievement> = emptyList(),
 ) {
     fun character(id: String): Character? = characters.firstOrNull { it.id == id }
     fun card(id: String): Card? = cards.firstOrNull { it.id == id }
+    fun achievement(id: String): Achievement? = achievements.firstOrNull { it.id == id }
 
     /** Everything wrong with the deck, so a broken card is caught by a test, not by a player. */
     fun problems(): List<String> = buildList {
@@ -42,6 +44,9 @@ data class League(
             listOf(card.left, card.right).forEach { choice ->
                 choice.followUp?.let { if (it !in cardIds) add("card ${card.id}: unknown follow-up '$it'") }
                 choice.risk?.let { if (it.chance !in 0.0..1.0) add("card ${card.id}: risk chance out of 0..1") }
+                listOfNotNull(choice.achievement, choice.risk?.achievement).forEach {
+                    if (achievement(it) == null) add("card ${card.id}: unknown achievement '$it'")
+                }
             }
         }
         if (cards.none { !it.followUpOnly }) add("no cards to draw")
@@ -51,6 +56,7 @@ data class League(
         }
         chat.forEach { checkCharacter("chat line '${it.text.take(20)}'", it.character) }
         joker?.let { checkCharacter("joker", it.character) }
+        if (achievements.map { it.id }.toSet().size != achievements.size) add("duplicate achievement ids")
     }
 
     companion object {
@@ -138,7 +144,7 @@ data class Effects(
 
 /** A gamble: with [chance], [effects] and [outcome] replace the choice's own. */
 @Serializable
-data class Risk(val chance: Double, val effects: Effects, val outcome: String)
+data class Risk(val chance: Double, val effects: Effects, val outcome: String, val achievement: String? = null)
 
 @Serializable
 data class Choice(
@@ -149,6 +155,8 @@ data class Choice(
     /** A card to deal at the start of the next matchday. */
     val followUp: String? = null,
     val risk: Risk? = null,
+    /** Counts towards this achievement when chosen (and the gamble, if any, didn't go the other way). */
+    val achievement: String? = null,
 )
 
 @Serializable
@@ -191,6 +199,14 @@ data class ChatLine(val character: String, val text: String, val mood: Mood = Mo
 @Serializable
 data class Joker(val character: String, val label: String, val text: String, val effects: Effects = Effects())
 
+/**
+ * Something to collect across seasons: unlocked after [count] choices that point to it, or, for
+ * the built-in ids, by how the season ends: "survivor" (reach the last matchday), "podium",
+ * "champion" and "champion_no_joker".
+ */
+@Serializable
+data class Achievement(val id: String, val title: String, val description: String, val emoji: String = "🏅", val count: Int = 1)
+
 /** How a season ends: by a meter at 0 or 100, or after the last matchday. */
 @Serializable
 data class Endings(
@@ -205,6 +221,15 @@ data class Endings(
     val champion: String,
     val notChampion: String,
 ) {
+    /** Every ending's key, in display order (see [Ending.key]). */
+    val keys: List<String> get() = listOf("champion", "finished") + Meter.entries.flatMap { listOf(key(it, false), key(it, true)) }
+
+    fun text(key: String): String = when (key) {
+        "champion" -> champion
+        "finished" -> notChampion
+        else -> Meter.entries.firstNotNullOf { m -> listOf(false, true).firstOrNull { key(m, it) == key }?.let { of(m, it) } }
+    }
+
     fun of(meter: Meter, high: Boolean): String = when (meter) {
         Meter.MONEY -> if (high) moneyHigh else moneyLow
         Meter.SQUAD -> if (high) squadHigh else squadLow
@@ -212,3 +237,7 @@ data class Endings(
         Meter.TEARS -> if (high) tearsHigh else tearsLow
     }
 }
+
+fun endingKey(meter: Meter, high: Boolean): String = meter.name.lowercase() + if (high) "_high" else "_low"
+
+private fun key(meter: Meter, high: Boolean) = endingKey(meter, high)

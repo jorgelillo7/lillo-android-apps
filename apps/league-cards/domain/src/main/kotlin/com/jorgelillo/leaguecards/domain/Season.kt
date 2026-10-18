@@ -25,6 +25,9 @@ data class Report(
 @Serializable
 data class Ending(val text: String, val meter: Meter? = null, val high: Boolean = false, val position: Int? = null) {
     val champion: Boolean get() = position == 1
+
+    /** Which of the league's endings this is, for the collection. */
+    val key: String get() = meter?.let { endingKey(it, high) } ?: if (champion) "champion" else "finished"
 }
 
 /**
@@ -51,6 +54,12 @@ data class Season(
     val report: Report? = null,
     val reportPending: Boolean = false,
     val ending: Ending? = null,
+    /** How many times each achievement's choices were made this season. */
+    val progress: Map<String, Int> = emptyMap(),
+    /** Achievements unlocked this season, in order. */
+    val unlocked: List<String> = emptyList(),
+    /** Unlocked by the last move: shown once. */
+    val justUnlocked: List<String> = emptyList(),
 ) {
     val currentCard: String? get() = if (ending == null && !reportPending) hand.getOrNull(handIndex) else null
     val over: Boolean get() = ending != null
@@ -75,6 +84,7 @@ object Game {
         val gamble = choice.risk?.takeIf { rng(s.seed, s.matchday, 100 + s.handIndex).nextDouble() < it.chance }
         val effects = gamble?.effects ?: choice.effects
         val outcome = (gamble?.outcome ?: choice.outcome).takeIf { it.isNotBlank() }
+        val achievement = if (choice.risk != null && gamble == null) choice.achievement else gamble?.achievement ?: choice.achievement
         val next = s.copy(
             meters = s.meters + effects,
             matchdayPoints = s.matchdayPoints + effects.points,
@@ -82,8 +92,30 @@ object Game {
             seen = s.seen + (card.id to (s.seen[card.id] ?: 0) + 1),
             lastOutcome = outcome?.let { Outcome(card.character, it) },
             handIndex = s.handIndex + 1,
-        )
+            justUnlocked = emptyList(),
+        ).count(league, achievement)
         return afterCard(league, next)
+    }
+
+    /** One more step towards [id]; unlocks it when its count is reached. */
+    private fun Season.count(league: League, id: String?): Season {
+        val def = id?.let(league::achievement) ?: return this
+        val done = (progress[id] ?: 0) + 1
+        return copy(progress = progress + (id to done)).let { if (done >= def.count) it.unlock(id) else it }
+    }
+
+    private fun Season.unlock(id: String): Season =
+        if (id in unlocked) this else copy(unlocked = unlocked + id, justUnlocked = justUnlocked + id)
+
+    /** The built-in achievements earned by how the season ended. */
+    private fun Season.finish(league: League): Season {
+        val position = ending?.position ?: return this
+        return listOfNotNull(
+            "survivor",
+            "podium".takeIf { position <= 3 },
+            "champion".takeIf { position == 1 },
+            "champion_no_joker".takeIf { position == 1 && !jokerUsed },
+        ).filter { league.achievement(it) != null }.fold(this) { s, id -> s.unlock(id) }
     }
 
     fun canUseJoker(league: League, s: Season): Boolean = league.joker != null && !s.jokerUsed && s.currentCard != null
@@ -98,12 +130,13 @@ object Game {
             jokerUsed = true,
             lastOutcome = Outcome(joker.character, joker.text),
             handIndex = s.handIndex + 1,
+            justUnlocked = emptyList(),
         )
         return afterCard(league, next)
     }
 
     /** The group chat has been read: on to the next matchday's cards. */
-    fun dismissReport(s: Season): Season = s.copy(reportPending = false, lastOutcome = null)
+    fun dismissReport(s: Season): Season = s.copy(reportPending = false, lastOutcome = null, justUnlocked = emptyList())
 
     /** Table rows, best first: (character id or [YOU], points). */
     fun standings(s: Season): List<Pair<String, Int>> =
@@ -175,7 +208,7 @@ object Game {
         if (next.matchday > league.matchdays) {
             val position = position(next)
             val text = if (position == 1) league.endings.champion else league.endings.notChampion
-            return next.copy(ending = Ending(text.replace("{position}", position.toString()), position = position))
+            return next.copy(ending = Ending(text.replace("{position}", position.toString()), position = position)).finish(league)
         }
         next = next.copy(hand = deal(league, next), followUps = emptyList())
         return next
