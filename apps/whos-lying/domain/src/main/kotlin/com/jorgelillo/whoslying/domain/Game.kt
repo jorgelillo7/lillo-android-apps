@@ -94,7 +94,8 @@ class Game private constructor(
     private fun evaluate(): Outcome? {
         val civilians = alive.count { it.role == Role.CIVILIAN }
         val infiltrators = alive.filter { it.role != Role.CIVILIAN }.map { it.role }.toSet()
-        if (cards.none { it.role == Role.CIVILIAN }) return null
+        // Everyone an impostor (chaos): it ends when the votes leave one player, or on reveal.
+        if (cards.none { it.role == Role.CIVILIAN }) return if (alive.size <= 1) Outcome.NoCivilians else null
         return when {
             infiltrators.isEmpty() -> Outcome.CiviliansWin
             civilians <= 1 -> Outcome.InfiltratorsWin(infiltrators)

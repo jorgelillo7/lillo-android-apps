@@ -16,6 +16,7 @@ Package: `com.jorgelillo.whoslying` (minSdk 24: navigation-compose needs it).
 | Reset (players, packs, settings) | `$ADB shell pm clear com.jorgelillo.whoslying` |
 | Run in Spanish | `$ADB shell cmd locale set-app-locales com.jorgelillo.whoslying --locales es-ES` |
 | Smoke test (release build, emulator running) | `apps/whos-lying/tools/smoke_test.sh` |
+| Full battery: every mode and ending, match, packs, Spanish, landscape (release APK built, emulator running headless) | `python3 apps/whos-lying/tools/battery_test.py [scenario …]` |
 | Regenerate icons | `.venv/bin/python apps/whos-lying/tools/generate_icon.py` |
 | Store screenshots | emulator running + app installed: `apps/whos-lying/tools/capture_store_screenshots.sh`, check `store/raw/`, then `.venv/bin/python apps/whos-lying/tools/generate_store_assets.py` |
 
