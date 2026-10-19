@@ -24,7 +24,7 @@ Commands shared by every app. Per-app commands (module paths, release steps, sig
 | Script | Use |
 |---|---|
 | `env.sh` | `source` it: JDK, adb and SDK paths |
-| `emulator.sh start\|stop` | Boot (default `Pixel_9_API_36`) / shut down the emulator |
+| `emulator.sh start [--headless]\|stop` | Boot (default `Pixel_9_API_36`; `--headless` without a window) / shut down the emulator |
 | `emulator.sh date MMDDhhmmYYYY\|auto` | Freeze the emulator clock (e.g. to test December) / restore it |
 | `emulator.sh demo on\|off` | Clean status bar for screenshots |
 | `screenshot.sh <out.png>` | Screenshot, dismissing "isn't responding" dialogs first |
@@ -51,3 +51,12 @@ The `release-android-app` skill walks through all of it.
 
 8 GB RAM: emulator + Android Studio + Gradle don't fit together. Close Chrome before emulator
 work, stop the emulator during long builds, run emulator scripts in the foreground.
+
+- Build first, then `./gradlew --stop`, then boot the emulator and run the smoke test (which
+  only reuses the built APK when nothing changed). Never run Gradle tasks while it plays.
+- `scripts/emulator.sh start --headless` for smoke tests: no window, screenshots still work.
+- Gradle daemons exit after 10 idle minutes and the Kotlin daemon is capped at 1 GB
+  (`gradle.properties`).
+- Long-lived Claude Code sessions grow to several GB (one open for 34 days took 7.5 GB, mostly
+  swap): start a new session per topic or `/clear`, and quit the ones you're not using.
+- Swap above a few GB means it's time to reboot.

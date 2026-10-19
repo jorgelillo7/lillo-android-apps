@@ -1,13 +1,17 @@
 #!/usr/bin/env bash
 # Starts, stops and prepares the Android emulator for testing and store screenshots.
 #
-#   scripts/emulator.sh start [avd]        boot (default AVD: Pixel_9_API_36) and wait until ready
+#   scripts/emulator.sh start [--headless] [avd]
+#                                          boot (default AVD: Pixel_9_API_36) and wait until ready;
+#                                          --headless: no window (smoke tests, screenshots still work)
 #   scripts/emulator.sh stop               shut the emulator down
 #   scripts/emulator.sh date MMDDhhmmYYYY  freeze the clock at a date (e.g. 121210002026 = 12 Dec 2026 10:00)
 #   scripts/emulator.sh date auto          restore the automatic clock
 #   scripts/emulator.sh demo on|off        clean status bar for screenshots (12:25, full battery and signal)
 #
 # The machine has little RAM: close Chrome before booting, and stop the emulator before long builds.
+# The emulator draws with the Mac's GPU (-gpu host): software rendering kept the CPU busy and made
+# System UI stop responding.
 set -euo pipefail
 source "$(dirname "$0")/env.sh"
 
@@ -20,8 +24,11 @@ demo() { "$ADB" shell am broadcast -a com.android.systemui.demo -e command "$@" 
 
 case "${1:-}" in
   start)
-    avd="${2:-Pixel_9_API_36}"
-    nohup "$EMULATOR" -avd "$avd" -no-boot-anim -no-snapshot-save >/tmp/emulator.log 2>&1 &
+    shift
+    window=()
+    if [ "${1:-}" = --headless ]; then window=(-no-window); shift; fi
+    avd="${1:-Pixel_9_API_36}"
+    nohup "$EMULATOR" -avd "$avd" -no-boot-anim -no-snapshot-save -gpu host ${window[@]+"${window[@]}"} >/tmp/emulator.log 2>&1 &
     wait_boot
     echo "Emulator ready ($avd)"
     ;;
@@ -51,6 +58,6 @@ case "${1:-}" in
     fi
     ;;
   *)
-    sed -n '2,11p' "$0"; exit 1
+    sed -n '2,15p' "$0"; exit 1
     ;;
 esac
