@@ -48,9 +48,11 @@ fun Page(
     modifier: Modifier = Modifier,
     background: Brush = Neon.Backdrop,
     actions: @Composable RowScope.() -> Unit = {},
+    /** Short screens: actions beside the content (see [LilloPage]). */
+    sideActionsWhenShort: Boolean = false,
     bottom: @Composable ColumnScope.() -> Unit = {},
     content: @Composable ColumnScope.() -> Unit,
-) = LilloPage(title, onBack, background, Neon.Ink, modifier, actions = actions, bottom = bottom, content = content)
+) = LilloPage(title, onBack, background, Neon.Ink, modifier, actions = actions, sideActionsWhenShort = sideActionsWhenShort, bottom = bottom, content = content)
 
 @Composable
 fun BigButton(

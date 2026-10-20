@@ -70,7 +70,7 @@ fun Page(
     actions: @Composable RowScope.() -> Unit = {},
     bottom: @Composable ColumnScope.() -> Unit = {},
     content: @Composable ColumnScope.() -> Unit,
-) = LilloPage(title, onBack, background, Polls.Ink, modifier, FontWeight.Black, actions, bottom, content)
+) = LilloPage(title, onBack, background, Polls.Ink, modifier, FontWeight.Black, actions = actions, bottom = bottom, content = content)
 
 @Composable
 fun BigButton(

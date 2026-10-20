@@ -11,10 +11,14 @@ the expected one and every scenario leaves a screenshot in build/battery/whos-ly
 Usage (repo root, emulator running, release APK built):
     ./gradlew :apps:whos-lying:app:assembleRelease && ./gradlew --stop
     scripts/emulator.sh start --headless
-    python3 apps/whos-lying/tools/battery_test.py [scenario ...]
+    python3 apps/whos-lying/tools/battery_test.py [--landscape] [scenario ...]
+
+--landscape plays every scenario on the phone turned sideways: under 480 dp tall, so it gets the
+compact layouts of short screens like the AYN Thor's (screenshots in build/battery/whos-lying-landscape/).
 """
 import html
 import re
+import struct
 import subprocess
 import sys
 import time
@@ -24,7 +28,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[3]
 PKG = "com.jorgelillo.whoslying"
 APK = ROOT / "apps/whos-lying/app/build/outputs/apk/release/app-release.apk"
-OUT = ROOT / "build/battery/whos-lying"
+LANDSCAPE = "--landscape" in sys.argv
+OUT = ROOT / ("build/battery/whos-lying-landscape" if LANDSCAPE else "build/battery/whos-lying")
 ADB = subprocess.run(["bash", "-c", f"source {ROOT}/scripts/env.sh >/dev/null; echo $ADB"], capture_output=True, text=True).stdout.strip()
 
 TITLES = {
@@ -88,7 +93,7 @@ def wait_for(tag=None, text=None, timeout=15):
 
 
 def tap(tag, wait=1.5, timeout=15, scroll=False):
-    end = time.time() + timeout
+    end = time.time() + (max(timeout, 45) if scroll else timeout)   # long lists in landscape take many swipes
     while time.time() < end:
         node = find(dump(), tag)
         if node:
@@ -123,10 +128,26 @@ def hide_keyboard():
 
 def shot(name):
     OUT.mkdir(parents=True, exist_ok=True)
-    subprocess.run([str(ROOT / "scripts/screenshot.sh"), str(OUT / f"{name}.png")], capture_output=True)
+    path = OUT / f"{name}.png"
+    subprocess.run([str(ROOT / "scripts/screenshot.sh"), str(path)], capture_output=True)
+    if LANDSCAPE and not name.startswith("FAILED"):
+        width, height = struct.unpack(">II", path.read_bytes()[16:24])   # PNG header
+        assert width > height, f"{name}: the phone turned upright ({width}x{height})"
 
 
 # ── app flows ──────────────────────────────────────────────────────────────────────────────────
+
+def rotate(landscape):
+    """Turns the phone; something resets the rotation once when a run starts, so it is checked back."""
+    want = "1" if landscape else "0"
+    for _ in range(5):
+        shell("settings", "put", "system", "accelerometer_rotation", "0")
+        shell("settings", "put", "system", "user_rotation", want)
+        time.sleep(2)
+        if shell("settings", "get", "system", "user_rotation").strip() == want:
+            return
+    raise AssertionError("the phone won't stay turned")
+
 
 def fresh(locale="en-US"):
     """Clean install state, given language, past the first-launch welcome."""
@@ -134,6 +155,7 @@ def fresh(locale="en-US"):
     shell("cmd", "locale", "set-app-locales", PKG, "--locales", locale)
     shell("am", "start", "-W", "-n", f"{PKG}/.MainActivity")
     time.sleep(4)
+    rotate(LANDSCAPE)
     tap("welcome_ok", timeout=25)
 
 
@@ -171,13 +193,15 @@ def configure(mode="classic", impostors=1, drawing=False, chaos=False, hint=True
     if mode != "classic":
         set_switch("hint", hint)
     if rounds is not None:
-        for _ in range(8):
+        for _ in range(20):
             node = find(dump(), "rounds")
             if node is None:
                 swipe_up(); time.sleep(1); continue
             if node.text == str(rounds):
                 break
             tap("rounds_minus", wait=0.8)
+        else:
+            raise AssertionError(f"couldn't set {rounds} rounds")
     for _ in range(timer_steps):
         tap("timer_plus", wait=0.8, scroll=True)
 
@@ -225,6 +249,8 @@ def to_vote(drawing=False):
         x, y = canvas.center
         shell("input", "swipe", str(x - 200), str(y), str(x + 200), str(y + 150), "600")
         time.sleep(1)
+    wait_for("go_vote", timeout=20)
+    shot("debate")
     tap("go_vote", wait=2, timeout=20)
 
 
@@ -255,14 +281,19 @@ def play(order, drawing=False, guess=None):
         vote(player)
         state, _ = after_vote()
         if state == "guess":
-            tap("guess_text", wait=0.5)
-            type_text(guess)
-            hide_keyboard()
-            time.sleep(0.5)
+            shot("drifter_last_chance")
+            for _ in range(3):   # typing before the keyboard is ready drops the text (landscape's full-screen one)
+                tap("guess_text", wait=1.5)
+                type_text(guess)
+                hide_keyboard()
+                time.sleep(0.5)
+                if find(dump(), "guess_text").text == guess:
+                    break
             tap("guess", wait=3)
             state, _ = after_vote()
         if state == "result":
             break
+        shot("exposed_game_goes_on")
         tap("keep_playing", wait=2)
         to_vote(drawing)
     nodes = wait_for("result_title", timeout=20)
@@ -372,8 +403,10 @@ def timer_runs_out():
     configure(mode="classic", timer_steps=1)  # 1 minute
     tap("start", wait=2, scroll=True)
     r, _ = roles(reveal_all_cards(3))
-    wait_for("time_up", timeout=90)
-    shot("timer_time_up")
+    # "Time's up!" only shows for 1.8 s, often less than a UI dump: check the forced vote it leads to.
+    nodes = wait_for("confirm_vote", timeout=90)
+    shot("timer_forced_vote")
+    assert not find(nodes, "back_to_debate"), "time ran out but the vote isn't forced"
     vote(by("IMPOSTOR", r)[0])
     expect(find(wait_for("result_title"), "result_title").text, "caught_one", "timer_vote_forced")
 
@@ -429,10 +462,9 @@ def spanish():
 
 
 def landscape():
-    shell("settings", "put", "system", "accelerometer_rotation", "0")
-    shell("settings", "put", "system", "user_rotation", "1")
     try:
         fresh()
+        rotate(True)
         players_and_setup(THREE)
         configure(mode="classic")
         tap("start", wait=2, scroll=True)
@@ -443,7 +475,7 @@ def landscape():
         vote(by("IMPOSTOR", r)[0])
         expect(find(wait_for("result_title"), "result_title").text, "caught_one", "landscape_result")
     finally:
-        shell("settings", "put", "system", "user_rotation", "0")
+        rotate(False)
 
 
 SCENARIOS = [classic_civilians, classic_impostors, blind_civilians, blind_impostors, two_impostors_caught,
@@ -452,21 +484,26 @@ SCENARIOS = [classic_civilians, classic_impostors, blind_civilians, blind_impost
 
 
 def main():
-    wanted = sys.argv[1:]
+    wanted = [a for a in sys.argv[1:] if not a.startswith("--")]
     adb("uninstall", PKG)
     print(adb("install", "-r", str(APK)).strip().splitlines()[-1])
     adb("logcat", "-c")
     failed = []
-    for scenario in SCENARIOS:
-        if wanted and scenario.__name__ not in wanted:
-            continue
-        print(f"▶ {scenario.__name__}")
-        try:
-            scenario()
-        except Exception as e:  # keep going: report every scenario
-            failed.append(scenario.__name__)
-            shot(f"FAILED_{scenario.__name__}")
-            print(f"  ✘ {e}")
+    rotate(LANDSCAPE)
+    try:
+        for scenario in SCENARIOS:
+            if wanted and scenario.__name__ not in wanted or LANDSCAPE and scenario is landscape:
+                continue
+            print(f"▶ {scenario.__name__}")
+            try:
+                scenario()
+            except Exception as e:  # keep going: report every scenario
+                failed.append(scenario.__name__)
+                shot(f"FAILED_{scenario.__name__}")
+                print(f"  ✘ {e}")
+            rotate(LANDSCAPE)   # the landscape scenario puts the phone back upright
+    finally:
+        rotate(False)
     crashes = adb("logcat", "-d", "-b", "crash").count("FATAL")
     shell("cmd", "locale", "set-app-locales", PKG, "--locales", "")
     print(f"\ncrashes: {crashes} · screenshots: {OUT}")
@@ -474,7 +511,6 @@ def main():
         print(f"BATTERY FAILED: {failed}")
         sys.exit(1)
     print("BATTERY PASSED")
-
 
 if __name__ == "__main__":
     main()

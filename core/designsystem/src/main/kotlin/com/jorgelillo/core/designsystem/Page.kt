@@ -1,11 +1,13 @@
 package com.jorgelillo.core.designsystem
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -45,6 +47,10 @@ import androidx.compose.ui.unit.sp
 /**
  * Full-screen page: background, a header with an optional back button (test tag "back"), title
  * and actions, the content, and a bottom action area. Apps wrap it with their own colours.
+ *
+ * [sideActionsWhenShort]: on short screens (landscape, handhelds) the actions go in a column beside
+ * the content instead of below it, and a page with no title or back button drops its header, so
+ * the content keeps the screen's full height. Off by default: only for screens checked that way.
  */
 @Composable
 fun LilloPage(
@@ -55,32 +61,49 @@ fun LilloPage(
     modifier: Modifier = Modifier,
     titleWeight: FontWeight = FontWeight.Bold,
     actions: @Composable RowScope.() -> Unit = {},
+    sideActionsWhenShort: Boolean = false,
     bottom: @Composable ColumnScope.() -> Unit = {},
     content: @Composable ColumnScope.() -> Unit,
 ) = CompositionLocalProvider(LocalContentColor provides contentColor) {
+    val side = sideActionsWhenShort && isShortScreen()
     Column(modifier.fillMaxSize().background(background).statusBarsPadding().navigationBarsPadding()) {
-        Row(Modifier.fillMaxWidth().height(56.dp).padding(horizontal = 4.dp), verticalAlignment = Alignment.CenterVertically) {
-            if (onBack != null) {
-                IconButton(onClick = onBack, modifier = Modifier.testTag("back")) {
-                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.lillo_back))
+        if (!side || title != null || onBack != null) {
+            Row(Modifier.fillMaxWidth().height(56.dp).padding(horizontal = 4.dp), verticalAlignment = Alignment.CenterVertically) {
+                if (onBack != null) {
+                    IconButton(onClick = onBack, modifier = Modifier.testTag("back")) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.lillo_back))
+                    }
+                } else {
+                    Spacer(Modifier.width(12.dp))
                 }
-            } else {
-                Spacer(Modifier.width(12.dp))
+                Text(
+                    title.orEmpty(),
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = titleWeight,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.weight(1f),
+                )
+                actions()
             }
-            Text(
-                title.orEmpty(),
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = titleWeight,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.weight(1f),
-            )
-            actions()
         }
-        Column(Modifier.weight(1f).fillMaxWidth().padding(horizontal = 20.dp), content = content)
-        Column(Modifier.fillMaxWidth().padding(20.dp), content = bottom)
+        if (side) {
+            Row(Modifier.weight(1f).fillMaxWidth()) {
+                Column(Modifier.weight(1f).fillMaxHeight().padding(horizontal = 20.dp), content = content)
+                Column(
+                    Modifier.width(SIDE_ACTIONS_WIDTH).fillMaxHeight().padding(20.dp),
+                    verticalArrangement = Arrangement.Center,
+                    content = bottom,
+                )
+            }
+        } else {
+            Column(Modifier.weight(1f).fillMaxWidth().padding(horizontal = 20.dp), content = content)
+            Column(Modifier.fillMaxWidth().padding(20.dp), content = bottom)
+        }
     }
 }
+
+private val SIDE_ACTIONS_WIDTH = 300.dp
 
 /** The main call to action: full width, tall, bold. */
 @Composable

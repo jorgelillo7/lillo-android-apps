@@ -374,29 +374,44 @@ private fun EliminatedCard(card: Card, game: Game, guessResult: Boolean?, onGues
         Role.IMPOSTOR -> Triple("🕵️", stringResource(R.string.out_was_impostor, card.player), stringResource(R.string.out_impostor_desc))
         Role.DRIFTER -> Triple("🤷", stringResource(R.string.out_was_drifter, card.player), stringResource(R.string.guess_desc))
     }
-    Emoji(emoji, size = 100)
-    Text(title, color = Color.White, fontSize = 36.sp, lineHeight = 42.sp, fontWeight = FontWeight.Black, textAlign = TextAlign.Center, modifier = Modifier.testTag("eliminated"))
-    val word = card.word
-    if (card.role == Role.IMPOSTOR && word != null) {
-        Text(stringResource(R.string.out_their_word, word), color = Color.White, style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(top = 8.dp))
+    val short = isShortScreen()
+    val header = @Composable {
+        Emoji(emoji, size = if (short) 56 else 100)
+        Text(
+            title,
+            color = Color.White,
+            fontSize = if (short) 28.sp else 36.sp,
+            lineHeight = if (short) 32.sp else 42.sp,
+            fontWeight = FontWeight.Black,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.testTag("eliminated"),
+        )
     }
     if (game.pendingGuess == card.player) {
-        Text(stringResource(R.string.guess_title, card.player), color = Color.White, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, modifier = Modifier.padding(top = 20.dp))
-        Text(body, color = Color.White.copy(alpha = 0.9f), textAlign = TextAlign.Center)
-        var text by rememberSaveable { mutableStateOf("") }
-        OutlinedTextField(
-            value = text,
-            onValueChange = { text = it },
-            placeholder = { Text(stringResource(R.string.guess_hint)) },
-            singleLine = true,
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-            keyboardActions = KeyboardActions(onDone = { if (text.isNotBlank()) onGuess(text) }),
-            colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = Color.White, unfocusedBorderColor = Color.White.copy(alpha = 0.6f)),
-            modifier = Modifier.fillMaxWidth().padding(top = 16.dp).testTag("guess_text"),
-        )
-        Spacer(Modifier.height(12.dp))
-        BigButton(stringResource(R.string.guess_go), { onGuess(text) }, Modifier.testTag("guess"), enabled = text.isNotBlank(), color = Color.White, contentColor = Neon.Night)
+        val prompt = @Composable {
+            Text(stringResource(R.string.guess_title, card.player), color = Color.White, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, modifier = Modifier.padding(top = if (short) 8.dp else 20.dp))
+            Text(body, color = Color.White.copy(alpha = 0.9f), textAlign = TextAlign.Center)
+        }
+        if (short) {
+            // Landscape and handhelds: too low to stack it all, so the field and button sit beside the text.
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(24.dp), verticalAlignment = Alignment.CenterVertically) {
+                Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally) {
+                    header()
+                    prompt()
+                }
+                Column(Modifier.weight(1f)) { GuessInput(onGuess) }
+            }
+        } else {
+            header()
+            prompt()
+            GuessInput(onGuess)
+        }
     } else {
+        header()
+        val word = card.word
+        if (card.role == Role.IMPOSTOR && word != null) {
+            Text(stringResource(R.string.out_their_word, word), color = Color.White, style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(top = 8.dp))
+        }
         Text(
             if (guessResult == false) stringResource(R.string.guess_wrong) else if (card.role == Role.DRIFTER) "" else body,
             color = Color.White.copy(alpha = 0.9f),
@@ -405,6 +420,24 @@ private fun EliminatedCard(card: Card, game: Game, guessResult: Boolean?, onGues
             modifier = Modifier.padding(top = 12.dp),
         )
     }
+}
+
+/** The eliminated drifter's one shot at the civilians' word. */
+@Composable
+private fun GuessInput(onGuess: (String) -> Unit) {
+    var text by rememberSaveable { mutableStateOf("") }
+    OutlinedTextField(
+        value = text,
+        onValueChange = { text = it },
+        placeholder = { Text(stringResource(R.string.guess_hint)) },
+        singleLine = true,
+        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+        keyboardActions = KeyboardActions(onDone = { if (text.isNotBlank()) onGuess(text) }),
+        colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = Color.White, unfocusedBorderColor = Color.White.copy(alpha = 0.6f)),
+        modifier = Modifier.fillMaxWidth().padding(top = 16.dp).testTag("guess_text"),
+    )
+    Spacer(Modifier.height(12.dp))
+    BigButton(stringResource(R.string.guess_go), { onGuess(text) }, Modifier.testTag("guess"), enabled = text.isNotBlank(), color = Color.White, contentColor = Neon.Night)
 }
 
 /** End of the game: who won, the words, who was who, and confetti when someone won. */
@@ -455,6 +488,7 @@ fun ResultScreen(
         Page(
             title = null,
             onBack = null,
+            sideActionsWhenShort = true,
             background = background,
             bottom = {
                 if (roundsLeft == 0) {
@@ -665,6 +699,7 @@ fun RankingScreen(
     Page(
         title = null,
         onBack = onBack,
+        sideActionsWhenShort = true,
         background = Neon.RevealBackdrop,
         bottom = {
             BigButton(stringResource(R.string.continue_), onNextRound, Modifier.testTag("next_round"), color = GoGreen, contentColor = Neon.Night)
@@ -703,6 +738,7 @@ fun PodiumScreen(players: List<String>, scores: Map<String, Int>, onNewMatch: ()
         Page(
             title = null,
             onBack = null,
+            sideActionsWhenShort = true,
             background = Neon.RevealBackdrop,
             bottom = {
                 BigButton(stringResource(R.string.podium_new_match), onNewMatch, Modifier.testTag("new_match"), color = GoGreen, contentColor = Neon.Night)
@@ -711,34 +747,49 @@ fun PodiumScreen(players: List<String>, scores: Map<String, Int>, onNewMatch: ()
                 }
             },
         ) {
-            Column(Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState()), horizontalAlignment = Alignment.CenterHorizontally) {
-                Text("🏆", fontSize = 44.sp)
+            val short = isShortScreen()
+            val winnerBlock = @Composable {
+                Text("🏆", fontSize = if (short) 32.sp else 44.sp)
                 if (leaders.size == 1) {
                     val winner = leaders.single()
-                    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(top = 12.dp)) {
-                        Text("🎆", fontSize = 56.sp)
+                    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(top = if (short) 4.dp else 12.dp)) {
+                        Text("🎆", fontSize = if (short) 36.sp else 56.sp)
                         Spacer(Modifier.width(16.dp))
-                        Avatar(winner, players, 128, ring = Neon.Amber)
+                        Avatar(winner, players, if (short) 72 else 128, ring = Neon.Amber)
                         Spacer(Modifier.width(16.dp))
-                        Text("🎆", fontSize = 56.sp)
+                        Text("🎆", fontSize = if (short) 36.sp else 56.sp)
                     }
-                    Text(winner, color = Color.White, fontSize = 34.sp, fontWeight = FontWeight.Black, modifier = Modifier.padding(top = 12.dp).testTag("podium_title"))
-                    Text("${scores[winner] ?: 0}", color = Neon.Amber, fontSize = 56.sp, fontWeight = FontWeight.Black)
+                    Text(winner, color = Color.White, fontSize = if (short) 28.sp else 34.sp, fontWeight = FontWeight.Black, modifier = Modifier.padding(top = if (short) 4.dp else 12.dp).testTag("podium_title"))
+                    Text("${scores[winner] ?: 0}", color = Neon.Amber, fontSize = if (short) 36.sp else 56.sp, fontWeight = FontWeight.Black)
                 } else {
                     Text(
                         if (leaders.isEmpty()) stringResource(R.string.podium_nobody) else stringResource(R.string.podium_tie, leaders.joinToString(" · ")),
                         color = Color.White,
-                        fontSize = 32.sp,
-                        lineHeight = 38.sp,
+                        fontSize = if (short) 26.sp else 32.sp,
+                        lineHeight = if (short) 32.sp else 38.sp,
                         fontWeight = FontWeight.Black,
                         textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(vertical = 16.dp).testTag("podium_title"),
+                        modifier = Modifier.padding(vertical = if (short) 8.dp else 16.dp).testTag("podium_title"),
                     )
                 }
-                Spacer(Modifier.height(20.dp))
+            }
+            val others = @Composable {
                 ranking(players, scores).filterNot { leaders.size == 1 && it == leaders.single() }.forEach { player ->
                     RankRow(player, players, scores[player] ?: 0, gained = null)
                     Spacer(Modifier.height(10.dp))
+                }
+            }
+            if (short) {
+                // Landscape and handhelds: the winner beside the rest, or the ranking falls below the fold.
+                Row(Modifier.weight(1f).fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(24.dp), verticalAlignment = Alignment.CenterVertically) {
+                    Column(Modifier.weight(1f).verticalScroll(rememberScrollState()), horizontalAlignment = Alignment.CenterHorizontally) { winnerBlock() }
+                    Column(Modifier.weight(1f).verticalScroll(rememberScrollState())) { others() }
+                }
+            } else {
+                Column(Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState()), horizontalAlignment = Alignment.CenterHorizontally) {
+                    winnerBlock()
+                    Spacer(Modifier.height(20.dp))
+                    others()
                 }
             }
         }
@@ -755,13 +806,14 @@ fun TimeUpScreen(onDone: () -> Unit) {
     }
     BackHandler {}
     Page(title = null, onBack = null, background = Neon.ImpostorsBackdrop) {
+        val short = isShortScreen()
         Column(Modifier.weight(1f).fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
-            Emoji("⏰", size = 110)
+            Emoji("⏰", size = if (short) 64 else 110)
             Text(
                 stringResource(R.string.time_up),
                 color = Color.White,
-                fontSize = 44.sp,
-                lineHeight = 50.sp,
+                fontSize = if (short) 36.sp else 44.sp,
+                lineHeight = if (short) 40.sp else 50.sp,
                 fontWeight = FontWeight.Black,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(top = 16.dp).testTag("time_up"),
