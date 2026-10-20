@@ -36,7 +36,6 @@ Lines are pruned as items ship. What has **shipped** lives in `apps/<app>/releas
 | ⏳ | Open-source license (GPL-3.0 was the candidate) | Your decision · not licensed for now |
 | 🔨 | Pack links: publish `/p/` and the impostor entry of `assetlinks.json` (both ready locally in the website repo; add the Play signing SHA-256 from Play Console → App integrity). Until then packs travel by share-to-app or Import → paste | You · the SHA-256, then a website commit |
 | 👤 | New icon (a line-up, the liar in a fedora): upload `store/play-icon-512.png` and the feature graphics to the listing | You · Play Console → Main store listing |
-| 🔨 | Immutable game state: `Game` is a mutable object plus a manual `revision` counter, which Compose can't observe (it left the group stuck after a wrong Drifter guess); make it a data class exposed as a `StateFlow`, per the repo's MVVM rule | Covered by `ExhaustiveGameTest` and `tools/battery_test.py` |
 
 ## group-polls (new app)
 
