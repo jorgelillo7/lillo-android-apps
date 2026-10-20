@@ -166,8 +166,6 @@
 
     <!-- Ajustes -->
     <string name="settings_title">Ajustes</string>
-    <string name="settings_language">Idioma</string>
-    <string name="language_system">El del móvil</string>
     <string name="settings_share">Compartir con amigos</string>
     <string name="settings_share_desc">Cuantos más seáis, mejor</string>
     <string name="share_text">¿Echamos una de ¿Quién miente? El juego del impostor, gratis y sin anuncios: %1$s</string>

@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -34,8 +33,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -44,7 +43,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.net.toUri
+import com.jorgelillo.core.designsystem.AboutTexts
+import com.jorgelillo.core.designsystem.LilloAboutSheet
 import com.jorgelillo.core.designsystem.TestTagsAsResourceIds
 import com.jorgelillo.core.designsystem.isShortScreen
 import com.jorgelillo.core.platform.LilloLinks
@@ -181,27 +181,18 @@ fun ImportDialog(onImport: (String) -> Unit, onDismiss: () -> Unit) {
 }
 
 @Composable
-fun AboutDialog(onDismiss: () -> Unit) {
-    val context = LocalContext.current
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        modifier = TestTagsAsResourceIds,
-        title = { Text(stringResource(R.string.app_name)) },
-        text = {
-            Column {
-                Text(stringResource(R.string.about_body))
-                Spacer(Modifier.height(12.dp))
-                Text(stringResource(R.string.about_privacy, PRIVACY_URL), color = Arena.Muted, fontSize = 13.sp)
-                Text(stringResource(R.string.about_version, BuildConfig.VERSION_NAME), color = Arena.Muted, fontSize = 13.sp)
-            }
-        },
-        confirmButton = {
-            TextButton(onClick = {
-                context.startActivity(android.content.Intent(android.content.Intent.ACTION_VIEW, PRIVACY_URL.toUri()))
-            }) { Text(stringResource(R.string.about_open_privacy)) }
-        },
-        dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_close)) } },
-    )
-}
-
-private val PRIVACY_URL = LilloLinks.privacyPolicy("tournaments")
+fun AboutSheet(onDismiss: () -> Unit) = LilloAboutSheet(
+    icon = painterResource(R.drawable.ic_launcher_foreground),
+    iconBackground = Arena.Ink,
+    containerColor = Arena.Raised,
+    texts = AboutTexts(
+        title = stringResource(R.string.app_name),
+        version = stringResource(R.string.about_version, BuildConfig.VERSION_NAME),
+        body = stringResource(R.string.about_body),
+        rate = null,
+        privacy = stringResource(R.string.about_open_privacy),
+    ),
+    privacyUrl = LilloLinks.privacyPolicy("tournaments"),
+    playStoreUrl = null, // not on Google Play yet
+    onDismiss = onDismiss,
+)

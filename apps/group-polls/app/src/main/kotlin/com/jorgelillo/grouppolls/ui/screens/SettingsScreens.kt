@@ -1,5 +1,6 @@
 package com.jorgelillo.grouppolls.ui.screens
 
+import android.os.Build
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -36,6 +37,10 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.jorgelillo.core.designsystem.LilloLanguageDialog
+import com.jorgelillo.core.designsystem.R as CoreR
+import com.jorgelillo.core.designsystem.canPickAppLanguage
+import com.jorgelillo.core.designsystem.currentAppLanguageName
 import com.jorgelillo.grouppolls.BuildConfig
 import com.jorgelillo.grouppolls.R
 import com.jorgelillo.grouppolls.data.LocalState
@@ -88,6 +93,7 @@ fun SettingsScreen(local: LocalState, onRename: (String) -> Unit, onDeleteData: 
     var renaming by rememberSaveable { mutableStateOf(false) }
     var confirmDelete by rememberSaveable { mutableStateOf(false) }
     var showTerms by rememberSaveable { mutableStateOf(false) }
+    var pickLanguage by rememberSaveable { mutableStateOf(false) }
     val accuracy = PredictionRecord(local.predictionHits, local.predictionsResolved).accuracy
     Page(title = stringResource(R.string.settings_title), onBack = onBack) {
         Column(Modifier.verticalScroll(rememberScrollState())) {
@@ -99,6 +105,9 @@ fun SettingsScreen(local: LocalState, onRename: (String) -> Unit, onDeleteData: 
                 "predictions",
                 onClick = null,
             )
+            if (canPickAppLanguage) {
+                SettingRow(stringResource(CoreR.string.lillo_language), currentAppLanguageName(), "language") { pickLanguage = true }
+            }
             SettingRow(stringResource(R.string.terms_title), null, "terms") { showTerms = true }
             SettingRow(stringResource(R.string.settings_privacy), null, "privacy") { uriHandler.openUri(PRIVACY_POLICY_URL) }
             SettingRow(stringResource(R.string.settings_rate), null, "rate") { uriHandler.openUri(PLAY_STORE_URL) }
@@ -111,6 +120,9 @@ fun SettingsScreen(local: LocalState, onRename: (String) -> Unit, onDeleteData: 
                 modifier = Modifier.fillMaxWidth().padding(vertical = 24.dp),
             )
         }
+    }
+    if (pickLanguage && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        LilloLanguageDialog(onDismiss = { pickLanguage = false })
     }
     if (renaming) {
         var name by rememberSaveable { mutableStateOf(local.name) }

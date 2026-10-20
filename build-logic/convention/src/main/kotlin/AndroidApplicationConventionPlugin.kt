@@ -11,7 +11,9 @@ import org.gradle.kotlin.dsl.configure
  * Every app: SDK levels, Kotlin, and a release build that is shrunk with R8 and signed with the
  * app's upload key from the git-ignored `apps/<app>/keystore.properties`. Without that file the
  * release build is signed with the debug key, so the R8 build can still be smoke tested (Play
- * rejects debug-signed bundles).
+ * rejects debug-signed bundles). It also lists the app's languages (from its `values-*` folders and
+ * `res/resources.properties`) so Android 13+ offers them in system settings and
+ * `LilloLanguageDialog` works.
  */
 class AndroidApplicationConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) = with(target) {
@@ -21,6 +23,7 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
         extensions.configure<ApplicationExtension> {
             configureKotlinAndroid(this)
             defaultConfig.targetSdk = libs.intVersion("targetSdk")
+            androidResources.generateLocaleConfig = true
             signingConfigs.create("release") {
                 if (keystoreFile.exists()) {
                     storeFile = file(keystore.getProperty("storeFile").trim())

@@ -1,9 +1,6 @@
 package com.jorgelillo.whoslying.ui.screens
 
-import android.app.LocaleManager
 import android.os.Build
-import android.os.LocaleList
-import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -14,13 +11,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -29,7 +24,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.testTag
@@ -37,6 +31,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.jorgelillo.core.designsystem.LilloLanguageDialog
+import com.jorgelillo.core.designsystem.R as CoreR
+import com.jorgelillo.core.designsystem.canPickAppLanguage
+import com.jorgelillo.core.designsystem.currentAppLanguageName
 import com.jorgelillo.core.platform.LilloLinks
 import com.jorgelillo.core.platform.shareText
 import com.jorgelillo.whoslying.BuildConfig
@@ -186,9 +184,8 @@ fun SettingsSheet(onHowTo: () -> Unit, onModes: () -> Unit, onWelcome: () -> Uni
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             Text(stringResource(R.string.settings_title), style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Black)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                val current = LocalConfiguration.current.locales[0].displayLanguage.replaceFirstChar { it.uppercase() }
-                SettingsRow("🌐", stringResource(R.string.settings_language), current, "language") { pickLanguage = true }
+            if (canPickAppLanguage) {
+                SettingsRow("🌐", stringResource(CoreR.string.lillo_language), currentAppLanguageName(), "language") { pickLanguage = true }
             }
             SettingsRow("📖", stringResource(R.string.how_to_play), null, "settings_how_to") { onDismiss(); onHowTo() }
             SettingsRow("🎭", stringResource(R.string.modes_title), null, "settings_modes") { onDismiss(); onModes() }
@@ -208,7 +205,7 @@ fun SettingsSheet(onHowTo: () -> Unit, onModes: () -> Unit, onWelcome: () -> Uni
         }
     }
     if (pickLanguage && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-        LanguageDialog(onDismiss = { pickLanguage = false })
+        LilloLanguageDialog(onDismiss = { pickLanguage = false })
     }
 }
 
@@ -231,30 +228,4 @@ private fun SettingsRow(emoji: String, title: String, subtitle: String?, tag: St
         }
         Text("›", style = MaterialTheme.typography.headlineSmall, color = Neon.Muted)
     }
-}
-
-/** Per-app language (Android 13+). An empty list follows the phone's language. */
-@RequiresApi(Build.VERSION_CODES.TIRAMISU)
-@Composable
-private fun LanguageDialog(onDismiss: () -> Unit) {
-    val context = LocalContext.current
-    fun choose(tags: String) {
-        context.getSystemService(LocaleManager::class.java).applicationLocales = LocaleList.forLanguageTags(tags)
-        onDismiss()
-    }
-    AlertDialog(
-        modifier = DialogTags,
-        onDismissRequest = onDismiss,
-        title = { Text(stringResource(R.string.settings_language)) },
-        text = {
-            Column {
-                listOf("" to stringResource(R.string.language_system), "es" to "Español", "en" to "English").forEach { (tag, label) ->
-                    TextButton(onClick = { choose(tag) }, modifier = Modifier.fillMaxWidth().testTag("language_${tag.ifEmpty { "system" }}")) {
-                        Text(label, modifier = Modifier.fillMaxWidth())
-                    }
-                }
-            }
-        },
-        confirmButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.vote_cancel)) } },
-    )
 }

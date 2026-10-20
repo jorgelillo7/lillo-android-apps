@@ -30,6 +30,13 @@ block, one tag per language:
 </en-US>
 ```
 
+## 2b. Reuse check
+
+Before building, look at what this version added (`git diff <last release tag or commit>..`): any
+composable, helper, Gradle setting or script that another app also has (or core already offers)
+goes to core / `build-logic` / `scripts` now, with the other apps switched over (CLAUDE.md, "Reuse
+first"). Cheaper than a repo-wide clean-up later.
+
 ## 3. Build and verify
 
 ```bash
