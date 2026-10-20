@@ -21,6 +21,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.jorgelillo.core.designsystem.LilloSectionTitle
 import com.jorgelillo.leaguecards.R
 import com.jorgelillo.leaguecards.domain.League
 import com.jorgelillo.leaguecards.domain.Saved
@@ -79,15 +80,7 @@ fun endingEmoji(key: String): String = when (key) {
 }
 
 @Composable
-private fun Section(title: String) {
-    Text(
-        title,
-        color = Chat.Muted,
-        style = MaterialTheme.typography.labelLarge,
-        fontWeight = FontWeight.Bold,
-        modifier = Modifier.padding(top = 20.dp, bottom = 8.dp),
-    )
-}
+private fun Section(title: String) = LilloSectionTitle(title, Chat.Muted, Modifier.padding(top = 20.dp, bottom = 8.dp), fontWeight = FontWeight.Bold)
 
 @Composable
 private fun Tile(emoji: String, title: String, subtitle: String?, dim: Boolean, tag: String) {

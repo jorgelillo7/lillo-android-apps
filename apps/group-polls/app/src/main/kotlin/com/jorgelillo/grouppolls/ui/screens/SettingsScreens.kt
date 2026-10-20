@@ -1,14 +1,10 @@
 package com.jorgelillo.grouppolls.ui.screens
 
 import android.os.Build
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -27,7 +23,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
@@ -38,6 +33,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jorgelillo.core.designsystem.LilloLanguageDialog
+import com.jorgelillo.core.designsystem.LilloSettingRow
 import com.jorgelillo.core.designsystem.R as CoreR
 import com.jorgelillo.core.designsystem.canPickAppLanguage
 import com.jorgelillo.core.designsystem.currentAppLanguageName
@@ -170,19 +166,13 @@ fun SettingsScreen(local: LocalState, onRename: (String) -> Unit, onDeleteData: 
 }
 
 @Composable
-private fun SettingRow(title: String, value: String?, tag: String, onClick: (() -> Unit)?) {
-    Column(
-        Modifier
-            .fillMaxWidth()
-            .padding(bottom = 8.dp)
-            .clip(MaterialTheme.shapes.large)
-            .background(Polls.Card)
-            .border(1.dp, Polls.Line, MaterialTheme.shapes.large)
-            .let { if (onClick != null) it.clickable(onClick = onClick) else it }
-            .padding(16.dp)
-            .testTag(tag),
-    ) {
-        Text(title, fontWeight = FontWeight.SemiBold)
-        if (value != null) Text(value, color = Polls.Muted, style = MaterialTheme.typography.bodySmall, modifier = Modifier.padding(top = 2.dp))
-    }
-}
+private fun SettingRow(title: String, value: String?, tag: String, onClick: (() -> Unit)?) = LilloSettingRow(
+    title,
+    Polls.Card,
+    Modifier.padding(bottom = 8.dp),
+    subtitle = value,
+    subtitleColor = Polls.Muted,
+    borderColor = Polls.Line,
+    tag = tag,
+    onClick = onClick,
+)

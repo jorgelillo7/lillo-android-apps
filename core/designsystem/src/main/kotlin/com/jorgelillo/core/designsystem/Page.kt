@@ -32,7 +32,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
@@ -134,8 +135,11 @@ fun LilloBigButton(
 @OptIn(ExperimentalComposeUiApi::class)
 val TestTagsAsResourceIds = Modifier.semantics { testTagsAsResourceId = true }
 
-/** Landscape phones and handhelds (e.g. AYN Thor): too short for the full vertical layouts. */
+/**
+ * Landscape phones and handhelds (e.g. AYN Thor): too short for the full vertical layouts. Measures
+ * the app's window, so split screen and freeform windows count too.
+ */
 @Composable
-fun isShortScreen(): Boolean = LocalConfiguration.current.screenHeightDp < SHORT_SCREEN_DP
+fun isShortScreen(): Boolean = with(LocalDensity.current) { LocalWindowInfo.current.containerSize.height.toDp() } < SHORT_SCREEN_DP.dp
 
 private const val SHORT_SCREEN_DP = 480

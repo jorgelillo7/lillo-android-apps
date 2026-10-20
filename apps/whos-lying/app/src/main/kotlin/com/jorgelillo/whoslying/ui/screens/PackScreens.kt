@@ -54,6 +54,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jorgelillo.core.designsystem.LilloQrCode
+import com.jorgelillo.core.designsystem.LilloSectionTitle
 import com.jorgelillo.core.designsystem.TestTagsAsResourceIds
 import com.jorgelillo.core.platform.shareText
 import com.jorgelillo.whoslying.R
@@ -202,9 +203,7 @@ fun PacksScreen(
 }
 
 @Composable
-private fun SectionTitle(text: String) {
-    Text(text, color = Neon.Muted, style = MaterialTheme.typography.labelLarge, modifier = Modifier.padding(top = 12.dp, bottom = 4.dp))
-}
+private fun SectionTitle(text: String) = LilloSectionTitle(text, Neon.Muted, Modifier.padding(top = 12.dp, bottom = 4.dp))
 
 @Composable
 private fun PackRow(pack: WordPack, onClick: (() -> Unit)?, onShare: (() -> Unit)? = null) {

@@ -2,7 +2,6 @@ package com.jorgelillo.tournaments.ui.setup
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
@@ -25,7 +24,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.SegmentedButton
@@ -56,6 +54,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.jorgelillo.core.designsystem.LilloSectionTitle
 import com.jorgelillo.core.designsystem.TestTagsAsResourceIds
 import com.jorgelillo.core.designsystem.isShortScreen
 import com.jorgelillo.tournaments.R
@@ -261,9 +260,7 @@ fun NewTournamentScreen(library: Library, newId: () -> String, onCreate: (Tourna
 }
 
 @Composable
-private fun Label(text: String) {
-    Text(text, style = MaterialTheme.typography.labelLarge, color = Arena.Muted, modifier = Modifier.padding(bottom = 6.dp))
-}
+private fun Label(text: String) = LilloSectionTitle(text, Arena.Muted, Modifier.padding(bottom = 6.dp))
 
 @Composable
 private fun <T> Segmented(options: List<Pair<T, String>>, selected: T, onSelect: (T) -> Unit, tag: String, enabled: (T) -> Boolean = { true }) {

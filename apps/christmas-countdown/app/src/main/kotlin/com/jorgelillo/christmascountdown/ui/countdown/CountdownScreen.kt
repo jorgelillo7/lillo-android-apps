@@ -36,6 +36,7 @@ import com.jorgelillo.christmascountdown.domain.TimeLeft
 import com.jorgelillo.christmascountdown.ui.theme.ChristmasColorScheme
 import com.jorgelillo.christmascountdown.ui.theme.ChristmasColors
 import com.jorgelillo.core.designsystem.GlassCard
+import com.jorgelillo.core.designsystem.LilloSectionTitle
 import com.jorgelillo.core.designsystem.LilloTheme
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -146,13 +147,8 @@ private fun ChristmasDayContent() {
 }
 
 @Composable
-private fun SectionLabel(text: String) {
-    Text(
-        text = text.uppercase(),
-        style = MaterialTheme.typography.labelSmall,
-        color = MaterialTheme.colorScheme.onSurfaceVariant,
-    )
-}
+private fun SectionLabel(text: String) =
+    LilloSectionTitle(text, MaterialTheme.colorScheme.onSurfaceVariant, uppercase = true, style = MaterialTheme.typography.labelSmall)
 
 @Composable
 private fun HeroNumber(value: String) {

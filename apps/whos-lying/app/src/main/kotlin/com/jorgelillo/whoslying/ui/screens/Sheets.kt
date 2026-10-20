@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -32,6 +33,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.jorgelillo.core.designsystem.LilloLanguageDialog
+import com.jorgelillo.core.designsystem.LilloSettingRow
 import com.jorgelillo.core.designsystem.R as CoreR
 import com.jorgelillo.core.designsystem.canPickAppLanguage
 import com.jorgelillo.core.designsystem.currentAppLanguageName
@@ -210,22 +212,13 @@ fun SettingsSheet(onHowTo: () -> Unit, onModes: () -> Unit, onWelcome: () -> Uni
 }
 
 @Composable
-private fun SettingsRow(emoji: String, title: String, subtitle: String?, tag: String, onClick: () -> Unit) {
-    Row(
-        Modifier
-            .fillMaxWidth()
-            .clip(MaterialTheme.shapes.large)
-            .background(Neon.Night)
-            .clickable(onClick = onClick)
-            .padding(horizontal = 16.dp, vertical = 14.dp)
-            .testTag(tag),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Text(emoji, style = MaterialTheme.typography.titleLarge)
-        Column(Modifier.weight(1f).padding(start = 14.dp)) {
-            Text(title, fontWeight = FontWeight.SemiBold)
-            if (subtitle != null) Text(subtitle, style = MaterialTheme.typography.bodySmall, color = Neon.Muted)
-        }
-        Text("›", style = MaterialTheme.typography.headlineSmall, color = Neon.Muted)
-    }
-}
+private fun SettingsRow(emoji: String, title: String, subtitle: String?, tag: String, onClick: () -> Unit) = LilloSettingRow(
+    title,
+    Neon.Night,
+    subtitle = subtitle,
+    subtitleColor = Neon.Muted,
+    leading = emoji,
+    tag = tag,
+    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 14.dp),
+    onClick = onClick,
+) { Text("›", style = MaterialTheme.typography.headlineSmall, color = Neon.Muted) }
