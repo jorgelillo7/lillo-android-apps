@@ -105,10 +105,14 @@ Project skills in `.claude/skills/`: `new-android-app` (competitor study → des
   (see `apps/christmas-countdown/app/proguard-rules.pro`).
 - Signing reads `apps/<app>/keystore.properties` (git-ignored, values trimmed). Never commit it or
   any `.jks`; check `git status` for filename variants (a leading-space copy once slipped in).
-- Each release bumps `versionCode` in `apps/<app>/app/build.gradle.kts` and adds
-  `apps/<app>/store/metadata/android/{en-US,es-ES}/changelogs/<versionCode>.txt`.
-- Store listing texts/images live in `apps/<app>/store/metadata/android/<locale>/` (fastlane
-  supply layout). Publish the listing together with the release that adds what it describes.
+- Each release bumps `versionCode` in `apps/<app>/app/build.gradle.kts`, rewrites
+  `apps/<app>/app/src/main/play/release-notes/{en-US,es-ES}/default.txt` and adds a row to
+  `apps/<app>/release-notes.md` (the history).
+- Store listing texts/images live in `apps/<app>/app/src/main/play/listings/<locale>/` (Gradle Play
+  Publisher, applied by the convention plugin). Publish from the terminal: `:apps:<app>:app:publishBundle`
+  (internal testing), `promoteArtifact --from-track internal --promote-track production`,
+  `publishListing` (docs/publishing-on-google-play.md §6; needs the service account key). Publish
+  the listing together with the release that adds what it describes.
 - `targetSdk` must meet Google Play's current requirement (API 36 since Aug 2026).
 - Share links and App Links use `jorgelillo7.github.io` (`/q/`, `/t/`, `/p/` and
   `/.well-known/assetlinks.json` live in that repo): free static GitHub Pages, data in the link

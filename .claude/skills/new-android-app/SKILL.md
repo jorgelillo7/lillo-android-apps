@@ -80,8 +80,10 @@ Follow [docs/adding-a-new-app.md](../../../docs/adding-a-new-app.md). Checklist:
   tags with `tap` (never coordinates); longer UI runs (a battery of scenarios) build on
   `scripts/ui_lib.py` like `apps/whos-lying/tools/battery_test.py`; `tools/capture_store_screenshots.sh` and
   `tools/generate_store_assets.py` (only `STYLE` + `LOCALES`, the drawing is `scripts/store_assets.py`).
-- `store/metadata/android/{en-US,es-ES}/` with title (≤30), short (≤80), full description,
-  `changelogs/1.txt`.
+- `app/src/main/play/listings/{en-US,es-ES}/` with `title.txt` (≤30), `short-description.txt` (≤80),
+  `full-description.txt`, and `app/src/main/play/release-notes/{en-US,es-ES}/default.txt`
+  (Gradle Play Publisher layout; `generateReleasePlayResources` validates it). The first bundle
+  goes to Play Console by hand; later ones with `publishBundle`.
 
 ## 6. Repo bookkeeping
 

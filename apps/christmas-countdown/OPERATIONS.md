@@ -38,7 +38,7 @@ Module paths: app `:apps:christmas-countdown:app`, logic `:apps:christmas-countd
 
 ```bash
 # 1. Bump versionCode / versionName in apps/christmas-countdown/app/build.gradle.kts
-# 2. Release notes: store/metadata/android/{en-US,es-ES}/changelogs/<versionCode>.txt
+# 2. Release notes: app/src/main/play/release-notes/{en-US,es-ES}/default.txt
 # 3. Build, test and verify
 ./gradlew test :apps:christmas-countdown:app:lintDebug :apps:christmas-countdown:app:bundleRelease
 apps/christmas-countdown/tools/smoke_test.sh        # needs a running emulator

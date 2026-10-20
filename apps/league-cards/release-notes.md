@@ -1,6 +1,6 @@
 # ¿Quién llora esta jornada? — Release notes
 
-Newest first. User-facing notes are in `store/metadata/android/es-ES/changelogs/<versionCode>.txt`.
+Newest first. User-facing notes are in `app/src/main/play/release-notes/es-ES/default.txt` (the current version's).
 
 | versionCode | Version | Date | Notes |
 |---|---|---|---|

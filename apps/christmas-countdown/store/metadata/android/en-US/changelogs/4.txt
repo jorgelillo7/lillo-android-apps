@@ -1,5 +1,0 @@
-More carols! 🎶
-- Three new carols: Silent Night, O Christmas Tree and Joy to the World
-- Carols now play in random order
-- Sharing now says exactly how long is left (days and hours, or sleeps)
-- Updated to the latest Android tools

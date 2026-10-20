@@ -1,5 +1,0 @@
-¡Primera versión! 🎡
-- Gira y decide, con sectores de probabilidad real
-- Evita repetir lo reciente
-- Vetos en grupo
-- Historial y ruletas preparadas

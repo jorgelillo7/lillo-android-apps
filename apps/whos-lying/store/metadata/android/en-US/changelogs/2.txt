@@ -1,5 +1,0 @@
-First version! 🕵️
-- Classic, Blind and The Drifter modes, plus Chaos
-- Drawing mode: no talking, draw the word together
-- 21 free packs (600+ words) and your own
-- Rounds, scores and a final winner

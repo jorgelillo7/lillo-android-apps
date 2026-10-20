@@ -66,42 +66,55 @@ Check the merged release manifest for permissions before answering Data safety
 
 ## 5. Store listing (Grow users → Store presence → Main store listing)
 
-Everything is tracked in `apps/<app>/store/metadata/android/<locale>/` (fastlane supply layout):
+Everything is tracked in `apps/<app>/app/src/main/play/` (the [Gradle Play Publisher](https://github.com/Triple-T/gradle-play-publisher)
+layout) and uploaded from the terminal with `publishListing` (§6):
 
-| Field | File | Limit |
+| Field | File (under `listings/<locale>/`) | Limit |
 |---|---|---|
 | App name | `title.txt` | 30 |
-| Short description | `short_description.txt` | 80 |
-| Full description | `full_description.txt` | 4000 |
-| Release notes | `changelogs/<versionCode>.txt` | 500 |
-| Icon | `images/icon.png` | 512×512 |
-| Feature graphic | `images/featureGraphic.png` | 1024×500 |
-| Phone screenshots | `images/phoneScreenshots/01..05.png` | 2–8, ≥1080 px for promotion |
+| Short description | `short-description.txt` | 80 |
+| Full description | `full-description.txt` | 4000 |
+| Icon | `graphics/icon/icon.png` | 512×512 |
+| Feature graphic | `graphics/feature-graphic/feature-graphic.png` | 1024×500 |
+| Phone screenshots | `graphics/phone-screenshots/01..NN.png` | 2–8, ≥1080 px for promotion |
+| Release notes (this version) | `../../release-notes/<locale>/default.txt` | 500 |
 
-- [ ] Default language first, then *Manage translations → Add your own translations*.
-      Until a language has its own screenshots it shows the default language's (greyed out, not deletable).
-- [ ] Copy long texts from the `.txt` files (`open -e file.txt`), not from a terminal, to keep line breaks.
+The graphics are generated (`tools/generate_store_assets.py`, §2 of the app's OPERATIONS.md); the
+history of past notes is `apps/<app>/release-notes.md` plus git.
+
 - [ ] **Don't publish a listing describing features the live version doesn't have** (misrepresentation).
       Ship the listing together with the release that adds them.
 
 ## 6. Release
 
-1. **Internal testing first** (Test and release → Testing → Internal testing): upload the `.aab`,
-   add yourself as tester, install from the opt-in link on a real phone.
-2. Release notes, one block per language:
-   ```
-   <es-ES>
-   …
-   </es-ES>
-   <en-US>
-   …
-   </en-US>
-   ```
-   If it says a language note is "too long" with a short text, clear the box (Cmd+A, delete) and
-   type the tags again: leftover hidden text is the usual cause.
-3. **Production**: promote the internal release or create a new one with the same bundle.
-4. Publishing overview → optionally turn on **Managed publishing** (you press "Publish" after approval)
-   → **Send changes for review**. Store listing + release go out together.
+### Publishing from the terminal (once: a service account)
+
+One Google Cloud service account publishes every app of the developer account:
+
+1. Google Cloud Console → a project (any) → *APIs & Services* → enable **Google Play Android Developer API**.
+2. *IAM & Admin → Service accounts* → create one (e.g. `play-publisher`) → *Keys* → add a JSON key.
+3. Save it **outside the repo**: `~/.config/lillo-android-apps/play-service-account.json`
+   (`chmod 600`; or pass `-Pplay.credentials=<path>`, or the `ANDROID_PUBLISHER_CREDENTIALS` env var).
+4. Play Console → *Users and permissions* → *Invite new users* → the service account's e-mail →
+   app permissions for the apps (*Release to testing tracks*, *Release to production*, *Manage
+   store presence*) → invite. It can take a few minutes to work.
+5. A brand-new app's **first** bundle still goes through Play Console by hand (the API can't create it);
+   every later one goes from the terminal.
+
+### Each release
+
+```bash
+source scripts/env.sh
+./gradlew :apps:<app>:app:publishBundle                         # signed bundle + notes → internal testing
+# test it from the opt-in link on a real phone, then:
+./gradlew :apps:<app>:app:promoteArtifact --from-track internal --promote-track production
+./gradlew :apps:<app>:app:publishListing                        # texts + graphics, with the release that needs them
+```
+
+Changes are committed as one edit and sent for review on their own; with **Managed publishing**
+on (Publishing overview) you still press "Publish" after approval. Without credentials the same
+steps work by hand in Play Console: upload the `.aab`, paste the notes (`<es-ES>…</es-ES><en-US>…</en-US>`),
+then *Send changes for review*.
 
 Expected review warnings that are fine to accept:
 - *Devices no longer supported*: after raising `minSdk`.

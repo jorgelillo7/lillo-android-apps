@@ -45,5 +45,5 @@ apps/decision-wheel/tools/smoke_test.sh
 scripts/verify-bundle.sh apps/decision-wheel/app/build/outputs/bundle/release/app-release.aab
 ```
 
-Store listing texts and images: `store/metadata/android/<locale>/`. Then follow the
+Store listing texts and images: `app/src/main/play/listings/<locale>/`. Then follow the
 `release-android-app` skill / [docs/publishing-on-google-play.md](../../docs/publishing-on-google-play.md).

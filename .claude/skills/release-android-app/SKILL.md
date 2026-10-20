@@ -17,8 +17,9 @@ Ask which app (`apps/<app>`) if there is more than one. Full background:
 
 ## 2. Release notes
 
-Write `apps/<app>/store/metadata/android/<locale>/changelogs/<versionCode>.txt` for every locale
-folder (≤ 500 chars, user-facing, no technical jargon). Then give the user the Play Console
+Rewrite `apps/<app>/app/src/main/play/release-notes/<locale>/default.txt` for every locale
+(≤ 500 chars, user-facing, no technical jargon; `generateReleasePlayResources` checks the length).
+Publishing from the terminal uploads them; for a by-hand upload give the user the Play Console
 block, one tag per language:
 
 ```
@@ -72,13 +73,21 @@ If the app has no `tools/smoke_test.sh` yet, create one on `scripts/smoke_lib.sh
 Commit version bump, notes and assets on a branch; open a PR; the user merges. Build the bundle
 from the merged `master` if anything changed after the smoke test.
 
-## 6. Guide the user through Play Console
+## 6. Publish
 
-1. Test and release → Testing → **Internal testing** → Create release → upload the `.aab` →
-   paste notes → save → review → roll out. Install it on a real phone from the opt-in link.
-2. When it's fine: **Production** → promote or create release with the same bundle.
-3. If the listing changed: update it in every language and save (don't send yet).
-4. Publishing overview → optionally **Managed publishing** → **Send changes for review**.
+From the terminal when `~/.config/lillo-android-apps/play-service-account.json` exists (set-up and
+details: docs/publishing-on-google-play.md §6). Confirm with the user before each command: they go
+out to Google Play.
+
+1. `./gradlew :apps:<app>:app:publishBundle` → internal testing. The user installs it on a real
+   phone from the opt-in link.
+2. When it's fine: `./gradlew :apps:<app>:app:promoteArtifact --from-track internal --promote-track production`.
+3. If the listing changed: `./gradlew :apps:<app>:app:publishListing` (same go as the release).
+4. Managed publishing on? The user presses "Publish" in Play Console after approval.
+
+No key yet, or the app's very first bundle (the API can't create it): the same steps by hand in
+Play Console (internal testing → upload the `.aab` → paste the notes → roll out; promote; listing;
+*Send changes for review*).
 
 Expected review warnings that are OK: "devices no longer supported" after raising `minSdk`;
 "native code without debug symbols" (AndroidX `.so` files). Anything else: ask for a screenshot.
