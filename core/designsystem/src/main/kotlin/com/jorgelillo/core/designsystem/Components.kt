@@ -22,13 +22,13 @@ fun GlassCard(
     modifier: Modifier = Modifier,
     shape: Shape = MaterialTheme.shapes.medium,
     tint: Color = Color.White,
-    content: @Composable BoxScope.() -> Unit,
+    content: @Composable BoxScope.() -> Unit
 ) {
     Box(
         modifier = modifier
             .clip(shape)
             .background(tint.copy(alpha = 0.10f))
-            .border(1.dp, tint.copy(alpha = 0.18f), shape),
+            .border(1.dp, tint.copy(alpha = 0.18f), shape)
     ) {
         CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.onSurface) { content() }
     }
@@ -39,12 +39,12 @@ fun GlassCard(
 fun GradientBackground(
     colors: List<Color>,
     modifier: Modifier = Modifier,
-    content: @Composable BoxScope.() -> Unit,
+    content: @Composable BoxScope.() -> Unit
 ) {
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(Brush.verticalGradient(colors)),
+            .background(Brush.verticalGradient(colors))
     ) {
         // Content sits directly on the gradient, outside any Surface, so set its default text colour here.
         CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.onSurface) { content() }

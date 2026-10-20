@@ -21,7 +21,7 @@ object Spin {
         val base = currentDegrees - (currentDegrees % 360.0)
         return SpinPlan(
             targetDegrees = base + fullTurns * 360.0 + landing,
-            durationMillis = (3800 + strength * 1400).toInt(),
+            durationMillis = (3800 + strength * 1400).toInt()
         )
     }
 

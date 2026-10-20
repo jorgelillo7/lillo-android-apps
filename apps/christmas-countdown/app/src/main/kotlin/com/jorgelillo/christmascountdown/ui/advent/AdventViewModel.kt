@@ -9,32 +9,32 @@ import com.jorgelillo.christmascountdown.data.SettingsRepository
 import com.jorgelillo.christmascountdown.domain.AdventCalendar
 import com.jorgelillo.christmascountdown.domain.AdventDoor
 import com.jorgelillo.christmascountdown.domain.AdventPlan
+import java.time.LocalDate
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import java.time.LocalDate
 
 data class AdventUiState(
     val unlockedDoors: Int,
     val doorOrder: List<Int>,
     /** This year's activity or song behind each door. */
     val plan: Map<Int, AdventDoor> = emptyMap(),
-    val openedDoors: Set<Int> = emptySet(),
+    val openedDoors: Set<Int> = emptySet()
 ) {
     val isSeason: Boolean get() = unlockedDoors > 0
 }
 
 class AdventViewModel(
     private val settings: SettingsRepository,
-    private val today: LocalDate = LocalDate.now(),
+    private val today: LocalDate = LocalDate.now()
 ) : ViewModel() {
 
     private val initialState = AdventUiState(
         unlockedDoors = AdventCalendar.unlockedDoors(today),
         doorOrder = AdventCalendar.doorOrder(today.year),
-        plan = AdventPlan.forYear(today.year),
+        plan = AdventPlan.forYear(today.year)
     )
 
     val uiState: StateFlow<AdventUiState> = settings.openedDoors(today.year)

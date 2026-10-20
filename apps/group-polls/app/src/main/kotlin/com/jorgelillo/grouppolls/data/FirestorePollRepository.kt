@@ -35,7 +35,7 @@ import kotlinx.coroutines.tasks.await
 class FirestorePollRepository(
     private val db: FirebaseFirestore,
     private val auth: FirebaseAuth,
-    private val now: () -> Long = System::currentTimeMillis,
+    private val now: () -> Long = System::currentTimeMillis
 ) : PollRepository {
 
     private val signIn = Mutex()
@@ -96,8 +96,8 @@ class FirestorePollRepository(
                 "redVotes" to 0,
                 "blueVotes" to 0,
                 "reports" to 0,
-                "hidden" to false,
-            ),
+                "hidden" to false
+            )
         ).await()
     }
 
@@ -114,7 +114,7 @@ class FirestorePollRepository(
                     put("prediction", vote.prediction.name.lowercase())
                     put("votedAt", FieldValue.serverTimestamp())
                     if (private) put("name", vote.voterName.orEmpty())
-                },
+                }
             )
             .update(poll, if (vote.side == Side.RED) "redVotes" else "blueVotes", FieldValue.increment(1))
             .commit()
@@ -149,8 +149,7 @@ class FirestorePollRepository(
             }
     }
 
-    private fun durationDays(poll: Poll): Long =
-        poll.closesAt?.let { (it - poll.createdAt) / DAY } ?: 0
+    private fun durationDays(poll: Poll): Long = poll.closesAt?.let { (it - poll.createdAt) / DAY } ?: 0
 
     private fun toPoll(doc: DocumentSnapshot): Poll? {
         if (!doc.exists()) return null
@@ -171,7 +170,7 @@ class FirestorePollRepository(
             closesAt = closedAt ?: if (days > 0) created + days * DAY else null,
             redVotes = (doc.getLong("redVotes") ?: 0).toInt(),
             blueVotes = (doc.getLong("blueVotes") ?: 0).toInt(),
-            hidden = doc.getBoolean("hidden") == true,
+            hidden = doc.getBoolean("hidden") == true
         )
     }
 
@@ -182,7 +181,7 @@ class FirestorePollRepository(
             voterName = doc.getString("name"),
             side = side,
             prediction = doc.getString("prediction")?.let(::side) ?: side,
-            votedAt = doc.getTimestamp("votedAt", DocumentSnapshot.ServerTimestampBehavior.ESTIMATE)?.toDate()?.time ?: 0,
+            votedAt = doc.getTimestamp("votedAt", DocumentSnapshot.ServerTimestampBehavior.ESTIMATE)?.toDate()?.time ?: 0
         )
     }
 

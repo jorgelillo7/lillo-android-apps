@@ -85,7 +85,7 @@ fun DebateScreen(
     onVote: () -> Unit,
     onTimeUp: () -> Unit,
     onRevealAll: () -> Unit,
-    onQuit: () -> Unit,
+    onQuit: () -> Unit
 ) {
     Page(
         title = null,
@@ -96,7 +96,7 @@ fun DebateScreen(
             TextButton(onClick = onRevealAll, modifier = Modifier.align(Alignment.CenterHorizontally).testTag("reveal_all")) {
                 Text(stringResource(R.string.vote_reveal_all), color = Color.White.copy(alpha = 0.75f))
             }
-        },
+        }
     ) {
         Column(Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState()), horizontalAlignment = Alignment.CenterHorizontally) {
             Emoji("💬", size = 72)
@@ -105,7 +105,7 @@ fun DebateScreen(
                 stringResource(R.string.debate_desc),
                 color = Color.White.copy(alpha = 0.85f),
                 textAlign = TextAlign.Center,
-                modifier = Modifier.padding(top = 6.dp),
+                modifier = Modifier.padding(top = 6.dp)
             )
             // After the first vote, the next round starts with whoever is still in.
             val starter = game.starter.takeIf { it in alive } ?: game.cards.first { it.player in alive && it.role != Role.DRIFTER }.player
@@ -114,7 +114,7 @@ fun DebateScreen(
                 color = Neon.Amber,
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(top = 12.dp),
+                modifier = Modifier.padding(top = 12.dp)
             )
             Spacer(Modifier.height(24.dp))
             if (discussionSeconds > 0) {
@@ -132,7 +132,7 @@ fun DebateScreen(
                     color = Color.White.copy(alpha = 0.7f),
                     style = MaterialTheme.typography.bodySmall,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(top = 20.dp).testTag("debate_out"),
+                    modifier = Modifier.padding(top = 20.dp).testTag("debate_out")
                 )
             }
         }
@@ -168,7 +168,7 @@ private fun CircularTimer(seconds: Int, onTimeUp: () -> Unit) {
             .clip(CircleShape)
             .clickable(enabled = left > 0) { paused = !paused }
             .testTag("timer"),
-        contentAlignment = Alignment.Center,
+        contentAlignment = Alignment.Center
     ) {
         Canvas(Modifier.fillMaxSize().padding(8.dp)) {
             val stroke = 12.dp.toPx()
@@ -181,7 +181,7 @@ private fun CircularTimer(seconds: Int, onTimeUp: () -> Unit) {
                 useCenter = false,
                 topLeft = Offset(stroke / 2, stroke / 2),
                 size = Size(size.width - stroke, size.height - stroke),
-                style = Stroke(stroke, cap = StrokeCap.Round),
+                style = Stroke(stroke, cap = StrokeCap.Round)
             )
         }
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -192,13 +192,13 @@ private fun CircularTimer(seconds: Int, onTimeUp: () -> Unit) {
                         left == 0 -> R.string.timer_up
                         paused -> R.string.timer_paused
                         else -> R.string.timer_pause
-                    },
+                    }
                 ),
                 color = if (left == 0) Neon.Pink else Color.White.copy(alpha = 0.8f),
                 style = MaterialTheme.typography.bodySmall,
                 fontWeight = if (left == 0) FontWeight.Bold else null,
                 textAlign = TextAlign.Center,
-                modifier = Modifier.padding(horizontal = 24.dp),
+                modifier = Modifier.padding(horizontal = 24.dp)
             )
         }
     }
@@ -220,7 +220,7 @@ fun VotingScreen(
     /** Time ran out: no going back to the debate. */
     forced: Boolean,
     onConfirm: (String) -> Unit,
-    onBack: () -> Unit,
+    onBack: () -> Unit
 ) {
     var chosen by rememberSaveable { mutableStateOf<String?>(null) }
     val short = isShortScreen()
@@ -236,14 +236,14 @@ fun VotingScreen(
                 Modifier.testTag("confirm_vote"),
                 enabled = chosen != null,
                 color = GoGreen,
-                contentColor = Neon.Night,
+                contentColor = Neon.Night
             )
             if (!forced) {
                 TextButton(onClick = onBack, modifier = Modifier.align(Alignment.CenterHorizontally).testTag("back_to_debate")) {
                     Text(stringResource(R.string.voting_back), color = Color.White.copy(alpha = 0.8f))
                 }
             }
-        },
+        }
     ) {
         Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
             // Short screens keep only the question, so the players stay visible.
@@ -258,13 +258,13 @@ fun VotingScreen(
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Black,
                 textAlign = TextAlign.Center,
-                modifier = Modifier.padding(vertical = if (short) 4.dp else 12.dp),
+                modifier = Modifier.padding(vertical = if (short) 4.dp else 12.dp)
             )
         }
         LazyVerticalGrid(
             columns = GridCells.Adaptive(if (short) 120.dp else 140.dp),
             horizontalArrangement = Arrangement.spacedBy(10.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             items(game.cards.filter { it.player in alive }, key = { it.player }) { card ->
                 val selected = chosen == card.player
@@ -274,7 +274,7 @@ fun VotingScreen(
                         .background(if (selected) Neon.Night.copy(alpha = 0.55f) else Color.White.copy(alpha = 0.1f))
                         .border(2.dp, if (selected) GoGreen else Color.White.copy(alpha = 0.25f), MaterialTheme.shapes.large)
                         .clickable { chosen = card.player }
-                        .testTag("vote_${card.player}"),
+                        .testTag("vote_${card.player}")
                 ) {
                     Column(Modifier.fillMaxWidth().padding(vertical = if (short) 8.dp else 18.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                         Avatar(card.player, game.cards.map { it.player }, if (short) 40.dp else 64.dp)
@@ -283,7 +283,7 @@ fun VotingScreen(
                     if (selected) {
                         Box(
                             Modifier.align(Alignment.TopEnd).padding(8.dp).size(24.dp).clip(CircleShape).background(GoGreen),
-                            contentAlignment = Alignment.Center,
+                            contentAlignment = Alignment.Center
                         ) { Text("✓", color = Neon.Night, fontWeight = FontWeight.Black) }
                     }
                 }
@@ -302,7 +302,7 @@ fun ExposeScreen(
     elimination: Elimination,
     onGuess: (String) -> Boolean,
     onContinue: () -> Unit,
-    onGameOver: () -> Unit,
+    onGameOver: () -> Unit
 ) {
     var count by rememberSaveable(elimination) { mutableIntStateOf(3) }
     var guessResult by rememberSaveable(elimination) { mutableStateOf<Boolean?>(null) }
@@ -332,12 +332,12 @@ fun ExposeScreen(
             if (count == 0 && !guessing && !game.isOver) {
                 BigButton(stringResource(R.string.next_vote), onContinue, Modifier.testTag("keep_playing"), color = Color.White, contentColor = Neon.Night)
             }
-        },
+        }
     ) {
         Column(
             Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
+            verticalArrangement = Arrangement.Center
         ) {
             if (count > 0) {
                 Emoji("👀", size = 110)
@@ -348,7 +348,7 @@ fun ExposeScreen(
                     lineHeight = 50.sp,
                     fontWeight = FontWeight.Black,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(top = 16.dp).testTag("exposing"),
+                    modifier = Modifier.padding(top = 16.dp).testTag("exposing")
                 )
             } else {
                 EliminatedCard(card, game, guessResult, onGuess = { guessResult = onGuess(it) })
@@ -374,7 +374,7 @@ private fun EliminatedCard(card: Card, game: Game, guessResult: Boolean?, onGues
             lineHeight = if (short) 32.sp else 42.sp,
             fontWeight = FontWeight.Black,
             textAlign = TextAlign.Center,
-            modifier = Modifier.testTag("eliminated"),
+            modifier = Modifier.testTag("eliminated")
         )
     }
     if (game.pendingGuess == card.player) {
@@ -403,11 +403,17 @@ private fun EliminatedCard(card: Card, game: Game, guessResult: Boolean?, onGues
             Text(stringResource(R.string.out_their_word, word), color = Color.White, style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(top = 8.dp))
         }
         Text(
-            if (guessResult == false) stringResource(R.string.guess_wrong) else if (card.role == Role.DRIFTER) "" else body,
+            if (guessResult == false) {
+                stringResource(R.string.guess_wrong)
+            } else if (card.role == Role.DRIFTER) {
+                ""
+            } else {
+                body
+            },
             color = Color.White.copy(alpha = 0.9f),
             style = MaterialTheme.typography.titleMedium,
             textAlign = TextAlign.Center,
-            modifier = Modifier.padding(top = 12.dp),
+            modifier = Modifier.padding(top = 12.dp)
         )
     }
 }
@@ -424,7 +430,7 @@ private fun GuessInput(onGuess: (String) -> Unit) {
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
         keyboardActions = KeyboardActions(onDone = { if (text.isNotBlank()) onGuess(text) }),
         colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = Color.White, unfocusedBorderColor = Color.White.copy(alpha = 0.6f)),
-        modifier = Modifier.fillMaxWidth().padding(top = 16.dp).testTag("guess_text"),
+        modifier = Modifier.fillMaxWidth().padding(top = 16.dp).testTag("guess_text")
     )
     Spacer(Modifier.height(12.dp))
     BigButton(stringResource(R.string.guess_go), { onGuess(text) }, Modifier.testTag("guess"), enabled = text.isNotBlank(), color = Color.White, contentColor = Neon.Night)
@@ -443,7 +449,7 @@ fun ResultScreen(
     onReport: (() -> Unit)?,
     /** Goes to the ranking, which then starts the next round. */
     onContinue: () -> Unit,
-    onHome: () -> Unit,
+    onHome: () -> Unit
 ) {
     val outcome = game.outcome
     val impostors = game.cards.filter { it.role == Role.IMPOSTOR }
@@ -452,11 +458,15 @@ fun ResultScreen(
         Outcome.CiviliansWin -> Triple(
             "😎🕵️😱",
             pluralStringResource(R.plurals.result_caught, impostors.size + (if (drifter != null) 1 else 0)),
-            stringResource(R.string.result_sub_civilians),
+            stringResource(R.string.result_sub_civilians)
         )
+
         Outcome.DrifterGuessed -> Triple("🤷💡🤯", stringResource(R.string.result_drifter_guessed), stringResource(R.string.result_sub_drifter))
+
         Outcome.NoCivilians -> Triple("🎭🎭🎭", stringResource(R.string.result_nobody), stringResource(R.string.result_sub_nobody))
+
         Outcome.EndedEarly -> Triple("🏁", stringResource(R.string.result_ended), stringResource(R.string.result_sub_ended))
+
         is Outcome.InfiltratorsWin -> Triple(
             "😏🕵️😏",
             when (outcome.roles) {
@@ -464,8 +474,9 @@ fun ResultScreen(
                 setOf(Role.IMPOSTOR) -> stringResource(R.string.result_impostors)
                 else -> stringResource(R.string.result_impostors_drifter)
             },
-            if (lastElimination?.role == Role.CIVILIAN) stringResource(R.string.result_sub_infiltrators_vote) else stringResource(R.string.result_sub_infiltrators),
+            if (lastElimination?.role == Role.CIVILIAN) stringResource(R.string.result_sub_infiltrators_vote) else stringResource(R.string.result_sub_infiltrators)
         )
+
         null -> Triple("🕵️", "", "")
     }
     val background = when (outcome) {
@@ -489,7 +500,7 @@ fun ResultScreen(
                 TextButton(onClick = onHome, modifier = Modifier.align(Alignment.CenterHorizontally).testTag("home")) {
                     Text(stringResource(R.string.home), color = Color.White.copy(alpha = 0.85f))
                 }
-            },
+            }
         ) {
             Column(Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState()), horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(emojis, fontSize = 64.sp)
@@ -500,7 +511,7 @@ fun ResultScreen(
                         pluralStringResource(R.plurals.scores_rounds_left, roundsLeft, roundsLeft),
                         color = Color.White,
                         fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(top = 6.dp).clip(CircleShape).background(Color.Black.copy(alpha = 0.2f)).padding(horizontal = 14.dp, vertical = 4.dp),
+                        modifier = Modifier.padding(top = 6.dp).clip(CircleShape).background(Color.Black.copy(alpha = 0.2f)).padding(horizontal = 14.dp, vertical = 4.dp)
                     )
                 }
                 Spacer(Modifier.height(20.dp))
@@ -555,7 +566,7 @@ fun ResultScreen(
 private fun ResultPanel(content: @Composable () -> Unit) {
     Column(
         Modifier.fillMaxWidth().clip(MaterialTheme.shapes.large).background(Color.Black.copy(alpha = 0.25f)).padding(18.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) { content() }
 }
 
@@ -574,7 +585,7 @@ internal fun roleLabel(role: Role): String = stringResource(
         Role.CIVILIAN -> R.string.role_civilian
         Role.IMPOSTOR -> R.string.role_impostor
         Role.DRIFTER -> R.string.role_drifter
-    },
+    }
 )
 
 internal fun roleColor(role: Role): Color = when (role) {
@@ -584,8 +595,7 @@ internal fun roleColor(role: Role): Color = when (role) {
 }
 
 /** Players by points, best first. */
-private fun ranking(players: List<String>, scores: Map<String, Int>) =
-    (players + scores.keys).distinct().sortedByDescending { scores[it] ?: 0 }
+private fun ranking(players: List<String>, scores: Map<String, Int>) = (players + scores.keys).distinct().sortedByDescending { scores[it] ?: 0 }
 
 @Composable
 private fun RankRow(player: String, players: List<String>, points: Int, gained: Int?) {
@@ -596,7 +606,7 @@ private fun RankRow(player: String, players: List<String>, points: Int, gained: 
             .background(Color.Black.copy(alpha = 0.25f))
             .padding(horizontal = 16.dp, vertical = 12.dp)
             .testTag("rank_$player"),
-        verticalAlignment = Alignment.CenterVertically,
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Avatar(player, players, 40.dp)
         Text(player, Modifier.weight(1f).padding(horizontal = 14.dp), color = Color.White, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
@@ -605,7 +615,7 @@ private fun RankRow(player: String, players: List<String>, points: Int, gained: 
                 "+$gained",
                 color = Neon.Night,
                 fontWeight = FontWeight.Black,
-                modifier = Modifier.padding(end = 12.dp).clip(CircleShape).background(GoGreen).padding(horizontal = 12.dp, vertical = 4.dp),
+                modifier = Modifier.padding(end = 12.dp).clip(CircleShape).background(GoGreen).padding(horizontal = 12.dp, vertical = 4.dp)
             )
         }
         Text("$points", color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.Black)
@@ -623,7 +633,7 @@ fun RankingScreen(
     roundsPlayed: Int,
     onNextRound: () -> Unit,
     onReset: () -> Unit,
-    onBack: () -> Unit,
+    onBack: () -> Unit
 ) {
     var confirmReset by rememberSaveable { mutableStateOf(false) }
     Page(
@@ -634,22 +644,32 @@ fun RankingScreen(
         bottom = {
             BigButton(stringResource(R.string.continue_), onNextRound, Modifier.testTag("next_round"), color = GoGreen, contentColor = Neon.Night)
             TextButton(
-                onClick = { if (confirmReset) { onReset(); confirmReset = false } else confirmReset = true },
-                modifier = Modifier.align(Alignment.CenterHorizontally).testTag("reset_scores"),
+                onClick = {
+                    if (confirmReset) {
+                        onReset()
+                        confirmReset = false
+                    } else {
+                        confirmReset = true
+                    }
+                },
+                modifier = Modifier.align(Alignment.CenterHorizontally).testTag("reset_scores")
             ) {
                 Text(stringResource(if (confirmReset) R.string.scores_reset_confirm else R.string.scores_reset), color = Color.White.copy(alpha = 0.75f))
             }
-        },
+        }
     ) {
         Column(Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState()), horizontalAlignment = Alignment.CenterHorizontally) {
             Text("🏆", fontSize = 56.sp)
             Text(stringResource(R.string.scores_title), color = Color.White, style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Black)
             Text(
-                if (roundsLeft != null) pluralStringResource(R.plurals.scores_rounds_left, roundsLeft, roundsLeft)
-                else stringResource(R.string.scores_rounds_free, roundsPlayed),
+                if (roundsLeft != null) {
+                    pluralStringResource(R.plurals.scores_rounds_left, roundsLeft, roundsLeft)
+                } else {
+                    stringResource(R.string.scores_rounds_free, roundsPlayed)
+                },
                 color = Color.White.copy(alpha = 0.8f),
                 style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(bottom = 16.dp).testTag("rounds_left"),
+                modifier = Modifier.padding(bottom = 16.dp).testTag("rounds_left")
             )
             ranking(players, scores).forEach { player ->
                 RankRow(player, players, scores[player] ?: 0, lastPoints[player])
@@ -675,7 +695,7 @@ fun PodiumScreen(players: List<String>, scores: Map<String, Int>, onNewMatch: ()
                 TextButton(onClick = onHome, modifier = Modifier.align(Alignment.CenterHorizontally).testTag("home")) {
                     Text(stringResource(R.string.home), color = Color.White.copy(alpha = 0.85f))
                 }
-            },
+            }
         ) {
             val short = isShortScreen()
             val winnerBlock = @Composable {
@@ -699,7 +719,7 @@ fun PodiumScreen(players: List<String>, scores: Map<String, Int>, onNewMatch: ()
                         lineHeight = if (short) 32.sp else 38.sp,
                         fontWeight = FontWeight.Black,
                         textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(vertical = if (short) 8.dp else 16.dp).testTag("podium_title"),
+                        modifier = Modifier.padding(vertical = if (short) 8.dp else 16.dp).testTag("podium_title")
                     )
                 }
             }
@@ -746,7 +766,7 @@ fun TimeUpScreen(onDone: () -> Unit) {
                 lineHeight = if (short) 40.sp else 50.sp,
                 fontWeight = FontWeight.Black,
                 textAlign = TextAlign.Center,
-                modifier = Modifier.padding(top = 16.dp).testTag("time_up"),
+                modifier = Modifier.padding(top = 16.dp).testTag("time_up")
             )
         }
     }

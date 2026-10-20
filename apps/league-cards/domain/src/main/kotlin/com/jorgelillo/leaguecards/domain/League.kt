@@ -1,8 +1,8 @@
 package com.jorgelillo.leaguecards.domain
 
+import kotlin.math.roundToInt
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
-import kotlin.math.roundToInt
 
 /**
  * Everything that makes a league funny: its people, their cards, the matchday events and the
@@ -21,7 +21,7 @@ data class League(
     val chat: List<ChatLine> = emptyList(),
     val joker: Joker? = null,
     val endings: Endings,
-    val achievements: List<Achievement> = emptyList(),
+    val achievements: List<Achievement> = emptyList()
 ) {
     fun character(id: String): Character? = characters.firstOrNull { it.id == id }
     fun card(id: String): Card? = cards.firstOrNull { it.id == id }
@@ -78,7 +78,7 @@ data class Character(
     /** Shown in their avatar instead of the initial. */
     val emoji: String = "",
     /** Their team's name, shown in the table ("Rayo Entrebirras"); the alias when blank. */
-    val team: String = "",
+    val team: String = ""
 )
 
 /**
@@ -92,7 +92,7 @@ data class Rival(
     val skill: Int = 40,
     val swing: Int = 20,
     val invalidLineupChance: Double = 0.02,
-    val allOrNothing: Boolean = false,
+    val allOrNothing: Boolean = false
 )
 
 /** The four meters, 0..100. Any of them at 0 or 100 ends the season (like Reigns). */
@@ -101,19 +101,22 @@ data class Meters(
     val money: Int = 50,
     val squad: Int = 50,
     val patience: Int = 50,
-    val tears: Int = 50,
+    val tears: Int = 50
 ) {
     operator fun plus(e: Effects) = Meters(
         (money + e.money).coerceIn(0, 100),
         (squad + e.squad).coerceIn(0, 100),
         (patience + e.patience).coerceIn(0, 100),
-        (tears + e.tears).coerceIn(0, 100),
+        (tears + e.tears).coerceIn(0, 100)
     )
 
     /** A [share] of the way back to 50, at least 1 point, never past it (meters at 0 or 100 stay). */
     fun settle(share: Double = 0.2): Meters {
-        fun Int.back() = if (this == 0 || this == 100 || this == 50) this
-        else this + ((50 - this) * share).roundToInt().let { if (it == 0) (if (this < 50) 1 else -1) else it }
+        fun Int.back() = if (this == 0 || this == 100 || this == 50) {
+            this
+        } else {
+            this + ((50 - this) * share).roundToInt().let { if (it == 0) (if (this < 50) 1 else -1) else it }
+        }
         return Meters(money.back(), squad.back(), patience.back(), tears.back())
     }
 
@@ -142,7 +145,7 @@ data class Effects(
     val squad: Int = 0,
     val patience: Int = 0,
     val tears: Int = 0,
-    val points: Int = 0,
+    val points: Int = 0
 )
 
 /** A gamble: with [chance], [effects] and [outcome] replace the choice's own. */
@@ -161,7 +164,7 @@ data class Choice(
     val next: String? = null,
     val risk: Risk? = null,
     /** Counts towards this achievement when chosen (and the gamble, if any, didn't go the other way). */
-    val achievement: String? = null,
+    val achievement: String? = null
 )
 
 @Serializable
@@ -179,7 +182,7 @@ data class Card(
     /** At most once a season. */
     val once: Boolean = false,
     /** Only dealt as someone's follow-up. */
-    val followUpOnly: Boolean = false,
+    val followUpOnly: Boolean = false
 )
 
 /** Something that may happen when the matchday is played ("recálculo", "corralito"…). */
@@ -191,7 +194,7 @@ data class MatchdayEvent(
     val character: String? = null,
     val effects: Effects = Effects(),
     /** An invalid line-up: you score nothing this matchday. */
-    val noPoints: Boolean = false,
+    val noPoints: Boolean = false
 )
 
 enum class Mood { GOOD, BAD, ANY }
@@ -224,7 +227,7 @@ data class Endings(
     val tearsLow: String,
     val tearsHigh: String,
     val champion: String,
-    val notChampion: String,
+    val notChampion: String
 ) {
     /** Every ending's key, in display order (see [Ending.key]). */
     val keys: List<String> get() = listOf("champion", "finished") + Meter.entries.flatMap { listOf(key(it, false), key(it, true)) }

@@ -47,7 +47,7 @@ fun LilloAboutSheet(
     privacyUrl: String,
     playStoreUrl: String?,
     onDismiss: () -> Unit,
-    languages: List<Pair<String, String>> = LilloLanguages,
+    languages: List<Pair<String, String>> = LilloLanguages
 ) {
     val uriHandler = LocalUriHandler.current
     var pickLanguage by rememberSaveable { mutableStateOf(false) }
@@ -55,12 +55,12 @@ fun LilloAboutSheet(
         Column(
             modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp).padding(bottom = 32.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(12.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Image(
                 painter = icon,
                 contentDescription = null,
-                modifier = Modifier.size(88.dp).clip(MaterialTheme.shapes.large).background(iconBackground),
+                modifier = Modifier.size(88.dp).clip(MaterialTheme.shapes.large).background(iconBackground)
             )
             Text(texts.title, style = MaterialTheme.typography.titleLarge, textAlign = TextAlign.Center)
             Text(texts.version, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)

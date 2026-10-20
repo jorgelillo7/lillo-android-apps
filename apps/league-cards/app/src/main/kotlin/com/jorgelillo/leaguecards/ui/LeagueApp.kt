@@ -69,21 +69,38 @@ fun LeagueApp(vm: LeagueViewModel) {
             TrophiesScreen(league, saved) { trophies = false }
         } else if (!playing || season == null) {
             HomeScreen(
-                league, saved,
+                league,
+                saved,
                 onContinue = { playing = true },
-                onNew = { vm.newSeason(); playing = true },
-                onTrophies = { trophies = true },
+                onNew = {
+                    vm.newSeason()
+                    playing = true
+                },
+                onTrophies = { trophies = true }
             )
         } else {
             BackHandler { playing = false }
             val report = season.report
             when {
                 season.reportPending && report != null -> ReportScreen(
-                    league, report, season.justUnlocked, season.over, onNext = vm::dismissReport, onTable = { table = true }, onBack = { playing = false },
+                    league,
+                    report,
+                    season.justUnlocked,
+                    season.over,
+                    onNext = vm::dismissReport,
+                    onTable = { table = true },
+                    onBack = { playing = false }
                 )
+
                 season.over -> EndScreen(league, saved, season, onNew = vm::newSeason, onHome = { playing = false }, onTrophies = { trophies = true })
+
                 else -> PlayScreen(
-                    league, season, onChoose = vm::choose, onJoker = vm::useJoker, onTable = { table = true }, onBack = { playing = false },
+                    league,
+                    season,
+                    onChoose = vm::choose,
+                    onJoker = vm::useJoker,
+                    onTable = { table = true },
+                    onBack = { playing = false }
                 )
             }
             if (table) TableSheet(league, season) { table = false }
@@ -111,7 +128,7 @@ private fun HomeScreen(league: League, saved: Saved, onContinue: () -> Unit, onN
             } else {
                 BigButton(stringResource(R.string.new_season), onNew, "new_season")
             }
-        },
+        }
     ) {
         Column(Modifier.fillMaxWidth().verticalScroll(rememberScrollState()), horizontalAlignment = Alignment.CenterHorizontally) {
             Text("😭⚽", fontSize = 64.sp)
@@ -119,7 +136,7 @@ private fun HomeScreen(league: League, saved: Saved, onContinue: () -> Unit, onN
                 stringResource(R.string.app_name),
                 style = MaterialTheme.typography.headlineMedium,
                 fontWeight = FontWeight.Black,
-                textAlign = TextAlign.Center,
+                textAlign = TextAlign.Center
             )
             Text(league.name, color = Chat.Green, fontWeight = FontWeight.Bold)
             Spacer(Modifier.height(20.dp))
@@ -138,9 +155,9 @@ private fun HomeScreen(league: League, saved: Saved, onContinue: () -> Unit, onN
                         saved.achievements.count { league.achievement(it) != null },
                         league.achievements.size,
                         saved.endingsSeen.size,
-                        league.endings.keys.size,
+                        league.endings.keys.size
                     ),
-                    color = Chat.Gold,
+                    color = Chat.Gold
                 )
             }
             Spacer(Modifier.height(16.dp))
@@ -168,11 +185,11 @@ private fun HomeScreen(league: League, saved: Saved, onContinue: () -> Unit, onN
                 version = stringResource(R.string.about_version, BuildConfig.VERSION_NAME),
                 body = stringResource(R.string.about_body),
                 rate = null,
-                privacy = stringResource(R.string.about_privacy),
+                privacy = stringResource(R.string.about_privacy)
             ),
             privacyUrl = LilloLinks.privacyPolicy("league-cards"),
             playStoreUrl = null,
-            onDismiss = { about = false },
+            onDismiss = { about = false }
         )
     }
 }
@@ -205,9 +222,9 @@ private fun EndScreen(league: League, saved: Saved, season: Season, onNew: () ->
                             if (unlocked.isEmpty()) "" else "\n" + unlocked.joinToString(" · ") { it.emoji + " " + it.title }
                         context.shareText(text)
                     },
-                    modifier = Modifier.fillMaxWidth().height(52.dp).testTag("share"),
+                    modifier = Modifier.fillMaxWidth().height(52.dp).testTag("share")
                 ) { Text(stringResource(R.string.share), color = Chat.Text) }
-            },
+            }
         ) {
             Column(Modifier.fillMaxWidth().verticalScroll(rememberScrollState()), horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(if (ending.champion) "🏆" else "😭", fontSize = 80.sp)
@@ -217,7 +234,7 @@ private fun EndScreen(league: League, saved: Saved, season: Season, onNew: () ->
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.testTag("ending"),
+                    modifier = Modifier.testTag("ending")
                 )
                 Spacer(Modifier.height(8.dp))
                 Text(stringResource(R.string.ending_stats, season.matchday - 1, position), color = Chat.Muted, textAlign = TextAlign.Center)
@@ -232,7 +249,7 @@ private fun EndScreen(league: League, saved: Saved, season: Season, onNew: () ->
                             .fillMaxWidth()
                             .background(Chat.Gold.copy(alpha = 0.16f), RoundedCornerShape(12.dp))
                             .padding(12.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(stringResource(R.string.season_achievements, unlocked.size), color = Chat.Gold, style = MaterialTheme.typography.labelLarge)
                         Text(unlocked.joinToString(" ") { it.emoji }, style = MaterialTheme.typography.headlineSmall)
@@ -240,7 +257,7 @@ private fun EndScreen(league: League, saved: Saved, season: Season, onNew: () ->
                             unlocked.joinToString(" · ") { it.title },
                             color = Chat.Text,
                             style = MaterialTheme.typography.bodySmall,
-                            textAlign = TextAlign.Center,
+                            textAlign = TextAlign.Center
                         )
                     }
                 }
@@ -276,7 +293,7 @@ private fun Standings(league: League, season: Season) {
                     .fillMaxWidth()
                     .background(if (mine) Chat.Mine else Chat.Bubble, RoundedCornerShape(10.dp))
                     .padding(horizontal = 14.dp, vertical = 8.dp),
-                verticalAlignment = Alignment.CenterVertically,
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Text("${i + 1}", modifier = Modifier.width(28.dp), color = Chat.Muted, fontWeight = FontWeight.Bold)
                 Column(Modifier.weight(1f)) {

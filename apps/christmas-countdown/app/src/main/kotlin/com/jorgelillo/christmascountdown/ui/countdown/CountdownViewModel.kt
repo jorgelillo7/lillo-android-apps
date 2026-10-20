@@ -9,6 +9,7 @@ import com.jorgelillo.christmascountdown.ChristmasCountdownApplication
 import com.jorgelillo.christmascountdown.domain.ChristmasCountdown
 import com.jorgelillo.christmascountdown.domain.CountdownState
 import com.jorgelillo.christmascountdown.widget.updateCountdownWidgets
+import java.time.ZonedDateTime
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -16,12 +17,11 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import java.time.ZonedDateTime
 
 data class CountdownUiState(
     val countdown: CountdownState,
     val sleepsMode: Boolean = false,
-    val musicEnabled: Boolean = false,
+    val musicEnabled: Boolean = false
 )
 
 class CountdownViewModel(private val app: ChristmasCountdownApplication) : ViewModel() {
@@ -41,7 +41,7 @@ class CountdownViewModel(private val app: ChristmasCountdownApplication) : ViewM
         }.stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = CountdownUiState(ChristmasCountdown.stateAt(ZonedDateTime.now())),
+            initialValue = CountdownUiState(ChristmasCountdown.stateAt(ZonedDateTime.now()))
         )
 
     init {

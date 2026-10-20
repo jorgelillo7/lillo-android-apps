@@ -1,12 +1,12 @@
 package com.jorgelillo.core.sharelink
 
-import kotlinx.serialization.KSerializer
-import kotlinx.serialization.json.Json
 import java.io.ByteArrayOutputStream
 import java.net.URLDecoder
 import java.util.Base64
 import java.util.zip.Deflater
 import java.util.zip.Inflater
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.json.Json
 
 /**
  * Something (a tournament, a word pack…) inside a link, so it moves to another phone with no
@@ -23,7 +23,10 @@ class ShareLink<T>(private val serializer: KSerializer<T>, val path: String) {
 
     fun encode(value: T): String {
         val bytes = json.encodeToString(serializer, value).toByteArray()
-        val deflater = Deflater(Deflater.BEST_COMPRESSION, true).apply { setInput(bytes); finish() }
+        val deflater = Deflater(Deflater.BEST_COMPRESSION, true).apply {
+            setInput(bytes)
+            finish()
+        }
         val out = ByteArrayOutputStream()
         val buffer = ByteArray(1024)
         while (!deflater.finished()) out.write(buffer, 0, deflater.deflate(buffer))
@@ -69,6 +72,9 @@ class ShareLink<T>(private val serializer: KSerializer<T>, val path: String) {
         /** Longer links are still shared as text, but no QR code: too dense to scan off a screen. */
         const val QR_MAX_CHARS = 1_800
 
-        private val json = Json { ignoreUnknownKeys = true; encodeDefaults = false }
+        private val json = Json {
+            ignoreUnknownKeys = true
+            encodeDefaults = false
+        }
     }
 }

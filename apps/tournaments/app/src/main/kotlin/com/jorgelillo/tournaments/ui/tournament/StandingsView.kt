@@ -55,13 +55,16 @@ fun StandingsView(t: Tournament) {
             val leader = i == 0 && s.points > 0
             Row(
                 Modifier.fillMaxWidth().background(Arena.Raised, RoundedCornerShape(10.dp)).padding(horizontal = 10.dp, vertical = 10.dp),
-                verticalAlignment = Alignment.CenterVertically,
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Text("${i + 1}", color = if (leader) Arena.Gold else Arena.Muted, fontWeight = FontWeight.Bold, modifier = Modifier.width(28.dp))
                 Text(
                     t.player(s.player)?.name.orEmpty(),
-                    fontWeight = FontWeight.Bold, color = if (leader) Arena.Gold else Arena.Cream,
-                    maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f),
+                    fontWeight = FontWeight.Bold,
+                    color = if (leader) Arena.Gold else Arena.Cream,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.weight(1f)
                 )
                 Cell("${s.points}", 40, bold = true)
                 Cell("${s.wins}-${s.draws}-${s.losses}", 64)
@@ -76,9 +79,7 @@ fun StandingsView(t: Tournament) {
 private fun percent(v: Double) = "${(v * 100).roundToInt()}%"
 
 @Composable
-private fun Header(text: String, width: Int) =
-    Text(text, color = Arena.Muted, fontSize = 12.sp, textAlign = TextAlign.Center, modifier = Modifier.width(width.dp))
+private fun Header(text: String, width: Int) = Text(text, color = Arena.Muted, fontSize = 12.sp, textAlign = TextAlign.Center, modifier = Modifier.width(width.dp))
 
 @Composable
-private fun Cell(text: String, width: Int, bold: Boolean = false) =
-    Text(text, fontSize = 13.sp, fontWeight = if (bold) FontWeight.Black else FontWeight.Normal, textAlign = TextAlign.Center, modifier = Modifier.width(width.dp))
+private fun Cell(text: String, width: Int, bold: Boolean = false) = Text(text, fontSize = 13.sp, fontWeight = if (bold) FontWeight.Black else FontWeight.Normal, textAlign = TextAlign.Center, modifier = Modifier.width(width.dp))

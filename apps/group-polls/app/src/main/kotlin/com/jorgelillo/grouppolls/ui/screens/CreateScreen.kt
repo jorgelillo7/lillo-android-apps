@@ -50,7 +50,7 @@ fun CreateScreen(
     onAcceptTerms: () -> Unit,
     onCreate: suspend (String, String, String, Visibility, Duration) -> String?,
     onCreated: (String) -> Unit,
-    onBack: () -> Unit,
+    onBack: () -> Unit
 ) {
     var question by rememberSaveable { mutableStateOf("") }
     var red by rememberSaveable { mutableStateOf("") }
@@ -85,9 +85,9 @@ fun CreateScreen(
                 stringResource(R.string.create_button),
                 ::submit,
                 enabled = problems.isEmpty() && !busy,
-                modifier = Modifier.testTag("submit"),
+                modifier = Modifier.testTag("submit")
             )
-        },
+        }
     ) {
         Column(Modifier.verticalScroll(rememberScrollState())) {
             OutlinedTextField(
@@ -95,7 +95,7 @@ fun CreateScreen(
                 onValueChange = { question = it.take(Limits.QUESTION_MAX) },
                 label = { Text(stringResource(R.string.create_question)) },
                 placeholder = { Text(stringResource(R.string.create_question_hint)) },
-                modifier = Modifier.fillMaxWidth().testTag("question_input"),
+                modifier = Modifier.fillMaxWidth().testTag("question_input")
             )
             Spacer(Modifier.height(12.dp))
             Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -132,11 +132,15 @@ fun CreateScreen(
             title = { Text(stringResource(R.string.terms_title)) },
             text = { Text(stringResource(R.string.terms_body)) },
             confirmButton = {
-                TextButton(onClick = { showTerms = false; onAcceptTerms(); submit() }, modifier = Modifier.testTag("accept_terms")) {
+                TextButton(onClick = {
+                    showTerms = false
+                    onAcceptTerms()
+                    submit()
+                }, modifier = Modifier.testTag("accept_terms")) {
                     Text(stringResource(R.string.terms_accept), fontWeight = FontWeight.Bold)
                 }
             },
-            dismissButton = { TextButton(onClick = { showTerms = false }) { Text(stringResource(R.string.cancel)) } },
+            dismissButton = { TextButton(onClick = { showTerms = false }) { Text(stringResource(R.string.cancel)) } }
         )
     }
 }
@@ -150,7 +154,7 @@ private fun problemText(problem: DraftProblem): String = stringResource(
         DraftProblem.ANSWER_TOO_LONG -> R.string.problem_answer_long
         DraftProblem.SAME_ANSWERS -> R.string.problem_same
         DraftProblem.BLOCKED_WORDS -> R.string.problem_blocked
-    },
+    }
 )
 
 @Composable
@@ -161,7 +165,7 @@ private fun AnswerField(value: String, onChange: (String) -> Unit, label: String
         label = { Text(label, color = color) },
         singleLine = true,
         colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = color, unfocusedBorderColor = color.copy(alpha = 0.5f), cursorColor = color),
-        modifier = modifier,
+        modifier = modifier
     )
 }
 
@@ -176,7 +180,7 @@ private fun Choice(title: String, desc: String, emoji: String, selected: Boolean
             .border(2.dp, if (selected) Polls.Blue else Polls.Line, MaterialTheme.shapes.large)
             .clickable(onClick = onClick)
             .padding(14.dp)
-            .testTag(tag),
+            .testTag(tag)
     ) {
         Text(emoji, style = MaterialTheme.typography.headlineSmall)
         Column(Modifier.padding(start = 12.dp)) {
@@ -198,6 +202,6 @@ private fun Pill(text: String, selected: Boolean, modifier: Modifier, onClick: (
             .padding(vertical = 10.dp),
         color = if (selected) Color.White else Polls.Ink,
         fontWeight = FontWeight.Bold,
-        textAlign = TextAlign.Center,
+        textAlign = TextAlign.Center
     )
 }

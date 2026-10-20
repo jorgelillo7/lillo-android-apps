@@ -76,7 +76,7 @@ Lines are pruned as items ship. What has **shipped** lives in `apps/<app>/releas
 | 🔨 | Screenshot tests on the JVM (Roborazzi) for core components and each app's key screens, portrait and landscape: catch layout breaks in seconds instead of the hour-long emulator battery | — |
 | 🔨 | Release smoke tests in CI on an emulator (`reactivecircus/android-emulator-runner`): the release build in CI catches R8 build errors, but only running the app catches a stripped class like WorkManager's | `scripts/env.sh` to work on Linux runners |
 | 🔨 | Unit tests for core: `JsonStore` (users' data), `avatarInitial`, `sharedText`, share links | — |
-| 🔨 | Formatting and static analysis (ktlint via spotless, or detekt) in CI: unused and unsorted imports slip through | — |
+| 🔨 | Line length under ktlint (`max_line_length` is off: ~100 Kotlin lines over 150 to wrap by hand) and Compose rules (`io.nlopez.compose.rules` for ktlint) | — |
 | 🔨 | Dependency update PRs (Renovate or Dependabot); lint already lists 7 newer versions | — |
 | 🔨 | Semantic colours in `LilloTheme` (card, muted, line, accent) so core components stop taking colours per call and the per-app wrappers shrink | — |
 | 🔨 | `GlassCard` / `GradientBackground` are Christmas-only: back to that app, or a second user | — |

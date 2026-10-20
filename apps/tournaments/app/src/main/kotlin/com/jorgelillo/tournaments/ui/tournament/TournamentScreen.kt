@@ -62,7 +62,7 @@ fun TournamentScreen(
     t: Tournament,
     onChange: ((Tournament) -> Tournament) -> Unit,
     onDelete: () -> Unit,
-    onBack: () -> Unit,
+    onBack: () -> Unit
 ) {
     val context = LocalContext.current
     val resources = LocalResources.current
@@ -98,34 +98,49 @@ fun TournamentScreen(
                         if (Tournaments.canRedraw(t)) {
                             DropdownMenuItem(
                                 text = { Text(stringResource(R.string.action_redraw)) },
-                                onClick = { menu = false; onChange { Tournaments.draw(it, Random.Default) } },
-                                modifier = Modifier.testTag("redraw_menu"),
+                                onClick = {
+                                    menu = false
+                                    onChange { Tournaments.draw(it, Random.Default) }
+                                },
+                                modifier = Modifier.testTag("redraw_menu")
                             )
                         }
                         if (Tournaments.canUnpairLastRound(t)) {
                             DropdownMenuItem(
                                 text = { Text(stringResource(R.string.action_unpair)) },
-                                onClick = { menu = false; onChange(Tournaments::unpairLastRound) },
+                                onClick = {
+                                    menu = false
+                                    onChange(Tournaments::unpairLastRound)
+                                }
                             )
                         }
                         DropdownMenuItem(
                             text = { Text(stringResource(R.string.export_image)) },
-                            onClick = { menu = false; shareImage(context, t) },
-                            modifier = Modifier.testTag("export_image"),
+                            onClick = {
+                                menu = false
+                                shareImage(context, t)
+                            },
+                            modifier = Modifier.testTag("export_image")
                         )
                         DropdownMenuItem(
                             text = { Text(stringResource(R.string.export_csv)) },
-                            onClick = { menu = false; shareCsv(context, t) },
+                            onClick = {
+                                menu = false
+                                shareCsv(context, t)
+                            }
                         )
                         DropdownMenuItem(
                             text = { Text(stringResource(R.string.action_delete), color = Arena.Coral) },
-                            onClick = { menu = false; confirmDelete = true },
-                            modifier = Modifier.testTag("delete"),
+                            onClick = {
+                                menu = false
+                                confirmDelete = true
+                            },
+                            modifier = Modifier.testTag("delete")
                         )
                     }
                 }
             },
-            bottom = { NextStep(t, onChange) },
+            bottom = { NextStep(t, onChange) }
         ) {
             val champion = t.player(t.champion)
             // Landscape / handhelds: no room for the banner, the champion goes in the summary line.
@@ -133,10 +148,15 @@ fun TournamentScreen(
             Text(
                 listOfNotNull(
                     champion?.takeIf { short }?.let { "🏆 ${it.name}" },
-                    t.game, formatDay(t.epochDay), resources.bestOfLabel(t.bestOf),
-                    stringResource(if (t.format == Format.SWISS) R.string.format_swiss else R.string.format_elimination),
+                    t.game,
+                    formatDay(t.epochDay),
+                    resources.bestOfLabel(t.bestOf),
+                    stringResource(if (t.format == Format.SWISS) R.string.format_swiss else R.string.format_elimination)
                 ).filter { it.isNotBlank() }.joinToString(" · "),
-                color = Arena.Muted, fontSize = 13.sp, maxLines = 1, overflow = TextOverflow.Ellipsis,
+                color = Arena.Muted,
+                fontSize = 13.sp,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
             if (champion != null && !short) ChampionBanner(champion.name)
             if (tabs.size > 1) {
@@ -153,10 +173,10 @@ fun TournamentScreen(
                                             Tab.MATCHES -> R.string.tab_matches
                                             Tab.BRACKET -> R.string.tab_bracket
                                             Tab.STANDINGS -> R.string.tab_standings
-                                        },
-                                    ),
+                                        }
+                                    )
                                 )
-                            },
+                            }
                         )
                     }
                 }
@@ -189,7 +209,7 @@ fun TournamentScreen(
                     editing = null
                     onChange { Tournaments.clear(it, match) }
                 },
-                onDismiss = { editing = null },
+                onDismiss = { editing = null }
             )
         }
     }
@@ -201,11 +221,14 @@ fun TournamentScreen(
             title = { Text(stringResource(R.string.delete_title, t.name)) },
             text = { Text(stringResource(R.string.delete_body)) },
             confirmButton = {
-                TextButton(onClick = { confirmDelete = false; onDelete() }, modifier = Modifier.testTag("delete_ok")) {
+                TextButton(onClick = {
+                    confirmDelete = false
+                    onDelete()
+                }, modifier = Modifier.testTag("delete_ok")) {
                     Text(stringResource(R.string.action_delete), color = Arena.Coral)
                 }
             },
-            dismissButton = { TextButton(onClick = { confirmDelete = false }) { Text(stringResource(R.string.action_cancel)) } },
+            dismissButton = { TextButton(onClick = { confirmDelete = false }) { Text(stringResource(R.string.action_cancel)) } }
         )
     }
 }
@@ -217,12 +240,13 @@ private fun NextStep(t: Tournament, onChange: ((Tournament) -> Tournament) -> Un
         Tournaments.canPairNextRound(t) -> com.jorgelillo.tournaments.ui.BigButton(
             stringResource(R.string.action_pair_round, Tournaments.currentSwissRound(t) + 1),
             { onChange { Tournaments.pairNextRound(it) } },
-            "next_round",
+            "next_round"
         )
+
         Tournaments.canStartTopCut(t) -> com.jorgelillo.tournaments.ui.BigButton(
             stringResource(R.string.action_start_top_cut, t.topCut),
             { onChange(Tournaments::startTopCut) },
-            "top_cut",
+            "top_cut"
         )
     }
 }
@@ -236,7 +260,7 @@ private fun ChampionBanner(name: String) {
             .background(Arena.Gold, RoundedCornerShape(14.dp))
             .padding(horizontal = 16.dp, vertical = 10.dp)
             .testTag("champion"),
-        verticalAlignment = Alignment.CenterVertically,
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Text("🏆", fontSize = 26.sp)
         Spacer(Modifier.width(12.dp))
@@ -256,7 +280,7 @@ data class MatchKey(val stage: Stage, val round: Int, val slot: Int) {
 
         val Saver = androidx.compose.runtime.saveable.Saver<MatchKey?, String>(
             save = { it?.let { k -> "${k.stage.name}:${k.round}:${k.slot}" } ?: "" },
-            restore = { raw -> raw.split(':').takeIf { it.size == 3 }?.let { MatchKey(Stage.valueOf(it[0]), it[1].toInt(), it[2].toInt()) } },
+            restore = { raw -> raw.split(':').takeIf { it.size == 3 }?.let { MatchKey(Stage.valueOf(it[0]), it[1].toInt(), it[2].toInt()) } }
         )
     }
 }

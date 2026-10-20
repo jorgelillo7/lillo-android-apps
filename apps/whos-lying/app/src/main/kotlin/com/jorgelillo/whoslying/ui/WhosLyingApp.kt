@@ -87,7 +87,7 @@ fun WhosLyingApp(app: WhosLyingApplication, incomingText: String? = null, onInco
                 onHowTo = { showHowTo = true },
                 onModes = { showModes = true },
                 onPacks = { nav.navigate("packs") },
-                onAbout = { showAbout = true },
+                onAbout = { showAbout = true }
             )
         }
         composable("players") {
@@ -103,7 +103,7 @@ fun WhosLyingApp(app: WhosLyingApplication, incomingText: String? = null, onInco
                 onModesInfo = { showModes = true },
                 onChoosePacks = { nav.navigate("pick_packs") },
                 onStart = { if (vm.startGame()) nav.navigate("reveal") },
-                onBack = { nav.popBackStack() },
+                onBack = { nav.popBackStack() }
             )
         }
         composable("reveal") {
@@ -125,9 +125,12 @@ fun WhosLyingApp(app: WhosLyingApplication, incomingText: String? = null, onInco
                     strokes = vm.strokes,
                     discussionSeconds = state.settings.discussionSeconds,
                     onVote = { nav.navigate("vote") },
-                    onTimeUp = { vm.voteForced = true; nav.navigate("time_up") },
+                    onTimeUp = {
+                        vm.voteForced = true
+                        nav.navigate("time_up")
+                    },
                     onRevealAll = vm::revealAll,
-                    onQuit = { nav.goHome() },
+                    onQuit = { nav.goHome() }
                 )
             } else {
                 DebateScreen(
@@ -135,9 +138,12 @@ fun WhosLyingApp(app: WhosLyingApplication, incomingText: String? = null, onInco
                     alive = alive,
                     discussionSeconds = state.settings.discussionSeconds,
                     onVote = { nav.navigate("vote") },
-                    onTimeUp = { vm.voteForced = true; nav.navigate("time_up") },
+                    onTimeUp = {
+                        vm.voteForced = true
+                        nav.navigate("time_up")
+                    },
                     onRevealAll = vm::revealAll,
-                    onQuit = { nav.goHome() },
+                    onQuit = { nav.goHome() }
                 )
             }
         }
@@ -154,7 +160,7 @@ fun WhosLyingApp(app: WhosLyingApplication, incomingText: String? = null, onInco
                     vm.eliminate(player)
                     nav.navigate("expose") { popUpTo("debate") }
                 },
-                onBack = { nav.popBackStack() },
+                onBack = { nav.popBackStack() }
             )
         }
         composable("expose") {
@@ -166,8 +172,11 @@ fun WhosLyingApp(app: WhosLyingApplication, incomingText: String? = null, onInco
                 game = game,
                 elimination = elimination,
                 onGuess = { text -> vm.guess(text).also { if (vm.game.value?.isOver == true) toResult() } },
-                onContinue = { vm.dismissElimination(); nav.popBackStack() },
-                onGameOver = toResult,
+                onContinue = {
+                    vm.dismissElimination()
+                    nav.popBackStack()
+                },
+                onGameOver = toResult
             )
         }
         composable("result") {
@@ -183,7 +192,7 @@ fun WhosLyingApp(app: WhosLyingApplication, incomingText: String? = null, onInco
                 onSeeWinner = { nav.navigate("podium") { popUpTo("setup") } },
                 onReport = { showReport = true },
                 onContinue = { nav.navigate("ranking") },
-                onHome = { nav.goHome() },
+                onHome = { nav.goHome() }
             )
         }
         composable("ranking") {
@@ -195,7 +204,7 @@ fun WhosLyingApp(app: WhosLyingApplication, incomingText: String? = null, onInco
                 roundsPlayed = state.roundsPlayed,
                 onNextRound = { if (vm.startGame()) nav.navigate("reveal") { popUpTo("setup") } },
                 onReset = vm::resetScores,
-                onBack = { nav.popBackStack() },
+                onBack = { nav.popBackStack() }
             )
         }
         composable("podium") {
@@ -206,7 +215,10 @@ fun WhosLyingApp(app: WhosLyingApplication, incomingText: String? = null, onInco
                     vm.resetScores()
                     nav.popBackStack("setup", inclusive = false)
                 },
-                onHome = { vm.resetScores(); nav.goHome() },
+                onHome = {
+                    vm.resetScores()
+                    nav.goHome()
+                }
             )
         }
         composable("pick_packs") {
@@ -216,7 +228,7 @@ fun WhosLyingApp(app: WhosLyingApplication, incomingText: String? = null, onInco
                 onToggle = vm::togglePack,
                 onSelectAll = vm::selectAllPacks,
                 onNewPack = { nav.navigate("pack/$NEW") },
-                onDone = { nav.popBackStack() },
+                onDone = { nav.popBackStack() }
             )
         }
         composable("packs") {
@@ -226,7 +238,7 @@ fun WhosLyingApp(app: WhosLyingApplication, incomingText: String? = null, onInco
                 onEdit = { id -> nav.navigate("pack/${id ?: NEW}") },
                 onCopy = { pack -> nav.navigate("pack/$COPY_OF${pack.id}") },
                 onImport = importPack,
-                onBack = { nav.popBackStack() },
+                onBack = { nav.popBackStack() }
             )
         }
         composable("pack/{id}") { entry ->
@@ -239,16 +251,24 @@ fun WhosLyingApp(app: WhosLyingApplication, incomingText: String? = null, onInco
                     // A built-in pack as a starting point; nothing is saved until "Save".
                     copyOf != null -> vm.builtInPacks.firstOrNull { it.id == copyOf }
                         ?.copy(id = vm.newPackId(), name = copyName, custom = true)
+
                     id == NEW -> WordPack(vm.newPackId(), "", "📝", emptyList(), custom = true)
+
                     else -> state.customPacks.firstOrNull { it.id == id }
                 }
             } ?: return@composable LaunchedEffect(Unit) { nav.popBackStack() }
             PackEditScreen(
                 initial = initial,
                 isNew = isNew,
-                onSave = { vm.savePack(it); nav.popBackStack() },
-                onDelete = { vm.deletePack(initial.id); nav.popBackStack() },
-                onBack = { nav.popBackStack() },
+                onSave = {
+                    vm.savePack(it)
+                    nav.popBackStack()
+                },
+                onDelete = {
+                    vm.deletePack(initial.id)
+                    nav.popBackStack()
+                },
+                onBack = { nav.popBackStack() }
             )
         }
     }
@@ -266,7 +286,7 @@ fun WhosLyingApp(app: WhosLyingApplication, incomingText: String? = null, onInco
             onHowTo = { showHowTo = true },
             onModes = { showModes = true },
             onWelcome = { showWelcomeAgain = true },
-            onDismiss = { showAbout = false },
+            onDismiss = { showAbout = false }
         )
     }
     if (showModes) ModesSheet(onDismiss = { showModes = false })
@@ -277,7 +297,7 @@ fun WhosLyingApp(app: WhosLyingApplication, incomingText: String? = null, onInco
             decoy = reported.cards.firstNotNullOfOrNull { card -> card.word?.takeIf { it != reported.civilianWord } },
             pack = reported.category,
             language = language,
-            onDismiss = { showReport = false },
+            onDismiss = { showReport = false }
         )
     }
 }

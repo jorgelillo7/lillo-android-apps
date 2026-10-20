@@ -7,22 +7,27 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Player(
     @SerialName("i") val id: Int,
-    @SerialName("n") val name: String,
+    @SerialName("n") val name: String
 )
 
 @Serializable
 enum class Format {
     /** Knock-out bracket from the first round. */
-    @SerialName("e") ELIMINATION,
+    @SerialName("e")
+    ELIMINATION,
 
     /** Swiss rounds (everyone plays every round), optionally followed by a knock-out top cut. */
-    @SerialName("s") SWISS,
+    @SerialName("s")
+    SWISS
 }
 
 @Serializable
 enum class Stage {
-    @SerialName("s") SWISS,
-    @SerialName("e") ELIMINATION,
+    @SerialName("s")
+    SWISS,
+
+    @SerialName("e")
+    ELIMINATION
 }
 
 /**
@@ -41,7 +46,7 @@ data class Match(
     @SerialName("y") val winsB: Int = 0,
     /** Swiss only: the round ended level (e.g. 1-1 on time). */
     @SerialName("d") val draw: Boolean = false,
-    @SerialName("c") val comment: String = "",
+    @SerialName("c") val comment: String = ""
 ) {
     /**
      * One player and nobody to face. Only in Swiss and in the first elimination round: later in
@@ -89,12 +94,11 @@ data class Tournament(
     @SerialName("tc") val topCut: Int = 0,
     @SerialName("m") val matches: List<Match> = emptyList(),
     /** Bumped on every change: when a tournament is imported again, the newest copy wins. */
-    @SerialName("v") val revision: Int = 0,
+    @SerialName("v") val revision: Int = 0
 ) {
     fun player(id: Int?): Player? = players.firstOrNull { it.id == id }
 
-    fun round(stage: Stage, round: Int): List<Match> =
-        matches.filter { it.stage == stage && it.round == round }.sortedBy { it.slot }
+    fun round(stage: Stage, round: Int): List<Match> = matches.filter { it.stage == stage && it.round == round }.sortedBy { it.slot }
 
     val eliminationRounds: Int get() = matches.filter { it.stage == Stage.ELIMINATION }.maxOfOrNull { it.round } ?: 0
 

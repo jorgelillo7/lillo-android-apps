@@ -38,7 +38,7 @@ enum class AvatarStyle {
     Filled,
 
     /** Faint circle with a ring in the colour, the initial in the colour too. */
-    Tinted,
+    Tinted
 }
 
 /** A person as a circle with their initial (or emoji), in their colour. [ring] adds an outline. */
@@ -50,7 +50,7 @@ fun LilloAvatar(
     modifier: Modifier = Modifier,
     style: AvatarStyle = AvatarStyle.Filled,
     contentColor: Color = Color.Black,
-    ring: Color? = null,
+    ring: Color? = null
 ) {
     val ringColor = ring ?: color.takeIf { style == AvatarStyle.Tinted }
     val ringWidth = if (ring != null) size / 16 else 2.dp
@@ -60,13 +60,13 @@ fun LilloAvatar(
             .clip(CircleShape)
             .background(if (style == AvatarStyle.Filled) color else color.copy(alpha = 0.25f))
             .then(if (ringColor != null) Modifier.border(ringWidth, ringColor, CircleShape) else Modifier),
-        contentAlignment = Alignment.Center,
+        contentAlignment = Alignment.Center
     ) {
         Text(
             avatarInitial(name),
             color = if (style == AvatarStyle.Filled) contentColor else color,
             fontSize = (size.value * 0.45f).sp,
-            fontWeight = FontWeight.Black,
+            fontWeight = FontWeight.Black
         )
     }
 }

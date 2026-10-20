@@ -62,7 +62,7 @@ fun ReportScreen(league: League, report: Report, unlocked: List<String>, seasonO
         },
         bottom = {
             BigButton(stringResource(if (seasonOver) R.string.see_ending else R.string.next_matchday), onNext, "next")
-        },
+        }
     ) {
         Text(
             stringResource(R.string.report_title, report.matchday),
@@ -70,11 +70,11 @@ fun ReportScreen(league: League, report: Report, unlocked: List<String>, seasonO
             textAlign = TextAlign.Center,
             fontWeight = FontWeight.Bold,
             style = MaterialTheme.typography.labelLarge,
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth()
         )
         Column(
             Modifier.fillMaxWidth().verticalScroll(rememberScrollState()).testTag("chat"),
-            verticalArrangement = Arrangement.spacedBy(10.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             messages.forEachIndexed { i, message ->
                 AnimatedVisibility(visible = i < shown, enter = fadeIn() + slideInVertically { it / 2 }) { message() }

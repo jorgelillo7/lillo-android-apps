@@ -58,7 +58,7 @@ fun TournamentsApp(vm: TournamentsViewModel) {
                 onNew = { nav.navigate("new") },
                 onImport = { showImport = true },
                 onStats = { nav.navigate("stats") },
-                onAbout = { showAbout = true },
+                onAbout = { showAbout = true }
             )
         }
         composable("new") {
@@ -70,14 +70,17 @@ fun TournamentsApp(vm: TournamentsViewModel) {
                     nav.popBackStack()
                     nav.navigate("t/${t.id}")
                 },
-                onBack = { nav.popBackStack() },
+                onBack = { nav.popBackStack() }
             )
         }
         composable("t/{id}") { entry ->
             val t = current.tournament(entry.arguments?.getString("id").orEmpty())
             if (t == null) {
                 // Either just created (the save is still landing) or deleted: wait briefly, then leave.
-                LaunchedEffect(Unit) { delay(MISSING_GRACE_MILLIS); nav.popBackStack() }
+                LaunchedEffect(Unit) {
+                    delay(MISSING_GRACE_MILLIS)
+                    nav.popBackStack()
+                }
                 return@composable
             }
             TournamentScreen(
@@ -87,7 +90,7 @@ fun TournamentsApp(vm: TournamentsViewModel) {
                     nav.popBackStack()
                     vm.delete(t.id)
                 },
-                onBack = { nav.popBackStack() },
+                onBack = { nav.popBackStack() }
             )
         }
         composable("stats") {

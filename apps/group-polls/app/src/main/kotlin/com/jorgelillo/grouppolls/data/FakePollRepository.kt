@@ -25,8 +25,7 @@ class FakePollRepository(private val now: () -> Long = System::currentTimeMillis
 
     override suspend fun userId(): String = me
 
-    override fun feed(): Flow<List<Poll>> =
-        polls.map { all -> all.values.filter { it.inFeed(now()) }.sortedByDescending { it.createdAt } }
+    override fun feed(): Flow<List<Poll>> = polls.map { all -> all.values.filter { it.inFeed(now()) }.sortedByDescending { it.createdAt } }
 
     override fun poll(code: String): Flow<Poll?> = polls.map { it[code] }
 
@@ -75,8 +74,8 @@ class FakePollRepository(private val now: () -> Long = System::currentTimeMillis
             SAMPLE_PRIVATE to Poll(
                 SAMPLE_PRIVATE, Visibility.PRIVATE, if (spanish) "¿Cena del viernes?" else "Friday dinner?", "Pizza", "Sushi",
                 "sample-Lucía", "Lucía", if (spanish) "es" else "en",
-                t - 3 * 60 * 60 * 1000L, Duration.ONE_DAY.closesAt(t - 3 * 60 * 60 * 1000L), redVotes = 2, blueVotes = 1,
-            ),
+                t - 3 * 60 * 60 * 1000L, Duration.ONE_DAY.closesAt(t - 3 * 60 * 60 * 1000L), redVotes = 2, blueVotes = 1
+            )
         )
     }
 
@@ -89,14 +88,13 @@ class FakePollRepository(private val now: () -> Long = System::currentTimeMillis
     private fun samplePolls(): Map<String, Poll> {
         val t = now()
         val hour = 60L * 60 * 1000
-        fun sample(lang: String, q: String, red: String, blue: String, r: Int, b: Int, age: Long, by: String, d: Duration = Duration.SEVEN_DAYS) =
-            Poll(InviteCodes.generate(), Visibility.PUBLIC, q, red, blue, "sample-$by", by, lang, t - age, d.closesAt(t - age), r, b)
+        fun sample(lang: String, q: String, red: String, blue: String, r: Int, b: Int, age: Long, by: String, d: Duration = Duration.SEVEN_DAYS) = Poll(InviteCodes.generate(), Visibility.PUBLIC, q, red, blue, "sample-$by", by, lang, t - age, d.closesAt(t - age), r, b)
         return listOf(
             sample("es", "¿Tortilla de patatas con o sin cebolla?", "Con cebolla", "Sin cebolla", 812, 534, 2 * hour, "Lucía"),
             sample("es", "¿Vacaciones en la playa o en la montaña?", "Playa", "Montaña", 403, 377, 5 * hour, "Dani"),
             sample("es", "¿Piña en la pizza?", "Sí, claro", "Jamás", 221, 689, 26 * hour, "Marta", Duration.ONE_DAY),
             sample("en", "Cats or dogs?", "Cats", "Dogs", 1044, 1201, 3 * hour, "Sam"),
-            sample("en", "Coffee or tea in the morning?", "Coffee", "Tea", 640, 288, 30 * hour, "Alex", Duration.NO_LIMIT),
+            sample("en", "Coffee or tea in the morning?", "Coffee", "Tea", 640, 288, 30 * hour, "Alex", Duration.NO_LIMIT)
         ).associateBy { it.code }
     }
 

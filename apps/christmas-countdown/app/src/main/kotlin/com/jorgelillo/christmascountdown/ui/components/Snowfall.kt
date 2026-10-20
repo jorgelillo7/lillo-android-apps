@@ -29,7 +29,7 @@ fun Snowfall(modifier: Modifier = Modifier, flakeCount: Int = 70) {
                 y = Random.nextFloat(),
                 radius = 1f + depth * 2.5f,
                 speed = 0.015f + depth * 0.04f,
-                phase = Random.nextFloat() * 2 * PI.toFloat(),
+                phase = Random.nextFloat() * 2 * PI.toFloat()
             )
         }
     }
@@ -51,7 +51,7 @@ fun Snowfall(modifier: Modifier = Modifier, flakeCount: Int = 70) {
             drawCircle(
                 color = Color.White.copy(alpha = 0.25f + flake.radius * 0.12f),
                 radius = flake.radius.dp.toPx(),
-                center = Offset(x, y),
+                center = Offset(x, y)
             )
         }
     }

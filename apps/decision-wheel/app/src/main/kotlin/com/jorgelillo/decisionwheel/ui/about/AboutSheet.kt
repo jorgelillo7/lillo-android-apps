@@ -23,9 +23,9 @@ fun AboutSheet(onDismiss: () -> Unit) = LilloAboutSheet(
         version = stringResource(R.string.about_version, BuildConfig.VERSION_NAME),
         body = stringResource(R.string.about_body),
         rate = stringResource(R.string.about_rate),
-        privacy = stringResource(R.string.about_privacy),
+        privacy = stringResource(R.string.about_privacy)
     ),
     privacyUrl = PRIVACY_POLICY_URL,
     playStoreUrl = PLAY_STORE_URL,
-    onDismiss = onDismiss,
+    onDismiss = onDismiss
 )

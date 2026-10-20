@@ -71,19 +71,19 @@ fun PackPickerScreen(
     onToggle: (String) -> Unit,
     onSelectAll: () -> Unit,
     onNewPack: () -> Unit,
-    onDone: () -> Unit,
+    onDone: () -> Unit
 ) {
     val all = selected.isEmpty()
     Page(
         title = stringResource(R.string.pick_packs_title),
         onBack = onDone,
-        bottom = { BigButton(stringResource(R.string.continue_), onDone, Modifier.testTag("packs_done")) },
+        bottom = { BigButton(stringResource(R.string.continue_), onDone, Modifier.testTag("packs_done")) }
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
                 if (all) stringResource(R.string.pick_packs_all) else pluralStringResource(R.plurals.pick_packs_some, selected.size, selected.size),
                 color = Neon.Muted,
-                modifier = Modifier.weight(1f),
+                modifier = Modifier.weight(1f)
             )
             if (!all) {
                 TextButton(onClick = onSelectAll, modifier = Modifier.testTag("select_all_packs")) {
@@ -95,7 +95,7 @@ fun PackPickerScreen(
             columns = GridCells.Adaptive(150.dp),
             horizontalArrangement = Arrangement.spacedBy(10.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp),
-            modifier = Modifier.padding(top = 8.dp),
+            modifier = Modifier.padding(top = 8.dp)
         ) {
             items(packs, key = { it.id }) { pack ->
                 PackTile(pack, checked = all || pack.id in selected, onClick = { onToggle(pack.id) })
@@ -108,7 +108,7 @@ fun PackPickerScreen(
                         .clickable(onClick = onNewPack)
                         .padding(vertical = 22.dp)
                         .testTag("picker_new_pack"),
-                    horizontalAlignment = Alignment.CenterHorizontally,
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text("＋", style = MaterialTheme.typography.displaySmall, color = Neon.Turquoise)
                     Text(stringResource(R.string.packs_new), fontWeight = FontWeight.SemiBold, modifier = Modifier.padding(top = 6.dp))
@@ -126,7 +126,7 @@ private fun PackTile(pack: WordPack, checked: Boolean, onClick: () -> Unit) {
             .background(if (checked) Neon.Violet.copy(alpha = 0.25f) else Neon.Card)
             .border(2.dp, if (checked) Neon.Violet else Color.Transparent, MaterialTheme.shapes.large)
             .clickable(onClick = onClick)
-            .testTag("pack_${pack.id}"),
+            .testTag("pack_${pack.id}")
     ) {
         Column(Modifier.fillMaxWidth().padding(vertical = 18.dp, horizontal = 10.dp), horizontalAlignment = Alignment.CenterHorizontally) {
             Text(pack.emoji, fontSize = 44.sp)
@@ -134,7 +134,7 @@ private fun PackTile(pack: WordPack, checked: Boolean, onClick: () -> Unit) {
             Text(
                 pluralStringResource(R.plurals.pack_words, pack.entries.size, pack.entries.size),
                 style = MaterialTheme.typography.bodySmall,
-                color = Neon.Muted,
+                color = Neon.Muted
             )
         }
         Box(
@@ -145,7 +145,7 @@ private fun PackTile(pack: WordPack, checked: Boolean, onClick: () -> Unit) {
                 .clip(CircleShape)
                 .background(if (checked) Neon.Turquoise else Color.Transparent)
                 .border(2.dp, if (checked) Neon.Turquoise else Neon.Muted, CircleShape),
-            contentAlignment = Alignment.Center,
+            contentAlignment = Alignment.Center
         ) {
             if (checked) Text("✓", color = Neon.Night, fontWeight = FontWeight.Black)
         }
@@ -159,7 +159,7 @@ fun PacksScreen(
     onEdit: (String?) -> Unit,
     onCopy: (WordPack) -> Unit,
     onImport: (String) -> Unit,
-    onBack: () -> Unit,
+    onBack: () -> Unit
 ) {
     var sharing by remember { mutableStateOf<WordPack?>(null) }
     var copying by remember { mutableStateOf<WordPack?>(null) }
@@ -172,7 +172,7 @@ fun PacksScreen(
                 Text(stringResource(R.string.pack_import), color = Neon.Turquoise)
             }
         },
-        bottom = { BigButton("＋ " + stringResource(R.string.packs_new), { onEdit(null) }, Modifier.testTag("new_pack")) },
+        bottom = { BigButton("＋ " + stringResource(R.string.packs_new), { onEdit(null) }, Modifier.testTag("new_pack")) }
     ) {
         LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             if (custom.isNotEmpty()) {
@@ -192,14 +192,22 @@ fun PacksScreen(
             title = { Text(stringResource(R.string.pack_copy_title, pack.name)) },
             text = { Text(stringResource(R.string.pack_copy_body)) },
             confirmButton = {
-                TextButton(onClick = { copying = null; onCopy(pack) }, modifier = Modifier.testTag("copy_pack_ok")) {
+                TextButton(onClick = {
+                    copying = null
+                    onCopy(pack)
+                }, modifier = Modifier.testTag("copy_pack_ok")) {
                     Text(stringResource(R.string.pack_copy_ok))
                 }
             },
-            dismissButton = { TextButton(onClick = { copying = null }) { Text(stringResource(R.string.vote_cancel)) } },
+            dismissButton = { TextButton(onClick = { copying = null }) { Text(stringResource(R.string.vote_cancel)) } }
         )
     }
-    if (importing) PackImportDialog(onImport = { onImport(it); importing = false }, onDismiss = { importing = false })
+    if (importing) {
+        PackImportDialog(onImport = {
+            onImport(it)
+            importing = false
+        }, onDismiss = { importing = false })
+    }
 }
 
 @Composable
@@ -215,7 +223,7 @@ private fun PackRow(pack: WordPack, onClick: (() -> Unit)?, onShare: (() -> Unit
             .let { if (onClick != null) it.clickable(onClick = onClick) else it }
             .padding(16.dp)
             .testTag("pack_${pack.id}"),
-        verticalAlignment = Alignment.CenterVertically,
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Text(pack.emoji, style = MaterialTheme.typography.headlineSmall)
         Spacer(Modifier.width(14.dp))
@@ -224,7 +232,7 @@ private fun PackRow(pack: WordPack, onClick: (() -> Unit)?, onShare: (() -> Unit
             Text(
                 pluralStringResource(R.plurals.pack_words, pack.entries.size, pack.entries.size),
                 style = MaterialTheme.typography.bodySmall,
-                color = Neon.Muted,
+                color = Neon.Muted
             )
         }
         if (onShare != null) {
@@ -247,7 +255,7 @@ private fun PackShareSheet(pack: WordPack, onDismiss: () -> Unit) {
         Column(
             TestTagsAsResourceIds.verticalScroll(rememberScrollState()).padding(horizontal = 20.dp).navigationBarsPadding(),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(12.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Text("${pack.emoji} ${pack.name}", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Black)
             if (link.length <= PackShare.QR_MAX_CHARS) {
@@ -277,7 +285,7 @@ private fun PackImportDialog(onImport: (String) -> Unit, onDismiss: () -> Unit) 
                     onValueChange = { text = it },
                     placeholder = { Text("https://jorgelillo7.github.io/p/#…") },
                     maxLines = 4,
-                    modifier = Modifier.fillMaxWidth().testTag("pack_import_text"),
+                    modifier = Modifier.fillMaxWidth().testTag("pack_import_text")
                 )
             }
         },
@@ -286,7 +294,7 @@ private fun PackImportDialog(onImport: (String) -> Unit, onDismiss: () -> Unit) 
                 Text(stringResource(R.string.pack_import))
             }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.vote_cancel)) } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.vote_cancel)) } }
     )
 }
 
@@ -313,27 +321,27 @@ fun PackEditScreen(initial: WordPack, isNew: Boolean, onSave: (WordPack) -> Unit
                     Text(stringResource(R.string.pack_delete), color = Neon.Pink)
                 }
             }
-        },
+        }
     ) {
         OutlinedTextField(
             value = name,
             onValueChange = { name = it },
             label = { Text(stringResource(R.string.pack_name)) },
             singleLine = true,
-            modifier = Modifier.fillMaxWidth().testTag("pack_name"),
+            modifier = Modifier.fillMaxWidth().testTag("pack_name")
         )
         Spacer(Modifier.height(12.dp))
         OutlinedTextField(
             value = text,
             onValueChange = { text = it },
             label = { Text(stringResource(R.string.pack_words_label)) },
-            modifier = Modifier.fillMaxWidth().weight(1f).testTag("pack_words"),
+            modifier = Modifier.fillMaxWidth().weight(1f).testTag("pack_words")
         )
         Text(
             if (valid) stringResource(R.string.pack_words_help) else stringResource(R.string.pack_need),
             style = MaterialTheme.typography.bodySmall,
             color = if (valid) Neon.Muted else Neon.Pink,
-            modifier = Modifier.padding(top = 6.dp),
+            modifier = Modifier.padding(top = 6.dp)
         )
     }
 }

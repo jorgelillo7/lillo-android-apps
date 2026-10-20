@@ -89,7 +89,7 @@ fun ChristmasApp(app: ChristmasCountdownApplication, openAdvent: Boolean = false
         {
             ReminderPrompt(
                 onYes = { askPermission.launch(Manifest.permission.POST_NOTIFICATIONS) },
-                onNo = { scope.launch { app.settings.dismissReminderPrompt() } },
+                onNo = { scope.launch { app.settings.dismissReminderPrompt() } }
             )
         }
     } else {
@@ -116,9 +116,9 @@ fun ChristmasApp(app: ChristmasCountdownApplication, openAdvent: Boolean = false
                             Icon(
                                 painter = painterResource(if (countdown.musicEnabled) R.drawable.ic_music_note else R.drawable.ic_music_off),
                                 contentDescription = stringResource(
-                                    if (countdown.musicEnabled) R.string.action_music_off else R.string.action_music_on,
+                                    if (countdown.musicEnabled) R.string.action_music_off else R.string.action_music_on
                                 ),
-                                tint = if (countdown.musicEnabled) ChristmasColors.Gold else MaterialTheme.colorScheme.onSurface,
+                                tint = if (countdown.musicEnabled) ChristmasColors.Gold else MaterialTheme.colorScheme.onSurface
                             )
                         }
                     },
@@ -129,7 +129,7 @@ fun ChristmasApp(app: ChristmasCountdownApplication, openAdvent: Boolean = false
                         IconButton(onClick = { showAbout = true }) {
                             Icon(Icons.Filled.Info, contentDescription = stringResource(R.string.action_about))
                         }
-                    },
+                    }
                 )
             },
             bottomBar = {
@@ -141,32 +141,33 @@ fun ChristmasApp(app: ChristmasCountdownApplication, openAdvent: Boolean = false
                             icon = {
                                 Icon(
                                     imageVector = if (item == Tab.Countdown) Icons.Filled.Star else Icons.Filled.DateRange,
-                                    contentDescription = null,
+                                    contentDescription = null
                                 )
                             },
                             label = { Text(stringResource(item.label)) },
                             colors = NavigationBarItemDefaults.colors(
                                 selectedIconColor = MaterialTheme.colorScheme.onPrimary,
                                 selectedTextColor = ChristmasColors.Gold,
-                                indicatorColor = ChristmasColors.Gold,
-                            ),
+                                indicatorColor = ChristmasColors.Gold
+                            )
                         )
                     }
                 }
-            },
+            }
         ) { padding ->
             when (Tab.entries[tab]) {
                 Tab.Countdown -> CountdownScreen(
                     state = countdown,
                     onSleepsModeChange = countdownViewModel::setSleepsMode,
                     reminderPrompt = reminderPrompt,
-                    modifier = Modifier.padding(padding),
+                    modifier = Modifier.padding(padding)
                 )
+
                 Tab.Advent -> AdventScreen(
                     state = advent,
                     canOpen = adventViewModel::canOpen,
                     onOpen = adventViewModel::open,
-                    modifier = Modifier.padding(padding),
+                    modifier = Modifier.padding(padding)
                 )
             }
         }
@@ -179,6 +180,7 @@ fun ChristmasApp(app: ChristmasCountdownApplication, openAdvent: Boolean = false
 private fun Context.shareCountdown(state: CountdownState, sleepsMode: Boolean) {
     val message = when (state) {
         CountdownState.ChristmasDay -> getString(R.string.share_text_christmas)
+
         is CountdownState.Counting -> if (sleepsMode) {
             val sleeps = state.sleeps.toInt()
             resources.getQuantityString(R.plurals.share_text_sleeps, sleeps, sleeps)
@@ -207,13 +209,13 @@ private fun ReminderPrompt(onYes: () -> Unit, onNo: () -> Unit) {
                 stringResource(R.string.reminder_prompt_text),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(top = 4.dp, bottom = 10.dp),
+                modifier = Modifier.padding(top = 4.dp, bottom = 10.dp)
             )
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 Button(
                     onClick = onYes,
                     colors = ButtonDefaults.buttonColors(containerColor = ChristmasColors.Gold, contentColor = Color.Black),
-                    modifier = Modifier.testTag("reminders_yes"),
+                    modifier = Modifier.testTag("reminders_yes")
                 ) { Text(stringResource(R.string.reminder_prompt_yes)) }
                 TextButton(onClick = onNo, modifier = Modifier.testTag("reminders_no")) { Text(stringResource(R.string.reminder_prompt_no)) }
             }

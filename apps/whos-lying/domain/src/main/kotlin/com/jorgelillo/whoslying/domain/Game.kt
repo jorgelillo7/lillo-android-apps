@@ -20,12 +20,10 @@ object Rules {
 
     fun minPlayers(mode: GameMode): Int = if (mode == GameMode.DRIFTER) 4 else MIN_PLAYERS
 
-    fun canStart(players: Int, settings: GameSettings): Boolean =
-        players in minPlayers(settings.mode)..MAX_PLAYERS && settings.impostors in 1..maxImpostors(players, settings.mode)
+    fun canStart(players: Int, settings: GameSettings): Boolean = players in minPlayers(settings.mode)..MAX_PLAYERS && settings.impostors in 1..maxImpostors(players, settings.mode)
 
     /** Lower case, no accents, no surrounding spaces: "Café " matches "cafe". */
-    fun normalize(text: String): String =
-        Normalizer.normalize(text.trim().lowercase(), Normalizer.Form.NFD).replace(Regex("\\p{M}+"), "")
+    fun normalize(text: String): String = Normalizer.normalize(text.trim().lowercase(), Normalizer.Form.NFD).replace(Regex("\\p{M}+"), "")
 }
 
 sealed interface Outcome {
@@ -60,7 +58,7 @@ class Game private constructor(
     /** The eliminated drifter who still gets a guess at the word. */
     val pendingGuess: String? = null,
     /** Who the last vote sent out, and what they were. */
-    val lastElimination: Elimination? = null,
+    val lastElimination: Elimination? = null
 ) {
     val alive: List<Card> get() = cards.filter { it.player !in eliminated }
     val isOver: Boolean get() = outcome != null
@@ -98,7 +96,7 @@ class Game private constructor(
         eliminated: Set<String> = this.eliminated,
         outcome: Outcome? = this.outcome,
         pendingGuess: String? = this.pendingGuess,
-        lastElimination: Elimination? = this.lastElimination,
+        lastElimination: Elimination? = this.lastElimination
     ) = Game(cards, civilianWord, category, starter, eliminated, outcome, pendingGuess, lastElimination)
 
     private fun evaluate(): Outcome? {
@@ -122,7 +120,7 @@ class Game private constructor(
             settings: GameSettings,
             pack: WordPack,
             entry: Entry,
-            random: Random,
+            random: Random
         ): Game {
             require(Rules.canStart(players.size, settings)) { "Invalid setup" }
             val impostors = impostorCount(players.size, settings, random)
@@ -140,8 +138,10 @@ class Game private constructor(
                 }
                 val word = when {
                     role == Role.CIVILIAN -> entry.word
+
                     // Drawing a similar word would give impostors away, so they draw blind.
                     role == Role.IMPOSTOR && settings.mode != GameMode.BLIND && !settings.drawing -> decoy
+
                     else -> null
                 }
                 val hint = if (word == null && settings.categoryHint) pack.name else null

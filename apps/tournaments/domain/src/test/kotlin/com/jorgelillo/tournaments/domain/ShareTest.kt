@@ -10,7 +10,7 @@ class ShareTest {
 
     private val names = listOf(
         "Pepe", "Luis", "María José", "Ana", "Íñigo", "Zoë", "Carlos", "Lucía",
-        "Javi", "Marta", "Sergio", "Paula", "Álvaro", "Nuria", "Diego", "Sara",
+        "Javi", "Marta", "Sergio", "Paula", "Álvaro", "Nuria", "Diego", "Sara"
     )
 
     private fun played(): Tournament {

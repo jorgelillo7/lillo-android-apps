@@ -75,7 +75,7 @@ fun DrawingScreen(
     onVote: () -> Unit,
     onTimeUp: () -> Unit,
     onRevealAll: () -> Unit,
-    onQuit: () -> Unit,
+    onQuit: () -> Unit
 ) {
     var ink by rememberSaveable { mutableIntStateOf(0) }
     val starter = game.starter.takeIf { it in alive } ?: game.cards.first { it.player in alive && it.role != Role.DRIFTER }.player
@@ -91,7 +91,7 @@ fun DrawingScreen(
             color = Neon.Amber,
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth()
         )
     }
     BoxWithConstraints(Modifier.fillMaxSize()) {
@@ -137,7 +137,7 @@ private fun Tools(ink: Int, strokes: SnapshotStateList<DrawStroke>, columns: Int
         Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalArrangement = Arrangement.spacedBy(10.dp),
-        maxItemsInEachRow = columns,
+        maxItemsInEachRow = columns
     ) {
         InkColors.forEachIndexed { i, color ->
             Box(Modifier.size(40.dp), contentAlignment = Alignment.Center) {
@@ -148,7 +148,7 @@ private fun Tools(ink: Int, strokes: SnapshotStateList<DrawStroke>, columns: Int
                         .background(color)
                         .border(3.dp, if (i == ink) Color.White else Color.White.copy(alpha = 0.15f), CircleShape)
                         .clickable { onInk(i) }
-                        .testTag("ink_$i"),
+                        .testTag("ink_$i")
                 )
             }
         }
@@ -166,7 +166,7 @@ private fun ToolButton(symbol: String, tag: String, enabled: Boolean, onClick: (
             .background(Neon.CardHigh)
             .clickable(enabled = enabled, onClick = onClick)
             .testTag(tag),
-        contentAlignment = Alignment.Center,
+        contentAlignment = Alignment.Center
     ) { Text(symbol, fontSize = 20.sp, color = if (enabled) Neon.Ink else Neon.Muted) }
 }
 
@@ -189,9 +189,9 @@ private fun DrawingCanvas(strokes: SnapshotStateList<DrawStroke>, ink: Color, mo
                     onDrag = { change, _ ->
                         val p = change.position
                         strokes.lastOrNull()?.points?.add(Offset((p.x / size.width).coerceIn(0f, 1f), (p.y / size.height).coerceIn(0f, 1f)))
-                    },
+                    }
                 )
-            },
+            }
     ) { drawStrokes(strokes) }
 }
 
@@ -224,13 +224,13 @@ private fun TimerBar(seconds: Int, onTimeUp: () -> Unit) {
             .background(Neon.Card)
             .clickable(enabled = left > 0) { paused = !paused }
             .testTag("timer"),
-        contentAlignment = Alignment.Center,
+        contentAlignment = Alignment.Center
     ) {
         Box(Modifier.align(Alignment.CenterStart).fillMaxHeight().fillMaxWidth(left.toFloat() / seconds).background(color.copy(alpha = 0.35f)))
         Text(
             if (left == 0) stringResource(R.string.timer_up) else "%d:%02d".format(left / 60, left % 60) + if (paused) "  ⏸" else "",
             color = if (left == 0) Neon.Pink else Neon.Ink,
-            fontWeight = FontWeight.Black,
+            fontWeight = FontWeight.Black
         )
     }
 }

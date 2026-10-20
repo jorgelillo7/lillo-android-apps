@@ -50,12 +50,12 @@ fun WelcomeDialog(showCheckbox: Boolean, onDismiss: (dontShowAgain: Boolean) -> 
                 if (showCheckbox) {
                     Row(
                         Modifier.fillMaxWidth().clickable { dontShowAgain = !dontShowAgain }.padding(top = 4.dp).testTag("welcome_dont_show"),
-                        verticalAlignment = Alignment.CenterVertically,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
                         Checkbox(
                             checked = dontShowAgain,
                             onCheckedChange = { dontShowAgain = it },
-                            colors = CheckboxDefaults.colors(checkedColor = Neon.Turquoise),
+                            colors = CheckboxDefaults.colors(checkedColor = Neon.Turquoise)
                         )
                         Text(stringResource(R.string.welcome_dont_show), color = Neon.Muted)
                     }
@@ -71,6 +71,6 @@ fun WelcomeDialog(showCheckbox: Boolean, onDismiss: (dontShowAgain: Boolean) -> 
             TextButton(onClick = { uriHandler.openUri(PLAY_STORE_URL) }, modifier = Modifier.testTag("welcome_feedback")) {
                 Text(stringResource(R.string.welcome_feedback), color = Neon.Muted)
             }
-        },
+        }
     )
 }

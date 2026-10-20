@@ -9,11 +9,11 @@ import com.jorgelillo.decisionwheel.data.StateRepository
 import com.jorgelillo.decisionwheel.domain.AppState
 import com.jorgelillo.decisionwheel.domain.Decision
 import com.jorgelillo.decisionwheel.domain.Wheel
+import java.util.UUID
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import java.util.UUID
 
 /** Single ViewModel for the whole (small) app: exposes the state and every mutation. */
 class WheelsViewModel(private val repository: StateRepository) : ViewModel() {

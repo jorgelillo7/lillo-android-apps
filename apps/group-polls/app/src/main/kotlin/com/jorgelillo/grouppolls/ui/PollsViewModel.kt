@@ -32,7 +32,7 @@ class PollsViewModel(
     private val repository: PollRepository,
     private val store: LocalStore,
     private val language: String,
-    private val now: () -> Long = System::currentTimeMillis,
+    private val now: () -> Long = System::currentTimeMillis
 ) : ViewModel() {
 
     val local: StateFlow<LocalState?> = store.state.stateIn(viewModelScope, SharingStarted.Eagerly, null)
@@ -90,14 +90,17 @@ class PollsViewModel(
             creatorName = state.name,
             language = language,
             createdAt = created,
-            closesAt = duration.closesAt(created),
+            closesAt = duration.closesAt(created)
         )
         return runCatching { repository.create(poll) }.fold(
             onSuccess = {
                 store.update { it.copy(myPolls = (listOf(poll.code) + it.myPolls).take(MAX_MY_POLLS)) }
                 poll.code
             },
-            onFailure = { _error.value = it.message; null },
+            onFailure = {
+                _error.value = it.message
+                null
+            }
         )
     }
 
@@ -109,7 +112,7 @@ class PollsViewModel(
                 store.update { s ->
                     s.copy(
                         votes = s.votes + (poll.code to MyVote(side, prediction)),
-                        myPolls = if (poll.visibility == Visibility.PRIVATE) (listOf(poll.code) + (s.myPolls - poll.code)).take(MAX_MY_POLLS) else s.myPolls,
+                        myPolls = if (poll.visibility == Visibility.PRIVATE) (listOf(poll.code) + (s.myPolls - poll.code)).take(MAX_MY_POLLS) else s.myPolls
                     )
                 }
             }

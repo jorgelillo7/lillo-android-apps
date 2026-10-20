@@ -41,6 +41,5 @@ object BracketLayout {
     }
 
     /** The matches a player won on the way, for the champion's highlighted path. */
-    fun pathOf(t: Tournament, player: Int): List<Match> =
-        t.matches.filter { it.stage == Stage.ELIMINATION && it.winner(t.bestOf) == player }
+    fun pathOf(t: Tournament, player: Int): List<Match> = t.matches.filter { it.stage == Stage.ELIMINATION && it.winner(t.bestOf) == player }
 }
