@@ -1,4 +1,6 @@
 What you asked for 🕵️
 - You can now edit the included packs: tap one and make your own copy
 - Share your word packs with a link or a QR code, no accounts
-- New icon and clearer round texts
+- New icon, a welcome note and clearer round texts
+- Fix: a chaos game where everyone is an impostor now ends by itself
+- Fix: when the Drifter guesses the word wrong, the game goes on instead of getting stuck

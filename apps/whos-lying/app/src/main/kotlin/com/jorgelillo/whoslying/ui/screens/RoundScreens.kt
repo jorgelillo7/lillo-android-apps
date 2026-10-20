@@ -326,6 +326,8 @@ fun ExposeScreen(
         if (game.isOver && game.pendingGuess == null) onGameOver()
     }
     val card = game.cardOf(elimination.player)
+    // Game is a plain object: read the guess through guessResult (state) so the bar recomposes after it.
+    val guessing = game.pendingGuess != null && guessResult == null
     val background = when {
         count > 0 -> Neon.RevealBackdrop
         card.role == Role.CIVILIAN -> Neon.ImpostorsBackdrop
@@ -337,7 +339,7 @@ fun ExposeScreen(
         onBack = null,
         background = background,
         bottom = {
-            if (count == 0 && game.pendingGuess == null && !game.isOver) {
+            if (count == 0 && !guessing && !game.isOver) {
                 BigButton(stringResource(R.string.next_vote), onContinue, Modifier.testTag("keep_playing"), color = Color.White, contentColor = Neon.Night)
             }
         },
