@@ -96,13 +96,29 @@ def tap(tag, wait=1.5, timeout=15, scroll=False):
             time.sleep(wait)
             return
         if scroll:
-            shell("input", "swipe", "540", "1700", "540", "1000", "400")
+            swipe_up(end=0.41)
         time.sleep(1)
     raise AssertionError(f"can't tap {tag}")
 
 
+def swipe_up(start=0.70, end=0.45, ms=400, wait=True):
+    """Drags up the middle of the screen, in fractions of its height (works in portrait and landscape)."""
+    w, h = (2 * c for c in dump()[0].center)
+    args = [ADB, "shell", "input", "swipe", str(w // 2), str(int(h * start)), str(w // 2), str(int(h * end)), str(ms)]
+    return subprocess.run(args, capture_output=True) if wait else subprocess.Popen(args)
+
+
 def type_text(text):
     shell("input", "text", text.replace(" ", "%s"))
+
+
+def hide_keyboard():
+    """Closes the keyboard if it's up (ESCAPE doesn't always; BACK without a keyboard leaves the screen)."""
+    for _ in range(3):
+        if "mInputShown=true" not in shell("dumpsys", "input_method"):
+            return
+        shell("input", "keyevent", "KEYCODE_BACK")
+        time.sleep(1)
 
 
 def shot(name):
@@ -128,7 +144,7 @@ def players_and_setup(names):
         type_text(name)
         shell("input", "keyevent", "KEYCODE_ENTER")
         time.sleep(0.8)
-    shell("input", "keyevent", "KEYCODE_ESCAPE")
+    hide_keyboard()
     time.sleep(1)
     tap("continue", wait=2)
 
@@ -141,7 +157,7 @@ def set_switch(tag, on):
                 shell("input", "tap", *map(str, node.center))
                 time.sleep(1)
             return
-        shell("input", "swipe", "540", "1700", "540", "1100", "400")
+        swipe_up()
         time.sleep(1)
     raise AssertionError(f"no switch {tag}")
 
@@ -158,7 +174,7 @@ def configure(mode="classic", impostors=1, drawing=False, chaos=False, hint=True
         for _ in range(8):
             node = find(dump(), "rounds")
             if node is None:
-                shell("input", "swipe", "540", "1700", "540", "1100", "400"); time.sleep(1); continue
+                swipe_up(); time.sleep(1); continue
             if node.text == str(rounds):
                 break
             tap("rounds_minus", wait=0.8)
@@ -173,7 +189,10 @@ def reveal_all_cards(count):
         nodes = wait_for("tap_to_reveal", timeout=20)
         texts = [n.text for n in nodes]
         player = texts[texts.index("Pass the phone to") + 1] if "Pass the phone to" in texts else texts[texts.index("Pásale el móvil a") + 1]
-        swipe = subprocess.Popen([ADB, "shell", "input", "swipe", "540", "1700", "540", "700", "4000"])
+        # From the middle of the curtain, which sits higher in landscape: hold it up while reading.
+        h = 2 * nodes[0].center[1]
+        start = find(nodes, "tap_to_reveal").center[1] / h
+        swipe = swipe_up(start=start, end=max(start - 0.4, 0.05), ms=4000, wait=False)
         time.sleep(2)
         nodes = dump()
         word = find(nodes, "secret_word")
@@ -238,7 +257,7 @@ def play(order, drawing=False, guess=None):
         if state == "guess":
             tap("guess_text", wait=0.5)
             type_text(guess)
-            shell("input", "keyevent", "KEYCODE_ESCAPE")
+            hide_keyboard()
             time.sleep(0.5)
             tap("guess", wait=3)
             state, _ = after_vote()
@@ -331,8 +350,7 @@ def drawing_mode():
 
 def ended_early():
     new_game(THREE, mode="classic")
-    tap("go_vote", wait=2, timeout=20)
-    tap("reveal_all", wait=3)
+    tap("reveal_all", wait=3, timeout=20)   # on the debate screen, next to "Vote"
     expect(find(wait_for("result_title"), "result_title").text, "ended", "ended_early")
 
 
@@ -383,9 +401,9 @@ def packs():
     fresh()
     tap("packs", wait=2)
     tap("new_pack", wait=2)
-    tap("pack_name", wait=0.5); type_text("Battery"); shell("input", "keyevent", "KEYCODE_ESCAPE")
+    tap("pack_name", wait=0.5); type_text("Battery"); hide_keyboard()
     tap("pack_words", wait=0.5); type_text("Mar / Lago"); shell("input", "keyevent", "KEYCODE_ENTER")
-    type_text("Sol / Luna"); shell("input", "keyevent", "KEYCODE_ESCAPE"); time.sleep(1)
+    type_text("Sol / Luna"); hide_keyboard(); time.sleep(1)
     tap("save_pack", wait=2)
     nodes = wait_for(text="Battery")
     shot("packs_custom")

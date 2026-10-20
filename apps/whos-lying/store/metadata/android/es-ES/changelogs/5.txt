@@ -3,3 +3,4 @@ Lo que nos habéis pedido 🕵️
 - Comparte tus paquetes de palabras con un enlace o un QR, sin cuentas
 - Nuevo icono, nota de bienvenida y textos de rondas más claros
 - Arreglo: una partida de caos en la que todos son impostores ya termina sola
+- Arreglo: si el Despistado falla la palabra, la partida sigue en vez de quedarse atascada
