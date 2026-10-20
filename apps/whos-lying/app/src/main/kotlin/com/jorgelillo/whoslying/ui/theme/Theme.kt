@@ -41,5 +41,5 @@ val NeonColorScheme = darkColorScheme(
     surfaceContainerHigh = Neon.CardHigh,
     surfaceContainerHighest = Neon.CardHigh,
     outline = Color(0x559692BE),
-    error = Neon.Pink,
+    error = Neon.Pink
 )

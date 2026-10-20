@@ -9,6 +9,7 @@ import com.jorgelillo.tournaments.data.LibraryRepository
 import com.jorgelillo.tournaments.domain.Library
 import com.jorgelillo.tournaments.domain.Share
 import com.jorgelillo.tournaments.domain.Tournament
+import kotlin.random.Random
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
@@ -16,7 +17,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import kotlin.random.Random
 
 /** Outcome of opening a shared link: [id] is the tournament to show, null if the link was broken. */
 data class ImportEvent(val result: Library.ImportResult?, val id: String?)
@@ -54,7 +54,6 @@ class TournamentsViewModel(private val repository: LibraryRepository) : ViewMode
             importEvents.send(ImportEvent(result, tournament.id))
         }
     }
-
 
     private fun launchUpdate(transform: (Library) -> Library) {
         viewModelScope.launch { repository.update(transform) }

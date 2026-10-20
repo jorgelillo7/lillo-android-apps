@@ -10,12 +10,12 @@ import com.jorgelillo.leaguecards.domain.Game
 import com.jorgelillo.leaguecards.domain.League
 import com.jorgelillo.leaguecards.domain.Saved
 import com.jorgelillo.leaguecards.domain.Season
+import java.time.LocalDate
+import kotlin.random.Random
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import java.time.LocalDate
-import kotlin.random.Random
 
 /** Single ViewModel for the whole (small) app: the saved state and every move. */
 class LeagueViewModel(val league: League, private val store: JsonStore<Saved>) : ViewModel() {

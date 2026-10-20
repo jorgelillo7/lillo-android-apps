@@ -47,7 +47,7 @@ fun CountdownScreen(
     state: CountdownUiState,
     onSleepsModeChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
-    reminderPrompt: (@Composable () -> Unit)? = null,
+    reminderPrompt: (@Composable () -> Unit)? = null
 ) {
     Column(
         modifier = modifier
@@ -55,15 +55,16 @@ fun CountdownScreen(
             .verticalScroll(rememberScrollState())
             .padding(horizontal = 20.dp, vertical = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
+        verticalArrangement = Arrangement.Center
     ) {
         when (val countdown = state.countdown) {
             CountdownState.ChristmasDay -> ChristmasDayContent()
+
             is CountdownState.Counting -> {
                 AnimatedContent(
                     targetState = state.sleepsMode,
                     transitionSpec = { fadeIn() togetherWith fadeOut() },
-                    label = "countdown-mode",
+                    label = "countdown-mode"
                 ) { sleepsMode ->
                     if (sleepsMode) SleepsContent(countdown.sleeps) else TimeContent(countdown.timeLeft)
                 }
@@ -71,7 +72,7 @@ fun CountdownScreen(
                 Text(
                     text = countdown.target.formatted(),
                     style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 Spacer(Modifier.height(28.dp))
                 ModeSelector(sleepsMode = state.sleepsMode, onChange = onSleepsModeChange)
@@ -92,12 +93,12 @@ private fun TimeContent(timeLeft: TimeLeft) {
         Text(
             text = stringResource(R.string.unit_days),
             style = MaterialTheme.typography.titleLarge,
-            color = ChristmasColors.Gold,
+            color = ChristmasColors.Gold
         )
         Spacer(Modifier.height(24.dp))
         Row(
             modifier = Modifier.fillMaxWidth().widthIn(max = 420.dp),
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             TimeUnitCard(timeLeft.hours, stringResource(R.string.unit_hours), Modifier.weight(1f))
             TimeUnitCard(timeLeft.minutes, stringResource(R.string.unit_minutes), Modifier.weight(1f))
@@ -114,7 +115,7 @@ private fun SleepsContent(sleeps: Long) {
         Text(
             text = pluralStringResource(R.plurals.sleeps_left, sleeps.toInt(), sleeps),
             style = MaterialTheme.typography.titleLarge,
-            color = ChristmasColors.Gold,
+            color = ChristmasColors.Gold
         )
         Spacer(Modifier.height(24.dp))
         // A row of moons, one per night, for the last two weeks.
@@ -135,27 +136,26 @@ private fun ChristmasDayContent() {
             text = stringResource(R.string.christmas_day_title),
             style = MaterialTheme.typography.displayMedium,
             color = ChristmasColors.Gold,
-            textAlign = TextAlign.Center,
+            textAlign = TextAlign.Center
         )
         Spacer(Modifier.height(12.dp))
         Text(
             text = stringResource(R.string.christmas_day_body),
             style = MaterialTheme.typography.bodyLarge,
-            textAlign = TextAlign.Center,
+            textAlign = TextAlign.Center
         )
     }
 }
 
 @Composable
-private fun SectionLabel(text: String) =
-    LilloSectionTitle(text, MaterialTheme.colorScheme.onSurfaceVariant, uppercase = true, style = MaterialTheme.typography.labelSmall)
+private fun SectionLabel(text: String) = LilloSectionTitle(text, MaterialTheme.colorScheme.onSurfaceVariant, uppercase = true, style = MaterialTheme.typography.labelSmall)
 
 @Composable
 private fun HeroNumber(value: String) {
     Text(
         text = value,
         style = MaterialTheme.typography.displayLarge.copy(fontSize = 120.sp, lineHeight = 124.sp),
-        color = MaterialTheme.colorScheme.onSurface,
+        color = MaterialTheme.colorScheme.onSurface
     )
 }
 
@@ -164,13 +164,13 @@ private fun TimeUnitCard(value: Int, label: String, modifier: Modifier = Modifie
     GlassCard(modifier = modifier) {
         Column(
             modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(text = "%02d".format(value), style = MaterialTheme.typography.displaySmall)
             Text(
                 text = label.uppercase(),
                 style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
     }
@@ -188,8 +188,8 @@ private fun ModeSelector(sleepsMode: Boolean, onChange: (Boolean) -> Unit) {
                 colors = SegmentedButtonDefaults.colors(
                     activeContainerColor = ChristmasColors.Gold,
                     activeContentColor = MaterialTheme.colorScheme.onPrimary,
-                    inactiveContainerColor = androidx.compose.ui.graphics.Color.Transparent,
-                ),
+                    inactiveContainerColor = androidx.compose.ui.graphics.Color.Transparent
+                )
             ) { Text(label) }
         }
     }
@@ -207,7 +207,7 @@ private fun CountdownScreenPreview() {
     LilloTheme(ChristmasColorScheme) {
         CountdownScreen(
             state = CountdownUiState(CountdownState.Counting(TimeLeft(83, 5, 42, 7), 84, LocalDate.of(2026, 12, 25))),
-            onSleepsModeChange = {},
+            onSleepsModeChange = {}
         )
     }
 }

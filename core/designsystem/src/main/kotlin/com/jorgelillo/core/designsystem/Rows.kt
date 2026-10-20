@@ -38,7 +38,7 @@ fun LilloSettingRow(
     tag: String? = null,
     contentPadding: PaddingValues = PaddingValues(16.dp),
     onClick: (() -> Unit)? = null,
-    trailing: (@Composable RowScope.() -> Unit)? = null,
+    trailing: (@Composable RowScope.() -> Unit)? = null
 ) {
     val shape = MaterialTheme.shapes.large
     Row(
@@ -50,7 +50,7 @@ fun LilloSettingRow(
             .then(if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier)
             .padding(contentPadding)
             .then(if (tag != null) Modifier.testTag(tag) else Modifier),
-        verticalAlignment = Alignment.CenterVertically,
+        verticalAlignment = Alignment.CenterVertically
     ) {
         if (leading != null) Text(leading, style = MaterialTheme.typography.titleLarge, modifier = Modifier.padding(end = 14.dp))
         Column(Modifier.weight(1f)) {
@@ -69,7 +69,7 @@ fun LilloSectionTitle(
     modifier: Modifier = Modifier,
     uppercase: Boolean = false,
     style: TextStyle = MaterialTheme.typography.labelLarge,
-    fontWeight: FontWeight? = null,
+    fontWeight: FontWeight? = null
 ) {
     Text(if (uppercase) text.uppercase() else text, color = color, style = style, fontWeight = fontWeight, modifier = modifier)
 }

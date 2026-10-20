@@ -27,23 +27,29 @@ class ExhaustiveGameTest {
     @Test
     fun everyCombinationDealsRightAndEveryGameEndsConsistently() {
         var games = 0
-        for (mode in GameMode.entries) for (drawing in listOf(false, true)) for (hint in listOf(false, true)) for (chaos in listOf(false, true)) {
-            for (n in playerCounts) {
-                if (n < Rules.minPlayers(mode)) {
-                    assertFalse(Rules.canStart(n, GameSettings(mode)), "$mode should not start with $n players")
-                    continue
-                }
-                val max = Rules.maxImpostors(n, mode)
-                assertFalse(Rules.canStart(n, GameSettings(mode, impostors = max + 1)), "$mode $n players: ${max + 1} impostors")
-                for (impostors in 1..max) {
-                    val settings = GameSettings(mode, impostors, hint, chaos, drawing = drawing)
-                    repeat(SEEDS) { seed ->
-                        val random = Random(seed * 7919 + n * 31 + impostors)
-                        val (pack, entry) = WordPicker.pick(packs, emptyList(), random)
-                        val game = Game.deal(names(n), settings, pack, entry, random)
-                        checkDeal(game, settings, n, pack, entry)
-                        playOut(game, random)
-                        games++
+        for (mode in GameMode.entries) {
+            for (drawing in listOf(false, true)) {
+                for (hint in listOf(false, true)) {
+                    for (chaos in listOf(false, true)) {
+                        for (n in playerCounts) {
+                            if (n < Rules.minPlayers(mode)) {
+                                assertFalse(Rules.canStart(n, GameSettings(mode)), "$mode should not start with $n players")
+                                continue
+                            }
+                            val max = Rules.maxImpostors(n, mode)
+                            assertFalse(Rules.canStart(n, GameSettings(mode, impostors = max + 1)), "$mode $n players: ${max + 1} impostors")
+                            for (impostors in 1..max) {
+                                val settings = GameSettings(mode, impostors, hint, chaos, drawing = drawing)
+                                repeat(SEEDS) { seed ->
+                                    val random = Random(seed * 7919 + n * 31 + impostors)
+                                    val (pack, entry) = WordPicker.pick(packs, emptyList(), random)
+                                    val game = Game.deal(names(n), settings, pack, entry, random)
+                                    checkDeal(game, settings, n, pack, entry)
+                                    playOut(game, random)
+                                    games++
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -72,7 +78,9 @@ class ExhaustiveGameTest {
         for (card in game.cards) {
             when (card.role) {
                 Role.CIVILIAN -> assertEquals(entry.word, card.word, ctx)
+
                 Role.DRIFTER -> assertNull(card.word, ctx)
+
                 Role.IMPOSTOR -> if (settings.mode == GameMode.BLIND || settings.drawing) {
                     assertNull(card.word, "$ctx: blind / drawing impostors get no word")
                 } else {
@@ -129,15 +137,20 @@ class ExhaustiveGameTest {
         val noCivilians = game.cards.none { it.role == Role.CIVILIAN }
         when (val outcome = game.outcome) {
             null -> {
-                assertTrue(infiltrators.isNotEmpty() && civilians > 1 || noCivilians && game.alive.size > 1, "unfinished game should be over: ${game.alive}")
+                assertTrue((infiltrators.isNotEmpty() && civilians > 1) || (noCivilians && game.alive.size > 1), "unfinished game should be over: ${game.alive}")
             }
+
             Outcome.CiviliansWin -> assertTrue(infiltrators.isEmpty())
+
             is Outcome.InfiltratorsWin -> {
                 assertTrue(civilians <= 1, "infiltrators won with $civilians civilians left")
                 assertEquals(infiltrators, outcome.roles)
             }
+
             Outcome.DrifterGuessed -> assertTrue(game.cards.any { it.role == Role.DRIFTER })
+
             Outcome.NoCivilians -> assertTrue(noCivilians && (game.alive.size <= 1 || game.pendingGuess == null))
+
             Outcome.EndedEarly -> assertTrue(infiltrators.isNotEmpty() && civilians > 1 && !noCivilians)
         }
         game.outcome?.let { outcomesSeen.merge(kind(it), 1, Int::plus) }
@@ -149,6 +162,7 @@ class ExhaustiveGameTest {
             setOf(Role.DRIFTER) -> "Drifter"
             else -> "ImpostorsAndDrifter"
         }
+
         else -> outcome::class.simpleName!!
     }
 
@@ -200,7 +214,10 @@ class ExhaustiveGameTest {
         // Chaos picks "everyone" now and then: find such a deal.
         var game = generateSequence { Game.deal(names(4), GameSettings(GameMode.CLASSIC, chaos = true), pack, entry, random) }
             .first { g -> g.cards.all { it.role == Role.IMPOSTOR } }
-        repeat(2) { game = game.eliminate(game.alive.first().player); assertNull(game.outcome) }
+        repeat(2) {
+            game = game.eliminate(game.alive.first().player)
+            assertNull(game.outcome)
+        }
         game = game.eliminate(game.alive.first().player)
         assertEquals(Outcome.NoCivilians, game.outcome)
         assertEquals(1, game.alive.size)

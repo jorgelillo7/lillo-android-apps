@@ -58,7 +58,7 @@ fun AdventScreen(
     state: AdventUiState,
     canOpen: (Int) -> Boolean,
     onOpen: (Int) -> Unit,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
     val resources = LocalResources.current
@@ -69,7 +69,7 @@ fun AdventScreen(
         modifier = modifier.fillMaxSize(),
         contentPadding = PaddingValues(16.dp),
         horizontalArrangement = Arrangement.spacedBy(10.dp),
-        verticalArrangement = Arrangement.spacedBy(10.dp),
+        verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         item(span = { GridItemSpan(maxLineSpan) }) {
             GlassCard(Modifier.fillMaxWidth().padding(bottom = 6.dp)) {
@@ -77,10 +77,10 @@ fun AdventScreen(
                     Text(stringResource(R.string.advent_title), style = MaterialTheme.typography.titleLarge)
                     Text(
                         text = stringResource(
-                            if (state.isSeason) R.string.advent_subtitle_season else R.string.advent_subtitle_locked,
+                            if (state.isSeason) R.string.advent_subtitle_season else R.string.advent_subtitle_locked
                         ),
                         style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             }
@@ -118,7 +118,7 @@ fun AdventScreen(
                     onClick = {
                         context.shareText(resources.getString(R.string.advent_share_text, door, resources.doorText(content), PLAY_STORE_URL))
                     },
-                    modifier = Modifier.testTag("advent_share"),
+                    modifier = Modifier.testTag("advent_share")
                 ) { Text(stringResource(R.string.advent_share)) }
             },
             icon = { Text(if (content is AdventDoor.Song) "🎶" else "🎁", fontSize = 40.sp) },
@@ -126,20 +126,21 @@ fun AdventScreen(
             text = {
                 when (content) {
                     is AdventDoor.Activity -> Text(stringResource(content.activity.text()), textAlign = TextAlign.Center)
+
                     is AdventDoor.Song -> Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(stringResource(R.string.advent_song_title), style = MaterialTheme.typography.titleMedium)
                         Text(
                             stringResource(R.string.advent_song_text, content.song.title, content.song.artist),
                             textAlign = TextAlign.Center,
-                            modifier = Modifier.padding(top = 8.dp),
+                            modifier = Modifier.padding(top = 8.dp)
                         )
                         Button(
                             onClick = { uriHandler.openUri(content.song.url) },
-                            modifier = Modifier.padding(top = 12.dp).testTag("advent_play"),
+                            modifier = Modifier.padding(top = 12.dp).testTag("advent_play")
                         ) { Text("▶ " + stringResource(R.string.advent_song_play)) }
                     }
                 }
-            },
+            }
         )
     }
 }
@@ -164,14 +165,15 @@ private fun Door(number: Int, state: DoorState, onClick: () -> Unit) {
             .background(background)
             .border(1.dp, borderColor, shape)
             .clickable(onClick = onClick),
-        contentAlignment = Alignment.Center,
+        contentAlignment = Alignment.Center
     ) {
         when (state) {
             DoorState.Opened -> Text("🎁", fontSize = 26.sp)
+
             else -> Text(
                 text = number.toString(),
                 style = MaterialTheme.typography.headlineMedium,
-                color = if (state == DoorState.Locked) Color(0x88FFFFFF) else Color.White,
+                color = if (state == DoorState.Locked) Color(0x88FFFFFF) else Color.White
             )
         }
         if (state == DoorState.Locked) {
@@ -179,7 +181,7 @@ private fun Door(number: Int, state: DoorState, onClick: () -> Unit) {
                 imageVector = Icons.Filled.Lock,
                 contentDescription = null,
                 tint = Color(0x55FFFFFF),
-                modifier = Modifier.align(Alignment.TopEnd).padding(6.dp).size(12.dp),
+                modifier = Modifier.align(Alignment.TopEnd).padding(6.dp).size(12.dp)
             )
         }
     }

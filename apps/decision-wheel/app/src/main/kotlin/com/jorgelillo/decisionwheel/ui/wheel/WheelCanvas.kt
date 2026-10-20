@@ -10,8 +10,8 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.drawText
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Constraints
@@ -34,7 +34,7 @@ fun WheelCanvas(
     colorOf: (String) -> Color,
     rotationDegrees: Float,
     winner: String?,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
     val measurer = rememberTextMeasurer()
     val colors = segments.map { colorOf(it.option) }
@@ -57,8 +57,13 @@ fun WheelCanvas(
                 drawArc(color, start, sweep, useCenter = true, topLeft = arcTopLeft, size = arcSize)
                 if (segments.size > 1) {
                     drawArc(
-                        WheelColors.Night, start, sweep, useCenter = true, topLeft = arcTopLeft, size = arcSize,
-                        style = Stroke(width = 3.dp.toPx()),
+                        WheelColors.Night,
+                        start,
+                        sweep,
+                        useCenter = true,
+                        topLeft = arcTopLeft,
+                        size = arcSize,
+                        style = Stroke(width = 3.dp.toPx())
                     )
                 }
 
@@ -71,16 +76,16 @@ fun WheelCanvas(
                         style = TextStyle(
                             color = WheelColors.onSegment(colors[i]).copy(alpha = if (dimmed) 0.45f else 1f),
                             fontSize = fontSize.toSp(),
-                            fontWeight = FontWeight.Bold,
+                            fontWeight = FontWeight.Bold
                         ),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
-                        constraints = Constraints(maxWidth = (radius * 0.68f).toInt()),
+                        constraints = Constraints(maxWidth = (radius * 0.68f).toInt())
                     )
                     rotate(start + sweep / 2f, pivot = center) {
                         drawText(
                             layout,
-                            topLeft = Offset(center.x + radius * 0.92f - layout.size.width, center.y - layout.size.height / 2f),
+                            topLeft = Offset(center.x + radius * 0.92f - layout.size.width, center.y - layout.size.height / 2f)
                         )
                     }
                 }
@@ -109,5 +114,4 @@ fun WheelCanvas(
  * Colour of each option by its position in the wheel's full list, so a slice keeps its colour
  * (and matches its chip) when other options are vetoed or shrink.
  */
-fun segmentColors(count: Int): List<Color> =
-    DecisionEngine.colorSlots(count, WheelColors.Segments.size).map { WheelColors.Segments[it] }
+fun segmentColors(count: Int): List<Color> = DecisionEngine.colorSlots(count, WheelColors.Segments.size).map { WheelColors.Segments[it] }

@@ -8,8 +8,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.jorgelillo.grouppolls.data.FakePollRepository
 import com.jorgelillo.grouppolls.data.FirestorePollRepository
-import com.jorgelillo.grouppolls.data.localStore
 import com.jorgelillo.grouppolls.data.PollRepository
+import com.jorgelillo.grouppolls.data.localStore
 
 /** App-wide singletons (manual DI: the app is small enough not to need Hilt). */
 class GroupPollsApplication : Application() {

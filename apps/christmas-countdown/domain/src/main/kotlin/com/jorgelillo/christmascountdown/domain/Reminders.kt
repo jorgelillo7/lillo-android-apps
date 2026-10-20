@@ -10,15 +10,16 @@ enum class Reminder {
     ONE_MONTH_LEFT,
     ONE_WEEK_LEFT,
     ADVENT_STARTS,
+
     /** Today's door is still closed (only sent if it is). */
     DOOR_WAITING,
-    CHRISTMAS_DAY,
+    CHRISTMAS_DAY
 }
 
 /** The two moments of the day a reminder can go out. */
 enum class ReminderSlot(val time: LocalTime) {
     MORNING(LocalTime.of(10, 0)),
-    EVENING(LocalTime.of(18, 0)),
+    EVENING(LocalTime.of(18, 0))
 }
 
 /**
@@ -38,6 +39,7 @@ object Reminders {
                 date.month == Month.DECEMBER && day == 25 -> Reminder.CHRISTMAS_DAY
                 else -> null
             }
+
             ReminderSlot.EVENING ->
                 Reminder.DOOR_WAITING.takeIf { date.month == Month.DECEMBER && day in 2..AdventCalendar.DOORS && !doorOpenedToday }
         }

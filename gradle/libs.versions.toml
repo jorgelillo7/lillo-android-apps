@@ -19,6 +19,7 @@ zxing = "3.5.4"
 
 # Gradle Play Publisher: 4.x is the line for AGP 9.
 playPublisher = "4.1.1"
+spotless = "8.10.4"
 
 junit = "4.13.2"
 
@@ -78,6 +79,7 @@ kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 play-publisher = { id = "com.github.triplet.play", version.ref = "playPublisher" }
+spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 
 # Convention plugins from build-logic.
 jorgelillo-android-application = { id = "jorgelillo.android.application" }

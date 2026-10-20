@@ -12,7 +12,7 @@ object Moderation {
         "porno", "sexo", "pene", "vagina", "violar", "violacion", "matar", "suicidio", "drogas", "cocaina",
         // English
         "fuck", "fucking", "shit", "bitch", "cunt", "dick", "pussy", "whore", "slut", "fag", "faggot",
-        "nigger", "nigga", "retard", "porn", "sex", "rape", "kill", "suicide", "cocaine", "nazi",
+        "nigger", "nigga", "retard", "porn", "sex", "rape", "kill", "suicide", "cocaine", "nazi"
     ).map(Text::normalize).toSet()
 
     /** True when [text] contains a blocked word or phrase as a whole word. */

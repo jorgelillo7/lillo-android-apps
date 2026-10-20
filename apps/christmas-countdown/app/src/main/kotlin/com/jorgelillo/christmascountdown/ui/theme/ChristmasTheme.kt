@@ -30,5 +30,5 @@ val ChristmasColorScheme = darkColorScheme(
     onSurface = ChristmasColors.Snow,
     onSurfaceVariant = Color(0xFFD9C8C8),
     surfaceContainerLow = Color(0xFF241826),
-    outline = Color(0x55FFFFFF),
+    outline = Color(0x55FFFFFF)
 )

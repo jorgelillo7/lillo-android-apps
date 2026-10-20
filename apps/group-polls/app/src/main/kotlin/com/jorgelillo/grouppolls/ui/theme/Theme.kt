@@ -42,5 +42,5 @@ val PollsColorScheme = lightColorScheme(
     surfaceContainer = Polls.Card,
     surfaceContainerHigh = Polls.Paper,
     outline = Polls.Line,
-    error = Polls.Red,
+    error = Polls.Red
 )

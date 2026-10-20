@@ -10,7 +10,7 @@ enum class Side { RED, BLUE }
 enum class Duration(val millis: Long?) {
     ONE_DAY(24L * 60 * 60 * 1000),
     SEVEN_DAYS(7L * 24 * 60 * 60 * 1000),
-    NO_LIMIT(null),
+    NO_LIMIT(null)
     ;
 
     /** When a poll created at [createdAt] stops accepting votes; null means never. */
@@ -34,7 +34,7 @@ data class Poll(
     val redVotes: Int = 0,
     val blueVotes: Int = 0,
     /** Hidden from the feed after enough reports. */
-    val hidden: Boolean = false,
+    val hidden: Boolean = false
 ) {
     val totalVotes: Int get() = redVotes + blueVotes
 
@@ -57,5 +57,5 @@ data class Vote(
     val voterName: String?,
     val side: Side,
     val prediction: Side,
-    val votedAt: Long,
+    val votedAt: Long
 )

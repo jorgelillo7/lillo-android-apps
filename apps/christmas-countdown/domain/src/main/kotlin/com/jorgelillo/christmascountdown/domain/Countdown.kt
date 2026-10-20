@@ -15,7 +15,7 @@ data class TimeLeft(val days: Long, val hours: Int, val minutes: Int, val second
                 days = totalSeconds / 86_400,
                 hours = ((totalSeconds % 86_400) / 3_600).toInt(),
                 minutes = ((totalSeconds % 3_600) / 60).toInt(),
-                seconds = (totalSeconds % 60).toInt(),
+                seconds = (totalSeconds % 60).toInt()
             )
         }
     }
@@ -50,7 +50,7 @@ object ChristmasCountdown {
         return CountdownState.Counting(
             timeLeft = TimeLeft.of(Duration.between(now, start)),
             sleeps = ChronoUnit.DAYS.between(today, target),
-            target = target,
+            target = target
         )
     }
 }

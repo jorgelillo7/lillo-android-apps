@@ -74,7 +74,7 @@ fun PollScreen(
     onClose: (Poll) -> Unit,
     onReport: (Poll, Boolean) -> Unit,
     onResolvePrediction: (Poll) -> Unit,
-    onBack: () -> Unit,
+    onBack: () -> Unit
 ) {
     val context = LocalContext.current
     val now = remember(poll) { System.currentTimeMillis() }
@@ -104,11 +104,13 @@ fun PollScreen(
                     Icon(Icons.Filled.Share, contentDescription = stringResource(R.string.action_share))
                 }
             }
-        },
+        }
     ) {
         when {
             poll == null && notFound -> Message("🤷", stringResource(R.string.poll_not_found))
+
             poll == null -> Message("⏳", stringResource(R.string.loading))
+
             else -> {
                 val mine = local.votes[poll.code]
                 val canVote = mine == null && poll.isOpen(now)
@@ -144,7 +146,7 @@ private fun Header(poll: Poll, now: Long) {
                 !poll.isOpen(now) -> stringResource(R.string.poll_closed)
                 closesAt == null -> stringResource(R.string.poll_no_limit)
                 else -> stringResource(R.string.poll_closes_in, remaining(closesAt - now))
-            },
+            }
         )
     }
     Text(meta.joinToString(" · "), color = Polls.Muted, style = MaterialTheme.typography.bodySmall)
@@ -152,7 +154,7 @@ private fun Header(poll: Poll, now: Long) {
         poll.question,
         style = MaterialTheme.typography.headlineSmall,
         fontWeight = FontWeight.Black,
-        modifier = Modifier.padding(top = 6.dp, bottom = 16.dp).testTag("question"),
+        modifier = Modifier.padding(top = 6.dp, bottom = 16.dp).testTag("question")
     )
 }
 
@@ -183,7 +185,7 @@ private fun Voting(poll: Poll, onDone: (Side, Side) -> Unit) {
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
-                modifier = Modifier.padding(vertical = 12.dp),
+                modifier = Modifier.padding(vertical = 12.dp)
             )
             Text(stringResource(R.string.predict_desc), color = Polls.Muted, textAlign = TextAlign.Center)
             Spacer(Modifier.height(24.dp))
@@ -202,7 +204,7 @@ private fun Voting(poll: Poll, onDone: (Side, Side) -> Unit) {
 private fun Half(label: String, side: Side, modifier: Modifier, onClick: () -> Unit) {
     Box(
         modifier.fillMaxWidth().background(Polls.fill(side)).clickable(onClick = onClick).testTag("vote_${side.name.lowercase()}"),
-        contentAlignment = Alignment.Center,
+        contentAlignment = Alignment.Center
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(if (side == Side.RED) "🔴" else "🔵", fontSize = 32.sp)
@@ -224,7 +226,7 @@ private fun PredictButton(label: String, side: Side, modifier: Modifier, onClick
             .testTag("predict_${side.name.lowercase()}"),
         color = Polls.color(side),
         fontWeight = FontWeight.Black,
-        textAlign = TextAlign.Center,
+        textAlign = TextAlign.Center
     )
 }
 
@@ -237,7 +239,7 @@ private fun Results(
     userId: String,
     now: Long,
     onClose: (Poll) -> Unit,
-    onReport: (Poll, Boolean) -> Unit,
+    onReport: (Poll, Boolean) -> Unit
 ) {
     var confirmClose by rememberSaveable { mutableStateOf(false) }
     var reporting by rememberSaveable { mutableStateOf(false) }
@@ -249,7 +251,7 @@ private fun Results(
         Text(
             pluralStringResource(R.plurals.votes, poll.totalVotes, poll.totalVotes),
             color = Polls.Muted,
-            modifier = Modifier.padding(top = 10.dp).testTag("total_votes"),
+            modifier = Modifier.padding(top = 10.dp).testTag("total_votes")
         )
         if (mine != null) {
             val leader = poll.leader()
@@ -262,7 +264,7 @@ private fun Results(
                         else -> stringResource(R.string.prediction_pending, poll.label(mine.prediction))
                     },
                     color = Polls.Muted,
-                    modifier = Modifier.padding(top = 4.dp),
+                    modifier = Modifier.padding(top = 4.dp)
                 )
                 if (leader != null && mine.side == leader && poll.totalVotes > 1) {
                     Text(stringResource(R.string.with_majority, maxOf(split.red, split.blue)), color = Polls.Muted)
@@ -278,7 +280,7 @@ private fun Results(
                         Dot(Polls.color(side), 12)
                         Text(
                             "  ${poll.label(side)}: " + names.joinToString(", "),
-                            modifier = Modifier.testTag("voters_${side.name.lowercase()}"),
+                            modifier = Modifier.testTag("voters_${side.name.lowercase()}")
                         )
                     }
                 }
@@ -304,11 +306,14 @@ private fun Results(
             title = { Text(stringResource(R.string.close_poll)) },
             text = { Text(stringResource(R.string.close_poll_desc)) },
             confirmButton = {
-                TextButton(onClick = { confirmClose = false; onClose(poll) }, modifier = Modifier.testTag("confirm_close")) {
+                TextButton(onClick = {
+                    confirmClose = false
+                    onClose(poll)
+                }, modifier = Modifier.testTag("confirm_close")) {
                     Text(stringResource(R.string.close_poll), fontWeight = FontWeight.Bold)
                 }
             },
-            dismissButton = { TextButton(onClick = { confirmClose = false }) { Text(stringResource(R.string.cancel)) } },
+            dismissButton = { TextButton(onClick = { confirmClose = false }) { Text(stringResource(R.string.cancel)) } }
         )
     }
     if (reporting) {
@@ -329,11 +334,14 @@ private fun Results(
                 }
             },
             confirmButton = {
-                TextButton(onClick = { reporting = false; onReport(poll, hide) }, modifier = Modifier.testTag("confirm_report")) {
+                TextButton(onClick = {
+                    reporting = false
+                    onReport(poll, hide)
+                }, modifier = Modifier.testTag("confirm_report")) {
                     Text(stringResource(R.string.report), color = Polls.Red, fontWeight = FontWeight.Bold)
                 }
             },
-            dismissButton = { TextButton(onClick = { reporting = false }) { Text(stringResource(R.string.cancel)) } },
+            dismissButton = { TextButton(onClick = { reporting = false }) { Text(stringResource(R.string.cancel)) } }
         )
     }
 }
@@ -348,7 +356,7 @@ private fun ResultRow(label: String, percent: Int, side: Side, mine: Boolean) {
             .clip(MaterialTheme.shapes.large)
             .background(Polls.soft(side))
             .then(if (mine) Modifier.border(3.dp, Polls.color(side), MaterialTheme.shapes.large) else Modifier)
-            .testTag("result_${side.name.lowercase()}"),
+            .testTag("result_${side.name.lowercase()}")
     ) {
         Box(Modifier.fillMaxHeight().fillMaxWidth(fraction).background(Polls.fill(side)))
         Row(Modifier.fillMaxSize().padding(horizontal = 16.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -361,6 +369,6 @@ private fun ResultRow(label: String, percent: Int, side: Side, mine: Boolean) {
 @Composable
 private fun Card(content: @Composable () -> Unit) {
     Column(
-        Modifier.fillMaxWidth().padding(top = 16.dp).clip(MaterialTheme.shapes.large).background(Polls.Card).border(1.dp, Polls.Line, MaterialTheme.shapes.large).padding(16.dp),
+        Modifier.fillMaxWidth().padding(top = 16.dp).clip(MaterialTheme.shapes.large).background(Polls.Card).border(1.dp, Polls.Line, MaterialTheme.shapes.large).padding(16.dp)
     ) { content() }
 }

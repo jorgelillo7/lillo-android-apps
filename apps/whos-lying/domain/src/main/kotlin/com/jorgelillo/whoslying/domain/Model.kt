@@ -12,7 +12,7 @@ enum class GameMode {
     BLIND,
 
     /** Like CLASSIC, plus one "drifter" with no word who wins by guessing the civilians' word. */
-    DRIFTER,
+    DRIFTER
 }
 
 /**
@@ -28,7 +28,7 @@ data class WordPack(
     val name: String,
     val emoji: String,
     val entries: List<Entry>,
-    val custom: Boolean = false,
+    val custom: Boolean = false
 )
 
 @Serializable
@@ -49,7 +49,7 @@ data class GameSettings(
      */
     val drawing: Boolean = false,
     /** Games in a match; scores decide a winner after the last one. 0 means no limit. */
-    val rounds: Int = Match.DEFAULT_ROUNDS,
+    val rounds: Int = Match.DEFAULT_ROUNDS
 )
 
 /** What one player sees when it's their turn to look at the phone. */
@@ -59,7 +59,7 @@ data class Card(
     /** Word shown to the player; null when they get none (BLIND impostor, drifter). */
     val word: String?,
     /** Category hint for players without the civilians' word, when enabled. */
-    val hint: String?,
+    val hint: String?
 ) {
     /** CLASSIC/DRIFTER impostors see a word and are not told they are impostors. */
     val knowsRole: Boolean get() = role != Role.CIVILIAN && word == null

@@ -23,7 +23,7 @@ class MusicBoxPlayer(private val scope: CoroutineScope) {
     private val chunkSize = sampleRate / 10
     private val playlist = ShuffledPlaylist(Carols.all)
     private val rendered = mutableMapOf<Melody, ShortArray>()
-    private val gap = ShortArray(sampleRate)   // one second of silence between carols
+    private val gap = ShortArray(sampleRate) // one second of silence between carols
     private var job: Job? = null
 
     fun play() {
@@ -68,14 +68,14 @@ class MusicBoxPlayer(private val scope: CoroutineScope) {
                 AudioAttributes.Builder()
                     .setUsage(AudioAttributes.USAGE_MEDIA)
                     .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                    .build(),
+                    .build()
             )
             .setAudioFormat(
                 AudioFormat.Builder()
                     .setEncoding(AudioFormat.ENCODING_PCM_16BIT)
                     .setSampleRate(sampleRate)
                     .setChannelMask(AudioFormat.CHANNEL_OUT_MONO)
-                    .build(),
+                    .build()
             )
             .setTransferMode(AudioTrack.MODE_STREAM)
             .setBufferSizeInBytes(maxOf(minBuffer, chunkSize * 2 * 2))

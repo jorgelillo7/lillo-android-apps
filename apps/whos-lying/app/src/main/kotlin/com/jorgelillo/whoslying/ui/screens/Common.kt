@@ -53,7 +53,7 @@ fun Page(
     /** Short screens: actions beside the content (see [LilloPage]). */
     sideActionsWhenShort: Boolean = false,
     bottom: @Composable ColumnScope.() -> Unit = {},
-    content: @Composable ColumnScope.() -> Unit,
+    content: @Composable ColumnScope.() -> Unit
 ) = LilloPage(title, onBack, background, Neon.Ink, modifier, actions = actions, sideActionsWhenShort = sideActionsWhenShort, bottom = bottom, content = content)
 
 @Composable
@@ -63,7 +63,7 @@ fun BigButton(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     color: Color = Neon.Violet,
-    contentColor: Color = Color.White,
+    contentColor: Color = Color.White
 ) = LilloBigButton(text, onClick, color, contentColor, modifier, enabled)
 
 /** Player colors for avatars, by position in the group. */
@@ -77,9 +77,8 @@ fun Avatar(player: String, players: List<String>, size: Dp, modifier: Modifier =
     size,
     modifier,
     contentColor = Neon.Night,
-    ring = ring,
+    ring = ring
 )
-
 
 /** Big emoji used as illustration (no image assets needed). */
 @Composable

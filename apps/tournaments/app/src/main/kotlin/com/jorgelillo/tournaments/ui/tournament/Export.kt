@@ -43,15 +43,13 @@ fun shareCsv(context: Context, t: Tournament) {
     context.shareFile(file, "text/csv", subject = t.name)
 }
 
-
 private fun paint(color: Color, size: Float, bold: Boolean = false) = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
     this.color = color.toArgb()
     textSize = size
     typeface = if (bold) Typeface.DEFAULT_BOLD else Typeface.DEFAULT
 }
 
-private fun Canvas.text(s: String, x: Float, y: Float, p: TextPaint, maxWidth: Float) =
-    drawText(TextUtils.ellipsize(s, p, maxWidth, TextUtils.TruncateAt.END).toString(), x, y, p)
+private fun Canvas.text(s: String, x: Float, y: Float, p: TextPaint, maxWidth: Float) = drawText(TextUtils.ellipsize(s, p, maxWidth, TextUtils.TruncateAt.END).toString(), x, y, p)
 
 /** Background, title, subtitle and (when decided) the champion line; returns the canvas. */
 private fun frame(context: Context, t: Tournament, width: Float, height: Float): Pair<Bitmap, Canvas> {
@@ -81,13 +79,25 @@ private fun bracketBitmap(context: Context, t: Tournament): Bitmap {
 
     val champion = t.champion
     val path = champion?.let { BracketLayout.pathOf(t, it).map { m -> m.round to m.slot }.toSet() }.orEmpty()
-    val line = Paint(Paint.ANTI_ALIAS_FLAG).apply { style = Paint.Style.STROKE; strokeCap = Paint.Cap.ROUND; strokeJoin = Paint.Join.ROUND }
+    val line = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        style = Paint.Style.STROKE
+        strokeCap = Paint.Cap.ROUND
+        strokeJoin = Paint.Join.ROUND
+    }
     grid.cells.forEach { cell ->
         val points = g.connector(grid, cell) ?: return@forEach
         val m = t.round(Stage.ELIMINATION, cell.round).getOrNull(cell.slot)
         val won = m != null && !m.isBye && m.winner(t.bestOf) != null
         line.color = (if (won) Arena.Gold else Arena.Faint).toArgb()
-        line.strokeWidth = (if ((cell.round to cell.slot) in path) 10f else if (won) 6f else 3f) * scale
+        line.strokeWidth = (
+            if ((cell.round to cell.slot) in path) {
+                10f
+            } else if (won) {
+                6f
+            } else {
+                3f
+            }
+            ) * scale
         val p = android.graphics.Path().apply {
             moveTo(points[0].x, points[0].y)
             points.drop(1).forEach { lineTo(it.x, it.y) }
@@ -99,7 +109,10 @@ private fun bracketBitmap(context: Context, t: Tournament): Bitmap {
         canvas.drawText(context.resources.roundName(t, Stage.ELIMINATION, cell.round), g.x(cell) + g.cardW / 2, 30f * scale, header)
     }
     val card = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = Arena.Raised.toArgb() }
-    val border = Paint(Paint.ANTI_ALIAS_FLAG).apply { style = Paint.Style.STROKE; strokeWidth = 2f }
+    val border = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        style = Paint.Style.STROKE
+        strokeWidth = 2f
+    }
     grid.cells.forEach { cell ->
         val m = t.round(Stage.ELIMINATION, cell.round).getOrNull(cell.slot) ?: return@forEach
         val x = g.x(cell)
@@ -117,7 +130,17 @@ private fun bracketBitmap(context: Context, t: Tournament): Bitmap {
         }
         rows.forEachIndexed { i, (name, score, won) ->
             val baseline = y + g.cardH / 2 * i + g.cardH / 4 + 10f * scale
-            val p = paint(if (won) Arena.Gold else if (name == null || done) Arena.Muted else Arena.Cream, 28f * scale, bold = won)
+            val p = paint(
+                if (won) {
+                    Arena.Gold
+                } else if (name == null || done) {
+                    Arena.Muted
+                } else {
+                    Arena.Cream
+                },
+                28f * scale,
+                bold = won
+            )
             canvas.text(name ?: "—", x + 16f * scale, baseline, p, g.cardW - 64f * scale)
             if (score != null) {
                 val sp = paint(if (won) Arena.Gold else Arena.Muted, 30f * scale, bold = true).apply { textAlign = Paint.Align.RIGHT }

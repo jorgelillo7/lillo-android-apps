@@ -41,5 +41,5 @@ val ArenaColorScheme = darkColorScheme(
     secondaryContainer = Arena.High,
     onSecondaryContainer = Arena.Cream,
     outline = Arena.Faint,
-    outlineVariant = Arena.Faint,
+    outlineVariant = Arena.Faint
 )

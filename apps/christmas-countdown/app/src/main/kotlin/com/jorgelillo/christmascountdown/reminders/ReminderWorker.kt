@@ -6,8 +6,8 @@ import androidx.work.WorkerParameters
 import com.jorgelillo.christmascountdown.ChristmasCountdownApplication
 import com.jorgelillo.christmascountdown.domain.ReminderSlot
 import com.jorgelillo.christmascountdown.domain.Reminders
-import kotlinx.coroutines.flow.first
 import java.time.LocalDate
+import kotlinx.coroutines.flow.first
 
 /** Shows the reminder planned for its date and slot, if it still applies, then plans the next one. */
 class ReminderWorker(context: Context, params: WorkerParameters) : CoroutineWorker(context, params) {

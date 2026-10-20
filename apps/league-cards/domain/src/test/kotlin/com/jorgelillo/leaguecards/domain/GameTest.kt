@@ -15,14 +15,13 @@ class GameTest {
     /** A league's own deck, kept outside this repository (see the app's README); Gradle passes its path. */
     private val privateDeck = File(System.getProperty("leagueCards.privateDeck").orEmpty())
 
-    private fun card(id: String, right: Choice = Choice("Sí"), left: Choice = Choice("No"), followUpOnly: Boolean = false) =
-        Card(id, "a", "texto $id", left, right, followUpOnly = followUpOnly)
+    private fun card(id: String, right: Choice = Choice("Sí"), left: Choice = Choice("No"), followUpOnly: Boolean = false) = Card(id, "a", "texto $id", left, right, followUpOnly = followUpOnly)
 
     private fun league(
         cards: List<Card>,
         events: List<MatchdayEvent> = emptyList(),
         joker: Joker? = null,
-        achievements: List<Achievement> = emptyList(),
+        achievements: List<Achievement> = emptyList()
     ) = League(
         name = "test",
         matchdays = 3,
@@ -33,7 +32,7 @@ class GameTest {
         events = events,
         joker = joker,
         endings = Endings("ml", "mh", "sl", "sh", "pl", "ph", "tl", "th", "champion", "{position}"),
-        achievements = achievements,
+        achievements = achievements
     )
 
     /** Plays until the season ends, choosing with [pick]. */
@@ -162,7 +161,7 @@ class GameTest {
     fun `an achievement unlocks after its count of choices, once`() {
         val l = league(
             listOf(card("x", right = Choice("Sí", achievement = "a")), card("y", right = Choice("Sí", achievement = "a"))),
-            achievements = listOf(Achievement("a", "A", "two yeses", count = 2)),
+            achievements = listOf(Achievement("a", "A", "two yeses", count = 2))
         )
         var s = Game.choose(l, Game.newSeason(l, 1), right = true)
         assertEquals(emptyList(), s.unlocked)
@@ -179,7 +178,7 @@ class GameTest {
         val risky = Choice("Corazonada", achievement = "safe", risk = Risk(1.0, Effects(points = -16), "‑16", achievement = "flop"))
         val l = league(
             listOf(card("x", right = risky), card("y", right = risky)),
-            achievements = listOf(Achievement("safe", "S", "s"), Achievement("flop", "F", "f")),
+            achievements = listOf(Achievement("safe", "S", "s"), Achievement("flop", "F", "f"))
         )
         val s = Game.choose(l, Game.newSeason(l, 1), right = true)
         assertEquals(listOf("flop"), s.unlocked)
@@ -189,7 +188,7 @@ class GameTest {
     fun `the end of the season unlocks the built-in achievements and is recorded once`() {
         val l = league(
             listOf(card("x"), card("y")),
-            achievements = listOf(Achievement("survivor", "S", "s"), Achievement("podium", "P", "p")),
+            achievements = listOf(Achievement("survivor", "S", "s"), Achievement("podium", "P", "p"))
         )
         var saved = Saved()
         var s = Game.newSeason(l, 11)

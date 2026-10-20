@@ -36,6 +36,7 @@ Module paths follow the folders: `:apps:<app>:app`, `:apps:<app>:domain`, `:core
 ./gradlew test                                            # every unit test in the repo
 ./gradlew :apps:<app>:domain:test --tests '*SomeTest.someMethod*'   # single test
 ./gradlew :apps:<app>:app:lintDebug                       # lint (kept at 0 warnings)
+./gradlew spotlessApply                                   # format Kotlin (ktlint, .editorconfig); CI runs spotlessCheck
 ./gradlew :apps:<app>:app:installDebug                    # run on emulator/phone
 ./gradlew :apps:<app>:app:bundleRelease                   # Play bundle (signed if apps/<app>/keystore.properties exists)
 

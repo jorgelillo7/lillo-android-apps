@@ -53,7 +53,7 @@ fun EditScreen(
     isNew: Boolean,
     onSave: (Wheel) -> Unit,
     onDelete: () -> Unit,
-    onBack: () -> Unit,
+    onBack: () -> Unit
 ) {
     var name by rememberSaveable { mutableStateOf(initial.name) }
     var options by rememberSaveable { mutableStateOf(initial.options) }
@@ -82,14 +82,14 @@ fun EditScreen(
                     TextButton(
                         onClick = { onSave(initial.copy(name = name.trim(), options = cleanOptions)) },
                         enabled = valid,
-                        modifier = Modifier.testTag("save"),
+                        modifier = Modifier.testTag("save")
                     ) {
                         Text(stringResource(R.string.edit_save), fontWeight = FontWeight.Bold)
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
             )
-        },
+        }
     ) { padding ->
         Column(Modifier.fillMaxSize().padding(padding).imePadding().padding(horizontal = 20.dp)) {
             OutlinedTextField(
@@ -99,7 +99,7 @@ fun EditScreen(
                 singleLine = true,
                 isError = name.isBlank(),
                 supportingText = { if (name.isBlank()) Text(stringResource(R.string.edit_need_name)) },
-                modifier = Modifier.fillMaxWidth().testTag("name"),
+                modifier = Modifier.fillMaxWidth().testTag("name")
             )
             Row(verticalAlignment = Alignment.CenterVertically) {
                 OutlinedTextField(
@@ -109,13 +109,13 @@ fun EditScreen(
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                     keyboardActions = KeyboardActions(onDone = { addDraft() }),
-                    modifier = Modifier.weight(1f).testTag("new_option"),
+                    modifier = Modifier.weight(1f).testTag("new_option")
                 )
                 Spacer(Modifier.padding(4.dp))
                 Button(
                     onClick = { addDraft() },
                     enabled = draft.isNotBlank(),
-                    colors = ButtonDefaults.buttonColors(containerColor = WheelColors.Teal, contentColor = WheelColors.Night),
+                    colors = ButtonDefaults.buttonColors(containerColor = WheelColors.Teal, contentColor = WheelColors.Night)
                 ) { Text(stringResource(R.string.edit_add)) }
             }
             if (cleanOptions.size < 2) {
@@ -151,7 +151,7 @@ fun EditScreen(
             onDismissRequest = { confirmDelete = false },
             text = { Text(stringResource(R.string.edit_delete_confirm)) },
             confirmButton = { TextButton(onClick = onDelete) { Text(stringResource(R.string.edit_delete), color = WheelColors.Coral) } },
-            dismissButton = { TextButton(onClick = { confirmDelete = false }) { Text(stringResource(R.string.edit_cancel)) } },
+            dismissButton = { TextButton(onClick = { confirmDelete = false }) { Text(stringResource(R.string.edit_cancel)) } }
         )
     }
 }

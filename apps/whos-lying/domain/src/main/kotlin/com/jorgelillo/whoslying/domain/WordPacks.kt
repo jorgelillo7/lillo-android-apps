@@ -13,7 +13,7 @@ object WordPacks {
         id = id,
         name = name,
         emoji = emoji,
-        entries = parseEntries(pairs),
+        entries = parseEntries(pairs)
     )
 
     /**

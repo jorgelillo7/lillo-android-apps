@@ -45,7 +45,7 @@ fun TrophiesScreen(league: League, saved: Saved, onBack: () -> Unit) {
                     title = if (seen) league.endings.text(key).replace("{position}", "N") else stringResource(R.string.locked),
                     subtitle = null,
                     dim = !seen,
-                    tag = "ending_$key",
+                    tag = "ending_$key"
                 )
             }
 
@@ -92,7 +92,7 @@ private fun Tile(emoji: String, title: String, subtitle: String?, dim: Boolean, 
             .padding(horizontal = 12.dp, vertical = 10.dp)
             .alpha(if (dim) 0.55f else 1f)
             .testTag(tag),
-        verticalAlignment = Alignment.CenterVertically,
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Text(emoji, style = MaterialTheme.typography.headlineSmall)
         Spacer(Modifier.width(12.dp))
@@ -112,7 +112,7 @@ private fun HistoryRow(league: League, r: SeasonRecord) {
             .padding(vertical = 3.dp)
             .background(Chat.Bubble, RoundedCornerShape(12.dp))
             .padding(horizontal = 12.dp, vertical = 10.dp),
-        verticalArrangement = Arrangement.spacedBy(2.dp),
+        verticalArrangement = Arrangement.spacedBy(2.dp)
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(endingEmoji(r.ending), style = MaterialTheme.typography.titleLarge)

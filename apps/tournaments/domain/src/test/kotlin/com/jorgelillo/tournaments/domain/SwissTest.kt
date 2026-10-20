@@ -10,7 +10,13 @@ import kotlin.test.assertTrue
 class SwissTest {
 
     private fun swiss(n: Int, topCut: Int = 0, seed: Int = 1) = Tournaments.create(
-        "t", "League", 0, (1..n).map { "P$it" }, Format.SWISS, topCut = topCut, random = Random(seed),
+        "t",
+        "League",
+        0,
+        (1..n).map { "P$it" },
+        Format.SWISS,
+        topCut = topCut,
+        random = Random(seed)
     )
 
     /** Plays every pending match: the player with the lower id wins 2-0. */
@@ -25,20 +31,22 @@ class SwissTest {
 
     @Test
     fun noRematchesAndOneByeEach() {
-        for (n in 3..12) for (seed in 1..5) {
-            var t = swiss(n, seed = seed)
-            while (true) {
-                t = playRound(t)
-                if (!Tournaments.canPairNextRound(t)) break
-                t = Tournaments.pairNextRound(t, Random(seed))
+        for (n in 3..12) {
+            for (seed in 1..5) {
+                var t = swiss(n, seed = seed)
+                while (true) {
+                    t = playRound(t)
+                    if (!Tournaments.canPairNextRound(t)) break
+                    t = Tournaments.pairNextRound(t, Random(seed))
+                }
+                assertTrue(t.isSwissOver, "n=$n")
+                val real = t.matches.filter { !it.isBye }.map { setOf(it.a, it.b) }
+                assertEquals(real.size, real.toSet().size, "rematch n=$n seed=$seed")
+                val byes = t.matches.filter { it.isBye }.map { it.a }
+                assertEquals(byes.size, byes.toSet().size, "double bye n=$n seed=$seed")
+                assertEquals(if (n % 2 == 1) t.swissRounds else 0, byes.size)
+                assertEquals(t.players.size, Standings.of(t).size)
             }
-            assertTrue(t.isSwissOver, "n=$n")
-            val real = t.matches.filter { !it.isBye }.map { setOf(it.a, it.b) }
-            assertEquals(real.size, real.toSet().size, "rematch n=$n seed=$seed")
-            val byes = t.matches.filter { it.isBye }.map { it.a }
-            assertEquals(byes.size, byes.toSet().size, "double bye n=$n seed=$seed")
-            assertEquals(if (n % 2 == 1) t.swissRounds else 0, byes.size)
-            assertEquals(t.players.size, Standings.of(t).size)
         }
     }
 

@@ -1,10 +1,10 @@
 package com.jorgelillo.decisionwheel.domain
 
-import kotlinx.serialization.json.Json
 import kotlin.random.Random
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
+import kotlinx.serialization.json.Json
 
 class ModelAndSynthTest {
 
@@ -13,7 +13,7 @@ class ModelAndSynthTest {
         val state = AppState(
             wheels = listOf(Wheel("w1", "Dinner", listOf("Pizza", "Sushi"))),
             history = listOf(Decision("w1", "Pizza", 123L)),
-            soundOn = false,
+            soundOn = false
         )
         assertEquals(state, Json.decodeFromString<AppState>(Json.encodeToString(state)))
     }

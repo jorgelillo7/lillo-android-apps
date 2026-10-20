@@ -14,8 +14,7 @@ class GameTest {
     private val players = listOf("Ana", "Bea", "Carlos", "Dani", "Eva")
     private val pack = WordPack("p", "Lugares", "🗺️", listOf(Entry("Playa", listOf("Piscina")), Entry("Cine", listOf("Teatro"))))
 
-    private fun deal(settings: GameSettings, seed: Int = 1, who: List<String> = players) =
-        Game.deal(who, settings, pack, pack.entries.first(), Random(seed))
+    private fun deal(settings: GameSettings, seed: Int = 1, who: List<String> = players) = Game.deal(who, settings, pack, pack.entries.first(), Random(seed))
 
     @Test
     fun classicImpostorGetsTheDecoyAndDoesNotKnow() {
