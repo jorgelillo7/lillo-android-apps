@@ -72,8 +72,19 @@ Lines are pruned as items ship. What has **shipped** lives in `apps/<app>/releas
 | | What is missing | Waiting on |
 |---|---|---|
 | ⏳ | Move into `lillorepo` (Bazel) | Gradle builds or the Play publishing loop slowing you down · domain modules are pure Kotlin to make it easy |
-| 🔨 | `LilloAvatar` in core: the initial-in-a-circle avatar exists 3× in whos-lying and in league-cards (league-cards' version handles names starting with an emoji) | — |
-| 🔨 | One confetti in core: whos-lying's falling `Confetti` and core's `ConfettiBurst` (add the rain as a variant, or pick one) | — |
-| 🔨 | `isShortScreen()` on `currentWindowAdaptiveInfo().windowSizeClass` (material3-adaptive; same 480 dp "compact height", right in multi-window and foldables) | — |
+| 🔨 | Publish from the terminal with Gradle Play Publisher (bundle + notes to a track, listing, promote): move every app's `store/metadata` (fastlane layout) to GPP's own `app/src/main/play`, store-asset generators and release skill included | In progress · then 👤 a Google Cloud service account with Play Console access (one-time) |
+| 🔨 | Screenshot tests on the JVM (Roborazzi) for core components and each app's key screens, portrait and landscape: catch layout breaks in seconds instead of the hour-long emulator battery | — |
+| 🔨 | CI builds release too (`assembleRelease`, R8): the WorkManager R8 crash would not be caught today | — |
+| 🔨 | Unit tests for core: `JsonStore` (users' data), `avatarInitial`, `sharedText`, share links | — |
+| 🔨 | Formatting and static analysis (ktlint via spotless, or detekt) in CI: unused and unsorted imports slip through | — |
+| 🔨 | Dependency update PRs (Renovate or Dependabot); lint already lists 7 newer versions | — |
+| 🔨 | Semantic colours in `LilloTheme` (card, muted, line, accent) so core components stop taking colours per call and the per-app wrappers shrink | — |
+| 🔨 | `GlassCard` / `GradientBackground` are Christmas-only: back to that app, or a second user | — |
+| 🔨 | One UI-state convention for every ViewModel (`StateFlow` + `collectAsStateWithLifecycle`; some still use `mutableStateOf`) | — |
+| 🔨 | Accessibility pass: content descriptions (avatars, emoji buttons), contrast (e.g. the Drifter's guess placeholder), touch targets; TalkBack once per app | — |
+| 🔨 | Component catalogue: `@Preview`s of every core component (light/dark, short screen) | — |
+| ⏳ | `minSdk` 23 → 24 (blocks WorkManager 2.12; check the Play Console share of API 23 first) | Christmas's install stats |
+| ⏳ | Baseline profiles for startup | An app where startup feels slow |
+| 👤 | Repo licence (only whos-lying was discussed: GPL-3.0 candidate) | Your decision |
 | 🔨 | Type-safe navigation (`@Serializable` routes, Navigation 2.10) instead of string routes in decision-wheel, group-polls, tournaments and whos-lying, one app at a time | — |
 | 🔨 | `dataExtractionRules` for the 5 apps with `allowBackup="true"` (only group-polls declares them): say what is restored on a new phone | — |
