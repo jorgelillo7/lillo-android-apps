@@ -12,8 +12,8 @@ class GameTest {
 
     private val sample = League.parse(File("../app/src/main/assets/league.json").readText())
 
-    /** A league's own deck, kept outside this repository (see the app's README). */
-    private val privateDeck = File("../../../../lloros-league/content/league-private.json")
+    /** A league's own deck, kept outside this repository (see the app's README); Gradle passes its path. */
+    private val privateDeck = File(System.getProperty("leagueCards.privateDeck").orEmpty())
 
     private fun card(id: String, right: Choice = Choice("Sí"), left: Choice = Choice("No"), followUpOnly: Boolean = false) =
         Card(id, "a", "texto $id", left, right, followUpOnly = followUpOnly)

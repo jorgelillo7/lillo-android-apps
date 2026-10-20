@@ -16,21 +16,20 @@ Usage (repo root, emulator running, release APK built):
 --landscape plays every scenario on the phone turned sideways: under 480 dp tall, so it gets the
 compact layouts of short screens like the AYN Thor's (screenshots in build/battery/whos-lying-landscape/).
 """
-import html
-import re
-import struct
-import subprocess
 import sys
+import struct
 import time
 from collections import Counter
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
+sys.path.insert(0, str(ROOT / "scripts"))
+from ui_lib import (crashes, dump, find, hide_keyboard, install_release, rotate, screenshot, shell,  # noqa: E402
+                    swipe_up, tap, type_text, wait_for)
+
 PKG = "com.jorgelillo.whoslying"
-APK = ROOT / "apps/whos-lying/app/build/outputs/apk/release/app-release.apk"
 LANDSCAPE = "--landscape" in sys.argv
 OUT = ROOT / ("build/battery/whos-lying-landscape" if LANDSCAPE else "build/battery/whos-lying")
-ADB = subprocess.run(["bash", "-c", f"source {ROOT}/scripts/env.sh >/dev/null; echo $ADB"], capture_output=True, text=True).stdout.strip()
 
 TITLES = {
     "caught_one": "You caught the impostor!",
@@ -44,110 +43,14 @@ TITLES = {
 }
 
 
-# ── adb helpers ────────────────────────────────────────────────────────────────────────────────
-
-def adb(*args, check=False):
-    return subprocess.run([ADB, *args], capture_output=True, text=True, check=check).stdout
-
-
-def shell(*args):
-    return adb("shell", *args)
-
-
-class Node:
-    def __init__(self, attrs):
-        self.text = html.unescape(attrs.get("text", ""))
-        self.tag = attrs.get("resource-id", "").split("/")[-1]
-        self.checked = attrs.get("checked") == "true"
-        x1, y1, x2, y2 = map(int, re.findall(r"\d+", attrs.get("bounds", "[0,0][0,0]")))
-        self.center = ((x1 + x2) // 2, (y1 + y2) // 2)
-
-
-def dump():
-    """The nodes on screen; retries while the app is busy (dumps fail during animations)."""
-    for _ in range(10):
-        shell("rm", "-f", "/sdcard/ui.xml")
-        shell("uiautomator", "dump", "/sdcard/ui.xml")
-        xml = adb("exec-out", "cat", "/sdcard/ui.xml")
-        if "<hierarchy" in xml:
-            return [Node(dict(re.findall(r'([\w-]+)="([^"]*)"', n))) for n in re.findall(r"<node [^>]*>", xml)]
-        time.sleep(1.5)
-    raise RuntimeError("UI dump keeps failing")
-
-
-def find(nodes, tag=None, text=None, prefix=None):
-    for n in nodes:
-        if tag and n.tag == tag or text and n.text == text or prefix and n.tag.startswith(prefix):
-            return n
-    return None
-
-
-def wait_for(tag=None, text=None, timeout=15):
-    end = time.time() + timeout
-    while time.time() < end:
-        nodes = dump()
-        if find(nodes, tag, text):
-            return nodes
-        time.sleep(1)
-    raise AssertionError(f"not on screen: {tag or text}")
-
-
-def tap(tag, wait=1.5, timeout=15, scroll=False):
-    end = time.time() + (max(timeout, 45) if scroll else timeout)   # long lists in landscape take many swipes
-    while time.time() < end:
-        node = find(dump(), tag)
-        if node:
-            shell("input", "tap", *map(str, node.center))
-            time.sleep(wait)
-            return
-        if scroll:
-            swipe_up(end=0.41)
-        time.sleep(1)
-    raise AssertionError(f"can't tap {tag}")
-
-
-def swipe_up(start=0.70, end=0.45, ms=400, wait=True):
-    """Drags up the middle of the screen, in fractions of its height (works in portrait and landscape)."""
-    w, h = (2 * c for c in dump()[0].center)
-    args = [ADB, "shell", "input", "swipe", str(w // 2), str(int(h * start)), str(w // 2), str(int(h * end)), str(ms)]
-    return subprocess.run(args, capture_output=True) if wait else subprocess.Popen(args)
-
-
-def type_text(text):
-    shell("input", "text", text.replace(" ", "%s"))
-
-
-def hide_keyboard():
-    """Closes the keyboard if it's up (ESCAPE doesn't always; BACK without a keyboard leaves the screen)."""
-    for _ in range(3):
-        if "mInputShown=true" not in shell("dumpsys", "input_method"):
-            return
-        shell("input", "keyevent", "KEYCODE_BACK")
-        time.sleep(1)
-
-
 def shot(name):
-    OUT.mkdir(parents=True, exist_ok=True)
-    path = OUT / f"{name}.png"
-    subprocess.run([str(ROOT / "scripts/screenshot.sh"), str(path)], capture_output=True)
+    path = screenshot(OUT / f"{name}.png")
     if LANDSCAPE and not name.startswith("FAILED"):
         width, height = struct.unpack(">II", path.read_bytes()[16:24])   # PNG header
         assert width > height, f"{name}: the phone turned upright ({width}x{height})"
 
 
 # ── app flows ──────────────────────────────────────────────────────────────────────────────────
-
-def rotate(landscape):
-    """Turns the phone; something resets the rotation once when a run starts, so it is checked back."""
-    want = "1" if landscape else "0"
-    for _ in range(5):
-        shell("settings", "put", "system", "accelerometer_rotation", "0")
-        shell("settings", "put", "system", "user_rotation", want)
-        time.sleep(2)
-        if shell("settings", "get", "system", "user_rotation").strip() == want:
-            return
-    raise AssertionError("the phone won't stay turned")
-
 
 def fresh(locale="en-US"):
     """Clean install state, given language, past the first-launch welcome."""
@@ -485,9 +388,7 @@ SCENARIOS = [classic_civilians, classic_impostors, blind_civilians, blind_impost
 
 def main():
     wanted = [a for a in sys.argv[1:] if not a.startswith("--")]
-    adb("uninstall", PKG)
-    print(adb("install", "-r", str(APK)).strip().splitlines()[-1])
-    adb("logcat", "-c")
+    install_release("whos-lying", PKG)
     failed = []
     rotate(LANDSCAPE)
     try:
@@ -504,10 +405,10 @@ def main():
             rotate(LANDSCAPE)   # the landscape scenario puts the phone back upright
     finally:
         rotate(False)
-    crashes = adb("logcat", "-d", "-b", "crash").count("FATAL")
+    crashed = crashes(PKG)
     shell("cmd", "locale", "set-app-locales", PKG, "--locales", "")
-    print(f"\ncrashes: {crashes} · screenshots: {OUT}")
-    if failed or crashes:
+    print(f"\ncrashes: {crashed} · screenshots: {OUT}")
+    if failed or crashed:
         print(f"BATTERY FAILED: {failed}")
         sys.exit(1)
     print("BATTERY PASSED")

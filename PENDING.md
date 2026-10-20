@@ -19,6 +19,7 @@ Lines are pruned as items ship. What has **shipped** lives in `apps/<app>/releas
 | 👤 | Spanish carols (Los peces en el río, Campana sobre campana, Fum fum fum, Marimorena) | Reliable public-domain scores from you · *El burrito sabanero* is copyrighted (1972), not allowed |
 | ⏳ | Grow the advent pool (activities and songs) between January and November, never during an Advent in progress | Ideas from you · `AdventActivity` / `AdventSong` in the domain |
 | ⏳ | Raise `targetSdk` to 37 (Android 17 behaviour changes, test on an API 37 emulator) | Google Play announcing API 37 as the requirement (usually each August) |
+| 🔨 | Reminders: re-check `canNotify` on resume (granted from system settings, the prompt stays until restart) and plan the next reminder in a `finally` in `ReminderWorker` (a failed run breaks the chain until the app opens) | — |
 
 ## decision-wheel
 
@@ -30,11 +31,12 @@ Lines are pruned as items ship. What has **shipped** lives in `apps/<app>/releas
 
 | | What is missing | Waiting on |
 |---|---|---|
-| 👤 | Upload v5 (editable copies of the included packs, plus v4: new icon, share packs by link / QR, fixes) to internal testing and test with 4–5 friends: word pairs, flow, readability | You · bundle built from master, notes in `changelogs/4.txt` |
+| 👤 | Upload v5 (editable copies of the included packs, landscape / handheld layouts, plus v4: new icon, share packs by link / QR, fixes) to internal testing and test with 4–5 friends: word pairs, flow, readability | You · bundle built from master, notes in `changelogs/5.txt` |
 | ⏳ | A tester got "Item not found" on the opt-in link: likely the first review still pending or the wrong Google account in Play | Their next try |
 | ⏳ | Open-source license (GPL-3.0 was the candidate) | Your decision · not licensed for now |
 | 🔨 | Pack links: publish `/p/` and the impostor entry of `assetlinks.json` (both ready locally in the website repo; add the Play signing SHA-256 from Play Console → App integrity). Until then packs travel by share-to-app or Import → paste | You · the SHA-256, then a website commit |
 | 👤 | New icon (a line-up, the liar in a fedora): upload `store/play-icon-512.png` and the feature graphics to the listing | You · Play Console → Main store listing |
+| 🔨 | Immutable game state: `Game` is a mutable object plus a manual `revision` counter, which Compose can't observe (it left the group stuck after a wrong Drifter guess); make it a data class exposed as a `StateFlow`, per the repo's MVVM rule | Covered by `ExhaustiveGameTest` and `tools/battery_test.py` |
 
 ## group-polls (new app)
 
@@ -71,3 +73,8 @@ Lines are pruned as items ship. What has **shipped** lives in `apps/<app>/releas
 | | What is missing | Waiting on |
 |---|---|---|
 | ⏳ | Move into `lillorepo` (Bazel) | Gradle builds or the Play publishing loop slowing you down · domain modules are pure Kotlin to make it easy |
+| 🔨 | `LilloAvatar` in core: the initial-in-a-circle avatar exists 3× in whos-lying and in league-cards (league-cards' version handles names starting with an emoji) | — |
+| 🔨 | One confetti in core: whos-lying's falling `Confetti` and core's `ConfettiBurst` (add the rain as a variant, or pick one) | — |
+| 🔨 | `isShortScreen()` on `currentWindowAdaptiveInfo().windowSizeClass` (material3-adaptive; same 480 dp "compact height", right in multi-window and foldables) | — |
+| 🔨 | Type-safe navigation (`@Serializable` routes, Navigation 2.10) instead of string routes in decision-wheel, group-polls, tournaments and whos-lying, one app at a time | — |
+| 🔨 | `dataExtractionRules` for the 5 apps with `allowBackup="true"` (only group-polls declares them): say what is restored on a new phone | — |

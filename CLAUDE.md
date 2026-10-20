@@ -49,7 +49,9 @@ apps/<app>/tools/smoke_test.sh                            # release APK on emula
 Asset generators (icons, store graphics, developer profile) are Python + Pillow:
 `scripts/setup-python.sh` once, then `.venv/bin/python <script>`. Generated images are committed;
 regenerate them instead of editing by hand. Shared pieces: `scripts/store_assets.py` (store
-graphics) and `scripts/smoke_lib.sh` (smoke tests); each app's `tools/` only holds its own part.
+graphics), `scripts/smoke_lib.sh` (smoke tests) and `scripts/ui_lib.py` (drive any app by text or test
+tag, keyboard, rotation, screenshots: what `tap-text.sh`, `screenshot.sh` and UI batteries such as
+`apps/whos-lying/tools/battery_test.py` run on); each app's `tools/` only holds its own part.
 
 Project skills in `.claude/skills/`: `new-android-app` (competitor study → design → scaffold),
 `upgrade-android-deps` (toolchain/dependency upgrades) and `release-android-app` (ship a version).
