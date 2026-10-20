@@ -1,12 +1,11 @@
 package com.jorgelillo.whoslying.ui.screens
 
-import com.jorgelillo.core.designsystem.isShortScreen
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -51,6 +50,8 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.jorgelillo.core.designsystem.LilloSettingRow
+import com.jorgelillo.core.designsystem.isShortScreen
 import com.jorgelillo.whoslying.R
 import com.jorgelillo.whoslying.domain.GameMode
 import com.jorgelillo.whoslying.domain.GameSettings
@@ -158,14 +159,11 @@ fun PlayersScreen(
         Spacer(Modifier.height(12.dp))
         LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             items(players, key = { it }) { name ->
-                val color = avatarColors[players.indexOf(name) % avatarColors.size]
                 Row(
                     Modifier.fillMaxWidth().clip(CircleShape).background(Neon.Card).padding(start = 10.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    Box(Modifier.size(38.dp).clip(CircleShape).background(color), contentAlignment = Alignment.Center) {
-                        Text(name.take(1).uppercase(), fontWeight = FontWeight.Black, color = Neon.Night)
-                    }
+                    Avatar(name, players, 38.dp)
                     Text(name, Modifier.weight(1f).padding(horizontal = 14.dp), style = MaterialTheme.typography.titleMedium)
                     IconButton(onClick = { onRemove(name) }) {
                         Icon(Icons.Filled.Close, contentDescription = stringResource(R.string.players_remove, name), tint = Neon.Pink)
@@ -346,18 +344,14 @@ fun SetupScreen(
 
 
 @Composable
-private fun SettingRow(title: String, subtitle: String?, control: @Composable () -> Unit) {
-    Row(
-        Modifier.fillMaxWidth().padding(vertical = 6.dp).clip(MaterialTheme.shapes.large).background(Neon.Card).padding(horizontal = 16.dp, vertical = 10.dp),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Column(Modifier.weight(1f)) {
-            Text(title, fontWeight = FontWeight.SemiBold)
-            if (subtitle != null) Text(subtitle, style = MaterialTheme.typography.bodySmall, color = Neon.Muted)
-        }
-        Row(verticalAlignment = Alignment.CenterVertically) { control() }
-    }
-}
+private fun SettingRow(title: String, subtitle: String?, control: @Composable () -> Unit) = LilloSettingRow(
+    title,
+    Neon.Card,
+    Modifier.padding(vertical = 6.dp),
+    subtitle = subtitle,
+    subtitleColor = Neon.Muted,
+    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 10.dp),
+) { control() }
 
 @Composable
 private fun NeonSwitch(checked: Boolean, tag: String, onChange: (Boolean) -> Unit) {

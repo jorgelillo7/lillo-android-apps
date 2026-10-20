@@ -40,6 +40,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import com.jorgelillo.core.designsystem.AvatarStyle
+import com.jorgelillo.core.designsystem.LilloAvatar
 import com.jorgelillo.leaguecards.R
 import com.jorgelillo.leaguecards.domain.Card
 import com.jorgelillo.leaguecards.domain.Effects
@@ -48,9 +50,9 @@ import com.jorgelillo.leaguecards.domain.League
 import com.jorgelillo.leaguecards.domain.Meter
 import com.jorgelillo.leaguecards.domain.Season
 import com.jorgelillo.leaguecards.ui.theme.Chat
-import kotlinx.coroutines.launch
 import kotlin.math.abs
 import kotlin.math.roundToInt
+import kotlinx.coroutines.launch
 
 /** One card at a time: swipe it (or tap a button) to answer; the four meters on top. */
 @Composable
@@ -243,8 +245,4 @@ private fun SwipeCard(
 
 /** A round avatar with the member's emoji (or initial) in their colour. */
 @Composable
-fun Avatar(name: String, color: Color, size: Int = 72) {
-    Box(Modifier.size(size.dp).background(color.copy(alpha = 0.25f), CircleShape).border(2.dp, color, CircleShape), contentAlignment = Alignment.Center) {
-        Text(if (name.codePointAt(0) > 0x2000) name else name.trim().take(1).uppercase(), color = color, fontWeight = FontWeight.Black, style = MaterialTheme.typography.headlineMedium)
-    }
-}
+fun Avatar(name: String, color: Color, size: Int = 72) = LilloAvatar(name, color, size.dp, style = AvatarStyle.Tinted)

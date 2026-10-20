@@ -1,13 +1,11 @@
 package com.jorgelillo.whoslying.ui.screens
 
-import com.jorgelillo.core.designsystem.LilloBigButton
-import com.jorgelillo.core.designsystem.LilloPage
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -35,8 +33,12 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.jorgelillo.core.designsystem.LilloAvatar
+import com.jorgelillo.core.designsystem.LilloBigButton
+import com.jorgelillo.core.designsystem.LilloPage
 import com.jorgelillo.whoslying.R
 import com.jorgelillo.whoslying.ui.theme.Neon
 
@@ -66,6 +68,17 @@ fun BigButton(
 
 /** Player colors for avatars, by position in the group. */
 val avatarColors = listOf(Neon.Pink, Neon.Turquoise, Neon.Violet, Neon.Amber)
+
+/** A player's avatar in their group colour (by position in [players]). */
+@Composable
+fun Avatar(player: String, players: List<String>, size: Dp, modifier: Modifier = Modifier, ring: Color? = null) = LilloAvatar(
+    player,
+    avatarColors[players.indexOf(player).coerceAtLeast(0) % avatarColors.size],
+    size,
+    modifier,
+    contentColor = Neon.Night,
+    ring = ring,
+)
 
 
 /** Big emoji used as illustration (no image assets needed). */

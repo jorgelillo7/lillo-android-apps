@@ -11,6 +11,16 @@ fun Context.shareText(text: String, chooserTitle: String? = null) {
     startActivity(Intent.createChooser(send, chooserTitle))
 }
 
+/**
+ * What another app handed over: an opened link (ACTION_VIEW, e.g. a share link or App Link) or
+ * text shared to this app (ACTION_SEND). Null for a plain launch.
+ */
+fun Intent?.sharedText(): String? = when (this?.action) {
+    Intent.ACTION_VIEW -> dataString
+    Intent.ACTION_SEND -> getStringExtra(Intent.EXTRA_TEXT)
+    else -> null
+}
+
 /** A file in the cache folder that [shareFile] can hand to other apps. Overwritten each time. */
 fun Context.sharedCacheFile(name: String): File = File(File(cacheDir, "shared").apply { mkdirs() }, name)
 

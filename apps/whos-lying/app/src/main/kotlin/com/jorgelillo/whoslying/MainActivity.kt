@@ -6,6 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.compose.runtime.mutableStateOf
 import com.jorgelillo.core.designsystem.installLilloWindow
 import com.jorgelillo.core.designsystem.setLilloContent
+import com.jorgelillo.core.platform.sharedText
 import com.jorgelillo.whoslying.ui.WhosLyingApp
 import com.jorgelillo.whoslying.ui.theme.NeonColorScheme
 
@@ -30,10 +31,6 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun handleLink(intent: Intent?) {
-        incoming.value = when (intent?.action) {
-            Intent.ACTION_VIEW -> intent.dataString
-            Intent.ACTION_SEND -> intent.getStringExtra(Intent.EXTRA_TEXT)
-            else -> null
-        }
+        incoming.value = intent.sharedText()
     }
 }

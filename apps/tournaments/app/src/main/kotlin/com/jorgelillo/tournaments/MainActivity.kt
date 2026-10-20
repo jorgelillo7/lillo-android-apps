@@ -6,6 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
 import com.jorgelillo.core.designsystem.installLilloWindow
 import com.jorgelillo.core.designsystem.setLilloContent
+import com.jorgelillo.core.platform.sharedText
 import com.jorgelillo.tournaments.ui.TournamentsApp
 import com.jorgelillo.tournaments.ui.TournamentsViewModel
 import com.jorgelillo.tournaments.ui.theme.ArenaColorScheme
@@ -32,11 +33,6 @@ class MainActivity : ComponentActivity() {
 
     /** A tournament link opened from the browser or a chat, or text shared to the app. */
     private fun handleLink(intent: Intent?) {
-        val text = when (intent?.action) {
-            Intent.ACTION_VIEW -> intent.dataString
-            Intent.ACTION_SEND -> intent.getStringExtra(Intent.EXTRA_TEXT)
-            else -> null
-        }
-        text?.let(vm::importText)
+        intent.sharedText()?.let(vm::importText)
     }
 }

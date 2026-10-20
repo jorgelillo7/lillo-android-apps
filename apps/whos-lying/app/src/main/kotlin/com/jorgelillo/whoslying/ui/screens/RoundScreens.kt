@@ -1,13 +1,10 @@
 package com.jorgelillo.whoslying.ui.screens
 
-import com.jorgelillo.core.designsystem.isShortScreen
 import android.media.AudioManager
 import android.media.ToneGenerator
 import android.os.Handler
 import android.os.Looper
 import androidx.activity.compose.BackHandler
-import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -43,13 +40,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -58,7 +52,6 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
@@ -67,6 +60,8 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.jorgelillo.core.designsystem.ConfettiRain
+import com.jorgelillo.core.designsystem.isShortScreen
 import com.jorgelillo.whoslying.R
 import com.jorgelillo.whoslying.domain.Card
 import com.jorgelillo.whoslying.domain.Elimination
@@ -77,7 +72,6 @@ import com.jorgelillo.whoslying.domain.Role
 import com.jorgelillo.whoslying.ui.DrawStroke
 import com.jorgelillo.whoslying.ui.theme.Neon
 import kotlinx.coroutines.delay
-import kotlin.random.Random
 
 private val GoGreen = Color(0xFF00D26A)
 
@@ -274,7 +268,6 @@ fun VotingScreen(
         ) {
             items(game.cards.filter { it.player in alive }, key = { it.player }) { card ->
                 val selected = chosen == card.player
-                val index = game.cards.indexOf(card)
                 Box(
                     Modifier
                         .clip(MaterialTheme.shapes.large)
@@ -284,12 +277,7 @@ fun VotingScreen(
                         .testTag("vote_${card.player}"),
                 ) {
                     Column(Modifier.fillMaxWidth().padding(vertical = if (short) 8.dp else 18.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-                        Box(
-                            Modifier.size(if (short) 40.dp else 64.dp).clip(CircleShape).background(avatarColors[index % avatarColors.size]),
-                            contentAlignment = Alignment.Center,
-                        ) {
-                            Text(card.player.take(1).uppercase(), color = Neon.Night, fontSize = if (short) 20.sp else 30.sp, fontWeight = FontWeight.Black)
-                        }
+                        Avatar(card.player, game.cards.map { it.player }, if (short) 40.dp else 64.dp)
                         Text(card.player, color = Color.White, fontWeight = FontWeight.Bold, maxLines = 1, modifier = Modifier.padding(top = if (short) 4.dp else 10.dp))
                     }
                     if (selected) {
@@ -559,7 +547,7 @@ fun ResultScreen(
                 }
             }
         }
-        if (outcome != null && outcome != Outcome.EndedEarly) Confetti(Modifier.fillMaxSize())
+        if (outcome != null && outcome != Outcome.EndedEarly) ConfettiRain(ConfettiColors, Modifier.fillMaxSize())
     }
 }
 
@@ -577,53 +565,8 @@ private fun LabelValue(label: String, value: String) {
     Text(value, color = Color.White, fontSize = 26.sp, fontWeight = FontWeight.Black, textAlign = TextAlign.Center)
 }
 
-private class Piece(val x: Float, val speed: Float, val drift: Float, val spin: Float, val color: Color, val width: Float, val delay: Float)
-
-/** A few seconds of falling confetti, drawn on a canvas (no assets, no library). */
-@Composable
-internal fun Confetti(modifier: Modifier) {
-    val colors = listOf(Neon.Amber, Neon.Pink, Neon.Turquoise, Color.White, Color(0xFF7CFF6B), Neon.Violet)
-    val pieces = remember {
-        val random = Random(System.nanoTime())
-        List(90) {
-            Piece(
-                x = random.nextFloat(),
-                speed = 0.18f + random.nextFloat() * 0.25f,
-                drift = (random.nextFloat() - 0.5f) * 0.15f,
-                spin = random.nextFloat() * 720f - 360f,
-                color = colors[random.nextInt(colors.size)],
-                width = 6f + random.nextFloat() * 8f,
-                delay = random.nextFloat() * 1.2f,
-            )
-        }
-    }
-    var time by remember { mutableFloatStateOf(0f) }
-    val fade = remember { Animatable(1f) }
-    LaunchedEffect(Unit) {
-        val start = withFrameNanos { it }
-        while (time < 6f) {
-            time = (withFrameNanos { it } - start) / 1e9f
-        }
-        fade.animateTo(0f, tween(600))
-    }
-    if (fade.value == 0f) return
-    Canvas(modifier) {
-        pieces.forEach { p ->
-            val t = (time - p.delay).coerceAtLeast(0f)
-            val y = -0.05f + t * p.speed
-            if (y > 1.05f || t == 0f) return@forEach
-            val x = p.x + p.drift * t + 0.02f * kotlin.math.sin(t * 3f + p.x * 10f)
-            val center = Offset(x * size.width, y * size.height)
-            rotate(p.spin * t, center) {
-                drawRect(
-                    p.color.copy(alpha = fade.value),
-                    topLeft = center - Offset(p.width / 2, p.width / 4),
-                    size = Size(p.width, p.width / 2),
-                )
-            }
-        }
-    }
-}
+/** Confetti in the game's neon colours. */
+private val ConfettiColors = listOf(Neon.Amber, Neon.Pink, Neon.Turquoise, Color.White, Color(0xFF7CFF6B), Neon.Violet)
 
 @Composable
 internal fun roleLabel(role: Role): String = stringResource(
@@ -645,21 +588,6 @@ private fun ranking(players: List<String>, scores: Map<String, Int>) =
     (players + scores.keys).distinct().sortedByDescending { scores[it] ?: 0 }
 
 @Composable
-private fun Avatar(player: String, players: List<String>, size: Int, ring: Color? = null) {
-    val color = avatarColors[players.indexOf(player).coerceAtLeast(0) % avatarColors.size]
-    Box(
-        Modifier
-            .size(size.dp)
-            .clip(CircleShape)
-            .background(color)
-            .then(if (ring != null) Modifier.border((size / 16).dp, ring, CircleShape) else Modifier),
-        contentAlignment = Alignment.Center,
-    ) {
-        Text(player.take(1).uppercase(), color = Neon.Night, fontSize = (size * 0.45).sp, fontWeight = FontWeight.Black)
-    }
-}
-
-@Composable
 private fun RankRow(player: String, players: List<String>, points: Int, gained: Int?) {
     Row(
         Modifier
@@ -670,7 +598,7 @@ private fun RankRow(player: String, players: List<String>, points: Int, gained: 
             .testTag("rank_$player"),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Avatar(player, players, 40)
+        Avatar(player, players, 40.dp)
         Text(player, Modifier.weight(1f).padding(horizontal = 14.dp), color = Color.White, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
         if (gained != null) {
             Text(
@@ -757,7 +685,7 @@ fun PodiumScreen(players: List<String>, scores: Map<String, Int>, onNewMatch: ()
                     Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(top = if (short) 4.dp else 12.dp)) {
                         Text("🎆", fontSize = if (short) 36.sp else 56.sp)
                         Spacer(Modifier.width(16.dp))
-                        Avatar(winner, players, if (short) 72 else 128, ring = Neon.Amber)
+                        Avatar(winner, players, if (short) 72.dp else 128.dp, ring = Neon.Amber)
                         Spacer(Modifier.width(16.dp))
                         Text("🎆", fontSize = if (short) 36.sp else 56.sp)
                     }
@@ -795,7 +723,7 @@ fun PodiumScreen(players: List<String>, scores: Map<String, Int>, onNewMatch: ()
                 }
             }
         }
-        if (leaders.isNotEmpty()) Confetti(Modifier.fillMaxSize())
+        if (leaders.isNotEmpty()) ConfettiRain(ConfettiColors, Modifier.fillMaxSize())
     }
 }
 
