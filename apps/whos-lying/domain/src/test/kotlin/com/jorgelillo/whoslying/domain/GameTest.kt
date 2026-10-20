@@ -57,15 +57,16 @@ class GameTest {
 
     @Test
     fun civiliansWinWhenEveryInfiltratorIsOut() {
-        val game = deal(GameSettings(GameMode.CLASSIC))
-        game.eliminate(game.cards.single { it.role == Role.IMPOSTOR }.player)
+        val dealt = deal(GameSettings(GameMode.CLASSIC))
+        val game = dealt.eliminate(dealt.cards.single { it.role == Role.IMPOSTOR }.player)
         assertEquals(Outcome.CiviliansWin, game.outcome)
+        assertNull(dealt.outcome, "a move never changes the state it started from")
     }
 
     @Test
     fun impostorsWinWhenOneCivilianIsLeft() {
-        val game = deal(GameSettings(GameMode.CLASSIC), who = listOf("Ana", "Bea", "Carlos"))
-        game.eliminate(game.cards.first { it.role == Role.CIVILIAN }.player)
+        val dealt = deal(GameSettings(GameMode.CLASSIC), who = listOf("Ana", "Bea", "Carlos"))
+        val game = dealt.eliminate(dealt.cards.first { it.role == Role.CIVILIAN }.player)
         assertEquals(Outcome.InfiltratorsWin(setOf(Role.IMPOSTOR)), game.outcome)
     }
 
@@ -73,17 +74,20 @@ class GameTest {
     fun eliminatedDrifterGuessesWithAccentsAndCaseIgnored() {
         val game = Game.deal(players, GameSettings(GameMode.DRIFTER), pack, Entry("Café", listOf("Té")), Random(3))
         val drifter = game.cards.single { it.role == Role.DRIFTER }.player
-        assertTrue(game.eliminate(drifter).drifterMustGuess)
-        assertTrue(game.guess("  cafe "))
-        assertEquals(Outcome.DrifterGuessed, game.outcome)
+        val out = game.eliminate(drifter)
+        assertTrue(out.lastElimination!!.drifterMustGuess)
+        val guessed = out.guess("  cafe ")
+        assertTrue(guessed.drifterGuessed)
+        assertEquals(Outcome.DrifterGuessed, guessed.outcome)
     }
 
     @Test
     fun wrongDrifterGuessKeepsTheGameGoing() {
-        val game = deal(GameSettings(GameMode.DRIFTER))
-        game.eliminate(game.cards.single { it.role == Role.DRIFTER }.player)
-        assertFalse(game.guess("Montaña"))
+        val dealt = deal(GameSettings(GameMode.DRIFTER))
+        val game = dealt.eliminate(dealt.cards.single { it.role == Role.DRIFTER }.player).guess("Montaña")
+        assertFalse(game.drifterGuessed)
         assertNull(game.outcome)
+        assertNull(game.pendingGuess, "the next vote can go ahead")
         assertEquals(4, game.alive.size)
     }
 
@@ -104,41 +108,37 @@ class GameTest {
         assertTrue(1 in counts && players.size in counts, "counts seen: $counts")
         val allImpostors = (0 until 400).map { deal(GameSettings(GameMode.BLIND, chaos = true), it) }
             .first { game -> game.cards.all { it.role == Role.IMPOSTOR } }
-        allImpostors.eliminate(players.first())
-        assertNull(allImpostors.outcome)
-        allImpostors.reveal()
-        assertIs<Outcome.NoCivilians>(allImpostors.outcome)
+        val oneOut = allImpostors.eliminate(players.first())
+        assertNull(oneOut.outcome)
+        assertIs<Outcome.NoCivilians>(oneOut.reveal().outcome)
     }
 
     @Test
     fun endingEarlyIsNotANoCiviliansGame() {
-        val game = deal(GameSettings(GameMode.DRIFTER))
-        game.eliminate(game.cards.single { it.role == Role.IMPOSTOR }.player)
+        val dealt = deal(GameSettings(GameMode.DRIFTER))
+        val game = dealt.eliminate(dealt.cards.single { it.role == Role.IMPOSTOR }.player)
         assertNull(game.outcome)
-        game.reveal()
-        assertEquals(Outcome.EndedEarly, game.outcome)
+        assertEquals(Outcome.EndedEarly, game.reveal().outcome)
     }
 
     @Test
     fun winnersScoreWhetherEliminatedOrNot() {
-        val civiliansWin = deal(GameSettings(GameMode.CLASSIC))
-        val civilians = civiliansWin.cards.filter { it.role == Role.CIVILIAN }.map { it.player }
-        civiliansWin.eliminate(civiliansWin.cards.single { it.role == Role.IMPOSTOR }.player)
+        val classic = deal(GameSettings(GameMode.CLASSIC))
+        val civilians = classic.cards.filter { it.role == Role.CIVILIAN }.map { it.player }
+        val civiliansWin = classic.eliminate(classic.cards.single { it.role == Role.IMPOSTOR }.player)
         assertEquals(civilians.associateWith { Scoring.CIVILIAN_WIN }, Scoring.points(civiliansWin))
 
-        val impostorsWin = deal(GameSettings(GameMode.CLASSIC), who = listOf("Ana", "Bea", "Carlos"))
-        impostorsWin.eliminate(impostorsWin.cards.first { it.role == Role.CIVILIAN }.player)
+        val three = deal(GameSettings(GameMode.CLASSIC), who = listOf("Ana", "Bea", "Carlos"))
+        val impostorsWin = three.eliminate(three.cards.first { it.role == Role.CIVILIAN }.player)
         val impostor = impostorsWin.cards.single { it.role == Role.IMPOSTOR }.player
         assertEquals(mapOf(impostor to Scoring.INFILTRATOR_WIN), Scoring.points(impostorsWin))
 
         val drifterGame = Game.deal(players, GameSettings(GameMode.DRIFTER), pack, Entry("Café", listOf("Té")), Random(3))
         val drifter = drifterGame.cards.single { it.role == Role.DRIFTER }.player
-        drifterGame.eliminate(drifter)
-        drifterGame.guess("café")
-        assertEquals(mapOf(drifter to Scoring.INFILTRATOR_WIN), Scoring.points(drifterGame))
+        val guessed = drifterGame.eliminate(drifter).guess("café")
+        assertEquals(mapOf(drifter to Scoring.INFILTRATOR_WIN), Scoring.points(guessed))
 
-        val ended = deal(GameSettings(GameMode.CLASSIC))
-        ended.reveal()
+        val ended = deal(GameSettings(GameMode.CLASSIC)).reveal()
         assertTrue(Scoring.points(ended).isEmpty())
     }
 

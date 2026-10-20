@@ -46,50 +46,60 @@ sealed interface Outcome {
 /** Result of voting someone out. */
 data class Elimination(val player: String, val role: Role, val drifterMustGuess: Boolean)
 
+/**
+ * A game in progress. Immutable: every move returns the next state, so the UI (and tests) always
+ * hold a consistent snapshot and Compose sees each change.
+ */
 class Game private constructor(
     val cards: List<Card>,
     val civilianWord: String,
     val category: String,
     val starter: String,
-    private val eliminated: MutableSet<String> = mutableSetOf(),
+    private val eliminated: Set<String> = emptySet(),
+    val outcome: Outcome? = null,
+    /** The eliminated drifter who still gets a guess at the word. */
+    val pendingGuess: String? = null,
+    /** Who the last vote sent out, and what they were. */
+    val lastElimination: Elimination? = null,
 ) {
-    var outcome: Outcome? = null
-        private set
-    var pendingGuess: String? = null
-        private set
-
     val alive: List<Card> get() = cards.filter { it.player !in eliminated }
     val isOver: Boolean get() = outcome != null
 
     fun cardOf(player: String): Card = cards.first { it.player == player }
 
-    fun eliminate(player: String): Elimination {
+    fun eliminate(player: String): Game {
         check(!isOver && pendingGuess == null) { "Game is not waiting for a vote" }
         val card = cardOf(player)
-        eliminated += player
         val mustGuess = card.role == Role.DRIFTER
-        if (mustGuess) pendingGuess = player else outcome = evaluate()
-        return Elimination(player, card.role, mustGuess)
+        val next = copy(eliminated = eliminated + player, lastElimination = Elimination(player, card.role, mustGuess))
+        return if (mustGuess) next.copy(pendingGuess = player) else next.copy(outcome = next.evaluate())
     }
 
-    /** The eliminated drifter's last chance. Returns true if they guessed the civilians' word. */
-    fun guess(text: String): Boolean {
+    /** The eliminated drifter's last chance; [drifterGuessed] tells whether it was the word. */
+    fun guess(text: String): Game {
         checkNotNull(pendingGuess) { "No drifter is guessing" }
-        pendingGuess = null
         val right = Rules.normalize(text) == Rules.normalize(civilianWord)
-        outcome = if (right) Outcome.DrifterGuessed else evaluate()
-        return right
+        return copy(pendingGuess = null, outcome = if (right) Outcome.DrifterGuessed else evaluate())
     }
+
+    val drifterGuessed: Boolean get() = outcome == Outcome.DrifterGuessed
 
     /** Ends the game now and shows who was who. */
-    fun reveal() {
-        if (outcome != null) return
-        pendingGuess = null
-        outcome = when {
+    fun reveal(): Game {
+        if (outcome != null) return this
+        val end = when {
             cards.none { it.role == Role.CIVILIAN } -> Outcome.NoCivilians
             else -> evaluate() ?: Outcome.EndedEarly
         }
+        return copy(pendingGuess = null, outcome = end)
     }
+
+    private fun copy(
+        eliminated: Set<String> = this.eliminated,
+        outcome: Outcome? = this.outcome,
+        pendingGuess: String? = this.pendingGuess,
+        lastElimination: Elimination? = this.lastElimination,
+    ) = Game(cards, civilianWord, category, starter, eliminated, outcome, pendingGuess, lastElimination)
 
     private fun evaluate(): Outcome? {
         val civilians = alive.count { it.role == Role.CIVILIAN }

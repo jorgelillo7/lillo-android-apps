@@ -318,12 +318,14 @@ fun ExposeScreen(
 ) {
     var count by rememberSaveable(elimination) { mutableIntStateOf(3) }
     var guessResult by rememberSaveable(elimination) { mutableStateOf<Boolean?>(null) }
+    // The effect outlives recompositions: read the newest game, not the one it started with.
+    val latestGame by rememberUpdatedState(game)
     LaunchedEffect(elimination) {
         while (count > 0) {
             delay(800)
             count--
         }
-        if (game.isOver && game.pendingGuess == null) onGameOver()
+        if (latestGame.isOver && latestGame.pendingGuess == null) onGameOver()
     }
     val card = game.cardOf(elimination.player)
     // Game is a plain object: read the guess through guessResult (state) so the bar recomposes after it.

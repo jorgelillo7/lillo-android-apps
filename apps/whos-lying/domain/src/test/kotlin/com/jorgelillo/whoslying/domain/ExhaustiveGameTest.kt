@@ -90,22 +90,27 @@ class ExhaustiveGameTest {
     }
 
     /** Votes at random until the game ends; sometimes the group ends it early instead. */
-    private fun playOut(game: Game, random: Random) {
+    private fun playOut(dealt: Game, random: Random) {
+        var game = dealt
         val endEarlyAfter = if (random.nextInt(6) == 0) random.nextInt(game.cards.size) else Int.MAX_VALUE
         var votes = 0
         while (!game.isOver) {
             if (votes >= endEarlyAfter) {
-                game.reveal()
+                game = game.reveal()
                 break
             }
             if (votes > game.cards.size || game.alive.isEmpty()) fail("game never ended: ${game.cards.map { it.role }}, alive ${game.alive.size}")
             val out = game.alive.random(random).player
-            val elimination = game.eliminate(out)
+            val before = game
+            game = game.eliminate(out)
+            assertEquals(out, game.lastElimination?.player)
+            assertEquals(before.alive.size - 1, game.alive.size, "the vote doesn't change the previous state")
             votes++
-            if (elimination.drifterMustGuess) {
+            if (game.lastElimination!!.drifterMustGuess) {
                 assertEquals(out, game.pendingGuess)
                 val right = random.nextBoolean()
-                assertEquals(right, game.guess(if (right) " " + game.civilianWord.uppercase() + " " else "nope"))
+                game = game.guess(if (right) " " + game.civilianWord.uppercase() + " " else "nope")
+                assertEquals(right, game.drifterGuessed)
                 if (right) {
                     assertEquals(Outcome.DrifterGuessed, game.outcome)
                     break
@@ -161,8 +166,8 @@ class ExhaustiveGameTest {
     @Test
     fun impostorAndDrifterWinTogetherWhenOneCivilianIsLeft() {
         // 5 players in DRIFTER mode: 1 impostor, 1 drifter, 3 civilians. Vote two civilians out.
-        val game = dealUntil(GameMode.DRIFTER, 5) { true }
-        game.cards.filter { it.role == Role.CIVILIAN }.take(2).forEach { game.eliminate(it.player) }
+        val dealt = dealUntil(GameMode.DRIFTER, 5) { true }
+        val game = dealt.cards.filter { it.role == Role.CIVILIAN }.take(2).fold(dealt) { g, card -> g.eliminate(card.player) }
         assertEquals(Outcome.InfiltratorsWin(setOf(Role.IMPOSTOR, Role.DRIFTER)), game.outcome)
         assertEquals(setOf(Scoring.INFILTRATOR_WIN), Scoring.points(game).values.toSet())
         assertEquals(2, Scoring.points(game).size)
@@ -170,20 +175,21 @@ class ExhaustiveGameTest {
 
     @Test
     fun theDrifterWinsAloneWhenTheImpostorWasCaught() {
-        val game = dealUntil(GameMode.DRIFTER, 5) { true }
-        game.eliminate(game.cards.single { it.role == Role.IMPOSTOR }.player)
-        assertNull(game.outcome, "the drifter is still in")
-        game.cards.filter { it.role == Role.CIVILIAN }.take(2).forEach { game.eliminate(it.player) }
+        val dealt = dealUntil(GameMode.DRIFTER, 5) { true }
+        val impostorOut = dealt.eliminate(dealt.cards.single { it.role == Role.IMPOSTOR }.player)
+        assertNull(impostorOut.outcome, "the drifter is still in")
+        val game = dealt.cards.filter { it.role == Role.CIVILIAN }.take(2).fold(impostorOut) { g, card -> g.eliminate(card.player) }
         assertEquals(Outcome.InfiltratorsWin(setOf(Role.DRIFTER)), game.outcome)
         assertEquals(mapOf(game.cards.single { it.role == Role.DRIFTER }.player to Scoring.INFILTRATOR_WIN), Scoring.points(game))
     }
 
     @Test
     fun aWrongGuessByTheLastInfiltratorHandsTheWinToTheCivilians() {
-        val game = dealUntil(GameMode.DRIFTER, 5) { true }
-        game.eliminate(game.cards.single { it.role == Role.IMPOSTOR }.player)
-        game.eliminate(game.cards.single { it.role == Role.DRIFTER }.player)
-        assertFalse(game.guess("nope"))
+        val dealt = dealUntil(GameMode.DRIFTER, 5) { true }
+        val game = dealt.eliminate(dealt.cards.single { it.role == Role.IMPOSTOR }.player)
+            .eliminate(dealt.cards.single { it.role == Role.DRIFTER }.player)
+            .guess("nope")
+        assertFalse(game.drifterGuessed)
         assertEquals(Outcome.CiviliansWin, game.outcome)
     }
 
@@ -192,18 +198,18 @@ class ExhaustiveGameTest {
         val random = Random(3)
         val (pack, entry) = WordPicker.pick(packs, emptyList(), random)
         // Chaos picks "everyone" now and then: find such a deal.
-        val game = generateSequence { Game.deal(names(4), GameSettings(GameMode.CLASSIC, chaos = true), pack, entry, random) }
+        var game = generateSequence { Game.deal(names(4), GameSettings(GameMode.CLASSIC, chaos = true), pack, entry, random) }
             .first { g -> g.cards.all { it.role == Role.IMPOSTOR } }
-        repeat(2) { game.eliminate(game.alive.first().player); assertNull(game.outcome) }
-        game.eliminate(game.alive.first().player)
+        repeat(2) { game = game.eliminate(game.alive.first().player); assertNull(game.outcome) }
+        game = game.eliminate(game.alive.first().player)
         assertEquals(Outcome.NoCivilians, game.outcome)
         assertEquals(1, game.alive.size)
     }
 
     @Test
     fun votingStopsAsSoonAsSomeoneWins() {
-        val game = dealUntil(GameMode.DRIFTER, 4) { true }
-        game.eliminate(game.cards.first { it.role == Role.CIVILIAN }.player)
+        val dealt = dealUntil(GameMode.DRIFTER, 4) { true }
+        val game = dealt.eliminate(dealt.cards.first { it.role == Role.CIVILIAN }.player)
         assertEquals(Outcome.InfiltratorsWin(setOf(Role.IMPOSTOR, Role.DRIFTER)), game.outcome)
         assertTrue(runCatching { game.eliminate(game.alive.first().player) }.isFailure, "no votes after the end")
     }
@@ -214,13 +220,16 @@ class ExhaustiveGameTest {
         var played = 0
         val random = Random(42)
         // A game ended early first: no points, no round used.
-        val early = dealUntil(GameMode.DRIFTER, 6, random) { true }.apply { reveal() }
+        val early = dealUntil(GameMode.DRIFTER, 6, random) { true }.reveal()
         assertEquals(Outcome.EndedEarly, early.outcome)
         assertFalse(Match.counts(early.outcome))
         assertEquals(emptyMap(), Scoring.points(early))
         while (!Match.isOver(played, 3)) {
-            val game = dealUntil(GameMode.DRIFTER, 6, random) { true }
-            while (!game.isOver) if (game.eliminate(game.alive.random(random).player).drifterMustGuess) game.guess("nope")
+            var game = dealUntil(GameMode.DRIFTER, 6, random) { true }
+            while (!game.isOver) {
+                game = game.eliminate(game.alive.random(random).player)
+                if (game.pendingGuess != null) game = game.guess("nope")
+            }
             Scoring.points(game).forEach { (p, pts) -> scores.merge(p, pts, Int::plus) }
             if (Match.counts(game.outcome)) played++
         }
