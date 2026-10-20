@@ -1,0 +1,52 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    ":dependencyDashboard",
+    "helpers:pinGitHubActionDigests"
+  ],
+  "timezone": "Europe/Madrid",
+  "schedule": [
+    "before 9am on monday"
+  ],
+  "prConcurrentLimit": 4,
+  "packageRules": [
+    {
+      "description": "Kotlin and its compiler plugins move together",
+      "groupName": "Kotlin",
+      "matchPackageNames": [
+        "org.jetbrains.kotlin**"
+      ]
+    },
+    {
+      "description": "AGP and the Gradle wrapper: the upgrade-android-deps skill checks the chain (compileSdk, AndroidX)",
+      "groupName": "Android Gradle Plugin",
+      "matchPackageNames": [
+        "com.android.tools.build:gradle",
+        "com.android.application",
+        "com.android.library"
+      ]
+    },
+    {
+      "description": "Compose BOM and AndroidX libraries: chained to compileSdk / AGP, review together",
+      "groupName": "AndroidX",
+      "matchPackageNames": [
+        "androidx.**"
+      ]
+    },
+    {
+      "description": "WorkManager 2.12 needs minSdk 24; Christmas Countdown is live on minSdk 23 (see PENDING.md)",
+      "matchPackageNames": [
+        "androidx.work:**"
+      ],
+      "allowedVersions": "<2.12"
+    },
+    {
+      "description": "GitHub Actions: one weekly PR",
+      "groupName": "GitHub Actions",
+      "matchManagers": [
+        "github-actions"
+      ]
+    }
+  ]
+}
