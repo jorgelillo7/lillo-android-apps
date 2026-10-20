@@ -4,3 +4,4 @@ What you asked for 🕵️
 - New icon, a welcome note and clearer round texts
 - Fix: a chaos game where everyone is an impostor now ends by itself
 - Fix: when the Drifter guesses the word wrong, the game goes on instead of getting stuck
+- Better in landscape and on handheld consoles
