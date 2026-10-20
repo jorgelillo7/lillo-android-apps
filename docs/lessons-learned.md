@@ -33,7 +33,16 @@ Short, one line each. Add to it whenever something bites.
   screen: a layout that only fits portrait cut the reveal text, shrank the drawing canvas to a
   stamp and hid the players on the vote screen. Rotate the emulator
   (`adb shell settings put system user_rotation 1`) and check every screen; `isShortScreen()`
-  (height < 480 dp) switches to compact layouts.
+  (height < 480 dp) switches to compact layouts. A UI battery can play every scenario sideways
+  (whos-lying `battery_test.py --landscape`); make it check each screenshot really is landscape:
+  something resets the rotation when a run starts, and a whole "landscape" scenario once ran upright.
+- **A bottom bar eats short screens.** A big button plus a text button below the content left about
+  130 dp for the result, ranking and podium in landscape. `LilloPage(sideActionsWhenShort = true)`
+  moves the actions beside the content; opt-in per screen, not for screens whose bottom changes
+  mid-gesture (the reveal curtain).
+- **Compose only redraws what it can observe.** A screen that reads a plain `var` of a mutable domain
+  object never updates when it changes (the "next vote" button never came back after a wrong Drifter
+  guess). Keep UI state in `StateFlow` / `mutableStateOf`, or immutable objects replaced on change.
 - **Smoke tests uninstall first.** Once an app has an upload key, its release build is signed
   differently from the debug build on the emulator and `adb install -r` fails with
   `INSTALL_FAILED_UPDATE_INCOMPATIBLE`.

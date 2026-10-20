@@ -54,6 +54,7 @@ fun WhosLyingApp(app: WhosLyingApplication, incomingText: String? = null, onInco
     // Keyed by language so the built-in packs follow a language change while the app is open.
     val vm: GameViewModel = viewModel(key = "game-$language", factory = GameViewModel.factory(app.repository, language))
     val saved by vm.saved.collectAsStateWithLifecycle()
+    val currentGame by vm.game.collectAsStateWithLifecycle()
     val state = saved ?: return // first disk read in progress (a few ms)
     val nav = rememberNavController()
     var showHowTo by rememberSaveable { mutableStateOf(false) }
@@ -106,17 +107,17 @@ fun WhosLyingApp(app: WhosLyingApplication, incomingText: String? = null, onInco
             )
         }
         composable("reveal") {
-            val game = vm.game ?: return@composable LaunchedEffect(Unit) { nav.goHome() }
+            val game = currentGame ?: return@composable LaunchedEffect(Unit) { nav.goHome() }
             RevealScreen(game, onDone = { nav.navigate("countdown") { popUpTo("setup") } }, onQuit = { nav.goHome() })
         }
         composable("countdown") {
-            val game = vm.game ?: return@composable LaunchedEffect(Unit) { nav.goHome() }
+            val game = currentGame ?: return@composable LaunchedEffect(Unit) { nav.goHome() }
             CountdownScreen(game.starter, onDone = { nav.navigate("debate") { popUpTo("setup") } })
         }
         composable("debate") {
-            val game = vm.game ?: return@composable LaunchedEffect(Unit) { nav.goHome() }
-            LaunchedEffect(vm.revision) { if (game.isOver) nav.navigate("result") { popUpTo("setup") } }
-            val alive = remember(vm.revision) { game.alive.map { it.player }.toSet() }
+            val game = currentGame ?: return@composable LaunchedEffect(Unit) { nav.goHome() }
+            LaunchedEffect(game.isOver) { if (game.isOver) nav.navigate("result") { popUpTo("setup") } }
+            val alive = remember(game) { game.alive.map { it.player }.toSet() }
             if (state.settings.drawing) {
                 DrawingScreen(
                     game = game,
@@ -144,10 +145,10 @@ fun WhosLyingApp(app: WhosLyingApplication, incomingText: String? = null, onInco
             TimeUpScreen(onDone = { nav.navigate("vote") { popUpTo("time_up") { inclusive = true } } })
         }
         composable("vote") {
-            val game = vm.game ?: return@composable LaunchedEffect(Unit) { nav.goHome() }
+            val game = currentGame ?: return@composable LaunchedEffect(Unit) { nav.goHome() }
             VotingScreen(
                 game = game,
-                alive = remember(vm.revision) { game.alive.map { it.player }.toSet() },
+                alive = remember(game) { game.alive.map { it.player }.toSet() },
                 forced = vm.voteForced,
                 onConfirm = { player ->
                     vm.eliminate(player)
@@ -157,20 +158,20 @@ fun WhosLyingApp(app: WhosLyingApplication, incomingText: String? = null, onInco
             )
         }
         composable("expose") {
-            val game = vm.game ?: return@composable LaunchedEffect(Unit) { nav.goHome() }
+            val game = currentGame ?: return@composable LaunchedEffect(Unit) { nav.goHome() }
             // Null for a moment after "keep playing" while this screen leaves.
             val elimination = vm.lastElimination ?: return@composable
             val toResult = { nav.navigate("result") { popUpTo("setup") } }
             ExposeScreen(
                 game = game,
                 elimination = elimination,
-                onGuess = { text -> vm.guess(text).also { right -> if (right || game.isOver) toResult() } },
+                onGuess = { text -> vm.guess(text).also { if (vm.game.value?.isOver == true) toResult() } },
                 onContinue = { vm.dismissElimination(); nav.popBackStack() },
                 onGameOver = toResult,
             )
         }
         composable("result") {
-            val game = vm.game ?: return@composable LaunchedEffect(Unit) { nav.goHome() }
+            val game = currentGame ?: return@composable LaunchedEffect(Unit) { nav.goHome() }
             val context = LocalContext.current
             val caption = stringResource(R.string.drawing_share_caption, game.civilianWord, PLAY_STORE_URL)
             ResultScreen(
@@ -269,7 +270,7 @@ fun WhosLyingApp(app: WhosLyingApplication, incomingText: String? = null, onInco
         )
     }
     if (showModes) ModesSheet(onDismiss = { showModes = false })
-    val reported = vm.game
+    val reported = currentGame
     if (showReport && reported != null) {
         ReportSheet(
             word = reported.civilianWord,

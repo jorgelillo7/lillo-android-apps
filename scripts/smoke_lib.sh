@@ -16,7 +16,7 @@ tap() { "$ROOT/scripts/tap-text.sh" "$@"; }
 type_in() {
   tap "$1" 1
   "$ADB" shell input text "$2"
-  if [ "${3:-}" = hide ]; then "$ADB" shell input keyevent KEYCODE_BACK; sleep 1; fi
+  if [ "${3:-}" = hide ]; then python3 "$ROOT/scripts/ui_lib.py" hide-keyboard; fi
 }
 shot() { "$ROOT/scripts/screenshot.sh" "$OUT/$1.png" >/dev/null; echo "screen: $1"; }
 
@@ -36,7 +36,7 @@ smoke_start() {
 smoke_finish() {
   local extra_ok="${1:-1}" extra_msg="${2:-}"
   local crashes pid
-  crashes="$("$ADB" logcat -d -b crash | grep -c FATAL || true)"
+  crashes="$("$ADB" logcat -d -b crash | grep -c "Process: $PKG" || true)"   # this app's, not uiautomator's
   pid="$("$ADB" shell pidof "$PKG" || true)"
   "$ADB" shell cmd locale set-app-locales "$PKG" --locales ""
   [ -n "$extra_msg" ] && echo "$extra_msg"

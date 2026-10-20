@@ -1,7 +1,6 @@
 package com.jorgelillo.whoslying.ui
 
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -23,7 +22,9 @@ import com.jorgelillo.whoslying.domain.WordPack
 import com.jorgelillo.whoslying.domain.WordPacks
 import com.jorgelillo.whoslying.domain.WordPicker
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.util.UUID
@@ -39,12 +40,10 @@ class GameViewModel(private val repository: StateRepository, language: String) :
 
     val builtInPacks: List<WordPack> = WordPacks.builtIn(language)
 
-    var game: Game? by mutableStateOf(null)
-        private set
+    private val _game = MutableStateFlow<Game?>(null)
 
-    /** Game is mutable; bump this after every change so Compose re-reads it. */
-    var revision by mutableIntStateOf(0)
-        private set
+    /** The game in progress (null before the first one); a new immutable [Game] after every move. */
+    val game: StateFlow<Game?> = _game.asStateFlow()
 
     var lastElimination: Elimination? by mutableStateOf(null)
         private set
@@ -129,44 +128,44 @@ class GameViewModel(private val repository: StateRepository, language: String) :
         if (!Rules.canStart(s.players.size, s.settings)) return false
         if (Match.isOver(s.roundsPlayed, s.settings.rounds)) resetScores()
         val (pack, entry) = WordPicker.pick(selectedPacks(s), s.recentWords, Random.Default)
-        game = Game.deal(s.players, s.settings, pack, entry, Random.Default)
+        _game.value = Game.deal(s.players, s.settings, pack, entry, Random.Default)
         lastElimination = null
         lastPoints = emptyMap()
         voteForced = false
         strokes.clear()
-        revision++
         update { it.copy(recentWords = (listOf(entry.word) + (it.recentWords - entry.word)).take(WordPicker.RECENT_MEMORY)) }
         return true
     }
 
     fun eliminate(player: String) {
         voteForced = false
-        lastElimination = game?.eliminate(player)
-        changed()
+        val next = move { it.eliminate(player) } ?: return
+        lastElimination = next.lastElimination
     }
 
-    fun guess(text: String): Boolean {
-        val right = game?.guess(text) ?: false
-        changed()
-        return right
-    }
+    /** True if the drifter guessed the word. */
+    fun guess(text: String): Boolean = move { it.guess(text) }?.drifterGuessed ?: false
 
     fun dismissElimination() {
         lastElimination = null
     }
 
     fun revealAll() {
-        game?.reveal()
-        changed()
+        move { it.reveal() }
     }
 
     /** Starts a new match: scores and rounds back to zero. */
     fun resetScores() = update { it.copy(scores = emptyMap(), roundsPlayed = 0) }
 
-    /** Bumps [revision] and, once per game, adds the winners' points to the running scores. */
-    private fun changed() {
-        revision++
-        val current = game ?: return
+    /** Applies a move to the game in progress and, once per game, adds the winners' points to the scores. */
+    private fun move(change: (Game) -> Game): Game? {
+        val current = _game.value?.let(change) ?: return null
+        _game.value = current
+        score(current)
+        return current
+    }
+
+    private fun score(current: Game) {
         if (!current.isOver || scoredGame === current) return
         scoredGame = current
         val points = Scoring.points(current)
