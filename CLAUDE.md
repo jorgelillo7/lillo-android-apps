@@ -80,12 +80,17 @@ Project skills in `.claude/skills/`: `new-android-app` (competitor study → des
   `collectAsStateWithLifecycle`). No DI framework: app-wide singletons live on the app's
   `Application` subclass and reach ViewModels through `viewModelFactory` companions.
 - `:core:designsystem` holds `LilloTheme` (each app passes its own `ColorScheme`) and what two or
-  more apps share: `LilloPage` / `LilloBigButton` (apps wrap them with their colours in
-  `ui/…/Common.kt`), `isShortScreen()` for landscape and handhelds, `TestTagsAsResourceIds`,
+  more apps share: `LilloPage` (with `sideActionsWhenShort`) / `LilloBigButton` (apps wrap them with
+  their colours in `ui/…/Common.kt`), `LilloAboutSheet` (language, rate, privacy),
+  `LilloLanguageDialog`, `isShortScreen()` for landscape and handhelds, `TestTagsAsResourceIds`,
   `ConfettiBurst`, `LilloQrCode`, plus Christmas's `GlassCard` / `GradientBackground`. `:core:platform` has
   `JsonStore`, sharing and links; `:core:sharelink` (pure Kotlin) puts any serializable value in a
-  `jorgelillo7.github.io/<path>/#…` link (tournaments `/t/`, impostor packs `/p/`). Move code here only once a
-  second app needs it.
+  `jorgelillo7.github.io/<path>/#…` link (tournaments `/t/`, impostor packs `/p/`).
+- **Reuse first; the second copy goes to core.** Every app should get what the others already
+  proved. Before writing a composable, helper, Gradle setting or script, look for it in `core/`,
+  `build-logic/`, `scripts/` and the other apps (`git grep`). If it is in core, use it. If another
+  app has it, move it to core (or `build-logic` / `scripts`) **in the same change** and switch both
+  apps over — never copy it. A one-off stays in the app; a second one never does.
 - Strings ship in English (`values/`) and Spanish (`values-es/`); keep both in sync, including
   plurals (Spanish needs `one`/`many`/`other`).
 - Snapshot tests pin anything users already see that is derived algorithmically (e.g. Christmas

@@ -20,12 +20,10 @@
     <string name="action_import">Importar</string>
     <string name="action_about">Información</string>
     <string name="action_cancel">Cancelar</string>
-    <string name="action_close">Cerrar</string>
     <string name="action_more">Más</string>
     <string name="action_share">Compartir</string>
     <string name="action_delete">Borrar</string>
     <string name="about_body">Torneos entre amigos, solo en tu móvil: sin cuentas, sin servidores y sin anuncios. Para llevar un torneo a otro móvil, comparte su enlace o su código QR: el torneo entero viaja dentro.</string>
-    <string name="about_privacy">Política de privacidad: %s</string>
     <string name="about_open_privacy">Política de privacidad</string>
     <string name="about_version">Versión %s</string>
 

@@ -174,8 +174,6 @@
 
     <!-- Settings -->
     <string name="settings_title">Settings</string>
-    <string name="settings_language">Language</string>
-    <string name="language_system">Same as the phone</string>
     <string name="settings_share">Share with friends</string>
     <string name="settings_share_desc">The more of you, the better it gets</string>
     <string name="share_text">Let\'s play Who\'s lying? The impostor word game, free and with no ads: %1$s</string>

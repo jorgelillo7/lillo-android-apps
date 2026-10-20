@@ -14,7 +14,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.jorgelillo.tournaments.R
 import com.jorgelillo.tournaments.domain.Library
-import com.jorgelillo.tournaments.ui.home.AboutDialog
+import com.jorgelillo.tournaments.ui.home.AboutSheet
 import com.jorgelillo.tournaments.ui.home.HomeScreen
 import com.jorgelillo.tournaments.ui.home.ImportDialog
 import com.jorgelillo.tournaments.ui.setup.NewTournamentScreen
@@ -96,5 +96,5 @@ fun TournamentsApp(vm: TournamentsViewModel) {
     }
 
     if (showImport) ImportDialog(onImport = vm::importText, onDismiss = { showImport = false })
-    if (showAbout) AboutDialog(onDismiss = { showAbout = false })
+    if (showAbout) AboutSheet(onDismiss = { showAbout = false })
 }

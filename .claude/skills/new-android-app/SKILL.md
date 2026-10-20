@@ -58,9 +58,15 @@ Follow [docs/adding-a-new-app.md](../../../docs/adding-a-new-app.md). Checklist:
   queries/relations justify it.
 - Signing and R8 come from the `jorgelillo.android.application` plugin: the app only needs a
   `proguard-rules.pro` (RoomDatabase keep rule if WorkManager/Glance/Room is pulled in).
-- Reuse `core/designsystem` (`LilloTheme`, `LilloPage`, `LilloBigButton`, `isShortScreen`,
-  `TestTagsAsResourceIds`…) and copy the splash theme, `MainActivity` and About sheet of the most
-  similar app (`group-polls` or `tournaments` for the newest patterns).
+- **Start from what is already proven, never from a copy** (CLAUDE.md, "Reuse first"). List
+  `core/designsystem`, `core/platform`, `core/sharelink` and `scripts/` first and build on them:
+  `installLilloWindow` + `setLilloContent` in `MainActivity`, `LilloTheme`, `LilloPage` /
+  `LilloBigButton`, `LilloAboutSheet` (language, rate, privacy), `LilloLanguageDialog`,
+  `isShortScreen` / `sideActionsWhenShort`, `ConfettiBurst`, `LilloQrCode`, `JsonStore`,
+  `LilloLinks`, share links. The language list (`localeConfig`) comes from the convention plugin:
+  add `res/resources.properties` (`unqualifiedResLocale=en-US`).
+- Need something another app has but core doesn't (an avatar, a settings row, a dialog)? Move it to
+  core in this change and point the other app at it too, instead of copying it.
 - Strings in `values/` and `values-es/` from the start.
 - `./gradlew :apps:<app>:domain:test :apps:<app>:app:lintDebug :apps:<app>:app:assembleDebug`
 
@@ -71,7 +77,8 @@ Follow [docs/adding-a-new-app.md](../../../docs/adding-a-new-app.md). Checklist:
   on a dark gradient, checked at 48/72 px next to the other apps; study the competitors' icons
   first.
 - `tools/smoke_test.sh` on `scripts/smoke_lib.sh` (`smoke_start` … `smoke_finish`), tapping test
-  tags with `tap` (never coordinates); `tools/capture_store_screenshots.sh` and
+  tags with `tap` (never coordinates); longer UI runs (a battery of scenarios) build on
+  `scripts/ui_lib.py` like `apps/whos-lying/tools/battery_test.py`; `tools/capture_store_screenshots.sh` and
   `tools/generate_store_assets.py` (only `STYLE` + `LOCALES`, the drawing is `scripts/store_assets.py`).
 - `store/metadata/android/{en-US,es-ES}/` with title (≤30), short (≤80), full description,
   `changelogs/1.txt`.

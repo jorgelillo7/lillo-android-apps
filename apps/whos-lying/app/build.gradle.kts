@@ -19,11 +19,6 @@ android {
     buildFeatures {
         buildConfig = true
     }
-
-    // Lists the app's languages so Android 13+ offers them in system settings and the in-app picker works.
-    androidResources {
-        generateLocaleConfig = true
-    }
 }
 
 dependencies {
