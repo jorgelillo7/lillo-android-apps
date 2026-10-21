@@ -1,5 +1,6 @@
 package com.jorgelillo.decisionwheel.ui
 
+import androidx.lifecycle.viewModelScope
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import app.cash.turbine.test
@@ -32,7 +33,7 @@ class WheelsViewModelTest {
         JsonStore(ApplicationProvider.getApplicationContext(), "test-${UUID.randomUUID()}", AppState.serializer()) {
             AppState(wheels = listOf(dinner, movie))
         }
-    )
+    ).also { main.cancelAtEnd(it.viewModelScope) }
 
     @Test
     fun savingAddsANewWheelAndReplacesAnExistingOne() = runTest {

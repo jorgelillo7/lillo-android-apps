@@ -1,5 +1,6 @@
 package com.jorgelillo.whoslying.ui
 
+import androidx.lifecycle.viewModelScope
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import app.cash.turbine.test
@@ -36,7 +37,7 @@ class GameViewModelTest {
             SavedState()
         },
         language = "en"
-    )
+    ).also { main.cancelAtEnd(it.viewModelScope) }
 
     private fun GameViewModel.addPlayers(vararg names: String) = names.forEach(::addPlayer)
 

@@ -1,6 +1,7 @@
 package com.jorgelillo.leaguecards.ui
 
 import android.content.Context
+import androidx.lifecycle.viewModelScope
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import app.cash.turbine.test
@@ -30,8 +31,12 @@ class LeagueViewModelTest {
     private val league = context.assets.open("league.json").bufferedReader().use { League.parse(it.readText()) }
 
     // One DataStore per file and process: every test gets its own file.
-    private fun viewModel() =
-        LeagueViewModel(league, JsonStore(context, "test-${UUID.randomUUID()}", Saved.serializer()) { Saved() })
+    private fun viewModel() = LeagueViewModel(
+        league,
+        JsonStore(context, "test-${UUID.randomUUID()}", Saved.serializer()) {
+            Saved()
+        }
+    ).also { main.cancelAtEnd(it.viewModelScope) }
 
     @Test
     fun movesWithoutASeasonAreIgnored() = runTest {

@@ -1,5 +1,6 @@
 package com.jorgelillo.grouppolls.ui
 
+import androidx.lifecycle.viewModelScope
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import app.cash.turbine.test
@@ -49,7 +50,7 @@ class PollsViewModelTest {
         },
         language = "en",
         now = { clock }
-    )
+    ).also { main.cancelAtEnd(it.viewModelScope) }
 
     /** Creates a poll and returns its code, as the UI gets it. */
     private suspend fun PollsViewModel.newPoll(visibility: Visibility = Visibility.PRIVATE): String {
