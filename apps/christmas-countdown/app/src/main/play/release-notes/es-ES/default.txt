@@ -3,4 +3,5 @@
 - Días de música con villancicos para escuchar en YouTube 🎶
 - Comparte por WhatsApp lo que te ha tocado cada día
 - Avisos 🔔: un mes y una semana antes, el adviento, tu puerta del día y Navidad
-- Pantalla «Acerca de» renovada
+- «Acerca de» renovada: elige el idioma de la app
+- Mejor en horizontal y en consolas portátiles

@@ -2,3 +2,4 @@ Novedades de la 1.1 ⭐
 - Marca tus ruletas favoritas con la estrella: salen las primeras
 - Accesos directos: mantén pulsado el icono de la app y abre una favorita o reciente directamente
 - ¿Borraste una ruleta de ejemplo? Menú ⋮ → Restaurar ruletas de ejemplo
+- En horizontal y en consolas portátiles, la ruleta y el botón de girar caben juntos

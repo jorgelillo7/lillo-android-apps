@@ -49,6 +49,7 @@ import com.jorgelillo.christmascountdown.ui.about.PLAY_STORE_URL
 import com.jorgelillo.christmascountdown.ui.theme.ChristmasColors
 import com.jorgelillo.core.designsystem.GlassCard
 import com.jorgelillo.core.designsystem.TestTagsAsResourceIds
+import com.jorgelillo.core.designsystem.isShortScreen
 import com.jorgelillo.core.platform.shareText
 
 private enum class DoorState { Locked, Openable, Opened }
@@ -63,9 +64,11 @@ fun AdventScreen(
     val context = LocalContext.current
     val resources = LocalResources.current
     var shownDoor by rememberSaveable { mutableStateOf<Int?>(null) }
+    // Landscape and handhelds: twice the columns, so all 24 doors fit in three rows.
+    val short = isShortScreen()
 
     LazyVerticalGrid(
-        columns = GridCells.Fixed(4),
+        columns = GridCells.Fixed(if (short) 8 else 4),
         modifier = modifier.fillMaxSize(),
         contentPadding = PaddingValues(16.dp),
         horizontalArrangement = Arrangement.spacedBy(10.dp),
@@ -160,7 +163,7 @@ private fun Door(number: Int, state: DoorState, onClick: () -> Unit) {
     }
     Box(
         modifier = Modifier
-            .aspectRatio(0.85f)
+            .aspectRatio(if (isShortScreen()) 1.2f else 0.85f)
             .clip(shape)
             .background(background)
             .border(1.dp, borderColor, shape)

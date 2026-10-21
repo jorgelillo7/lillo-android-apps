@@ -74,10 +74,12 @@ fun PollScreen(
     onClose: (Poll) -> Unit,
     onReport: (Poll, Boolean) -> Unit,
     onResolvePrediction: (Poll) -> Unit,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    /** Wall clock, for "closes in…" (fixed in screenshot tests). */
+    clock: () -> Long = System::currentTimeMillis
 ) {
     val context = LocalContext.current
-    val now = remember(poll) { System.currentTimeMillis() }
+    val now = remember(poll) { clock() }
     var notFound by remember { mutableStateOf(false) }
     LaunchedEffect(poll) {
         if (poll == null) {

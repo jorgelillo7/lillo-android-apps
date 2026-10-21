@@ -5,6 +5,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -38,6 +39,7 @@ import com.jorgelillo.christmascountdown.ui.theme.ChristmasColors
 import com.jorgelillo.core.designsystem.GlassCard
 import com.jorgelillo.core.designsystem.LilloSectionTitle
 import com.jorgelillo.core.designsystem.LilloTheme
+import com.jorgelillo.core.designsystem.isShortScreen
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
@@ -49,6 +51,7 @@ fun CountdownScreen(
     modifier: Modifier = Modifier,
     reminderPrompt: (@Composable () -> Unit)? = null
 ) {
+    val short = isShortScreen()
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -61,24 +64,38 @@ fun CountdownScreen(
             CountdownState.ChristmasDay -> ChristmasDayContent()
 
             is CountdownState.Counting -> {
-                AnimatedContent(
-                    targetState = state.sleepsMode,
-                    transitionSpec = { fadeIn() togetherWith fadeOut() },
-                    label = "countdown-mode"
-                ) { sleepsMode ->
-                    if (sleepsMode) SleepsContent(countdown.sleeps) else TimeContent(countdown.timeLeft)
+                val hero = @Composable {
+                    AnimatedContent(
+                        targetState = state.sleepsMode,
+                        transitionSpec = { fadeIn() togetherWith fadeOut() },
+                        label = "countdown-mode"
+                    ) { sleepsMode ->
+                        if (sleepsMode) SleepsContent(countdown.sleeps) else TimeContent(countdown.timeLeft)
+                    }
                 }
-                Spacer(Modifier.height(20.dp))
-                Text(
-                    text = countdown.target.formatted(),
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                Spacer(Modifier.height(28.dp))
-                ModeSelector(sleepsMode = state.sleepsMode, onChange = onSleepsModeChange)
-                if (reminderPrompt != null) {
-                    Spacer(Modifier.height(28.dp))
-                    reminderPrompt()
+                val details = @Composable {
+                    Text(
+                        text = countdown.target.formatted(),
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Spacer(Modifier.height(if (short) 16.dp else 28.dp))
+                    ModeSelector(sleepsMode = state.sleepsMode, onChange = onSleepsModeChange)
+                    if (reminderPrompt != null) {
+                        Spacer(Modifier.height(if (short) 16.dp else 28.dp))
+                        reminderPrompt()
+                    }
+                }
+                if (short) {
+                    // Landscape and handhelds: the countdown on the left, date and mode beside it.
+                    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(24.dp)) {
+                        Box(Modifier.weight(1f), contentAlignment = Alignment.Center) { hero() }
+                        Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally) { details() }
+                    }
+                } else {
+                    hero()
+                    Spacer(Modifier.height(20.dp))
+                    details()
                 }
             }
         }

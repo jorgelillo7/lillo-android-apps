@@ -17,8 +17,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
@@ -42,6 +44,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.jorgelillo.core.designsystem.AvatarStyle
 import com.jorgelillo.core.designsystem.LilloAvatar
+import com.jorgelillo.core.designsystem.isShortScreen
 import com.jorgelillo.leaguecards.R
 import com.jorgelillo.leaguecards.domain.Card
 import com.jorgelillo.leaguecards.domain.Effects
@@ -71,6 +74,21 @@ fun PlayScreen(
         drag.value < -24f -> card.left
         else -> null
     }
+    val short = isShortScreen()
+    val points = @Composable {
+        if (season.matchdayPoints != 0) {
+            Text(
+                stringResource(R.string.card_points, "%+d".format(season.matchdayPoints)),
+                color = if (season.matchdayPoints > 0) Chat.Green else Chat.Red,
+                modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+                textAlign = TextAlign.Center
+            )
+        }
+    }
+    val news = @Composable {
+        season.justUnlocked.forEach { id -> league.achievement(id)?.let { AchievementBanner(it) } }
+        season.lastOutcome?.let { ChatBubble(league, it.character, it.text, Modifier.testTag("outcome")) }
+    }
     Page(
         title = stringResource(R.string.matchday_of, season.matchday, league.matchdays),
         onBack = onBack,
@@ -79,6 +97,7 @@ fun PlayScreen(
                 Text(stringResource(R.string.position_short, Game.position(season)), color = Chat.Text, fontWeight = FontWeight.Bold)
             }
         },
+        sideActionsWhenShort = true,
         bottom = {
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 ChoiceButton("← " + card.left.label, "choose_left", Modifier.weight(1f)) { onChoose(false) }
@@ -92,19 +111,24 @@ fun PlayScreen(
             }
         }
     ) {
-        MetersRow(season, leaning?.effects)
-        Spacer(Modifier.height(12.dp))
-        season.justUnlocked.forEach { id -> league.achievement(id)?.let { AchievementBanner(it) } }
-        season.lastOutcome?.let { ChatBubble(league, it.character, it.text, Modifier.testTag("outcome")) }
-        Spacer(Modifier.height(12.dp))
-        SwipeCard(league, card, drag, leaning?.label, onChoose, Modifier.weight(1f))
-        if (season.matchdayPoints != 0) {
-            Text(
-                stringResource(R.string.card_points, "%+d".format(season.matchdayPoints)),
-                color = if (season.matchdayPoints > 0) Chat.Green else Chat.Red,
-                modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
-                textAlign = TextAlign.Center
-            )
+        if (short) {
+            // Landscape and handhelds: meters and news on the left, the card at full height beside them.
+            Row(Modifier.weight(1f).padding(bottom = 8.dp), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                Column(Modifier.weight(1f).verticalScroll(rememberScrollState())) {
+                    MetersRow(season, leaning?.effects)
+                    Spacer(Modifier.height(8.dp))
+                    news()
+                    points()
+                }
+                SwipeCard(league, card, drag, leaning?.label, onChoose, Modifier.weight(1f).fillMaxHeight())
+            }
+        } else {
+            MetersRow(season, leaning?.effects)
+            Spacer(Modifier.height(12.dp))
+            news()
+            Spacer(Modifier.height(12.dp))
+            SwipeCard(league, card, drag, leaning?.label, onChoose, Modifier.weight(1f))
+            points()
         }
     }
 }
@@ -219,7 +243,7 @@ private fun SwipeCard(
                     }
                 }
                 .testTag("card")
-                .padding(24.dp),
+                .padding(if (isShortScreen()) 16.dp else 24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
@@ -230,14 +254,14 @@ private fun SwipeCard(
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth().height(48.dp)
             )
-            Avatar(character?.emoji?.ifBlank { null } ?: character?.name ?: card.character, color)
+            Avatar(character?.emoji?.ifBlank { null } ?: character?.name ?: card.character, color, size = if (isShortScreen()) 48 else 72)
             Spacer(Modifier.height(10.dp))
             Text(character?.name ?: card.character, color = color, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleLarge)
             character?.tagline?.takeIf { it.isNotBlank() }?.let {
                 Text(it, color = Chat.Muted, style = MaterialTheme.typography.bodyMedium, textAlign = TextAlign.Center)
             }
             Spacer(Modifier.weight(1f))
-            Text(card.text, style = MaterialTheme.typography.headlineSmall, textAlign = TextAlign.Center, color = Chat.Text)
+            Text(card.text, style = if (isShortScreen()) MaterialTheme.typography.titleLarge else MaterialTheme.typography.headlineSmall, textAlign = TextAlign.Center, color = Chat.Text)
             Spacer(Modifier.weight(1f))
         }
     }

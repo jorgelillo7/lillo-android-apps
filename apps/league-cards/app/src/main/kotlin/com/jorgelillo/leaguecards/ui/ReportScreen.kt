@@ -55,6 +55,7 @@ fun ReportScreen(league: League, report: Report, unlocked: List<String>, seasonO
     Page(
         title = league.name,
         onBack = onBack,
+        sideActionsWhenShort = true,
         actions = {
             androidx.compose.material3.TextButton(onClick = onTable, modifier = Modifier.testTag("table")) {
                 Text(stringResource(R.string.table), color = Chat.Text)

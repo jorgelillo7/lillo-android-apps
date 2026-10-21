@@ -3,6 +3,7 @@ import java.util.Properties
 plugins {
     alias(libs.plugins.jorgelillo.android.application)
     alias(libs.plugins.jorgelillo.android.compose)
+    alias(libs.plugins.jorgelillo.android.screenshots)
     alias(libs.plugins.kotlin.serialization)
 }
 

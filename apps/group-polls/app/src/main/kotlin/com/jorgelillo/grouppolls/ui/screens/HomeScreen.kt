@@ -58,10 +58,12 @@ fun HomeScreen(
     pollFlow: (String) -> Flow<Poll?>,
     onOpen: (String) -> Unit,
     onCreate: () -> Unit,
-    onSettings: () -> Unit
+    onSettings: () -> Unit,
+    /** Wall clock, for how long ago and how long left (fixed in screenshot tests). */
+    clock: () -> Long = System::currentTimeMillis
 ) {
     var tab by rememberSaveable { mutableIntStateOf(0) }
-    val now = remember { System.currentTimeMillis() }
+    val now = remember { clock() }
     Box(Modifier.fillMaxSize()) {
         Page(
             title = stringResource(R.string.app_name),
