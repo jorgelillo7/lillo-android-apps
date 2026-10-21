@@ -5,6 +5,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import app.cash.turbine.test
 import com.jorgelillo.core.platform.JsonStore
 import com.jorgelillo.core.testing.MainDispatcherRule
+import com.jorgelillo.core.testing.StoreTimeout
 import com.jorgelillo.core.testing.awaitMatching
 import com.jorgelillo.grouppolls.data.FakePollRepository
 import com.jorgelillo.grouppolls.data.LocalState
@@ -90,7 +91,7 @@ class PollsViewModelTest {
             override suspend fun create(poll: Poll) = throw PollException("offline")
         }
         val vm = viewModel(offline)
-        vm.creating.test {
+        vm.creating.test(timeout = StoreTimeout) {
             assertFalse(awaitItem())
             vm.create("Q?", "A", "B", Visibility.PUBLIC, Duration.ONE_DAY)
             assertTrue(awaitItem())

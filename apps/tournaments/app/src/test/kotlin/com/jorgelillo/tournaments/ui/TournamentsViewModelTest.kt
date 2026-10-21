@@ -5,6 +5,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import app.cash.turbine.test
 import com.jorgelillo.core.platform.JsonStore
 import com.jorgelillo.core.testing.MainDispatcherRule
+import com.jorgelillo.core.testing.StoreTimeout
 import com.jorgelillo.core.testing.awaitMatching
 import com.jorgelillo.tournaments.domain.Format
 import com.jorgelillo.tournaments.domain.Library
@@ -73,7 +74,7 @@ class TournamentsViewModelTest {
     fun aSharedLinkIsImportedOnceThenUpdated() = runTest {
         val vm = viewModel()
         val link = Share.link(cup())
-        vm.imports.test {
+        vm.imports.test(timeout = StoreTimeout) {
             vm.importText("Our cup: $link see you there")
             assertEquals(ImportEvent(Library.ImportResult.ADDED, "cup"), awaitItem())
             vm.importText(link)
@@ -89,7 +90,7 @@ class TournamentsViewModelTest {
     @Test
     fun aBrokenLinkSaysSo() = runTest {
         val vm = viewModel()
-        vm.imports.test {
+        vm.imports.test(timeout = StoreTimeout) {
             vm.importText("https://jorgelillo7.github.io/t/#not-a-tournament")
             val event = awaitItem()
             assertNull(event.result)
