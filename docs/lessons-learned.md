@@ -43,6 +43,10 @@ Short, one line each. Add to it whenever something bites.
 - **Compose only redraws what it can observe.** A screen that reads a plain `var` of a mutable domain
   object never updates when it changes (the "next vote" button never came back after a wrong Drifter
   guess). Keep UI state in `StateFlow` / `mutableStateOf`, or immutable objects replaced on change.
+- **One UI run on the emulator at a time.** Two scripts driving the same emulator (a smoke test
+  moved to the background by a timeout plus a new one in the foreground) tap over each other and
+  crash `uiautomator` ("already registered"): every result of that round is void. Wait for the
+  background run to report before starting another, even if `ps` doesn't show it.
 - **Smoke tests uninstall first.** Once an app has an upload key, its release build is signed
   differently from the debug build on the emulator and `adb install -r` fails with
   `INSTALL_FAILED_UPDATE_INCOMPATIBLE`.

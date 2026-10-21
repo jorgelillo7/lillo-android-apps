@@ -55,6 +55,9 @@ fun WhosLyingApp(app: WhosLyingApplication, incomingText: String? = null, onInco
     val vm: GameViewModel = viewModel(key = "game-$language", factory = GameViewModel.factory(app.repository, language))
     val saved by vm.saved.collectAsStateWithLifecycle()
     val currentGame by vm.game.collectAsStateWithLifecycle()
+    val lastElimination by vm.lastElimination.collectAsStateWithLifecycle()
+    val lastPoints by vm.lastPoints.collectAsStateWithLifecycle()
+    val voteForced by vm.voteForced.collectAsStateWithLifecycle()
     val state = saved ?: return // first disk read in progress (a few ms)
     val nav = rememberNavController()
     var showHowTo by rememberSaveable { mutableStateOf(false) }
@@ -126,7 +129,7 @@ fun WhosLyingApp(app: WhosLyingApplication, incomingText: String? = null, onInco
                     discussionSeconds = state.settings.discussionSeconds,
                     onVote = { nav.navigate("vote") },
                     onTimeUp = {
-                        vm.voteForced = true
+                        vm.forceVote()
                         nav.navigate("time_up")
                     },
                     onRevealAll = vm::revealAll,
@@ -139,7 +142,7 @@ fun WhosLyingApp(app: WhosLyingApplication, incomingText: String? = null, onInco
                     discussionSeconds = state.settings.discussionSeconds,
                     onVote = { nav.navigate("vote") },
                     onTimeUp = {
-                        vm.voteForced = true
+                        vm.forceVote()
                         nav.navigate("time_up")
                     },
                     onRevealAll = vm::revealAll,
@@ -155,7 +158,7 @@ fun WhosLyingApp(app: WhosLyingApplication, incomingText: String? = null, onInco
             VotingScreen(
                 game = game,
                 alive = remember(game) { game.alive.map { it.player }.toSet() },
-                forced = vm.voteForced,
+                forced = voteForced,
                 onConfirm = { player ->
                     vm.eliminate(player)
                     nav.navigate("expose") { popUpTo("debate") }
@@ -166,7 +169,7 @@ fun WhosLyingApp(app: WhosLyingApplication, incomingText: String? = null, onInco
         composable("expose") {
             val game = currentGame ?: return@composable LaunchedEffect(Unit) { nav.goHome() }
             // Null for a moment after "keep playing" while this screen leaves.
-            val elimination = vm.lastElimination ?: return@composable
+            val elimination = lastElimination ?: return@composable
             val toResult = { nav.navigate("result") { popUpTo("setup") } }
             ExposeScreen(
                 game = game,
@@ -185,7 +188,7 @@ fun WhosLyingApp(app: WhosLyingApplication, incomingText: String? = null, onInco
             val caption = stringResource(R.string.drawing_share_caption, game.civilianWord, PLAY_STORE_URL)
             ResultScreen(
                 game = game,
-                lastElimination = vm.lastElimination,
+                lastElimination = lastElimination,
                 drawing = vm.strokes,
                 onShareDrawing = { shareDrawing(context, vm.strokes, caption) },
                 roundsLeft = state.settings.rounds.takeIf { it > 0 }?.let { Match.remaining(state.roundsPlayed, it) },
@@ -199,7 +202,7 @@ fun WhosLyingApp(app: WhosLyingApplication, incomingText: String? = null, onInco
             RankingScreen(
                 players = state.players,
                 scores = state.scores,
-                lastPoints = vm.lastPoints,
+                lastPoints = lastPoints,
                 roundsLeft = state.settings.rounds.takeIf { it > 0 }?.let { Match.remaining(state.roundsPlayed, it) },
                 roundsPlayed = state.roundsPlayed,
                 onNextRound = { if (vm.startGame()) nav.navigate("reveal") { popUpTo("setup") } },
