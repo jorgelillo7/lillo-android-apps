@@ -5,6 +5,7 @@
 #                                          smoke test has another signature), demo mode on; on exit,
 #                                          even after a failed step: the
 #                                          app's language back to the phone's, demo off, clock back
+#                                          (CAPTURE_GRADLE_ARGS: extra arguments for that build)
 #   capture_date MMDDhhmmYYYY              optional: a fixed date (scripts/emulator.sh date)
 #   for locale in $CAPTURE_LOCALES; do     en-US es-ES, or LOCALES="es-ES" to redo one
 #     capture_open "$locale" [wait] [keep] clean data (not with keep), the locale, launch
@@ -25,7 +26,9 @@ capture_start() {
   PKG="$2"
   RAW="$ROOT/apps/$APP/store/raw"
   "$ADB" uninstall "$PKG" >/dev/null 2>&1 || true
-  (cd "$ROOT" && ./gradlew -q ":apps:$APP:app:installDebug")
+  # CAPTURE_GRADLE_ARGS: extra Gradle arguments for the build captured (league-cards: the sample deck).
+  # shellcheck disable=SC2086
+  (cd "$ROOT" && ./gradlew -q ":apps:$APP:app:installDebug" ${CAPTURE_GRADLE_ARGS:-})
   trap capture_finish EXIT
   "$ROOT/scripts/emulator.sh" demo on
 }

@@ -37,7 +37,8 @@ it instead of the sample. Anyone else, and CI's pull request checks, build the s
 workflow gets the private deck from a GitHub secret (`scripts/set-release-secrets.sh league-cards`)
 and refuses to publish without it.
 
-Store screenshots, if ever needed, must come from a build without the private deck.
+Store screenshots come from a build with the sample deck: `tools/capture_store_screenshots.sh`
+forces it (`-PleagueCards.privateDir=/nonexistent`), then `tools/generate_store_assets.py`.
 
 ## 🏗️ Architecture
 
