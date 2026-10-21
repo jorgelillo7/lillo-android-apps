@@ -21,6 +21,7 @@ One entry per document. Runbooks first, then setup, then reference.
 
 | Doc | What's in it |
 |---|---|
+| [`decisions.md`](decisions.md) | The choices that shape the repo, one line each with its reason and PR |
 | [`lessons-learned.md`](lessons-learned.md) | Things that went wrong once and how to avoid them |
 
 ## Per app

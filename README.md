@@ -28,19 +28,23 @@
 
 ```
 PENDING.md                         Open work, one line per item
-docs/                              Runbook (operations.md), Google Play guide, setup/toolchain, adding an app
-scripts/                           Shared scripts: env, emulator, screenshots, bundle verification
-branding/                          Developer profile images (Play Console) and their generator
-build-logic/                       Gradle convention plugins: shared Android/Kotlin/Compose config
+docs/                              Runbook, Google Play guide, decisions, lessons learned (index: docs/README.md)
+scripts/                           Shared scripts: env, emulator, UI driver (ui_lib), smoke / capture libs, store graphics
+build-logic/                       Gradle convention plugins: Android, Compose, screenshots, Robolectric, publishing
 gradle/libs.versions.toml          Single source of truth for every dependency version
 core/
-└── designsystem/                  :core:designsystem — theme and Compose components shared by all apps
+├── designsystem/                  Theme and Compose components every app uses (page, buttons, rows, avatar, about…)
+├── platform/                      Android helpers without UI: JsonStore, sharing, links, backup rules
+├── sharelink/                     Pure Kotlin: any value inside a share link
+└── screenshot-testing/            What every screenshot test shares (capture, accessibility checks)
 apps/                              One folder per app (table above), all with the same layout:
 └── <app>/
     ├── app/                       :apps:<app>:app — Android app (UI, resources)
-    ├── domain/                    :apps:<app>:domain — pure Kotlin business logic
-    ├── store/                     Play Store listing: texts and images per language
-    ├── tools/                     App-specific scripts (icon, store assets, smoke test)
+    │   ├── src/main/play/         Google Play listing and release notes (Gradle Play Publisher)
+    │   └── src/test/screenshots/  Screenshot test images, reviewed like code
+    ├── domain/                    :apps:<app>:domain — pure Kotlin business logic, unit tested
+    ├── store/                     Raw screenshots and the 512 px icon the listing graphics come from
+    ├── tools/                     App-specific scripts (icon, store graphics, captures, smoke test)
     ├── README.md                  What the app does and how it is built
     ├── OPERATIONS.md              Every command to run, test and release the app
     └── release-notes.md           Version history
@@ -51,9 +55,36 @@ apps/                              One folder per app (table above), all with th
 - **Each app is a self-contained folder** under `apps/`, with its own `app` and `domain` modules.
 - **Domain modules are pure Kotlin** (no `android.*`): fast to test and easy to move to another
   build system later.
-- **Shared code lives in `core/`, but only once a second app needs it.** No empty modules "just
-  in case".
+- **Reuse first.** Before writing something, look in `core/`, `build-logic/`, `scripts/` and the
+  other apps; the second copy of anything moves to `core` in the same change.
 - **Configuration is written once** in `build-logic` convention plugins and the version catalog.
+- **Community-standard tools**, adopted as they are meant to be used. The choices and their reasons:
+  [docs/decisions.md](docs/decisions.md).
+
+## 🛠️ How we work
+
+Every change goes the same way, small enough to review in one sitting:
+
+1. **A branch per change**, never straight to `master`.
+2. **Locally, before the PR:**
+   ```bash
+   ./gradlew spotlessApply                 # format (ktlint + Compose rules)
+   ./gradlew test verifyRoborazziDebug lintDebug
+   apps/<app>/tools/smoke_test.sh          # release build on the emulator, for each app touched
+   ```
+   A deliberate UI change re-records its screenshots (`./gradlew recordRoborazziDebug`); the new
+   images go in the PR and are reviewed like code.
+3. **A pull request**, checked by CI: **Lint** (format + Android lint), **Test** (unit tests,
+   screenshot tests with their accessibility checks), **Release** (R8 build of every app, Play
+   listing check) and **Smoke** (every app's release build on an emulator).
+4. **Squash merge** when green. Dependency updates arrive the same way, as weekly Renovate PRs.
+5. **Releases** follow the `release-android-app` skill: version bump, notes in every language,
+   `./gradlew :apps:<app>:app:publishBundle` to internal testing, then production
+   ([docs/publishing-on-google-play.md](docs/publishing-on-google-play.md)).
+
+What every app gets from the shared pieces: the same page and components, per-app language,
+compact layouts for landscape and handhelds, screenshot and accessibility tests, release smoke
+tests, store graphics, publishing from the terminal.
 
 ## 🚀 Building
 
@@ -74,7 +105,7 @@ Full recipe (modules, icon, privacy policy, store assets): [docs/adding-a-new-ap
 
 ## 📚 Docs
 
-Start at [docs/README.md](docs/README.md): publishing checklist, toolchain notes, lessons learned.
+Start at [docs/README.md](docs/README.md): publishing checklist, decisions, toolchain notes, lessons learned.
 
 ## 🔐 Signing
 
