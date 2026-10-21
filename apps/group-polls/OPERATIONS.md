@@ -70,7 +70,9 @@ Check on a device: `adb shell pm get-app-links com.jorgelillo.grouppolls` → `v
 ## Release
 
 Not published yet. Releases follow the `release-android-app` skill. Build the first bundle only
-with `firebase.properties` in place: without it the app runs on sample polls.
+with `firebase.properties` in place: without it the app runs on sample polls. For CI's Release
+workflow, `scripts/set-release-secrets.sh group-polls` puts it (with the upload key) in GitHub, and a
+release without it fails.
 
 Upload key (created 13 Oct 2026 with `scripts/new-upload-key.sh`, see [docs/signing.md](../../docs/signing.md)):
 

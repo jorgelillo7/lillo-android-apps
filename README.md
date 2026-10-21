@@ -70,21 +70,26 @@ Every change goes the same way, small enough to review in one sitting:
    ```bash
    ./gradlew spotlessApply                 # format (ktlint + Compose rules)
    ./gradlew test verifyRoborazziDebug lintDebug
-   apps/<app>/tools/smoke_test.sh          # release build on the emulator, for each app touched
    ```
+   Every app has screenshot tests, a ViewModel test and a whole-flow test through its real
+   `MainActivity`, all on the JVM (seconds, no emulator).
    A deliberate UI change re-records its screenshots (`./gradlew recordRoborazziDebug`); the new
    images go in the PR and are reviewed like code.
-3. **A pull request**, checked by CI: **Lint** (format + Android lint), **Test** (unit tests,
-   screenshot tests with their accessibility checks), **Release** (R8 build of every app, Play
-   listing check) and **Smoke** (every app's release build on an emulator).
+3. **A pull request**, checked by CI (all four required): **Lint** (format + Android lint),
+   **Test** (unit, flow and screenshot tests with their accessibility checks), **Release** (R8
+   build of every app, Play listing check) and **Smoke** (the release build of each app the PR
+   touches, on an emulator; every app when shared code changes). Gradle's build cache, saved from
+   `master`, means untouched modules aren't rebuilt.
 4. **Squash merge** when green. Dependency updates arrive the same way, as weekly Renovate PRs.
-5. **Releases** follow the `release-android-app` skill: version bump, notes in every language,
-   `./gradlew :apps:<app>:app:publishBundle` to internal testing, then production
-   ([docs/publishing-on-google-play.md](docs/publishing-on-google-play.md)).
+5. **Releases**: a PR with the version bump and the notes in every language (the
+   `release-android-app` skill), then the **Release** workflow publishes it from `master`: to
+   internal testing, promoted to production, or straight to production (which waits for an
+   approval), store listing included. No Play Console visit after an app's first release
+   ([docs/publishing-on-google-play.md](docs/publishing-on-google-play.md#6-release)).
 
 What every app gets from the shared pieces: the same page and components, per-app language,
-compact layouts for landscape and handhelds, screenshot and accessibility tests, release smoke
-tests, store graphics, publishing from the terminal.
+compact layouts for landscape and handhelds, screenshot, accessibility, ViewModel and flow tests,
+release smoke tests, store graphics, publishing from CI.
 
 ## 🚀 Building
 

@@ -1,6 +1,6 @@
 ---
 name: release-android-app
-description: Prepare and ship a new version of one of the apps in this repo to Google Play: bump versionCode, write release notes in every language, build and verify the signed bundle, smoke test the release build, then guide the user through Play Console (internal testing, production, store listing). Use when the user wants to publish, release, upload or ship an app or a new version.
+description: Prepare and ship a new version of one of the apps in this repo to Google Play: bump versionCode, write release notes in every language, open the release PR (CI builds, tests and smoke tests it), then publish with the Release workflow (internal testing, production, promotion, store listing) or from the terminal. Use when the user wants to publish, release, upload or ship an app or a new version.
 ---
 
 # Release an app to Google Play
@@ -40,14 +40,13 @@ first"). Cheaper than a repo-wide clean-up later.
 
 ## 3. Build and verify
 
+The release PR's CI already builds every release (R8), runs the tests and smoke-tests the touched
+app's release build on an emulator. Locally, before opening it:
+
 ```bash
 source scripts/env.sh
-./gradlew test :apps:<app>:app:lintDebug :apps:<app>:app:bundleRelease
-scripts/emulator.sh start          # ask the user to close Chrome first (8 GB RAM)
-apps/<app>/tools/smoke_test.sh     # release build: must print SMOKE TEST PASSED
-scripts/emulator.sh stop
+./gradlew :apps:<app>:app:lintDebug :apps:<app>:app:testDebugUnitTest :apps:<app>:app:bundleRelease
 scripts/verify-bundle.sh apps/<app>/app/build/outputs/bundle/release/app-release.aab
-open -R apps/<app>/app/build/outputs/bundle/release/app-release.aab
 ```
 
 Check in the `verify-bundle.sh` output:
@@ -57,8 +56,8 @@ Check in the `verify-bundle.sh` output:
   in their own terminal (docs/signing.md); never ask them to paste passwords into the chat.
 - New permissions vs. the previous release → the Data safety form may need updating.
 
-If the app has no `tools/smoke_test.sh` yet, create one on `scripts/smoke_lib.sh` like
-`apps/tournaments/tools/smoke_test.sh` (taps by test tag, never coordinates).
+The emulator smoke test (`apps/<app>/tools/smoke_test.sh`) also runs locally when a change needs a
+look on screen (`scripts/emulator.sh start`; ask the user to close Chrome first, 8 GB RAM).
 
 ## 4. Store listing (only if features changed)
 
@@ -70,24 +69,37 @@ If the app has no `tools/smoke_test.sh` yet, create one on `scripts/smoke_lib.sh
 
 ## 5. Commit and PR
 
-Commit version bump, notes and assets on a branch; open a PR; the user merges. Build the bundle
-from the merged `master` if anything changed after the smoke test.
+Commit version bump, notes and assets on a branch; open a PR; it is merged once CI is green
+(Lint, Test, Release, Smoke). The release ships what is on `master`.
 
 ## 6. Publish
 
-From the terminal when `~/.config/lillo-android-apps/play-service-account.json` exists (set-up and
-details: docs/publishing-on-google-play.md §6). Confirm with the user before each command: they go
-out to Google Play.
+**With the Release workflow** (the normal way; set-up and details: docs/publishing-on-google-play.md
+§6). It builds the signed bundle from `master`, checks it, publishes and tags `<app>/v<versionCode>`.
+Confirm with the user before running it: it goes out to Google Play.
 
-1. `./gradlew :apps:<app>:app:publishBundle` → internal testing. The user installs it on a real
-   phone from the opt-in link.
-2. When it's fine: `./gradlew :apps:<app>:app:promoteArtifact --from-track internal --promote-track production`.
-3. If the listing changed: `./gradlew :apps:<app>:app:publishListing` (same go as the release).
-4. Managed publishing on? The user presses "Publish" in Play Console after approval.
+```bash
+gh workflow run release.yml -f app=<app> -f action=upload -f track=internal     # → internal testing
+# the user installs it from the opt-in link on a real phone; when it's fine:
+gh workflow run release.yml -f app=<app> -f action=promote -f track=production  # waits for their approval
+```
 
-No key yet, or the app's very first bundle (the API can't create it): the same steps by hand in
-Play Console (internal testing → upload the `.aab` → paste the notes → roll out; promote; listing;
-*Send changes for review*).
+- Straight to production (no testing round): `-f action=upload -f track=production`.
+- With the store listing (texts, graphics): add `-f listing=true` to the run that ships the change.
+- `-f dry_run=true` builds and checks everything and publishes nothing.
+- Production runs wait in GitHub (Actions → the run → *Review deployments*) until the user approves.
+- Follow it with `gh run watch`; the run's summary shows the bundle check.
+- "No upload key" / "No Play service account": the user runs `scripts/set-release-secrets.sh <app>`
+  or `--play` in their own terminal.
+
+**From the terminal** (same tasks, the key and service account from this Mac):
+`./gradlew :apps:<app>:app:publishBundle` (internal), `promoteArtifact --from-track internal
+--promote-track production`, `publishListing`.
+
+**By hand in Play Console**: the app's very first bundle (the API can't create an app), and the App
+content forms. Upload the `.aab`, paste the notes, roll out; *Send changes for review*.
+
+Managed publishing on? The user presses "Publish" in Play Console after approval.
 
 Expected review warnings that are OK: "devices no longer supported" after raising `minSdk`;
 "native code without debug symbols" (AndroidX `.so` files). Anything else: ask for a screenshot.

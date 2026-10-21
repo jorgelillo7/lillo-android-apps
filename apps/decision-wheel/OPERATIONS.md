@@ -45,5 +45,7 @@ apps/decision-wheel/tools/smoke_test.sh
 scripts/verify-bundle.sh apps/decision-wheel/app/build/outputs/bundle/release/app-release.aab
 ```
 
-Store listing texts and images: `app/src/main/play/listings/<locale>/`. Then follow the
-`release-android-app` skill / [docs/publishing-on-google-play.md](../../docs/publishing-on-google-play.md).
+Store listing texts and images: `app/src/main/play/listings/<locale>/`. Publish from CI:
+`gh workflow run release.yml -f app=decision-wheel -f action=upload -f track=internal` (then
+`-f action=promote -f track=production`); the `release-android-app` skill /
+[docs/publishing-on-google-play.md](../../docs/publishing-on-google-play.md) have the details.

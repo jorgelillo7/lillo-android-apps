@@ -98,18 +98,40 @@ One Google Cloud service account publishes every app of the developer account:
 4. Play Console → *Users and permissions* → *Invite new users* → the service account's e-mail →
    app permissions for the apps (*Release to testing tracks*, *Release to production*, *Manage
    store presence*) → invite. It can take a few minutes to work.
-5. A brand-new app's **first** bundle still goes through Play Console by hand (the API can't create it);
-   every later one goes from the terminal.
+5. A brand-new app's **first** bundle still goes through Play Console by hand (the API can't create it),
+   and so do the App content forms (§4); every later release goes from CI or the terminal.
 
-### Each release
+### From CI: the Release workflow (once: secrets)
+
+Every later release can go out without opening Play Console: **Actions → Release → Run workflow**
+(also from the GitHub mobile app), or `gh workflow run release.yml -f app=<app> …`. It builds the
+signed bundle from `master`, checks it (`scripts/verify-bundle.sh`), publishes with Gradle Play
+Publisher and tags the commit `<app>/v<versionCode>`.
+
+| Choose | What happens |
+|---|---|
+| `upload` + `internal` | the usual first step: install it from the opt-in link and try it |
+| `promote` + `production` | moves that same bundle on (no new build) |
+| `upload` + `production` | straight to production, when no testing round is needed |
+| `listing` | also publishes the store texts and graphics, with the release that needs them |
+| `dry_run` | builds and checks everything, publishes nothing |
+
+Production waits for your approval in GitHub (*Review deployments* on the run).
+
+Once, in your own terminal (values go to GitHub through stdin, never through the chat):
 
 ```bash
-source scripts/env.sh
-./gradlew :apps:<app>:app:publishBundle                         # signed bundle + notes → internal testing
-# test it from the opt-in link on a real phone, then:
-./gradlew :apps:<app>:app:promoteArtifact --from-track internal --promote-track production
-./gradlew :apps:<app>:app:publishListing                        # texts + graphics, with the release that needs them
+scripts/set-release-secrets.sh --play            # the service account key above
+scripts/set-release-secrets.sh <app>             # each app's upload key (+ league-cards' private deck, group-polls' Firebase config)
+scripts/set-release-secrets.sh --approval        # production waits for your approval (already set)
 ```
+
+Each app's upload key lives in a GitHub environment named like the app folder; the service
+account in the repository secret `PLAY_SERVICE_ACCOUNT_JSON`. With Play App Signing, a leaked
+upload key can be reset from Play Console: Google keeps the key that signs what users install.
+Run the script again after changing a key or league-cards' private deck.
+
+### Each release from the terminal
 
 Changes are committed as one edit and sent for review on their own; with **Managed publishing**
 on (Publishing overview) you still press "Publish" after approval. Without credentials the same
