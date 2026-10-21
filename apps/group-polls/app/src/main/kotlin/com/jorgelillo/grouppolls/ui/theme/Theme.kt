@@ -10,18 +10,20 @@ object Polls {
     val Paper = Color(0xFFF3F6FB)
     val Card = Color(0xFFFFFFFF)
     val Ink = Color(0xFF1B2433)
-    val Muted = Color(0xFF6B7689)
+    val Muted = Color(0xFF5A6577)
     val Line = Color(0xFFE2E8F1)
-    val Red = Color(0xFFF2384A)
+
+    // Red and blue are deep enough for text on their soft tints and for white text on their fills (4.5:1).
+    val Red = Color(0xFFC81E3A)
     val RedSoft = Color(0xFFFFE3E6)
-    val Blue = Color(0xFF2D6BFF)
+    val Blue = Color(0xFF1E50E0)
     val BlueSoft = Color(0xFFE1EAFF)
     val Sky = Color(0xFF3DB7FF)
     val Gold = Color(0xFFFFB627)
 
     val Header = Brush.verticalGradient(listOf(Color(0xFFDDEBFF), Paper))
-    val RedFill = Brush.verticalGradient(listOf(Color(0xFFFF5A69), Red))
-    val BlueFill = Brush.verticalGradient(listOf(Color(0xFF4F86FF), Blue))
+    val RedFill = Brush.verticalGradient(listOf(Color(0xFFD93348), Red))
+    val BlueFill = Brush.verticalGradient(listOf(Color(0xFF3366F0), Blue))
 
     fun color(side: Side) = if (side == Side.RED) Red else Blue
     fun soft(side: Side) = if (side == Side.RED) RedSoft else BlueSoft

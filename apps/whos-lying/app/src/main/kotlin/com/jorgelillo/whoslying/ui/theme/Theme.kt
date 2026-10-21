@@ -16,13 +16,19 @@ object Neon {
     val Pink = Color(0xFFFF4D94)
     val Amber = Color(0xFFFFC94D)
 
-    val Backdrop = Brush.verticalGradient(listOf(Color(0xFF2B1B6B), Night, Night))
-    val RevealBackdrop = Brush.verticalGradient(listOf(Color(0xFF7C5CFF), Color(0xFF4B2BD6)))
+    // Lighter tones for text on coloured backdrops and cards, where the base ones fall below 4.5:1.
+    val PinkText = Color(0xFFFFA3C8)
+    val AmberText = Color(0xFFFFE29A)
+    val VioletLight = Color(0xFF8B6EFF)
 
-    // Result screens: who won sets the mood.
-    val CiviliansBackdrop = Brush.verticalGradient(listOf(Color(0xFF00B4FF), Color(0xFF2346E8)))
-    val ImpostorsBackdrop = Brush.verticalGradient(listOf(Color(0xFFFF8A3D), Color(0xFFD7263D)))
-    val DrifterBackdrop = Brush.verticalGradient(listOf(Color(0xFFFFB13D), Color(0xFFE0367A)))
+    val Backdrop = Brush.verticalGradient(listOf(Color(0xFF2B1B6B), Night, Night))
+    val RevealBackdrop = Brush.verticalGradient(listOf(Color(0xFF6A4AF0), Color(0xFF4B2BD6)))
+
+    // Result screens: who won sets the mood. The light end of each gradient keeps white text at
+    // 4.5:1 or more (WCAG AA), checked by the accessibility checks in the screenshot tests.
+    val CiviliansBackdrop = Brush.verticalGradient(listOf(Color(0xFF0A72D6), Color(0xFF2346E8)))
+    val ImpostorsBackdrop = Brush.verticalGradient(listOf(Color(0xFFC2410C), Color(0xFFC81E3A)))
+    val DrifterBackdrop = Brush.verticalGradient(listOf(Color(0xFFB45309), Color(0xFFBE185D)))
 }
 
 val NeonColorScheme = darkColorScheme(

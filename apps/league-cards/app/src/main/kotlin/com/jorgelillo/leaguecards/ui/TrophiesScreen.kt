@@ -90,14 +90,14 @@ private fun Tile(emoji: String, title: String, subtitle: String?, dim: Boolean, 
             .padding(vertical = 3.dp)
             .background(Chat.Bubble, RoundedCornerShape(12.dp))
             .padding(horizontal = 12.dp, vertical = 10.dp)
-            .alpha(if (dim) 0.55f else 1f)
             .testTag(tag),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(emoji, style = MaterialTheme.typography.headlineSmall)
         Spacer(Modifier.width(12.dp))
         Column {
-            Text(title, color = Chat.Text, fontWeight = if (dim) FontWeight.Normal else FontWeight.Bold)
+            // Locked: muted title, still readable (fading the whole row took the text under 4.5:1).
+            Text(title, color = if (dim) Chat.Muted else Chat.Text, fontWeight = if (dim) FontWeight.Normal else FontWeight.Bold)
             subtitle?.let { Text(it, color = Chat.Muted, style = MaterialTheme.typography.bodySmall) }
         }
     }
