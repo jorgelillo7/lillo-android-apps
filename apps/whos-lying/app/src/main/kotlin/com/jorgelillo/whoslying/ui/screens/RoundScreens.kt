@@ -254,7 +254,7 @@ fun VotingScreen(
             }
             Text(
                 stringResource(R.string.voting_question),
-                color = Neon.Amber,
+                color = Neon.AmberText,
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Black,
                 textAlign = TextAlign.Center,
@@ -425,11 +425,11 @@ private fun GuessInput(onGuess: (String) -> Unit) {
     OutlinedTextField(
         value = text,
         onValueChange = { text = it },
-        placeholder = { Text(stringResource(R.string.guess_hint)) },
+        placeholder = { Text(stringResource(R.string.guess_hint), color = Color.White.copy(alpha = 0.9f)) },
         singleLine = true,
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
         keyboardActions = KeyboardActions(onDone = { if (text.isNotBlank()) onGuess(text) }),
-        colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = Color.White, unfocusedBorderColor = Color.White.copy(alpha = 0.6f)),
+        colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = Color.White, unfocusedBorderColor = Color.White.copy(alpha = 0.6f), focusedTextColor = Color.White, unfocusedTextColor = Color.White, cursorColor = Color.White),
         modifier = Modifier.fillMaxWidth().padding(top = 16.dp).testTag("guess_text")
     )
     Spacer(Modifier.height(12.dp))
@@ -590,8 +590,8 @@ internal fun roleLabel(role: Role): String = stringResource(
 
 internal fun roleColor(role: Role): Color = when (role) {
     Role.CIVILIAN -> Neon.Turquoise
-    Role.IMPOSTOR -> Neon.Pink
-    Role.DRIFTER -> Neon.Amber
+    Role.IMPOSTOR -> Neon.PinkText
+    Role.DRIFTER -> Neon.AmberText
 }
 
 /** Players by points, best first. */
@@ -667,7 +667,7 @@ fun RankingScreen(
                 } else {
                     stringResource(R.string.scores_rounds_free, roundsPlayed)
                 },
-                color = Color.White.copy(alpha = 0.8f),
+                color = Color.White.copy(alpha = 0.9f),
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.padding(bottom = 16.dp).testTag("rounds_left")
             )
@@ -675,7 +675,7 @@ fun RankingScreen(
                 RankRow(player, players, scores[player] ?: 0, lastPoints[player])
                 Spacer(Modifier.height(10.dp))
             }
-            Text(stringResource(R.string.scores_rules), color = Color.White.copy(alpha = 0.6f), style = MaterialTheme.typography.bodySmall, textAlign = TextAlign.Center)
+            Text(stringResource(R.string.scores_rules), color = Color.White.copy(alpha = 0.85f), style = MaterialTheme.typography.bodySmall, textAlign = TextAlign.Center)
         }
     }
 }
@@ -710,7 +710,7 @@ fun PodiumScreen(players: List<String>, scores: Map<String, Int>, onNewMatch: ()
                         Text("🎆", fontSize = if (short) 36.sp else 56.sp)
                     }
                     Text(winner, color = Color.White, fontSize = if (short) 28.sp else 34.sp, fontWeight = FontWeight.Black, modifier = Modifier.padding(top = if (short) 4.dp else 12.dp).testTag("podium_title"))
-                    Text("${scores[winner] ?: 0}", color = Neon.Amber, fontSize = if (short) 36.sp else 56.sp, fontWeight = FontWeight.Black)
+                    Text("${scores[winner] ?: 0}", color = Neon.AmberText, fontSize = if (short) 36.sp else 56.sp, fontWeight = FontWeight.Black)
                 } else {
                     Text(
                         if (leaders.isEmpty()) stringResource(R.string.podium_nobody) else stringResource(R.string.podium_tie, leaders.joinToString(" · ")),

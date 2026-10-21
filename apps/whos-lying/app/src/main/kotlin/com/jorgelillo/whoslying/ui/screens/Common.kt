@@ -67,7 +67,7 @@ fun BigButton(
 ) = LilloBigButton(text, onClick, color, contentColor, modifier, enabled)
 
 /** Player colors for avatars, by position in the group. */
-val avatarColors = listOf(Neon.Pink, Neon.Turquoise, Neon.Violet, Neon.Amber)
+val avatarColors = listOf(Neon.Pink, Neon.Turquoise, Neon.VioletLight, Neon.Amber)
 
 /** A player's avatar in their group colour (by position in [players]). */
 @Composable

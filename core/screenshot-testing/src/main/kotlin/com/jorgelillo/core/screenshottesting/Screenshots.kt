@@ -9,7 +9,11 @@ import com.github.takahirom.roborazzi.RoborazziOptions
 import com.github.takahirom.roborazzi.captureRoboImage
 import com.github.takahirom.roborazzi.checkRoboAccessibility
 import com.google.android.apps.common.testing.accessibility.framework.AccessibilityCheckPreset
+import com.google.android.apps.common.testing.accessibility.framework.AccessibilityViewCheckResult
 import com.google.android.apps.common.testing.accessibility.framework.checks.TextContrastCheck
+import com.google.android.apps.common.testing.accessibility.framework.uielement.ViewHierarchyElement
+import org.hamcrest.Description
+import org.hamcrest.TypeSafeMatcher
 
 /**
  * Up to 0.5% of the pixels may differ: images are recorded on a Mac and verified on Linux CI,
@@ -22,6 +26,34 @@ val LilloRoborazziOptions = RoborazziOptions(
 private val FailingChecks = AccessibilityCheckPreset.getAccessibilityHierarchyChecksForPreset(AccessibilityCheckPreset.LATEST)
     .filterNot { it is TextContrastCheck }
     .toSet()
+
+/**
+ * Not text contrast problems: disabled controls (exempt in WCAG 1.4.3, Material dims them on purpose;
+ * a disabled button's text is its own enabled node, so its ancestors are checked too) and emoji,
+ * which are pictures that ATF measures as if they were letters.
+ */
+private val NotContrastProblems = object : TypeSafeMatcher<AccessibilityViewCheckResult>() {
+    override fun describeTo(description: Description) {
+        description.appendText("a disabled element or an emoji")
+    }
+
+    override fun matchesSafely(item: AccessibilityViewCheckResult): Boolean {
+        val text = item.element?.text?.toString().orEmpty()
+        if (text.isNotBlank() && text.none { it.isLetterOrDigit() }) return true
+        var element: ViewHierarchyElement? = item.element
+        while (element != null) {
+            if (!element.isEnabled) return true
+            // Typed as Any: ATF's return type carries an annotation from a library not on this classpath.
+            val parent: Any? = element.parentView
+            element = parent as? ViewHierarchyElement
+        }
+        return false
+    }
+}
+
+/** Text contrast fails the test with -PstrictContrast (per app as it is fixed); otherwise it is logged. */
+private val ContrastLevel =
+    if (System.getProperty("lillo.strictContrast") == "true") RoborazziATFAccessibilityChecker.CheckLevel.Warning else RoborazziATFAccessibilityChecker.CheckLevel.LogOnly
 
 /**
  * Shows [content] and records or verifies it as `src/test/screenshots/<name>.png` (recordRoborazziDebug
@@ -50,8 +82,8 @@ fun ComposeContentTestRule.captureScreenshot(
     )
     onRoot().checkRoboAccessibility(
         roborazziATFAccessibilityCheckOptions = RoborazziATFAccessibilityCheckOptions(
-            checker = RoborazziATFAccessibilityChecker(checks = setOf(TextContrastCheck())),
-            failureLevel = RoborazziATFAccessibilityChecker.CheckLevel.LogOnly
+            checker = RoborazziATFAccessibilityChecker(checks = setOf(TextContrastCheck()), suppressions = NotContrastProblems),
+            failureLevel = ContrastLevel
         )
     )
 }
