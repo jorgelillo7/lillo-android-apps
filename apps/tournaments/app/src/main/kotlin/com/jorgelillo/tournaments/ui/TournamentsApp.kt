@@ -26,18 +26,19 @@ import kotlinx.serialization.Serializable
 
 private const val MISSING_GRACE_MILLIS = 600L
 
-// Destinations, as type-safe routes (Navigation Compose + kotlinx.serialization).
+// Destinations, as type-safe routes (Navigation Compose + kotlinx.serialization). Internal, not
+// private: the serializer of a private object can't be reached by reflection on the JVM (tests).
 @Serializable
-private data object Home
+internal data object Home
 
 @Serializable
-private data object NewTournament
+internal data object NewTournament
 
 @Serializable
-private data class TournamentRoute(val id: String)
+internal data class TournamentRoute(val id: String)
 
 @Serializable
-private data object Stats
+internal data object Stats
 
 @Composable
 internal fun TournamentsApp(vm: TournamentsViewModel) {

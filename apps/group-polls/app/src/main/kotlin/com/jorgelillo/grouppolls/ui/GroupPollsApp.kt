@@ -28,19 +28,20 @@ import com.jorgelillo.grouppolls.ui.screens.SettingsScreen
 import com.jorgelillo.grouppolls.ui.screens.WelcomeScreen
 import kotlinx.serialization.Serializable
 
-// Destinations, as type-safe routes (Navigation Compose + kotlinx.serialization).
+// Destinations, as type-safe routes (Navigation Compose + kotlinx.serialization). Internal, not
+// private: the serializer of a private object can't be reached by reflection on the JVM (tests).
 @Serializable
-private data object Home
+internal data object Home
 
 /** [share]: just created, open the share sheet once. */
 @Serializable
-private data class PollRoute(val code: String, val share: Boolean = false)
+internal data class PollRoute(val code: String, val share: Boolean = false)
 
 @Serializable
-private data object Create
+internal data object Create
 
 @Serializable
-private data object Settings
+internal data object Settings
 
 @Composable
 internal fun GroupPollsApp(vm: PollsViewModel) {

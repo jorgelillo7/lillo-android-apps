@@ -48,52 +48,53 @@ import com.jorgelillo.whoslying.ui.screens.VotingScreen
 import com.jorgelillo.whoslying.ui.screens.WelcomeDialog
 import kotlinx.serialization.Serializable
 
-// Destinations, as type-safe routes (Navigation Compose + kotlinx.serialization).
+// Destinations, as type-safe routes (Navigation Compose + kotlinx.serialization). Internal, not
+// private: the serializer of a private object can't be reached by reflection on the JVM (tests).
 @Serializable
-private data object Home
+internal data object Home
 
 @Serializable
-private data object Players
+internal data object Players
 
 @Serializable
-private data object Setup
+internal data object Setup
 
 @Serializable
-private data object Reveal
+internal data object Reveal
 
 @Serializable
-private data object Countdown
+internal data object Countdown
 
 @Serializable
-private data object Debate
+internal data object Debate
 
 @Serializable
-private data object TimeUp
+internal data object TimeUp
 
 @Serializable
-private data object Vote
+internal data object Vote
 
 @Serializable
-private data object Expose
+internal data object Expose
 
 @Serializable
-private data object Result
+internal data object Result
 
 @Serializable
-private data object Ranking
+internal data object Ranking
 
 @Serializable
-private data object Podium
+internal data object Podium
 
 @Serializable
-private data object PickPacks
+internal data object PickPacks
 
 @Serializable
-private data object Packs
+internal data object Packs
 
 /** Edit a custom pack ([id]), start a new one (both null) or a copy of a built-in one ([copyOf]). */
 @Serializable
-private data class PackEdit(val id: String? = null, val copyOf: String? = null)
+internal data class PackEdit(val id: String? = null, val copyOf: String? = null)
 
 @Composable
 internal fun WhosLyingApp(app: WhosLyingApplication, incomingText: String? = null, onConsumeIncoming: () -> Unit = {}) {
