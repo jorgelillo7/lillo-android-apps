@@ -57,6 +57,7 @@ Lines are pruned as items ship. What has **shipped** lives in `apps/<app>/releas
 |---|---|---|
 | 👤 | App created, key and release secrets in place: App content forms, upload the first bundle (with the private deck) to internal testing by hand, add the league's Gmail addresses as testers | You · [OPERATIONS.md](apps/league-cards/OPERATIONS.md) |
 | 👤 | Each league member's OK to appear in the private deck | You |
+| 🔨 | Store feature graphic and phone screenshots (Play shows only the icon and texts now): `tools/generate_store_assets.py` + captures from a build with the **sample** deck, never the private one | Before the listing goes beyond the league |
 | ⏳ | More cards and chat lines from the group | Ideas from the league · private deck, never in this repo |
 
 ## next game (idea)
