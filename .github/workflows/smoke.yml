@@ -2,9 +2,10 @@
 # (debug-signed without the upload keys). The release build in ci.yml catches R8 build errors;
 # only running the app catches a stripped class (WorkManager's WorkDatabase_Impl once crashed the
 # Christmas app on start). One job per app, in parallel, each on a fresh emulator (six apps in a
-# row on one emulator took an hour and the emulator once died on the last one). "Smoke" sums them
-# up: it is the required check, so it reports on every pull request, and a docs-only change skips
-# the emulators and passes in seconds.
+# row on one emulator took an hour and the emulator once died on the last one). Only the apps a
+# pull request touches run; a change to shared code (core, build-logic, gradle, scripts) runs them
+# all, and so does a manual run. "Smoke" sums them up: it is the required check, so it reports on
+# every pull request, and a docs-only change skips the emulators and passes in seconds.
 name: Smoke
 
 on:
@@ -21,35 +22,54 @@ permissions:
 
 jobs:
   changes:
-    name: Changed app code?
+    name: Apps to smoke test
     runs-on: ubuntu-latest
     outputs:
-      code: ${{ steps.filter.outputs.code == 'true' || github.event_name == 'workflow_dispatch' }}
+      apps: ${{ steps.pick.outputs.apps }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d # v4.0.3
         id: filter
         with:
+          list-files: json
           filters: |
-            code:
-              - "apps/**"
+            shared:
               - "core/**"
               - "build-logic/**"
               - "gradle/**"
               - "scripts/**"
               - "*.gradle.kts"
+              - "gradle.properties"
               - ".github/workflows/smoke.yml"
+            apps:
+              - "apps/**"
+      # Every app with a smoke test, or only those whose folder changed (a JSON list for the matrix).
+      - name: Pick the apps
+        id: pick
+        env:
+          EVENT: ${{ github.event_name }}
+          SHARED: ${{ steps.filter.outputs.shared }}
+          APP_FILES: ${{ steps.filter.outputs.apps_files }}
+        run: |
+          all=$(ls -d apps/*/tools/smoke_test.sh | cut -d/ -f2 | jq -R . | jq -sc .)
+          if [ "$EVENT" != pull_request ] || [ "$SHARED" = true ]; then
+            apps="$all"
+          else
+            apps=$(jq -nc --argjson all "$all" --argjson files "${APP_FILES:-[]}" \
+              '[$files[] | split("/")[1]] | unique | map(select(. as $a | $all | index($a)))')
+          fi
+          echo "apps=$apps" | tee -a "$GITHUB_OUTPUT"
 
   app:
     name: Smoke (${{ matrix.app }})
     needs: changes
-    if: needs.changes.outputs.code == 'true'
+    if: needs.changes.outputs.apps != '[]'
     runs-on: ubuntu-latest
     timeout-minutes: 45
     strategy:
       fail-fast: false
       matrix:
-        app: [christmas-countdown, decision-wheel, tournaments, group-polls, league-cards, whos-lying]
+        app: ${{ fromJSON(needs.changes.outputs.apps) }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6.0.1
@@ -93,7 +113,7 @@ jobs:
     if: always()
     runs-on: ubuntu-latest
     steps:
-      - name: Every app passed, or no app code changed
+      - name: Every app passed, or none was touched
         run: |
           echo "changes: ${{ needs.changes.result }}, apps: ${{ needs.app.result }}"
           [ "${{ needs.changes.result }}" = success ] || exit 1

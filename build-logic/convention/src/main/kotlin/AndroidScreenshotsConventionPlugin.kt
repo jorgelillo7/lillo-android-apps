@@ -1,6 +1,8 @@
 import com.jorgelillo.buildlogic.libs
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.tasks.PathSensitivity
+import org.gradle.api.tasks.testing.Test
 import org.gradle.kotlin.dsl.dependencies
 
 /**
@@ -17,6 +19,16 @@ class AndroidScreenshotsConventionPlugin : Plugin<Project> {
             // captureScreenshot(), the shared tolerance, and Roborazzi / Robolectric / Compose test APIs.
             add("testImplementation", project(":core:screenshot-testing"))
             add("debugImplementation", libs.findLibrary("androidx-compose-ui-test-manifest").get())
+        }
+        // Build cache: the committed images are what verify compares against, so they are an input
+        // (a changed image alone must re-run the tests), and a re-recording run is never cached.
+        val recording = gradle.startParameter.taskNames.any { "recordRoborazzi" in it }
+        tasks.withType(Test::class.java).configureEach {
+            inputs.dir(layout.projectDirectory.dir("src/test/screenshots"))
+                .withPropertyName("screenshotReferences")
+                .withPathSensitivity(PathSensitivity.RELATIVE)
+                .optional()
+            outputs.doNotCacheIf("re-recording screenshots") { recording }
         }
     }
 }

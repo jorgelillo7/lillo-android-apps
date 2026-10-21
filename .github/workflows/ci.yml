@@ -1,12 +1,19 @@
 # CI gate for pull requests: lint, unit tests and a release (R8) build of every app. Branch
 # protection on master requires the "Lint", "Test" and "Release" checks below, so a red PR cannot be
 # merged. Without the upload keys the release build is signed with the debug key (convention
-# plugin), which is all R8 and the Play listing check need. Emulator smoke tests stay local.
+# plugin), which is all R8 and the Play listing check need. Emulator smoke tests: smoke.yml.
+#
+# Gradle's build cache (gradle.properties) makes it incremental: a module whose inputs didn't
+# change takes its compile, lint and test results from the cache. setup-gradle saves that cache
+# only from master, which is why CI also runs on every push to master.
 name: CI
 
 on:
   # Every pull request, whatever it targets (a stacked PR gets checks too).
   pull_request:
+  # Master: checks what was merged and saves the build cache pull requests read.
+  push:
+    branches: [master]
   # Manual re-run without pushing an empty commit.
   workflow_dispatch:
 
