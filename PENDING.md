@@ -78,4 +78,3 @@ Lines are pruned as items ship. What has **shipped** lives in `apps/<app>/releas
 | ⏳ | `minSdk` 23 → 24 (blocks WorkManager 2.12; check the Play Console share of API 23 first) | Christmas's install stats |
 | ⏳ | Baseline profiles for startup | An app where startup feels slow |
 | 👤 | Repo licence (only whos-lying was discussed: GPL-3.0 candidate) | Your decision |
-| 🔨 | Type-safe navigation (`@Serializable` routes, Navigation 2.10) instead of string routes in decision-wheel, group-polls, tournaments and whos-lying, one app at a time | — |

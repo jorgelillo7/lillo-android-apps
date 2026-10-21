@@ -18,6 +18,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.jorgelillo.whoslying.R
 import com.jorgelillo.whoslying.WhosLyingApplication
 import com.jorgelillo.whoslying.domain.Match
@@ -44,9 +45,54 @@ import com.jorgelillo.whoslying.ui.screens.SetupScreen
 import com.jorgelillo.whoslying.ui.screens.TimeUpScreen
 import com.jorgelillo.whoslying.ui.screens.VotingScreen
 import com.jorgelillo.whoslying.ui.screens.WelcomeDialog
+import kotlinx.serialization.Serializable
 
-private const val NEW = "new"
-private const val COPY_OF = "copy-of-"
+// Destinations, as type-safe routes (Navigation Compose + kotlinx.serialization).
+@Serializable
+private data object Home
+
+@Serializable
+private data object Players
+
+@Serializable
+private data object Setup
+
+@Serializable
+private data object Reveal
+
+@Serializable
+private data object Countdown
+
+@Serializable
+private data object Debate
+
+@Serializable
+private data object TimeUp
+
+@Serializable
+private data object Vote
+
+@Serializable
+private data object Expose
+
+@Serializable
+private data object Result
+
+@Serializable
+private data object Ranking
+
+@Serializable
+private data object Podium
+
+@Serializable
+private data object PickPacks
+
+@Serializable
+private data object Packs
+
+/** Edit a custom pack ([id]), start a new one (both null) or a copy of a built-in one ([copyOf]). */
+@Serializable
+private data class PackEdit(val id: String? = null, val copyOf: String? = null)
 
 @Composable
 fun WhosLyingApp(app: WhosLyingApplication, incomingText: String? = null, onIncomingHandled: () -> Unit = {}) {
@@ -79,24 +125,24 @@ fun WhosLyingApp(app: WhosLyingApplication, incomingText: String? = null, onInco
         if (incomingText != null) {
             importPack(incomingText)
             onIncomingHandled()
-            nav.navigate("packs") { launchSingleTop = true }
+            nav.navigate(Packs) { launchSingleTop = true }
         }
     }
 
-    NavHost(nav, startDestination = "home") {
-        composable("home") {
+    NavHost(nav, startDestination = Home) {
+        composable<Home> {
             HomeScreen(
-                onPlay = { nav.navigate("players") },
+                onPlay = { nav.navigate(Players) },
                 onHowTo = { showHowTo = true },
                 onModes = { showModes = true },
-                onPacks = { nav.navigate("packs") },
+                onPacks = { nav.navigate(Packs) },
                 onAbout = { showAbout = true }
             )
         }
-        composable("players") {
-            PlayersScreen(state.players, vm::addPlayer, vm::removePlayer, onContinue = { nav.navigate("setup") }, onBack = { nav.popBackStack() })
+        composable<Players> {
+            PlayersScreen(state.players, vm::addPlayer, vm::removePlayer, onContinue = { nav.navigate(Setup) }, onBack = { nav.popBackStack() })
         }
-        composable("setup") {
+        composable<Setup> {
             SetupScreen(
                 playerCount = state.players.size,
                 settings = state.settings,
@@ -104,22 +150,22 @@ fun WhosLyingApp(app: WhosLyingApplication, incomingText: String? = null, onInco
                 unplayed = vm.unplayed(state),
                 onChange = vm::updateSettings,
                 onModesInfo = { showModes = true },
-                onChoosePacks = { nav.navigate("pick_packs") },
-                onStart = { if (vm.startGame()) nav.navigate("reveal") },
+                onChoosePacks = { nav.navigate(PickPacks) },
+                onStart = { if (vm.startGame()) nav.navigate(Reveal) },
                 onBack = { nav.popBackStack() }
             )
         }
-        composable("reveal") {
+        composable<Reveal> {
             val game = currentGame ?: return@composable LaunchedEffect(Unit) { nav.goHome() }
-            RevealScreen(game, onDone = { nav.navigate("countdown") { popUpTo("setup") } }, onQuit = { nav.goHome() })
+            RevealScreen(game, onDone = { nav.navigate(Countdown) { popUpTo<Setup>() } }, onQuit = { nav.goHome() })
         }
-        composable("countdown") {
+        composable<Countdown> {
             val game = currentGame ?: return@composable LaunchedEffect(Unit) { nav.goHome() }
-            CountdownScreen(game.starter, onDone = { nav.navigate("debate") { popUpTo("setup") } })
+            CountdownScreen(game.starter, onDone = { nav.navigate(Debate) { popUpTo<Setup>() } })
         }
-        composable("debate") {
+        composable<Debate> {
             val game = currentGame ?: return@composable LaunchedEffect(Unit) { nav.goHome() }
-            LaunchedEffect(game.isOver) { if (game.isOver) nav.navigate("result") { popUpTo("setup") } }
+            LaunchedEffect(game.isOver) { if (game.isOver) nav.navigate(Result) { popUpTo<Setup>() } }
             val alive = remember(game) { game.alive.map { it.player }.toSet() }
             if (state.settings.drawing) {
                 DrawingScreen(
@@ -127,10 +173,10 @@ fun WhosLyingApp(app: WhosLyingApplication, incomingText: String? = null, onInco
                     alive = alive,
                     strokes = vm.strokes,
                     discussionSeconds = state.settings.discussionSeconds,
-                    onVote = { nav.navigate("vote") },
+                    onVote = { nav.navigate(Vote) },
                     onTimeUp = {
                         vm.forceVote()
-                        nav.navigate("time_up")
+                        nav.navigate(TimeUp)
                     },
                     onRevealAll = vm::revealAll,
                     onQuit = { nav.goHome() }
@@ -140,20 +186,20 @@ fun WhosLyingApp(app: WhosLyingApplication, incomingText: String? = null, onInco
                     game = game,
                     alive = alive,
                     discussionSeconds = state.settings.discussionSeconds,
-                    onVote = { nav.navigate("vote") },
+                    onVote = { nav.navigate(Vote) },
                     onTimeUp = {
                         vm.forceVote()
-                        nav.navigate("time_up")
+                        nav.navigate(TimeUp)
                     },
                     onRevealAll = vm::revealAll,
                     onQuit = { nav.goHome() }
                 )
             }
         }
-        composable("time_up") {
-            TimeUpScreen(onDone = { nav.navigate("vote") { popUpTo("time_up") { inclusive = true } } })
+        composable<TimeUp> {
+            TimeUpScreen(onDone = { nav.navigate(Vote) { popUpTo<TimeUp> { inclusive = true } } })
         }
-        composable("vote") {
+        composable<Vote> {
             val game = currentGame ?: return@composable LaunchedEffect(Unit) { nav.goHome() }
             VotingScreen(
                 game = game,
@@ -161,16 +207,16 @@ fun WhosLyingApp(app: WhosLyingApplication, incomingText: String? = null, onInco
                 forced = voteForced,
                 onConfirm = { player ->
                     vm.eliminate(player)
-                    nav.navigate("expose") { popUpTo("debate") }
+                    nav.navigate(Expose) { popUpTo<Debate>() }
                 },
                 onBack = { nav.popBackStack() }
             )
         }
-        composable("expose") {
+        composable<Expose> {
             val game = currentGame ?: return@composable LaunchedEffect(Unit) { nav.goHome() }
             // Null for a moment after "keep playing" while this screen leaves.
             val elimination = lastElimination ?: return@composable
-            val toResult = { nav.navigate("result") { popUpTo("setup") } }
+            val toResult = { nav.navigate(Result) { popUpTo<Setup>() } }
             ExposeScreen(
                 game = game,
                 elimination = elimination,
@@ -182,7 +228,7 @@ fun WhosLyingApp(app: WhosLyingApplication, incomingText: String? = null, onInco
                 onGameOver = toResult
             )
         }
-        composable("result") {
+        composable<Result> {
             val game = currentGame ?: return@composable LaunchedEffect(Unit) { nav.goHome() }
             val context = LocalContext.current
             val caption = stringResource(R.string.drawing_share_caption, game.civilianWord, PLAY_STORE_URL)
@@ -192,31 +238,31 @@ fun WhosLyingApp(app: WhosLyingApplication, incomingText: String? = null, onInco
                 drawing = vm.strokes,
                 onShareDrawing = { shareDrawing(context, vm.strokes, caption) },
                 roundsLeft = state.settings.rounds.takeIf { it > 0 }?.let { Match.remaining(state.roundsPlayed, it) },
-                onSeeWinner = { nav.navigate("podium") { popUpTo("setup") } },
+                onSeeWinner = { nav.navigate(Podium) { popUpTo<Setup>() } },
                 onReport = { showReport = true },
-                onContinue = { nav.navigate("ranking") },
+                onContinue = { nav.navigate(Ranking) },
                 onHome = { nav.goHome() }
             )
         }
-        composable("ranking") {
+        composable<Ranking> {
             RankingScreen(
                 players = state.players,
                 scores = state.scores,
                 lastPoints = lastPoints,
                 roundsLeft = state.settings.rounds.takeIf { it > 0 }?.let { Match.remaining(state.roundsPlayed, it) },
                 roundsPlayed = state.roundsPlayed,
-                onNextRound = { if (vm.startGame()) nav.navigate("reveal") { popUpTo("setup") } },
+                onNextRound = { if (vm.startGame()) nav.navigate(Reveal) { popUpTo<Setup>() } },
                 onReset = vm::resetScores,
                 onBack = { nav.popBackStack() }
             )
         }
-        composable("podium") {
+        composable<Podium> {
             PodiumScreen(
                 players = state.players,
                 scores = state.scores,
                 onNewMatch = {
                     vm.resetScores()
-                    nav.popBackStack("setup", inclusive = false)
+                    nav.popBackStack<Setup>(inclusive = false)
                 },
                 onHome = {
                     vm.resetScores()
@@ -224,38 +270,39 @@ fun WhosLyingApp(app: WhosLyingApplication, incomingText: String? = null, onInco
                 }
             )
         }
-        composable("pick_packs") {
+        composable<PickPacks> {
             PackPickerScreen(
                 packs = vm.allPacks(state),
                 selected = state.settings.packIds,
                 onToggle = vm::togglePack,
                 onSelectAll = vm::selectAllPacks,
-                onNewPack = { nav.navigate("pack/$NEW") },
+                onNewPack = { nav.navigate(PackEdit()) },
                 onDone = { nav.popBackStack() }
             )
         }
-        composable("packs") {
+        composable<Packs> {
             PacksScreen(
                 vm.builtInPacks,
                 state.customPacks,
-                onEdit = { id -> nav.navigate("pack/${id ?: NEW}") },
-                onCopy = { pack -> nav.navigate("pack/$COPY_OF${pack.id}") },
+                onEdit = { id -> nav.navigate(PackEdit(id)) },
+                onCopy = { pack -> nav.navigate(PackEdit(copyOf = pack.id)) },
                 onImport = importPack,
                 onBack = { nav.popBackStack() }
             )
         }
-        composable("pack/{id}") { entry ->
-            val id = entry.arguments?.getString("id").orEmpty()
-            val copyOf = id.removePrefix(COPY_OF).takeIf { id.startsWith(COPY_OF) }
-            val isNew = id == NEW || copyOf != null
+        composable<PackEdit> { entry ->
+            val route = entry.toRoute<PackEdit>()
+            val id = route.id
+            val copyOf = route.copyOf
+            val isNew = id == null
             val copyName = stringResource(R.string.pack_copy_name, vm.builtInPacks.firstOrNull { it.id == copyOf }?.name.orEmpty())
-            val initial = remember(id) {
+            val initial = remember(route) {
                 when {
                     // A built-in pack as a starting point; nothing is saved until "Save".
                     copyOf != null -> vm.builtInPacks.firstOrNull { it.id == copyOf }
                         ?.copy(id = vm.newPackId(), name = copyName, custom = true)
 
-                    id == NEW -> WordPack(vm.newPackId(), "", "📝", emptyList(), custom = true)
+                    id == null -> WordPack(vm.newPackId(), "", "📝", emptyList(), custom = true)
 
                     else -> state.customPacks.firstOrNull { it.id == id }
                 }
@@ -306,5 +353,5 @@ fun WhosLyingApp(app: WhosLyingApplication, incomingText: String? = null, onInco
 }
 
 private fun NavHostController.goHome() {
-    popBackStack("home", inclusive = false)
+    popBackStack<Home>(inclusive = false)
 }

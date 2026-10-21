@@ -12,6 +12,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.jorgelillo.tournaments.R
 import com.jorgelillo.tournaments.domain.Library
 import com.jorgelillo.tournaments.ui.home.AboutSheet
@@ -21,8 +22,22 @@ import com.jorgelillo.tournaments.ui.setup.NewTournamentScreen
 import com.jorgelillo.tournaments.ui.stats.StatsScreen
 import com.jorgelillo.tournaments.ui.tournament.TournamentScreen
 import kotlinx.coroutines.delay
+import kotlinx.serialization.Serializable
 
 private const val MISSING_GRACE_MILLIS = 600L
+
+// Destinations, as type-safe routes (Navigation Compose + kotlinx.serialization).
+@Serializable
+private data object Home
+
+@Serializable
+private data object NewTournament
+
+@Serializable
+private data class TournamentRoute(val id: String)
+
+@Serializable
+private data object Stats
 
 @Composable
 fun TournamentsApp(vm: TournamentsViewModel) {
@@ -45,36 +60,36 @@ fun TournamentsApp(vm: TournamentsViewModel) {
             Toast.makeText(context, message, Toast.LENGTH_LONG).show()
             if (event.id != null) {
                 showImport = false
-                nav.navigate("t/${event.id}") { popUpTo("home") }
+                nav.navigate(TournamentRoute(event.id)) { popUpTo<Home>() }
             }
         }
     }
 
-    NavHost(nav, startDestination = "home") {
-        composable("home") {
+    NavHost(nav, startDestination = Home) {
+        composable<Home> {
             HomeScreen(
                 library = current,
-                onOpen = { nav.navigate("t/${it.id}") },
-                onNew = { nav.navigate("new") },
+                onOpen = { nav.navigate(TournamentRoute(it.id)) },
+                onNew = { nav.navigate(NewTournament) },
                 onImport = { showImport = true },
-                onStats = { nav.navigate("stats") },
+                onStats = { nav.navigate(Stats) },
                 onAbout = { showAbout = true }
             )
         }
-        composable("new") {
+        composable<NewTournament> {
             NewTournamentScreen(
                 library = current,
                 newId = vm::newId,
                 onCreate = { t ->
                     vm.save(t)
                     nav.popBackStack()
-                    nav.navigate("t/${t.id}")
+                    nav.navigate(TournamentRoute(t.id))
                 },
                 onBack = { nav.popBackStack() }
             )
         }
-        composable("t/{id}") { entry ->
-            val t = current.tournament(entry.arguments?.getString("id").orEmpty())
+        composable<TournamentRoute> { entry ->
+            val t = current.tournament(entry.toRoute<TournamentRoute>().id)
             if (t == null) {
                 // Either just created (the save is still landing) or deleted: wait briefly, then leave.
                 LaunchedEffect(Unit) {
@@ -93,7 +108,7 @@ fun TournamentsApp(vm: TournamentsViewModel) {
                 onBack = { nav.popBackStack() }
             )
         }
-        composable("stats") {
+        composable<Stats> {
             StatsScreen(library = current, onBack = { nav.popBackStack() })
         }
     }

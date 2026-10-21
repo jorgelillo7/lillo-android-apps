@@ -19,12 +19,28 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.jorgelillo.grouppolls.R
 import com.jorgelillo.grouppolls.ui.screens.CreateScreen
 import com.jorgelillo.grouppolls.ui.screens.HomeScreen
 import com.jorgelillo.grouppolls.ui.screens.PollScreen
 import com.jorgelillo.grouppolls.ui.screens.SettingsScreen
 import com.jorgelillo.grouppolls.ui.screens.WelcomeScreen
+import kotlinx.serialization.Serializable
+
+// Destinations, as type-safe routes (Navigation Compose + kotlinx.serialization).
+@Serializable
+private data object Home
+
+/** [share]: just created, open the share sheet once. */
+@Serializable
+private data class PollRoute(val code: String, val share: Boolean = false)
+
+@Serializable
+private data object Create
+
+@Serializable
+private data object Settings
 
 @Composable
 fun GroupPollsApp(vm: PollsViewModel) {
@@ -52,27 +68,26 @@ fun GroupPollsApp(vm: PollsViewModel) {
     // A link opened the app: show that poll on top of whatever is open.
     LaunchedEffect(openCode) {
         openCode?.let {
-            nav.navigate("poll/$it")
+            nav.navigate(PollRoute(it))
             vm.consumeOpenCode()
         }
     }
 
     Box(Modifier.fillMaxSize()) {
-        NavHost(nav, startDestination = "home") {
-            composable("home") {
+        NavHost(nav, startDestination = Home) {
+            composable<Home> {
                 val feed by vm.feed.collectAsStateWithLifecycle()
                 HomeScreen(
                     feed = feed,
                     local = state,
                     pollFlow = vm::poll,
-                    onOpen = { nav.navigate("poll/$it") },
-                    onCreate = { nav.navigate("create") },
-                    onSettings = { nav.navigate("settings") }
+                    onOpen = { nav.navigate(PollRoute(it)) },
+                    onCreate = { nav.navigate(Create) },
+                    onSettings = { nav.navigate(Settings) }
                 )
             }
-            composable("poll/{code}?share={share}") { entry ->
-                val code = entry.arguments?.getString("code").orEmpty()
-                val share = entry.arguments?.getString("share") == "true"
+            composable<PollRoute> { entry ->
+                val (code, share) = entry.toRoute<PollRoute>()
                 val poll by remember(code) { vm.poll(code) }.collectAsState(initial = null)
                 val votes by remember(code) { vm.votes(code) }.collectAsState(initial = emptyList())
                 PollScreen(
@@ -88,20 +103,20 @@ fun GroupPollsApp(vm: PollsViewModel) {
                     onBack = { nav.back() }
                 )
             }
-            composable("create") {
+            composable<Create> {
                 CreateScreen(
                     acceptedTerms = state.acceptedTerms,
                     onAcceptTerms = vm::acceptTerms,
                     onCreate = vm::create,
-                    onCreated = { code -> nav.navigate("poll/$code?share=true") { popUpTo("home") } },
+                    onCreated = { code -> nav.navigate(PollRoute(code, share = true)) { popUpTo<Home>() } },
                     onBack = { nav.back() }
                 )
             }
-            composable("settings") {
+            composable<Settings> {
                 SettingsScreen(
                     local = state,
                     onRename = vm::setName,
-                    onDeleteData = { vm.deleteMyData { nav.popBackStack("home", inclusive = false) } },
+                    onDeleteData = { vm.deleteMyData { nav.popBackStack<Home>(inclusive = false) } },
                     onBack = { nav.back() }
                 )
             }
@@ -111,5 +126,5 @@ fun GroupPollsApp(vm: PollsViewModel) {
 }
 
 private fun NavHostController.back() {
-    if (!popBackStack()) navigate("home")
+    if (!popBackStack()) navigate(Home)
 }
