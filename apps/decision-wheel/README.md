@@ -38,7 +38,7 @@ Neighbouring slices never share a colour, and each option keeps its colour when 
 
 ## 🛍️ Store listing
 
-Texts and images in [`store/`](store) (fastlane supply layout). Regenerate after UI changes:
+Texts and images in [`app/src/main/play/`](app/src/main/play) (Gradle Play Publisher layout). Regenerate after UI changes:
 
 ```bash
 scripts/emulator.sh start

@@ -1,7 +1,7 @@
 # What next? (decision wheel) — Release notes
 
 Newest first. User-facing notes per language are in
-`store/metadata/android/<locale>/changelogs/<versionCode>.txt`.
+`app/src/main/play/release-notes/<locale>/default.txt` (the current version's).
 
 | versionCode | Version | Date | Notes |
 |---|---|---|---|

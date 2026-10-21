@@ -37,7 +37,7 @@ Commands shared by every app. Per-app commands (module paths, release steps, sig
 
 ## Release (any app)
 
-1. Bump `versionCode`/`versionName`, write `store/metadata/android/<locale>/changelogs/<versionCode>.txt`,
+1. Bump `versionCode`/`versionName`, rewrite `app/src/main/play/release-notes/<locale>/default.txt`,
    add a row to `apps/<app>/release-notes.md`.
 2. `./gradlew test :apps:<app>:app:lintDebug :apps:<app>:app:bundleRelease`
 3. `scripts/emulator.sh start && apps/<app>/tools/smoke_test.sh && scripts/emulator.sh stop`

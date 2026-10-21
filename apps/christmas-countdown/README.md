@@ -52,14 +52,15 @@ scripts/setup-python.sh   # once
 
 ## 📦 Publishing
 
-Everything uploaded to the Play listing is tracked in [`store/`](store), in the
-[fastlane supply](https://docs.fastlane.tools/actions/supply/) layout:
+Everything uploaded to the Play listing is tracked in [`app/src/main/play/`](app/src/main/play), in the
+[Gradle Play Publisher](https://github.com/Triple-T/gradle-play-publisher) layout, and published
+from the terminal (`publishBundle`, `publishListing`):
 
 ```
-store/metadata/android/<en-US|es-ES>/
-├── title.txt, short_description.txt, full_description.txt
-├── changelogs/<versionCode>.txt        release notes
-└── images/                             icon, featureGraphic, phoneScreenshots/
+app/src/main/play/listings/<en-US|es-ES>/
+├── title.txt, short-description.txt, full-description.txt
+└── graphics/                           icon/, feature-graphic/, phone-screenshots/
+app/src/main/play/release-notes/<en-US|es-ES>/default.txt   this version's notes
 store/raw/<locale>/                     raw emulator screenshots used for the framed images
 ```
 

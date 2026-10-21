@@ -1,5 +1,0 @@
-First version! 🎡
-- Spin to decide, with real-chance slices
-- Avoids recent repeats
-- Vetoes for groups
-- History and ready-made wheels

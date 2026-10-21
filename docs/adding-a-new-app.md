@@ -8,7 +8,8 @@ Example: a roulette app, `com.jorgelillo.roulette`.
 apps/roulette/
 ├── app/          Android app (Compose UI, resources)
 ├── domain/       pure Kotlin logic (no android.*), unit tested
-├── store/        Play listing texts and images (fastlane layout)
+├── store/        raw screenshots and the 512 px icon the listing graphics are made from
+│               (the listing itself: app/src/main/play/, Gradle Play Publisher layout)
 ├── tools/        app-specific scripts (icon, screenshots, smoke test)
 ├── OPERATIONS.md    commands to run, test and release
 ├── release-notes.md version history
