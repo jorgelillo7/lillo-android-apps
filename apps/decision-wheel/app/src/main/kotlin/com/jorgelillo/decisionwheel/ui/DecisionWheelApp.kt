@@ -25,16 +25,17 @@ import com.jorgelillo.decisionwheel.ui.wheel.WheelScreen
 import kotlinx.coroutines.delay
 import kotlinx.serialization.Serializable
 
-// Destinations, as type-safe routes (Navigation Compose + kotlinx.serialization).
+// Destinations, as type-safe routes (Navigation Compose + kotlinx.serialization). Internal, not
+// private: the serializer of a private object can't be reached by reflection on the JVM (tests).
 @Serializable
-private data object Home
+internal data object Home
 
 @Serializable
-private data class WheelRoute(val id: String)
+internal data class WheelRoute(val id: String)
 
 /** [id] null: a new wheel. */
 @Serializable
-private data class EditRoute(val id: String? = null)
+internal data class EditRoute(val id: String? = null)
 private const val MISSING_WHEEL_GRACE_MILLIS = 600L
 
 @Composable
