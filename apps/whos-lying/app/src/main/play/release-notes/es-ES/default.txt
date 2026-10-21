@@ -1,7 +1,8 @@
 Lo que nos habéis pedido 🕵️
-- Ahora puedes editar los paquetes incluidos: toca uno y haz tu propia copia
-- Comparte tus paquetes de palabras con un enlace o un QR, sin cuentas
-- Nuevo icono, nota de bienvenida y textos de rondas más claros
-- Arreglo: una partida de caos en la que todos son impostores ya termina sola
-- Arreglo: si el Despistado falla la palabra, la partida sigue en vez de quedarse atascada
+- Edita los paquetes incluidos: toca uno y haz tu copia
+- Comparte tus paquetes con un enlace o un QR, sin cuentas
+- Nuevo icono, nota de bienvenida y textos más claros
+- Más legible: más contraste y botones más grandes
 - Mejor en horizontal y en consolas portátiles
+- Arreglo: el caos en que todos son impostores ya termina solo
+- Arreglo: si el Despistado falla la palabra, la partida sigue
