@@ -1,19 +1,12 @@
 # Release smoke tests on an emulator: every app's tools/smoke_test.sh on its R8 release build
 # (debug-signed without the upload keys). The release build in ci.yml catches R8 build errors;
 # only running the app catches a stripped class (WorkManager's WorkDatabase_Impl once crashed the
-# Christmas app on start). Slower than ci.yml, so it runs on pull requests that touch app code.
+# Christmas app on start). It is a required check, so it runs on every pull request, but the
+# emulator only starts when the change touches app code: a docs-only change passes in seconds.
 name: Smoke
 
 on:
   pull_request:
-    paths:
-      - "apps/**"
-      - "core/**"
-      - "build-logic/**"
-      - "gradle/**"
-      - "scripts/**"
-      - "*.gradle.kts"
-      - ".github/workflows/smoke.yml"
   workflow_dispatch:
 
 concurrency:
@@ -22,6 +15,7 @@ concurrency:
 
 permissions:
   contents: read
+  pull-requests: read # paths-filter lists the PR's files
 
 jobs:
   smoke:
@@ -30,20 +24,42 @@ jobs:
     timeout-minutes: 75
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Changed app code?
+        uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d # v4.0.3
+        id: changes
+        with:
+          filters: |
+            code:
+              - "apps/**"
+              - "core/**"
+              - "build-logic/**"
+              - "gradle/**"
+              - "scripts/**"
+              - "*.gradle.kts"
+              - ".github/workflows/smoke.yml"
+      - name: Decide whether to run
+        if: steps.changes.outputs.code == 'true' || github.event_name == 'workflow_dispatch'
+        run: echo "RUN_SMOKE=true" >> "$GITHUB_ENV"
       - uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6.0.1
+        if: env.RUN_SMOKE == 'true'
         with:
           distribution: temurin
           java-version: 21
       - uses: gradle/actions/setup-gradle@3f5f9adaf7d9fecd50b5935e54106014257a94e6 # v6.4.0
+        if: env.RUN_SMOKE == 'true'
       # Hardware acceleration for the emulator on GitHub's Linux runners.
       - name: Enable KVM
+        if: env.RUN_SMOKE == 'true'
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
       # Built before the emulator starts: the runner then has its memory for the emulator.
-      - run: ./gradlew assembleRelease -Dorg.gradle.jvmargs="-Xmx4g -Dfile.encoding=UTF-8"
+      - name: Build release APKs
+        if: env.RUN_SMOKE == 'true'
+        run: ./gradlew assembleRelease -Dorg.gradle.jvmargs="-Xmx4g -Dfile.encoding=UTF-8"
       - name: Smoke tests
+        if: env.RUN_SMOKE == 'true'
         uses: reactivecircus/android-emulator-runner@a421e43855164a8197daf9d8d40fe71c6996bb0d # v2.38.0
         with:
           api-level: 36
