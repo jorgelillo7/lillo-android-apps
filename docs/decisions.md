@@ -40,6 +40,7 @@ lives in the PR. Add a line when a decision is taken; change it when it is rever
 | Convention plugins in `build-logic` + one version catalog | Each module only declares what is its own | 2026-10 |
 | Gradle build cache, saved from master's CI runs; screenshot images are test inputs | Untouched modules come from the cache instead of rebuilding every PR; a changed image alone still re-runs its tests | #74 |
 | Smoke runs only the apps a PR touches (all when shared code changes) | Six emulators for a one-app change was most of the CI time | #74 |
+| Releases from a manual Release workflow (Gradle Play Publisher): upload to internal or production, promote, listing; production needs an approval | No Play Console visits after an app's first release, and nothing goes live without a click; keys stay in GitHub environments | #75 |
 | Spotless + ktlint (Android Studio style) + Compose rules, 120 columns | One formatter, checked in CI; 120 keeps Compose call chains readable | #53, #62 |
 | Renovate for dependency PRs, grouped (Kotlin, AGP, AndroidX), WorkManager held below 2.12 | Weekly, reviewable updates; WorkManager 2.12 needs minSdk 24 | #53 |
 | Gradle Play Publisher, listing in its own `app/src/main/play` layout | Publish from the terminal; a Gradle plugin, no Ruby | #51 |

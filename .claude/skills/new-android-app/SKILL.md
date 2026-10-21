@@ -68,9 +68,19 @@ Follow [docs/adding-a-new-app.md](../../../docs/adding-a-new-app.md). Checklist:
 - Need something another app has but core doesn't (an avatar, a settings row, a dialog)? Move it to
   core in this change and point the other app at it too, instead of copying it.
 - Strings in `values/` and `values-es/` from the start.
-- Screenshot tests from the first screen: apply `jorgelillo.android.screenshots` and capture the
-  key screens upright and in landscape (like `apps/whos-lying/app/src/test/.../RoundScreensScreenshotTest.kt`).
-- `./gradlew :apps:<app>:domain:test :apps:<app>:app:lintDebug :apps:<app>:app:assembleDebug`
+- Tests from the first screen (CLAUDE.md, "Working on a change"):
+  - screenshot tests: apply `jorgelillo.android.screenshots` and capture the key screens upright and
+    in landscape (like `apps/whos-lying/app/src/test/.../RoundScreensScreenshotTest.kt`); the
+    accessibility checks run on every capture;
+  - a ViewModel test on a real `JsonStore` with Turbine and `:core:testing` (`MainDispatcherRule`
+    with `cancelAtEnd`, `awaitMatching`), like `apps/decision-wheel/.../WheelsViewModelTest.kt`;
+  - a whole-flow test through the real `MainActivity` (`*FlowTest`, taps by test tag, one per
+    class), like `apps/tournaments/.../TournamentFlowTest.kt`. If the `Application` starts
+    WorkManager, a test subclass starts its test instance first (Christmas's
+    `TestChristmasCountdownApplication`).
+- A new core component gets a `@Preview` in `core/designsystem/.../Catalogue.kt`: that preview is
+  its screenshot test.
+- `./gradlew spotlessApply :apps:<app>:domain:test :apps:<app>:app:testDebugUnitTest :apps:<app>:app:lintDebug :apps:<app>:app:assembleDebug`
 
 ## 5. Assets
 
@@ -79,7 +89,9 @@ Follow [docs/adding-a-new-app.md](../../../docs/adding-a-new-app.md). Checklist:
   on a dark gradient, checked at 48/72 px next to the other apps; study the competitors' icons
   first.
 - `tools/smoke_test.sh` on `scripts/smoke_lib.sh` (`smoke_start` … `smoke_finish`), tapping test
-  tags with `tap` (never coordinates); `tools/capture_store_screenshots.sh` on `scripts/capture_lib.sh`
+  tags with `tap` (never coordinates) and closing the keyboard with `hide_keyboard` (never a bare
+  `back`: CI's emulator has no on-screen keyboard). CI's Smoke workflow finds it by itself
+  (`apps/*/tools/smoke_test.sh`) and runs it on every PR that touches the app; `tools/capture_store_screenshots.sh` on `scripts/capture_lib.sh`
   (`capture_start` … `capture_open` per locale … `shot`); longer UI runs (a battery of scenarios) build on
   `scripts/ui_lib.py` like `apps/whos-lying/tools/battery_test.py`; and
   `tools/generate_store_assets.py` (only `STYLE` + `LOCALES`, the drawing is `scripts/store_assets.py`).
@@ -95,11 +107,18 @@ Follow [docs/adding-a-new-app.md](../../../docs/adding-a-new-app.md). Checklist:
   `en/index.html`. Publish only after the user previews it.
 - `apps/<app>/README.md`, `OPERATIONS.md` (uppercase), `release-notes.md`; add the app to the
   root README table, `docs/README.md` per-app table and `PENDING.md` (its own section).
-- Branch + PR; the user merges.
+- Add the app to the `app` choices of `.github/workflows/release.yml` (CI and Smoke need nothing).
+- Branch + PR; merged once CI is green.
 
 ## 7. First release
 
-Hand over to the `release-android-app` skill. For a brand-new app the Play Console also needs:
-create app, register the package name in Android developer verification, App content
-declarations and a new upload key: the user runs `scripts/new-upload-key.sh <app>` in their own
-terminal (never ask for the password in chat), then backs it up off the Mac ([docs/signing.md](../../../docs/signing.md)).
+Hand over to the `release-android-app` skill. For a brand-new app the Play Console also needs, by
+hand and once (the Play API can't do them): create the app, register the package name in Android
+developer verification, the App content declarations (data safety, content rating, target
+audience, ads, privacy policy…) and the **first bundle**. A personal developer account created
+after November 2023 also needs a closed test (12 testers, 14 days) before production.
+
+The upload key: the user runs `scripts/new-upload-key.sh <app>` in their own terminal (never ask
+for the password in chat), backs it up off the Mac ([docs/signing.md](../../../docs/signing.md)),
+then `scripts/set-release-secrets.sh <app>` so the Release workflow can sign. From the second
+release on, everything (bundles, notes, listing, promotion) goes from the Release workflow.

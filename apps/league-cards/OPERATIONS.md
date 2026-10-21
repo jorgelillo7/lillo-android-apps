@@ -40,7 +40,9 @@ Upload key: not created yet. Create it with `scripts/new-upload-key.sh league-ca
 terminal (see [docs/signing.md](../../docs/signing.md)), then record its serial and SHA-256 here.
 
 Internal testing only, for the league: the bundle carries the private deck, so it is never
-published openly while it does.
+published openly while it does. CI's Release workflow takes the deck from a GitHub secret
+(`scripts/set-release-secrets.sh league-cards`, again after each deck change) and refuses to
+publish a bundle without it.
 
 | versionCode | Version | Notes |
 |---|---|---|

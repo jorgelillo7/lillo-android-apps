@@ -33,7 +33,9 @@ endings) read from JSON. This **public** repo only ships a generic sample with a
 in-jokes — must never be committed here: it lives in a private folder, by default
 `../lloros-league/content/league-private.json` next to this repo (or the folder in the Gradle
 property `leagueCards.privateDir`). When that file exists, the build packs it and the app plays
-it instead of the sample. CI and anyone else build the sample.
+it instead of the sample. Anyone else, and CI's pull request checks, build the sample; the Release
+workflow gets the private deck from a GitHub secret (`scripts/set-release-secrets.sh league-cards`)
+and refuses to publish without it.
 
 Store screenshots, if ever needed, must come from a build without the private deck.
 

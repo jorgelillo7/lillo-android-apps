@@ -43,8 +43,8 @@ Module paths: app `:apps:christmas-countdown:app`, logic `:apps:christmas-countd
 ./gradlew test :apps:christmas-countdown:app:lintDebug :apps:christmas-countdown:app:bundleRelease
 apps/christmas-countdown/tools/smoke_test.sh        # needs a running emulator
 scripts/verify-bundle.sh apps/christmas-countdown/app/build/outputs/bundle/release/app-release.aab
-# 4. Reveal the bundle in Finder to drag it into Play Console
-open -R apps/christmas-countdown/app/build/outputs/bundle/release/app-release.aab
+# 4. PR, merge, then publish from CI (internal → promote, or straight to production):
+gh workflow run release.yml -f app=christmas-countdown -f action=upload -f track=internal
 ```
 
 Signing needs `apps/christmas-countdown/keystore.properties` (git-ignored) pointing to the upload

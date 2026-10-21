@@ -70,7 +70,7 @@ Lines are pruned as items ship. What has **shipped** lives in `apps/<app>/releas
 | | What is missing | Waiting on |
 |---|---|---|
 | ⏳ | Move into `lillorepo` (Bazel) | Gradle builds or the Play publishing loop slowing you down · domain modules are pure Kotlin to make it easy |
-| 👤 | Publishing from the terminal is ready (Gradle Play Publisher): create the Google Cloud service account and give it access in Play Console, once (docs/publishing-on-google-play.md §6) | You |
+| 👤 | Publishing from CI is ready (Release workflow): create the Google Cloud service account and give it access in Play Console, then `scripts/set-release-secrets.sh --play` and `scripts/set-release-secrets.sh <app>` per app, in your terminal (docs/publishing-on-google-play.md §6) | You |
 | 👤 | Renovate is configured (`renovate.json`): install the Renovate GitHub app on the repo so the weekly PRs start | You · one click |
 | ⏳ | `minSdk` 23 → 24 (blocks WorkManager 2.12; check the Play Console share of API 23 first) | Christmas's install stats |
 | ⏳ | Baseline profiles for startup | An app where startup feels slow |

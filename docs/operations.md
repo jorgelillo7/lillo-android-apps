@@ -34,16 +34,20 @@ Commands shared by every app. Per-app commands (module paths, release steps, sig
 | `smoke_lib.sh` | Sourced by every `apps/<app>/tools/smoke_test.sh`: release build, clean install, `tap`/`shot`, crash check |
 | `store_assets.py` | Draws the Play feature graphic and framed screenshots; each app's `tools/generate_store_assets.py` passes its colours and headlines |
 | `new-upload-key.sh <app>` | Create an app's upload key + `keystore.properties` (run in your own terminal; see [signing.md](signing.md)) |
+| `set-release-secrets.sh <app> \| --play \| --approval` | Put an app's upload key (league-cards: and its private deck), the Play service account or the production approval into GitHub for the Release workflow (your own terminal) |
 
 ## Release (any app)
 
 1. Bump `versionCode`/`versionName`, rewrite `app/src/main/play/release-notes/<locale>/default.txt`,
-   add a row to `apps/<app>/release-notes.md`.
-2. `./gradlew test :apps:<app>:app:lintDebug :apps:<app>:app:bundleRelease`
-3. `scripts/emulator.sh start && apps/<app>/tools/smoke_test.sh && scripts/emulator.sh stop`
-   (release build: R8 issues only show up here).
-4. `scripts/verify-bundle.sh apps/<app>/app/build/outputs/bundle/release/app-release.aab`
-5. Play Console: [publishing-on-google-play.md](publishing-on-google-play.md#6-release).
+   add a row to `apps/<app>/release-notes.md`; open the PR. Its CI builds every release (R8) and
+   smoke-tests the app's release build on an emulator.
+2. Merged: **Actions → Release** (or `gh workflow run release.yml -f app=<app> …`) publishes it to
+   internal testing, promotes it, or sends it straight to production (approval in GitHub).
+3. By hand only for an app's first bundle and the App content forms:
+   [publishing-on-google-play.md](publishing-on-google-play.md#6-release).
+
+Locally, to look at a release build: `scripts/emulator.sh start && apps/<app>/tools/smoke_test.sh &&
+scripts/emulator.sh stop`, and `scripts/verify-bundle.sh <aab>`.
 
 The `release-android-app` skill walks through all of it.
 

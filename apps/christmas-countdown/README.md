@@ -54,7 +54,7 @@ scripts/setup-python.sh   # once
 
 Everything uploaded to the Play listing is tracked in [`app/src/main/play/`](app/src/main/play), in the
 [Gradle Play Publisher](https://github.com/Triple-T/gradle-play-publisher) layout, and published
-from the terminal (`publishBundle`, `publishListing`):
+by CI's Release workflow (or the same `publishBundle` / `publishListing` tasks from the terminal):
 
 ```
 app/src/main/play/listings/<en-US|es-ES>/
