@@ -41,4 +41,5 @@ lives in the PR. Add a line when a decision is taken; change it when it is rever
 | Gradle Play Publisher, listing in its own `app/src/main/play` layout | Publish from the terminal; a Gradle plugin, no Ruby | #51 |
 | Installers only from official channels (Gradle plugin portal, Maven Central, PyPI) | Wrapper installers (`npx`, `curl \| bash`) are a supply-chain risk | 2026-10 |
 | Backups copy only `files/datastore/` | Users' data travels to a new phone; WorkManager's database never does | #56 |
+| MIT licence for the code (names, icons, store graphics: all rights reserved) | Same as lillorepo, where this code may move; free to reuse, but no clones with the apps' own branding | #66 |
 | Share links and App Links on `jorgelillo7.github.io`, data in the fragment | Free static hosting, no server, nothing stored | 2026-10 |
