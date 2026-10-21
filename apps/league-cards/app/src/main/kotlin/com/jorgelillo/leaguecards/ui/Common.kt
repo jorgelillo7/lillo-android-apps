@@ -31,7 +31,7 @@ import com.jorgelillo.leaguecards.domain.YOU
 import com.jorgelillo.leaguecards.ui.theme.Chat
 
 @Composable
-fun Page(
+internal fun Page(
     title: String?,
     onBack: (() -> Unit)?,
     modifier: Modifier = Modifier,
@@ -40,39 +40,79 @@ fun Page(
     sideActionsWhenShort: Boolean = false,
     bottom: @Composable ColumnScope.() -> Unit = {},
     content: @Composable ColumnScope.() -> Unit
-) = LilloPage(title, onBack, Chat.Background, modifier = modifier, actions = actions, sideActionsWhenShort = sideActionsWhenShort, bottom = bottom, content = content)
+) = LilloPage(
+    title,
+    onBack,
+    Chat.Background,
+    modifier = modifier,
+    actions = actions,
+    sideActionsWhenShort = sideActionsWhenShort,
+    bottom = bottom,
+    content = content
+)
 
 @Composable
-fun BigButton(text: String, onClick: () -> Unit, tag: String, modifier: Modifier = Modifier, color: Color = Chat.Green) = LilloBigButton(text, onClick, color, modifier = modifier.testTag(tag))
+internal fun BigButton(
+    text: String,
+    onClick: () -> Unit,
+    tag: String,
+    modifier: Modifier = Modifier,
+    color: Color = Chat.Green
+) = LilloBigButton(text, onClick, modifier.testTag(tag), color = color)
 
 /** A member's name colour; the player is always green, like your own messages. */
-fun League.colorOf(id: String): Color = if (id == YOU) Chat.Green else character(id)?.color?.let { runCatching { Color(it.toColorInt()) }.getOrNull() } ?: Chat.Muted
+fun League.colorOf(id: String): Color = if (id ==
+    YOU
+) {
+    Chat.Green
+} else {
+    character(id)?.color?.let { runCatching { Color(it.toColorInt()) }.getOrNull() } ?: Chat.Muted
+}
 
 @Composable
 fun League.nameOf(id: String): String = if (id == YOU) stringResource(R.string.you) else character(id)?.name ?: id
 
 /** A group-chat message: the sender's name in their colour over the text. */
 @Composable
-fun ChatBubble(league: League, from: String, text: String, modifier: Modifier = Modifier, time: String? = null) {
+internal fun ChatBubble(
+    league: League,
+    from: String,
+    text: String,
+    modifier: Modifier = Modifier,
+    time: String? = null
+) {
     Column(
         modifier
             .widthIn(max = 320.dp)
-            .background(Chat.Bubble, RoundedCornerShape(topStart = 4.dp, topEnd = 14.dp, bottomStart = 14.dp, bottomEnd = 14.dp))
+            .background(
+                Chat.Bubble,
+                RoundedCornerShape(topStart = 4.dp, topEnd = 14.dp, bottomStart = 14.dp, bottomEnd = 14.dp)
+            )
             .padding(horizontal = 12.dp, vertical = 8.dp)
     ) {
         if (from.isNotEmpty()) {
-            Text(league.nameOf(from), color = league.colorOf(from), fontWeight = FontWeight.Bold, style = MaterialTheme.typography.labelLarge)
+            Text(
+                league.nameOf(from),
+                color = league.colorOf(from),
+                fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.labelLarge
+            )
         }
         Text(text, style = MaterialTheme.typography.bodyLarge, color = Chat.Text)
         if (time != null) {
-            Text(time, style = MaterialTheme.typography.labelSmall, color = Chat.Muted, modifier = Modifier.align(Alignment.End))
+            Text(
+                time,
+                style = MaterialTheme.typography.labelSmall,
+                color = Chat.Muted,
+                modifier = Modifier.align(Alignment.End)
+            )
         }
     }
 }
 
 /** A yellow "system" notice in the middle of the chat (an event of the matchday). */
 @Composable
-fun SystemNotice(text: String, modifier: Modifier = Modifier) {
+internal fun SystemNotice(text: String, modifier: Modifier = Modifier) {
     Row(modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
         Text(
             text,
@@ -88,7 +128,7 @@ fun SystemNotice(text: String, modifier: Modifier = Modifier) {
 
 /** "New achievement" banner, in gold. */
 @Composable
-fun AchievementBanner(a: Achievement, modifier: Modifier = Modifier) {
+internal fun AchievementBanner(a: Achievement, modifier: Modifier = Modifier) {
     Row(
         modifier
             .fillMaxWidth()
@@ -100,7 +140,11 @@ fun AchievementBanner(a: Achievement, modifier: Modifier = Modifier) {
     ) {
         Text(a.emoji, style = MaterialTheme.typography.headlineSmall)
         Column(Modifier.padding(start = 10.dp)) {
-            Text(stringResource(R.string.achievement_new), color = Chat.Gold, style = MaterialTheme.typography.labelSmall)
+            Text(
+                stringResource(R.string.achievement_new),
+                color = Chat.Gold,
+                style = MaterialTheme.typography.labelSmall
+            )
             Text(a.title, color = Chat.Text, fontWeight = FontWeight.Bold)
         }
     }

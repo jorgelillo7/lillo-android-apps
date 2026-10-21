@@ -58,7 +58,7 @@ import kotlin.random.Random
 private enum class Tab { MATCHES, BRACKET, STANDINGS }
 
 @Composable
-fun TournamentScreen(
+internal fun TournamentScreen(
     t: Tournament,
     onChange: ((Tournament) -> Tournament) -> Unit,
     onDelete: () -> Unit,
@@ -94,7 +94,9 @@ fun TournamentScreen(
                     IconButton(onClick = { menu = true }, modifier = Modifier.testTag("menu")) {
                         Icon(Icons.Filled.MoreVert, contentDescription = stringResource(R.string.action_more))
                     }
-                    DropdownMenu(expanded = menu, onDismissRequest = { menu = false }, modifier = TestTagsAsResourceIds) {
+                    DropdownMenu(expanded = menu, onDismissRequest = {
+                        menu = false
+                    }, modifier = TestTagsAsResourceIds) {
                         if (Tournaments.canRedraw(t)) {
                             DropdownMenuItem(
                                 text = { Text(stringResource(R.string.action_redraw)) },
@@ -160,7 +162,11 @@ fun TournamentScreen(
             )
             if (champion != null && !short) ChampionBanner(champion.name)
             if (tabs.size > 1) {
-                PrimaryTabRow(selectedTabIndex = tabs.indexOf(tab), containerColor = androidx.compose.ui.graphics.Color.Transparent, contentColor = Arena.Cream) {
+                PrimaryTabRow(
+                    selectedTabIndex = tabs.indexOf(tab),
+                    containerColor = androidx.compose.ui.graphics.Color.Transparent,
+                    contentColor = Arena.Cream
+                ) {
                     tabs.forEach { option ->
                         Tab(
                             selected = option == tab,
@@ -228,7 +234,9 @@ fun TournamentScreen(
                     Text(stringResource(R.string.action_delete), color = Arena.Coral)
                 }
             },
-            dismissButton = { TextButton(onClick = { confirmDelete = false }) { Text(stringResource(R.string.action_cancel)) } }
+            dismissButton = {
+                TextButton(onClick = { confirmDelete = false }) { Text(stringResource(R.string.action_cancel)) }
+            }
         )
     }
 }
@@ -265,8 +273,20 @@ private fun ChampionBanner(name: String) {
         Text("🏆", fontSize = 26.sp)
         Spacer(Modifier.width(12.dp))
         Column {
-            Text(stringResource(R.string.champion_label), color = Arena.Ink, fontSize = 12.sp, fontWeight = FontWeight.Bold)
-            Text(name, color = Arena.Ink, fontSize = 20.sp, fontWeight = FontWeight.Black, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            Text(
+                stringResource(R.string.champion_label),
+                color = Arena.Ink,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Bold
+            )
+            Text(
+                name,
+                color = Arena.Ink,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Black,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
         }
     }
 }
@@ -280,7 +300,11 @@ data class MatchKey(val stage: Stage, val round: Int, val slot: Int) {
 
         val Saver = androidx.compose.runtime.saveable.Saver<MatchKey?, String>(
             save = { it?.let { k -> "${k.stage.name}:${k.round}:${k.slot}" } ?: "" },
-            restore = { raw -> raw.split(':').takeIf { it.size == 3 }?.let { MatchKey(Stage.valueOf(it[0]), it[1].toInt(), it[2].toInt()) } }
+            restore = { raw ->
+                raw.split(':').takeIf {
+                    it.size == 3
+                }?.let { MatchKey(Stage.valueOf(it[0]), it[1].toInt(), it[2].toInt()) }
+            }
         )
     }
 }

@@ -15,7 +15,8 @@ class JsonStoreTest {
     data class Notes(val items: List<String> = emptyList(), val version: Int = 1)
 
     // One DataStore per file and process: every test uses its own file.
-    private fun store(name: String) = JsonStore(ApplicationProvider.getApplicationContext(), name, Notes.serializer()) { Notes() }
+    private fun store(name: String) =
+        JsonStore(ApplicationProvider.getApplicationContext(), name, Notes.serializer()) { Notes() }
 
     @Test
     fun startsFromTheDefault() = runTest {

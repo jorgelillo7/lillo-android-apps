@@ -38,7 +38,7 @@ private data class EditRoute(val id: String? = null)
 private const val MISSING_WHEEL_GRACE_MILLIS = 600L
 
 @Composable
-fun DecisionWheelApp(app: DecisionWheelApplication, openWheelId: String? = null) {
+internal fun DecisionWheelApp(app: DecisionWheelApplication, openWheelId: String? = null) {
     val viewModel: WheelsViewModel = viewModel(factory = WheelsViewModel.factory(app.repository))
     val state by viewModel.state.collectAsStateWithLifecycle()
     val current = state ?: return // first disk read in progress (a few ms)
@@ -96,7 +96,15 @@ fun DecisionWheelApp(app: DecisionWheelApplication, openWheelId: String? = null)
         composable<EditRoute> { entry ->
             val id = entry.toRoute<EditRoute>().id
             val isNew = id == null
-            val initial = remember(id) { if (id == null) Wheel(viewModel.newWheelId(), "", emptyList()) else current.wheel(id) }
+            val initial = remember(id) {
+                if (id ==
+                    null
+                ) {
+                    Wheel(viewModel.newWheelId(), "", emptyList())
+                } else {
+                    current.wheel(id)
+                }
+            }
             if (initial == null) {
                 LaunchedEffect(Unit) { nav.popBackStack() }
                 return@composable

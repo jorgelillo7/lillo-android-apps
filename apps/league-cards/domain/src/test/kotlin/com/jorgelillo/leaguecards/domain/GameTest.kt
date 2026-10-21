@@ -15,7 +15,12 @@ class GameTest {
     /** A league's own deck, kept outside this repository (see the app's README); Gradle passes its path. */
     private val privateDeck = File(System.getProperty("leagueCards.privateDeck").orEmpty())
 
-    private fun card(id: String, right: Choice = Choice("Sí"), left: Choice = Choice("No"), followUpOnly: Boolean = false) = Card(id, "a", "texto $id", left, right, followUpOnly = followUpOnly)
+    private fun card(
+        id: String,
+        right: Choice = Choice("Sí"),
+        left: Choice = Choice("No"),
+        followUpOnly: Boolean = false
+    ) = Card(id, "a", "texto $id", left, right, followUpOnly = followUpOnly)
 
     private fun league(
         cards: List<Card>,
@@ -72,7 +77,8 @@ class GameTest {
     /** Picks the side that leaves the meters nearest the middle: how a careful player swipes. */
     private fun careful(l: League): (Season) -> Boolean = { s ->
         val card = l.card(s.currentCard!!)!!
-        fun distance(c: Choice) = (s.meters + c.effects).let { m -> Meter.entries.sumOf { kotlin.math.abs(m[it] - 50) } }
+        fun distance(c: Choice) =
+            (s.meters + c.effects).let { m -> Meter.entries.sumOf { kotlin.math.abs(m[it] - 50) } }
         distance(card.right) < distance(card.left)
     }
 
@@ -98,7 +104,8 @@ class GameTest {
 
     @Test
     fun `a follow-up is dealt first next matchday`() {
-        val l = league(listOf(card("x", right = Choice("Sí", followUp = "f")), card("y"), card("f", followUpOnly = true)))
+        val l =
+            league(listOf(card("x", right = Choice("Sí", followUp = "f")), card("y"), card("f", followUpOnly = true)))
         var s = Game.newSeason(l, 1)
         assertFalse("f" in s.hand)
         s = Game.choose(l, s, right = s.hand[0] == "x")
@@ -122,7 +129,8 @@ class GameTest {
 
     @Test
     fun `an invalid line-up scores nothing`() {
-        val l = league(listOf(card("x"), card("y")), events = listOf(MatchdayEvent("i", "indebida", 1.0, noPoints = true)))
+        val l =
+            league(listOf(card("x"), card("y")), events = listOf(MatchdayEvent("i", "indebida", 1.0, noPoints = true)))
         var s = Game.newSeason(l, 5)
         s = Game.choose(l, Game.choose(l, s, true), true)
         assertEquals(0, s.report!!.yourPoints)
@@ -131,7 +139,11 @@ class GameTest {
 
     @Test
     fun `the joker skips a card once a season`() {
-        val l = league(listOf(card("x"), card("y"), card("z")), joker = Joker("a", "Borrarme", "Me borro", Effects(patience = -10)))
+        val l =
+            league(
+                listOf(card("x"), card("y"), card("z")),
+                joker = Joker("a", "Borrarme", "Me borro", Effects(patience = -10))
+            )
         var s = Game.newSeason(l, 7)
         assertTrue(Game.canUseJoker(l, s))
         s = Game.useJoker(l, s)
@@ -142,7 +154,13 @@ class GameTest {
 
     @Test
     fun `a meter at zero ends the season with its ending`() {
-        val l = league(listOf(card("x", right = Choice("Todo", Effects(money = -100))), card("y", right = Choice("Todo", Effects(money = -100)))))
+        val l =
+            league(
+                listOf(
+                    card("x", right = Choice("Todo", Effects(money = -100))),
+                    card("y", right = Choice("Todo", Effects(money = -100)))
+                )
+            )
         val s = Game.choose(l, Game.newSeason(l, 9), right = true)
         assertEquals(Ending("ml", Meter.MONEY, high = false), s.ending)
     }
@@ -160,7 +178,10 @@ class GameTest {
     @Test
     fun `an achievement unlocks after its count of choices, once`() {
         val l = league(
-            listOf(card("x", right = Choice("Sí", achievement = "a")), card("y", right = Choice("Sí", achievement = "a"))),
+            listOf(
+                card("x", right = Choice("Sí", achievement = "a")),
+                card("y", right = Choice("Sí", achievement = "a"))
+            ),
             achievements = listOf(Achievement("a", "A", "two yeses", count = 2))
         )
         var s = Game.choose(l, Game.newSeason(l, 1), right = true)
@@ -175,7 +196,12 @@ class GameTest {
 
     @Test
     fun `a gamble counts its own achievement, not the choice's`() {
-        val risky = Choice("Corazonada", achievement = "safe", risk = Risk(1.0, Effects(points = -16), "‑16", achievement = "flop"))
+        val risky =
+            Choice(
+                "Corazonada",
+                achievement = "safe",
+                risk = Risk(1.0, Effects(points = -16), "‑16", achievement = "flop")
+            )
         val l = league(
             listOf(card("x", right = risky), card("y", right = risky)),
             achievements = listOf(Achievement("safe", "S", "s"), Achievement("flop", "F", "f"))
@@ -213,7 +239,14 @@ class GameTest {
 
     @Test
     fun `a next card comes straight after, this matchday`() {
-        val l = league(listOf(card("x", right = Choice("Sí", next = "story")), card("y", right = Choice("Sí", next = "story")), card("story", followUpOnly = true)))
+        val l =
+            league(
+                listOf(
+                    card("x", right = Choice("Sí", next = "story")),
+                    card("y", right = Choice("Sí", next = "story")),
+                    card("story", followUpOnly = true)
+                )
+            )
         var s = Game.newSeason(l, 1)
         s = Game.choose(l, s, right = true)
         assertEquals("story", s.currentCard)

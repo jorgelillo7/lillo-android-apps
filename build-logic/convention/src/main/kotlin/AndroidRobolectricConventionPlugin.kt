@@ -16,7 +16,10 @@ class AndroidRobolectricConventionPlugin : Plugin<Project> {
         }
         // Robolectric reaches into FileDescriptor (SDK 36 shared memory); recent JDKs need it opened.
         tasks.withType(Test::class.java).configureEach {
-            jvmArgs("--add-opens=java.base/java.io=ALL-UNNAMED", "--add-exports=java.base/jdk.internal.access=ALL-UNNAMED")
+            jvmArgs(
+                "--add-opens=java.base/java.io=ALL-UNNAMED",
+                "--add-exports=java.base/jdk.internal.access=ALL-UNNAMED"
+            )
         }
         dependencies {
             add("testImplementation", libs.findLibrary("junit").get())

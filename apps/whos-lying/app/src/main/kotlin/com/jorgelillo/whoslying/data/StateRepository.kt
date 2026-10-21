@@ -25,4 +25,5 @@ data class SavedState(
 typealias StateRepository = JsonStore<SavedState>
 
 /** The app's single store: DataStore file "whos_lying", as it has always been (users keep their data). */
-fun stateRepository(context: Context): StateRepository = JsonStore(context, "whos_lying", SavedState.serializer()) { SavedState() }
+fun stateRepository(context: Context): StateRepository =
+    JsonStore(context, "whos_lying", SavedState.serializer()) { SavedState() }

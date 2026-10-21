@@ -34,16 +34,30 @@ import kotlinx.coroutines.delay
  * notices, then the members' messages arriving one by one.
  */
 @Composable
-fun ReportScreen(league: League, report: Report, unlocked: List<String>, seasonOver: Boolean, onNext: () -> Unit, onTable: () -> Unit, onBack: () -> Unit) {
+internal fun ReportScreen(
+    league: League,
+    report: Report,
+    unlocked: List<String>,
+    seasonOver: Boolean,
+    onNext: () -> Unit,
+    onTable: () -> Unit,
+    onBack: () -> Unit
+) {
     val ranked = report.scores.entries.sortedByDescending { it.value }
     val dayPosition = ranked.indexOfFirst { it.key == YOU } + 1
     val top = ranked.first()
     val messages = buildList<@Composable () -> Unit> {
-        add { SystemNotice(stringResource(R.string.report_points, report.matchday, report.yourPoints, dayPosition, ranked.size)) }
+        add {
+            SystemNotice(
+                stringResource(R.string.report_points, report.matchday, report.yourPoints, dayPosition, ranked.size)
+            )
+        }
         if (top.key != YOU) add { SystemNotice(stringResource(R.string.report_top, league.nameOf(top.key), top.value)) }
         report.events.forEach { e -> add { SystemNotice(e.text) } }
         unlocked.forEach { id -> league.achievement(id)?.let { a -> add { AchievementBanner(a) } } }
-        report.chat.forEachIndexed { i, line -> add { ChatBubble(league, line.character, line.text, time = "21:%02d".format(10 + i * 3)) } }
+        report.chat.forEachIndexed { i, line ->
+            add { ChatBubble(league, line.character, line.text, time = "21:%02d".format(10 + i * 3)) }
+        }
     }
     var shown by remember(report.matchday) { mutableIntStateOf(1) }
     LaunchedEffect(report.matchday) {

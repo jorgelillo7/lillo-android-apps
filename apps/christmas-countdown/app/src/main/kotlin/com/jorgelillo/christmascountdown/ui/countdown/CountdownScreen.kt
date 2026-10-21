@@ -45,7 +45,7 @@ import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
 @Composable
-fun CountdownScreen(
+internal fun CountdownScreen(
     state: CountdownUiState,
     onSleepsModeChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
@@ -88,7 +88,10 @@ fun CountdownScreen(
                 }
                 if (short) {
                     // Landscape and handhelds: the countdown on the left, date and mode beside it.
-                    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(24.dp)) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(24.dp)
+                    ) {
                         Box(Modifier.weight(1f), contentAlignment = Alignment.Center) { hero() }
                         Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally) { details() }
                     }
@@ -165,7 +168,8 @@ private fun ChristmasDayContent() {
 }
 
 @Composable
-private fun SectionLabel(text: String) = LilloSectionTitle(text, uppercase = true, style = MaterialTheme.typography.labelSmall)
+private fun SectionLabel(text: String) =
+    LilloSectionTitle(text, uppercase = true, style = MaterialTheme.typography.labelSmall)
 
 @Composable
 private fun HeroNumber(value: String) {

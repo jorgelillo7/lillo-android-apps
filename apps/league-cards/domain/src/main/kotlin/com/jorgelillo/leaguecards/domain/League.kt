@@ -35,7 +35,11 @@ data class League(
             if (id !in ids) add("$where: unknown character '$id'")
         }
         if (characters.map { it.id }.toSet().size != characters.size) add("duplicate character ids")
-        if (cardIds.toSet().size != cardIds.size) add("duplicate card ids: ${cardIds.groupBy { it }.filter { it.value.size > 1 }.keys}")
+        if (cardIds.toSet().size !=
+            cardIds.size
+        ) {
+            add("duplicate card ids: ${cardIds.groupBy { it }.filter { it.value.size > 1 }.keys}")
+        }
         if (rivals.isEmpty()) add("no rivals")
         rivals.forEach { checkCharacter("rival", it.character) }
         cards.forEach { card ->
@@ -97,12 +101,7 @@ data class Rival(
 
 /** The four meters, 0..100. Any of them at 0 or 100 ends the season (like Reigns). */
 @Serializable
-data class Meters(
-    val money: Int = 50,
-    val squad: Int = 50,
-    val patience: Int = 50,
-    val tears: Int = 50
-) {
+data class Meters(val money: Int = 50, val squad: Int = 50, val patience: Int = 50, val tears: Int = 50) {
     operator fun plus(e: Effects) = Meters(
         (money + e.money).coerceIn(0, 100),
         (squad + e.squad).coerceIn(0, 100),
@@ -213,7 +212,13 @@ data class Joker(val character: String, val label: String, val text: String, val
  * "champion" and "champion_no_joker".
  */
 @Serializable
-data class Achievement(val id: String, val title: String, val description: String, val emoji: String = "🏅", val count: Int = 1)
+data class Achievement(
+    val id: String,
+    val title: String,
+    val description: String,
+    val emoji: String = "🏅",
+    val count: Int = 1
+)
 
 /** How a season ends: by a meter at 0 or 100, or after the last matchday. */
 @Serializable
@@ -230,12 +235,17 @@ data class Endings(
     val notChampion: String
 ) {
     /** Every ending's key, in display order (see [Ending.key]). */
-    val keys: List<String> get() = listOf("champion", "finished") + Meter.entries.flatMap { listOf(key(it, false), key(it, true)) }
+    val keys: List<String> get() = listOf("champion", "finished") +
+        Meter.entries.flatMap { listOf(key(it, false), key(it, true)) }
 
     fun text(key: String): String = when (key) {
         "champion" -> champion
+
         "finished" -> notChampion
-        else -> Meter.entries.firstNotNullOf { m -> listOf(false, true).firstOrNull { key(m, it) == key }?.let { of(m, it) } }
+
+        else -> Meter.entries.firstNotNullOf { m ->
+            listOf(false, true).firstOrNull { key(m, it) == key }?.let { of(m, it) }
+        }
     }
 
     fun of(meter: Meter, high: Boolean): String = when (meter) {

@@ -59,7 +59,7 @@ import kotlinx.coroutines.launch
 
 /** One card at a time: swipe it (or tap a button) to answer; the four meters on top. */
 @Composable
-fun PlayScreen(
+internal fun PlayScreen(
     league: League,
     season: Season,
     onChoose: (right: Boolean) -> Unit,
@@ -94,14 +94,28 @@ fun PlayScreen(
         onBack = onBack,
         actions = {
             TextButton(onClick = onTable, modifier = Modifier.testTag("table")) {
-                Text(stringResource(R.string.position_short, Game.position(season)), color = Chat.Text, fontWeight = FontWeight.Bold)
+                Text(
+                    stringResource(R.string.position_short, Game.position(season)),
+                    color = Chat.Text,
+                    fontWeight = FontWeight.Bold
+                )
             }
         },
         sideActionsWhenShort = true,
         bottom = {
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                ChoiceButton("← " + card.left.label, "choose_left", Modifier.weight(1f)) { onChoose(false) }
-                ChoiceButton(card.right.label + " →", "choose_right", Modifier.weight(1f)) { onChoose(true) }
+                ChoiceButton(
+                    "← " + card.left.label,
+                    "choose_left",
+                    onClick = { onChoose(false) },
+                    modifier = Modifier.weight(1f)
+                )
+                ChoiceButton(
+                    card.right.label + " →",
+                    "choose_right",
+                    onClick = { onChoose(true) },
+                    modifier = Modifier.weight(1f)
+                )
             }
             if (Game.canUseJoker(league, season)) {
                 val joker = league.joker!!
@@ -134,14 +148,19 @@ fun PlayScreen(
 }
 
 @Composable
-private fun ChoiceButton(text: String, tag: String, modifier: Modifier, onClick: () -> Unit) {
+private fun ChoiceButton(text: String, tag: String, onClick: () -> Unit, modifier: Modifier = Modifier) {
     OutlinedButton(onClick = onClick, modifier = modifier.height(56.dp).testTag(tag)) {
         Text(text, color = Chat.Text, maxLines = 2, overflow = TextOverflow.Ellipsis, textAlign = TextAlign.Center)
     }
 }
 
 private val MeterIcons = mapOf(Meter.MONEY to "💰", Meter.SQUAD to "💪", Meter.PATIENCE to "🙄", Meter.TEARS to "😭")
-private val MeterColors = mapOf(Meter.MONEY to Chat.Gold, Meter.SQUAD to Chat.Green, Meter.PATIENCE to Color(0xFFA791F5), Meter.TEARS to Chat.Tear)
+private val MeterColors = mapOf(
+    Meter.MONEY to Chat.Gold,
+    Meter.SQUAD to Chat.Green,
+    Meter.PATIENCE to Color(0xFFA791F5),
+    Meter.TEARS to Chat.Tear
+)
 
 /**
  * The four meters as tiles that fill up from the bottom (like Reigns), red near either end; while
@@ -164,7 +183,12 @@ private fun MetersRow(season: Season, preview: Effects?) {
                 modifier = Modifier.weight(1f).testTag("meter_${meter.name.lowercase()}")
             ) {
                 Box(Modifier.height(12.dp), contentAlignment = Alignment.Center) {
-                    Box(Modifier.size(if (abs(change) >= 10) 10.dp else 6.dp).alpha(if (change != 0) 1f else 0f).background(Chat.Text, CircleShape))
+                    Box(
+                        Modifier
+                            .size(if (abs(change) >= 10) 10.dp else 6.dp)
+                            .alpha(if (change != 0) 1f else 0f)
+                            .background(Chat.Text, CircleShape)
+                    )
                 }
                 MeterTile(MeterIcons.getValue(meter), season.meters[meter], MeterColors.getValue(meter))
                 Text(
@@ -197,7 +221,12 @@ private fun MeterTile(icon: String, value: Int, color: Color) {
             .border(1.5.dp, if (danger) Chat.Red else color.copy(alpha = 0.35f), shape),
         contentAlignment = Alignment.BottomCenter
     ) {
-        Box(Modifier.fillMaxWidth().fillMaxHeight(value / 100f).background((if (danger) Chat.Red else color).copy(alpha = 0.55f), shape))
+        Box(
+            Modifier.fillMaxWidth().fillMaxHeight(value / 100f).background(
+                (if (danger) Chat.Red else color).copy(alpha = 0.55f),
+                shape
+            )
+        )
         Text(icon, style = MaterialTheme.typography.headlineSmall, modifier = Modifier.align(Alignment.Center))
     }
 }
@@ -209,7 +238,7 @@ private fun SwipeCard(
     drag: Animatable<Float, *>,
     leaningLabel: String?,
     onChoose: (Boolean) -> Unit,
-    modifier: Modifier
+    modifier: Modifier = Modifier
 ) {
     val scope = rememberCoroutineScope()
     val color = league.colorOf(card.character)
@@ -249,17 +278,41 @@ private fun SwipeCard(
             // The answer the card leans to while dragged; the room is kept when there is none.
             Box(Modifier.fillMaxWidth().height(48.dp), contentAlignment = Alignment.Center) {
                 if (leaningLabel != null) {
-                    Text(leaningLabel, color = Chat.Gold, fontWeight = FontWeight.Black, style = MaterialTheme.typography.titleMedium, textAlign = TextAlign.Center)
+                    Text(
+                        leaningLabel,
+                        color = Chat.Gold,
+                        fontWeight = FontWeight.Black,
+                        style = MaterialTheme.typography.titleMedium,
+                        textAlign = TextAlign.Center
+                    )
                 }
             }
-            Avatar(character?.emoji?.ifBlank { null } ?: character?.name ?: card.character, color, size = if (isShortScreen()) 48 else 72)
+            Avatar(
+                character?.emoji?.ifBlank { null } ?: character?.name ?: card.character,
+                color,
+                size = if (isShortScreen()) 48 else 72
+            )
             Spacer(Modifier.height(10.dp))
-            Text(character?.name ?: card.character, color = color, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleLarge)
+            Text(
+                character?.name ?: card.character,
+                color = color,
+                fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.titleLarge
+            )
             character?.tagline?.takeIf { it.isNotBlank() }?.let {
                 Text(it, color = Chat.Muted, style = MaterialTheme.typography.bodyMedium, textAlign = TextAlign.Center)
             }
             Spacer(Modifier.weight(1f))
-            Text(card.text, style = if (isShortScreen()) MaterialTheme.typography.titleLarge else MaterialTheme.typography.headlineSmall, textAlign = TextAlign.Center, color = Chat.Text)
+            Text(
+                card.text,
+                style = if (isShortScreen()) {
+                    MaterialTheme.typography.titleLarge
+                } else {
+                    MaterialTheme.typography.headlineSmall
+                },
+                textAlign = TextAlign.Center,
+                color = Chat.Text
+            )
             Spacer(Modifier.weight(1f))
         }
     }
@@ -267,4 +320,5 @@ private fun SwipeCard(
 
 /** A round avatar with the member's emoji (or initial) in their colour. */
 @Composable
-fun Avatar(name: String, color: Color, size: Int = 72) = LilloAvatar(name, color, size.dp, style = AvatarStyle.Tinted)
+internal fun Avatar(name: String, color: Color, size: Int = 72) =
+    LilloAvatar(name, color, size.dp, style = AvatarStyle.Tinted)

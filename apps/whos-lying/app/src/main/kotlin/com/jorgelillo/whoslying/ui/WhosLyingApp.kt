@@ -6,6 +6,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalConfiguration
@@ -95,7 +96,7 @@ private data object Packs
 private data class PackEdit(val id: String? = null, val copyOf: String? = null)
 
 @Composable
-fun WhosLyingApp(app: WhosLyingApplication, incomingText: String? = null, onIncomingHandled: () -> Unit = {}) {
+internal fun WhosLyingApp(app: WhosLyingApplication, incomingText: String? = null, onConsumeIncoming: () -> Unit = {}) {
     val language = LocalConfiguration.current.locales[0].language
     // Keyed by language so the built-in packs follow a language change while the app is open.
     val vm: GameViewModel = viewModel(key = "game-$language", factory = GameViewModel.factory(app.repository, language))
@@ -117,14 +118,21 @@ fun WhosLyingApp(app: WhosLyingApplication, incomingText: String? = null, onInco
     val resources = LocalResources.current
     val importPack: (String) -> Unit = { text ->
         val pack = vm.importPack(text)
-        val message = if (pack != null) resources.getString(R.string.pack_imported, pack.name) else resources.getString(R.string.pack_import_invalid)
+        val message = if (pack !=
+            null
+        ) {
+            resources.getString(R.string.pack_imported, pack.name)
+        } else {
+            resources.getString(R.string.pack_import_invalid)
+        }
         Toast.makeText(context, message, Toast.LENGTH_LONG).show()
     }
     // A pack shared from another phone: add it and show the packs.
+    val incomingHandled by rememberUpdatedState(onConsumeIncoming)
     LaunchedEffect(incomingText) {
         if (incomingText != null) {
             importPack(incomingText)
-            onIncomingHandled()
+            incomingHandled()
             nav.navigate(Packs) { launchSingleTop = true }
         }
     }
@@ -140,7 +148,9 @@ fun WhosLyingApp(app: WhosLyingApplication, incomingText: String? = null, onInco
             )
         }
         composable<Players> {
-            PlayersScreen(state.players, vm::addPlayer, vm::removePlayer, onContinue = { nav.navigate(Setup) }, onBack = { nav.popBackStack() })
+            PlayersScreen(state.players, vm::addPlayer, vm::removePlayer, onContinue = {
+                nav.navigate(Setup)
+            }, onBack = { nav.popBackStack() })
         }
         composable<Setup> {
             SetupScreen(
@@ -295,7 +305,8 @@ fun WhosLyingApp(app: WhosLyingApplication, incomingText: String? = null, onInco
             val id = route.id
             val copyOf = route.copyOf
             val isNew = id == null
-            val copyName = stringResource(R.string.pack_copy_name, vm.builtInPacks.firstOrNull { it.id == copyOf }?.name.orEmpty())
+            val copyName =
+                stringResource(R.string.pack_copy_name, vm.builtInPacks.firstOrNull { it.id == copyOf }?.name.orEmpty())
             val initial = remember(route) {
                 when {
                     // A built-in pack as a starting point; nothing is saved until "Save".

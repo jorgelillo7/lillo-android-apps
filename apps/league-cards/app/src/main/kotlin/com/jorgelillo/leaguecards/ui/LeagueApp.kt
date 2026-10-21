@@ -55,7 +55,7 @@ import com.jorgelillo.leaguecards.ui.theme.Chat
 
 /** Home, or the season: a card, the matchday's group chat, or how it ended. */
 @Composable
-fun LeagueApp(vm: LeagueViewModel) {
+internal fun LeagueApp(vm: LeagueViewModel) {
     val saved = vm.saved.collectAsStateWithLifecycle().value ?: return
     val league = vm.league
     var playing by rememberSaveable { mutableStateOf(false) }
@@ -92,7 +92,12 @@ fun LeagueApp(vm: LeagueViewModel) {
                     onBack = { playing = false }
                 )
 
-                season.over -> EndScreen(league, saved, season, onNew = vm::newSeason, onHome = { playing = false }, onTrophies = { trophies = true })
+                season.over -> EndScreen(league, saved, season, onNew = vm::newSeason, onHome = {
+                    playing = false
+                }, onTrophies = {
+                    trophies =
+                        true
+                })
 
                 else -> PlayScreen(
                     league,
@@ -109,20 +114,31 @@ fun LeagueApp(vm: LeagueViewModel) {
 }
 
 @Composable
-private fun HomeScreen(league: League, saved: Saved, onContinue: () -> Unit, onNew: () -> Unit, onTrophies: () -> Unit) {
+private fun HomeScreen(
+    league: League,
+    saved: Saved,
+    onContinue: () -> Unit,
+    onNew: () -> Unit,
+    onTrophies: () -> Unit
+) {
     var about by rememberSaveable { mutableStateOf(false) }
     val inProgress = saved.seasonFor(league)
     Page(
         title = null,
         onBack = null,
         actions = {
-            TextButton(onClick = { about = true }, modifier = Modifier.testTag("about")) { Text("ⓘ", fontSize = 22.sp, color = Chat.Muted) }
+            TextButton(onClick = {
+                about = true
+            }, modifier = Modifier.testTag("about")) { Text("ⓘ", fontSize = 22.sp, color = Chat.Muted) }
         },
         bottom = {
             if (inProgress != null) {
                 BigButton(stringResource(R.string.continue_season, inProgress.matchday), onContinue, "continue")
                 Spacer(Modifier.height(12.dp))
-                OutlinedButton(onClick = onNew, modifier = Modifier.fillMaxWidth().height(52.dp).testTag("new_season")) {
+                OutlinedButton(
+                    onClick = onNew,
+                    modifier = Modifier.fillMaxWidth().height(52.dp).testTag("new_season")
+                ) {
                     Text(stringResource(R.string.new_season), color = Chat.Text)
                 }
             } else {
@@ -130,7 +146,10 @@ private fun HomeScreen(league: League, saved: Saved, onContinue: () -> Unit, onN
             }
         }
     ) {
-        Column(Modifier.fillMaxWidth().verticalScroll(rememberScrollState()), horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(
+            Modifier.fillMaxWidth().verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             Text("😭⚽", fontSize = 64.sp)
             Text(
                 stringResource(R.string.app_name),
@@ -169,7 +188,13 @@ private fun HomeScreen(league: League, saved: Saved, onContinue: () -> Unit, onN
                     Spacer(Modifier.width(12.dp))
                     Column {
                         Text(c.name, color = league.colorOf(c.id), fontWeight = FontWeight.Bold)
-                        if (c.tagline.isNotBlank()) Text(c.tagline, color = Chat.Muted, style = MaterialTheme.typography.bodySmall)
+                        if (c.tagline.isNotBlank()) {
+                            Text(
+                                c.tagline,
+                                color = Chat.Muted,
+                                style = MaterialTheme.typography.bodySmall
+                            )
+                        }
                     }
                 }
             }
@@ -203,7 +228,14 @@ private fun Stat(label: String, value: String) {
 }
 
 @Composable
-private fun EndScreen(league: League, saved: Saved, season: Season, onNew: () -> Unit, onHome: () -> Unit, onTrophies: () -> Unit) {
+private fun EndScreen(
+    league: League,
+    saved: Saved,
+    season: Season,
+    onNew: () -> Unit,
+    onHome: () -> Unit,
+    onTrophies: () -> Unit
+) {
     val ending = season.ending ?: return
     val context = LocalContext.current
     val resources = LocalResources.current
@@ -218,15 +250,30 @@ private fun EndScreen(league: League, saved: Saved, season: Season, onNew: () ->
                 OutlinedButton(
                     onClick = {
                         val unlocked = season.unlocked.mapNotNull { league.achievement(it) }
-                        val text = resources.getString(R.string.share_text, resources.getString(R.string.app_name), ending.text, season.matchday - 1, position) +
-                            if (unlocked.isEmpty()) "" else "\n" + unlocked.joinToString(" · ") { it.emoji + " " + it.title }
+                        val text =
+                            resources.getString(
+                                R.string.share_text,
+                                resources.getString(R.string.app_name),
+                                ending.text,
+                                season.matchday - 1,
+                                position
+                            ) +
+                                if (unlocked.isEmpty()) {
+                                    ""
+                                } else {
+                                    "\n" +
+                                        unlocked.joinToString(" · ") { it.emoji + " " + it.title }
+                                }
                         context.shareText(text)
                     },
                     modifier = Modifier.fillMaxWidth().height(52.dp).testTag("share")
                 ) { Text(stringResource(R.string.share), color = Chat.Text) }
             }
         ) {
-            Column(Modifier.fillMaxWidth().verticalScroll(rememberScrollState()), horizontalAlignment = Alignment.CenterHorizontally) {
+            Column(
+                Modifier.fillMaxWidth().verticalScroll(rememberScrollState()),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
                 Text(if (ending.champion) "🏆" else "😭", fontSize = 80.sp)
                 Spacer(Modifier.height(12.dp))
                 Text(
@@ -237,10 +284,17 @@ private fun EndScreen(league: League, saved: Saved, season: Season, onNew: () ->
                     modifier = Modifier.testTag("ending")
                 )
                 Spacer(Modifier.height(8.dp))
-                Text(stringResource(R.string.ending_stats, season.matchday - 1, position), color = Chat.Muted, textAlign = TextAlign.Center)
+                Text(
+                    stringResource(R.string.ending_stats, season.matchday - 1, position),
+                    color = Chat.Muted,
+                    textAlign = TextAlign.Center
+                )
                 Spacer(Modifier.height(12.dp))
                 TextButton(onClick = onTrophies, modifier = Modifier.testTag("trophies")) {
-                    Text(stringResource(R.string.endings_discovered, saved.endingsSeen.size, league.endings.keys.size), color = Chat.Gold)
+                    Text(
+                        stringResource(R.string.endings_discovered, saved.endingsSeen.size, league.endings.keys.size),
+                        color = Chat.Gold
+                    )
                 }
                 val unlocked = season.unlocked.mapNotNull { league.achievement(it) }
                 if (unlocked.isNotEmpty()) {
@@ -251,7 +305,11 @@ private fun EndScreen(league: League, saved: Saved, season: Season, onNew: () ->
                             .padding(12.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Text(stringResource(R.string.season_achievements, unlocked.size), color = Chat.Gold, style = MaterialTheme.typography.labelLarge)
+                        Text(
+                            stringResource(R.string.season_achievements, unlocked.size),
+                            color = Chat.Gold,
+                            style = MaterialTheme.typography.labelLarge
+                        )
                         Text(unlocked.joinToString(" ") { it.emoji }, style = MaterialTheme.typography.headlineSmall)
                         Text(
                             unlocked.joinToString(" · ") { it.title },
@@ -264,7 +322,11 @@ private fun EndScreen(league: League, saved: Saved, season: Season, onNew: () ->
                 Spacer(Modifier.height(8.dp))
                 Standings(league, season)
                 Spacer(Modifier.height(12.dp))
-                Text(stringResource(R.string.record, saved.seasonsPlayed, saved.titles), color = Chat.Muted, style = MaterialTheme.typography.bodySmall)
+                Text(
+                    stringResource(R.string.record, saved.seasonsPlayed, saved.titles),
+                    color = Chat.Muted,
+                    style = MaterialTheme.typography.bodySmall
+                )
             }
         }
         ConfettiBurst(key = ending.takeIf { it.champion }, colors = Chat.Confetti, modifier = Modifier.fillMaxSize())
@@ -275,8 +337,16 @@ private fun EndScreen(league: League, saved: Saved, season: Season, onNew: () ->
 @Composable
 private fun TableSheet(league: League, season: Season, onDismiss: () -> Unit) {
     ModalBottomSheet(onDismissRequest = onDismiss, containerColor = Chat.Raised, modifier = TestTagsAsResourceIds) {
-        Column(Modifier.verticalScroll(rememberScrollState()).padding(horizontal = 24.dp).padding(bottom = 32.dp).testTag("standings")) {
-            Text(stringResource(R.string.table), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+        Column(
+            Modifier.verticalScroll(
+                rememberScrollState()
+            ).padding(horizontal = 24.dp).padding(bottom = 32.dp).testTag("standings")
+        ) {
+            Text(
+                stringResource(R.string.table),
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold
+            )
             Spacer(Modifier.height(12.dp))
             Standings(league, season)
         }
@@ -299,7 +369,13 @@ private fun Standings(league: League, season: Season) {
                 Column(Modifier.weight(1f)) {
                     val team = league.character(id)?.team.orEmpty()
                     Text(team.ifBlank { league.nameOf(id) }, color = league.colorOf(id), fontWeight = FontWeight.Bold)
-                    if (team.isNotBlank()) Text(league.nameOf(id), color = Chat.Muted, style = MaterialTheme.typography.labelSmall)
+                    if (team.isNotBlank()) {
+                        Text(
+                            league.nameOf(id),
+                            color = Chat.Muted,
+                            style = MaterialTheme.typography.labelSmall
+                        )
+                    }
                 }
                 Text("$points", fontWeight = FontWeight.Black)
             }

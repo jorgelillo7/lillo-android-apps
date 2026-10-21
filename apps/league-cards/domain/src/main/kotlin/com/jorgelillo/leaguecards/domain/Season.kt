@@ -84,7 +84,13 @@ object Game {
         val gamble = choice.risk?.takeIf { rng(s.seed, s.matchday, 100 + s.handIndex).nextDouble() < it.chance }
         val effects = gamble?.effects ?: choice.effects
         val outcome = (gamble?.outcome ?: choice.outcome).takeIf { it.isNotBlank() }
-        val achievement = if (choice.risk != null && gamble == null) choice.achievement else gamble?.achievement ?: choice.achievement
+        val achievement = if (choice.risk != null &&
+            gamble == null
+        ) {
+            choice.achievement
+        } else {
+            gamble?.achievement ?: choice.achievement
+        }
         // A story that goes on: its next card is dealt straight after this one.
         val hand = choice.next?.let { s.hand.take(s.handIndex + 1) + it + s.hand.drop(s.handIndex + 1) } ?: s.hand
         val next = s.copy(
@@ -107,7 +113,13 @@ object Game {
         return copy(progress = progress + (id to done)).let { if (done >= def.count) it.unlock(id) else it }
     }
 
-    private fun Season.unlock(id: String): Season = if (id in unlocked) this else copy(unlocked = unlocked + id, justUnlocked = justUnlocked + id)
+    private fun Season.unlock(id: String): Season = if (id in
+        unlocked
+    ) {
+        this
+    } else {
+        copy(unlocked = unlocked + id, justUnlocked = justUnlocked + id)
+    }
 
     /** The built-in achievements earned by how the season ended. */
     private fun Season.finish(league: League): Season {
@@ -141,7 +153,14 @@ object Game {
     fun dismissReport(s: Season): Season = s.copy(reportPending = false, lastOutcome = null, justUnlocked = emptyList())
 
     /** Table rows, best first: (character id or [YOU], points). */
-    fun standings(s: Season): List<Pair<String, Int>> = s.table.entries.sortedWith(compareByDescending<Map.Entry<String, Int>> { it.value }.thenBy { it.key != YOU })
+    fun standings(s: Season): List<Pair<String, Int>> = s.table.entries.sortedWith(
+        compareByDescending<Map.Entry<String, Int>> {
+            it.value
+        }.thenBy {
+            it.key !=
+                YOU
+        }
+    )
         .map { it.key to it.value }
 
     fun position(s: Season): Int = standings(s).indexOfFirst { it.first == YOU } + 1
@@ -209,7 +228,9 @@ object Game {
         if (next.matchday > league.matchdays) {
             val position = position(next)
             val text = if (position == 1) league.endings.champion else league.endings.notChampion
-            return next.copy(ending = Ending(text.replace("{position}", position.toString()), position = position)).finish(league)
+            return next.copy(
+                ending = Ending(text.replace("{position}", position.toString()), position = position)
+            ).finish(league)
         }
         next = next.copy(hand = deal(league, next), followUps = emptyList())
         return next
@@ -229,7 +250,8 @@ object Game {
         while (hand.size < league.cardsPerMatchday && pool.isNotEmpty()) {
             val weights = pool.map { it.weight.toDouble() / (1 + 2 * (s.seen[it.id] ?: 0)) }
             var pick = rng.nextDouble() * weights.sum()
-            val index = weights.indexOfFirst { w -> (pick - w).also { pick = it } < 0 }.takeIf { it >= 0 } ?: pool.lastIndex
+            val index =
+                weights.indexOfFirst { w -> (pick - w).also { pick = it } < 0 }.takeIf { it >= 0 } ?: pool.lastIndex
             hand += pool.removeAt(index).id
         }
         return hand

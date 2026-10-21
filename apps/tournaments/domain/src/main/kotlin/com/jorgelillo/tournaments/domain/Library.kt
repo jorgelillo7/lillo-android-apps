@@ -5,12 +5,18 @@ import kotlinx.serialization.Serializable
 
 /** Everything the app keeps on the phone. */
 @Serializable
-data class Library(
-    @SerialName("tournaments") val tournaments: List<Tournament> = emptyList()
-) {
+data class Library(@SerialName("tournaments") val tournaments: List<Tournament> = emptyList()) {
     fun tournament(id: String): Tournament? = tournaments.firstOrNull { it.id == id }
 
-    fun save(t: Tournament): Library = copy(tournaments = if (tournament(t.id) == null) tournaments + t else tournaments.map { if (it.id == t.id) t else it })
+    fun save(t: Tournament): Library = copy(
+        tournaments = if (tournament(t.id) ==
+            null
+        ) {
+            tournaments + t
+        } else {
+            tournaments.map { if (it.id == t.id) t else it }
+        }
+    )
 
     fun delete(id: String): Library = copy(tournaments = tournaments.filterNot { it.id == id })
 
@@ -28,7 +34,11 @@ data class Library(
 
     /** In progress first, then the most recent. */
     val sorted: List<Tournament>
-        get() = tournaments.sortedWith(compareBy<Tournament> { it.isOver }.thenByDescending { it.epochDay }.thenByDescending { it.revision })
+        get() = tournaments.sortedWith(
+            compareBy<Tournament> {
+                it.isOver
+            }.thenByDescending { it.epochDay }.thenByDescending { it.revision }
+        )
 
     /** Names used before, most frequent first: offered as chips when creating a tournament. */
     val knownNames: List<String>

@@ -65,7 +65,7 @@ import com.jorgelillo.whoslying.ui.theme.Neon
 
 /** Multi-select grid of packs for the next game. An empty [selected] set means every pack. */
 @Composable
-fun PackPickerScreen(
+internal fun PackPickerScreen(
     packs: List<WordPack>,
     selected: Set<String>,
     onToggle: (String) -> Unit,
@@ -81,7 +81,13 @@ fun PackPickerScreen(
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
-                if (all) stringResource(R.string.pick_packs_all) else pluralStringResource(R.plurals.pick_packs_some, selected.size, selected.size),
+                if (all) {
+                    stringResource(
+                        R.string.pick_packs_all
+                    )
+                } else {
+                    pluralStringResource(R.plurals.pick_packs_some, selected.size, selected.size)
+                },
                 color = Neon.Muted,
                 modifier = Modifier.weight(1f)
             )
@@ -111,7 +117,11 @@ fun PackPickerScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text("＋", style = MaterialTheme.typography.displaySmall, color = Neon.Turquoise)
-                    Text(stringResource(R.string.packs_new), fontWeight = FontWeight.SemiBold, modifier = Modifier.padding(top = 6.dp))
+                    Text(
+                        stringResource(R.string.packs_new),
+                        fontWeight = FontWeight.SemiBold,
+                        modifier = Modifier.padding(top = 6.dp)
+                    )
                 }
             }
         }
@@ -128,9 +138,18 @@ private fun PackTile(pack: WordPack, checked: Boolean, onClick: () -> Unit) {
             .clickable(onClick = onClick)
             .testTag("pack_${pack.id}")
     ) {
-        Column(Modifier.fillMaxWidth().padding(vertical = 18.dp, horizontal = 10.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(
+            Modifier.fillMaxWidth().padding(vertical = 18.dp, horizontal = 10.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             Text(pack.emoji, fontSize = 44.sp)
-            Text(pack.name, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center, maxLines = 2, modifier = Modifier.padding(top = 8.dp))
+            Text(
+                pack.name,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center,
+                maxLines = 2,
+                modifier = Modifier.padding(top = 8.dp)
+            )
             Text(
                 pluralStringResource(R.plurals.pack_words, pack.entries.size, pack.entries.size),
                 style = MaterialTheme.typography.bodySmall,
@@ -153,7 +172,7 @@ private fun PackTile(pack: WordPack, checked: Boolean, onClick: () -> Unit) {
 }
 
 @Composable
-fun PacksScreen(
+internal fun PacksScreen(
     builtIn: List<WordPack>,
     custom: List<WordPack>,
     onEdit: (String?) -> Unit,
@@ -172,7 +191,9 @@ fun PacksScreen(
                 Text(stringResource(R.string.pack_import), color = Neon.Turquoise)
             }
         },
-        bottom = { BigButton("＋ " + stringResource(R.string.packs_new), { onEdit(null) }, Modifier.testTag("new_pack")) }
+        bottom = {
+            BigButton("＋ " + stringResource(R.string.packs_new), { onEdit(null) }, Modifier.testTag("new_pack"))
+        }
     ) {
         LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             if (custom.isNotEmpty()) {
@@ -211,7 +232,8 @@ fun PacksScreen(
 }
 
 @Composable
-private fun SectionTitle(text: String) = LilloSectionTitle(text, modifier = Modifier.padding(top = 12.dp, bottom = 4.dp))
+private fun SectionTitle(text: String) =
+    LilloSectionTitle(text, modifier = Modifier.padding(top = 12.dp, bottom = 4.dp))
 
 @Composable
 private fun PackRow(pack: WordPack, onClick: (() -> Unit)?, onShare: (() -> Unit)? = null) {
@@ -237,7 +259,11 @@ private fun PackRow(pack: WordPack, onClick: (() -> Unit)?, onShare: (() -> Unit
         }
         if (onShare != null) {
             IconButton(onClick = onShare, modifier = Modifier.testTag("share_pack_${pack.id}")) {
-                Icon(Icons.Filled.Share, contentDescription = stringResource(R.string.pack_share), tint = Neon.Turquoise)
+                Icon(
+                    Icons.Filled.Share,
+                    contentDescription = stringResource(R.string.pack_share),
+                    tint = Neon.Turquoise
+                )
             }
         }
         if (onClick != null) Icon(Icons.Filled.Edit, contentDescription = null, tint = Neon.Muted)
@@ -253,16 +279,24 @@ private fun PackShareSheet(pack: WordPack, onDismiss: () -> Unit) {
     val message = stringResource(R.string.pack_share_message, pack.emoji, pack.name, link)
     ModalBottomSheet(onDismissRequest = onDismiss, containerColor = Neon.Card) {
         Column(
-            TestTagsAsResourceIds.verticalScroll(rememberScrollState()).padding(horizontal = 20.dp).navigationBarsPadding(),
+            TestTagsAsResourceIds.verticalScroll(
+                rememberScrollState()
+            ).padding(horizontal = 20.dp).navigationBarsPadding(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            Text("${pack.emoji} ${pack.name}", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Black)
+            Text(
+                "${pack.emoji} ${pack.name}",
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Black
+            )
             if (link.length <= PackShare.QR_MAX_CHARS) {
                 LilloQrCode(link, Modifier.testTag("pack_qr"))
                 Text(stringResource(R.string.pack_share_qr_help), color = Neon.Muted, textAlign = TextAlign.Center)
             }
-            BigButton(stringResource(R.string.pack_share_send), { context.shareText(message) }, Modifier.testTag("pack_send"))
+            BigButton(stringResource(R.string.pack_share_send), {
+                context.shareText(message)
+            }, Modifier.testTag("pack_send"))
             Spacer(Modifier.height(12.dp))
         }
     }
@@ -290,7 +324,9 @@ private fun PackImportDialog(onImport: (String) -> Unit, onDismiss: () -> Unit) 
             }
         },
         confirmButton = {
-            TextButton(onClick = { onImport(text) }, enabled = text.isNotBlank(), modifier = Modifier.testTag("pack_import_ok")) {
+            TextButton(onClick = {
+                onImport(text)
+            }, enabled = text.isNotBlank(), modifier = Modifier.testTag("pack_import_ok")) {
                 Text(stringResource(R.string.pack_import))
             }
         },
@@ -300,7 +336,13 @@ private fun PackImportDialog(onImport: (String) -> Unit, onDismiss: () -> Unit) 
 
 /** Editor for a custom pack: one entry per line, "word / similar word" with the second part optional. */
 @Composable
-fun PackEditScreen(initial: WordPack, isNew: Boolean, onSave: (WordPack) -> Unit, onDelete: () -> Unit, onBack: () -> Unit) {
+internal fun PackEditScreen(
+    initial: WordPack,
+    isNew: Boolean,
+    onSave: (WordPack) -> Unit,
+    onDelete: () -> Unit,
+    onBack: () -> Unit
+) {
     var name by rememberSaveable { mutableStateOf(initial.name) }
     var text by rememberSaveable {
         mutableStateOf(initial.entries.joinToString("\n", transform = WordPacks::toLine))

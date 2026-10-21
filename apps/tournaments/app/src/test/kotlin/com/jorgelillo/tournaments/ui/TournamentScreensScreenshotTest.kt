@@ -32,13 +32,22 @@ class TournamentScreensScreenshotTest {
 
     /** An 8-player knockout played to the end: the first player listed wins every match 2-1. */
     private val cup: Tournament = run {
-        var t = Tournaments.create("cup", "Friday Magic", 20_400, listOf("Alex", "Sam", "Jordan", "Taylor", "Morgan", "Casey", "Riley", "Jamie"), Format.ELIMINATION, random = Random(1))
+        var t = Tournaments.create(
+            "cup",
+            "Friday Magic",
+            20_400,
+            listOf("Alex", "Sam", "Jordan", "Taylor", "Morgan", "Casey", "Riley", "Jamie"),
+            Format.ELIMINATION,
+            random = Random(1)
+        )
         while (Tournaments.pending(t).isNotEmpty()) t = Tournaments.record(t, Tournaments.pending(t).first(), 2, 1)
         t
     }
     private val library = Library(listOf(cup))
 
-    private fun shot(name: String, content: @Composable () -> Unit) = compose.captureScreenshot(name) { LilloTheme(ArenaColorScheme) { content() } }
+    private fun shot(name: String, content: @Composable () -> Unit) = compose.captureScreenshot(name) {
+        LilloTheme(ArenaColorScheme) { content() }
+    }
 
     private fun home(name: String) = shot(name) { HomeScreen(library, {}, {}, {}, {}, {}) }
 

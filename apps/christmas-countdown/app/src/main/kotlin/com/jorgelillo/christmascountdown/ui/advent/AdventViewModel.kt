@@ -26,10 +26,8 @@ data class AdventUiState(
     val isSeason: Boolean get() = unlockedDoors > 0
 }
 
-class AdventViewModel(
-    private val settings: SettingsRepository,
-    private val today: LocalDate = LocalDate.now()
-) : ViewModel() {
+class AdventViewModel(private val settings: SettingsRepository, private val today: LocalDate = LocalDate.now()) :
+    ViewModel() {
 
     private val initialState = AdventUiState(
         unlockedDoors = AdventCalendar.unlockedDoors(today),

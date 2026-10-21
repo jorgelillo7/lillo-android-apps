@@ -20,7 +20,7 @@ private class Flake(val x: Float, val y: Float, val radius: Float, val speed: Fl
 
 /** Gently falling snow. Only the draw phase reads the clock, so it never triggers recomposition. */
 @Composable
-fun Snowfall(modifier: Modifier = Modifier, flakeCount: Int = 70) {
+internal fun Snowfall(modifier: Modifier = Modifier, flakeCount: Int = 70) {
     val flakes = remember {
         List(flakeCount) {
             val depth = Random.nextFloat()

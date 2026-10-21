@@ -29,8 +29,8 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun LilloSettingRow(
     title: String,
-    containerColor: Color = MaterialTheme.colorScheme.surfaceContainer,
     modifier: Modifier = Modifier,
+    containerColor: Color = MaterialTheme.colorScheme.surfaceContainer,
     subtitle: String? = null,
     subtitleColor: Color = MaterialTheme.colorScheme.onSurfaceVariant,
     leading: String? = null,
@@ -52,7 +52,11 @@ fun LilloSettingRow(
             .then(if (tag != null) Modifier.testTag(tag) else Modifier),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        if (leading != null) Text(leading, style = MaterialTheme.typography.titleLarge, modifier = Modifier.padding(end = 14.dp))
+        if (leading !=
+            null
+        ) {
+            Text(leading, style = MaterialTheme.typography.titleLarge, modifier = Modifier.padding(end = 14.dp))
+        }
         Column(Modifier.weight(1f)) {
             Text(title, fontWeight = FontWeight.SemiBold)
             if (subtitle != null) Text(subtitle, style = MaterialTheme.typography.bodySmall, color = subtitleColor)
@@ -65,11 +69,17 @@ fun LilloSettingRow(
 @Composable
 fun LilloSectionTitle(
     text: String,
-    color: Color = MaterialTheme.colorScheme.onSurfaceVariant,
     modifier: Modifier = Modifier,
+    color: Color = MaterialTheme.colorScheme.onSurfaceVariant,
     uppercase: Boolean = false,
     style: TextStyle = MaterialTheme.typography.labelLarge,
     fontWeight: FontWeight? = null
 ) {
-    Text(if (uppercase) text.uppercase() else text, color = color, style = style, fontWeight = fontWeight, modifier = modifier)
+    Text(
+        if (uppercase) text.uppercase() else text,
+        color = color,
+        style = style,
+        fontWeight = fontWeight,
+        modifier = modifier
+    )
 }

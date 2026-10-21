@@ -60,7 +60,7 @@ import com.jorgelillo.tournaments.ui.formatDay
 import com.jorgelillo.tournaments.ui.theme.Arena
 
 @Composable
-fun HomeScreen(
+internal fun HomeScreen(
     library: Library,
     onOpen: (Tournament) -> Unit,
     onNew: () -> Unit,
@@ -73,7 +73,9 @@ fun HomeScreen(
         title = stringResource(R.string.app_name),
         onBack = null,
         actions = {
-            TextButton(onClick = onImport, modifier = Modifier.testTag("import")) { Text(stringResource(R.string.action_import)) }
+            TextButton(onClick = onImport, modifier = Modifier.testTag("import")) {
+                Text(stringResource(R.string.action_import))
+            }
             if (library.tournaments.isNotEmpty()) {
                 IconButton(onClick = onStats, modifier = Modifier.testTag("stats")) {
                     Icon(Icons.Filled.Star, contentDescription = stringResource(R.string.stats_title))
@@ -93,7 +95,12 @@ fun HomeScreen(
             ) {
                 Text("🏆", fontSize = 64.sp)
                 Spacer(Modifier.height(12.dp))
-                Text(stringResource(R.string.home_empty_title), style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
+                Text(
+                    stringResource(R.string.home_empty_title),
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
+                )
                 Spacer(Modifier.height(8.dp))
                 Text(stringResource(R.string.home_empty_body), color = Arena.Muted, textAlign = TextAlign.Center)
                 if (short) {
@@ -123,7 +130,19 @@ private fun TournamentCard(t: Tournament, onClick: () -> Unit) {
             .testTag("tournament_${t.id}"),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Box(Modifier.size(44.dp).background(if (champion != null) Arena.Gold else Arena.High, RoundedCornerShape(12.dp)), contentAlignment = Alignment.Center) {
+        Box(
+            Modifier.size(44.dp).background(
+                if (champion !=
+                    null
+                ) {
+                    Arena.Gold
+                } else {
+                    Arena.High
+                },
+                RoundedCornerShape(12.dp)
+            ),
+            contentAlignment = Alignment.Center
+        ) {
             Text(
                 if (champion != null) {
                     "🏆"
@@ -139,7 +158,11 @@ private fun TournamentCard(t: Tournament, onClick: () -> Unit) {
         Column(Modifier.weight(1f)) {
             Text(t.name, fontWeight = FontWeight.Bold, fontSize = 17.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
             Text(
-                listOf(t.game, formatDay(t.epochDay), pluralStringResource(R.plurals.players_count, t.players.size, t.players.size))
+                listOf(
+                    t.game,
+                    formatDay(t.epochDay),
+                    pluralStringResource(R.plurals.players_count, t.players.size, t.players.size)
+                )
                     .filter { it.isNotBlank() }.joinToString(" · "),
                 color = Arena.Muted,
                 fontSize = 13.sp,
@@ -163,7 +186,7 @@ private fun TournamentCard(t: Tournament, onClick: () -> Unit) {
 
 /** Paste a link (or a whole chat message with one) from another phone. */
 @Composable
-fun ImportDialog(onImport: (String) -> Unit, onDismiss: () -> Unit) {
+internal fun ImportDialog(onImport: (String) -> Unit, onDismiss: () -> Unit) {
     var text by rememberSaveable { mutableStateOf("") }
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -184,7 +207,9 @@ fun ImportDialog(onImport: (String) -> Unit, onDismiss: () -> Unit) {
             }
         },
         confirmButton = {
-            TextButton(onClick = { onImport(text) }, enabled = text.isNotBlank(), modifier = Modifier.testTag("import_ok")) {
+            TextButton(onClick = {
+                onImport(text)
+            }, enabled = text.isNotBlank(), modifier = Modifier.testTag("import_ok")) {
                 Text(stringResource(R.string.action_import))
             }
         },
@@ -193,7 +218,7 @@ fun ImportDialog(onImport: (String) -> Unit, onDismiss: () -> Unit) {
 }
 
 @Composable
-fun AboutSheet(onDismiss: () -> Unit) = LilloAboutSheet(
+internal fun AboutSheet(onDismiss: () -> Unit) = LilloAboutSheet(
     icon = painterResource(R.drawable.ic_launcher_foreground),
     iconBackground = Arena.Ink,
     containerColor = Arena.Raised,

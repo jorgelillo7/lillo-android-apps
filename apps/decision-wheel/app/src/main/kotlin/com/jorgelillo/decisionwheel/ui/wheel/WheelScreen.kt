@@ -97,7 +97,7 @@ private val FrictionEasing = Easing { Spin.easeOut(it) }
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
-fun WheelScreen(
+internal fun WheelScreen(
     wheel: Wheel,
     state: AppState,
     onBack: () -> Unit,
@@ -155,7 +155,13 @@ fun WheelScreen(
             rotation.snapTo(rotation.value % 360f)
             winner = DecisionEngine.segmentAtPointer(segments, rotation.value.toDouble())?.option
             view.performHapticFeedback(
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) HapticFeedbackConstants.CONFIRM else HapticFeedbackConstants.LONG_PRESS
+                if (Build.VERSION.SDK_INT >=
+                    Build.VERSION_CODES.R
+                ) {
+                    HapticFeedbackConstants.CONFIRM
+                } else {
+                    HapticFeedbackConstants.LONG_PRESS
+                }
             )
             celebration = (celebration ?: 0) + 1
             spinning = false
@@ -170,7 +176,10 @@ fun WheelScreen(
                 title = { Text(wheel.name, maxLines = 1) },
                 navigationIcon = {
                     IconButton(onClick = onBack, modifier = Modifier.testTag("back")) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.action_back))
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(R.string.action_back)
+                        )
                     }
                 },
                 actions = {
@@ -217,7 +226,9 @@ fun WheelScreen(
                     },
                 contentAlignment = Alignment.Center
             ) {
-                WheelCanvas(segments, { colorByOption[it] ?: WheelColors.Muted }, rotation.value, winner, Modifier.fillMaxSize())
+                WheelCanvas(segments, {
+                    colorByOption[it] ?: WheelColors.Muted
+                }, rotation.value, winner, Modifier.fillMaxSize())
                 ConfettiBurst(celebration, WheelColors.Segments, Modifier.fillMaxSize())
             }
         }
@@ -229,7 +240,10 @@ fun WheelScreen(
                     onClick = { spin() },
                     enabled = canSpin,
                     modifier = Modifier.widthIn(min = 200.dp).height(56.dp).testTag("spin"),
-                    colors = ButtonDefaults.buttonColors(containerColor = WheelColors.Sun, contentColor = WheelColors.Night)
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = WheelColors.Sun,
+                        contentColor = WheelColors.Night
+                    )
                 ) {
                     Text(
                         stringResource(if (spinning) R.string.spinning else R.string.spin),
@@ -285,7 +299,9 @@ fun WheelScreen(
                 }
             }
             if (vetoed.isNotEmpty()) {
-                TextButton(onClick = { vetoed = emptyList() }, enabled = !spinning) { Text(stringResource(R.string.veto_reset)) }
+                TextButton(onClick = {
+                    vetoed = emptyList()
+                }, enabled = !spinning) { Text(stringResource(R.string.veto_reset)) }
             }
             if (weights.values.any { it < 1.0 }) {
                 Spacer(Modifier.height(6.dp))
@@ -339,7 +355,15 @@ fun WheelScreen(
     }
 }
 
-private fun angleOf(point: Offset, cx: Float, cy: Float): Float = Math.toDegrees(atan2((point.y - cy).toDouble(), (point.x - cx).toDouble())).toFloat()
+private fun angleOf(point: Offset, cx: Float, cy: Float): Float = Math.toDegrees(
+    atan2(
+        (point.y - cy).toDouble(),
+        (
+            point.x -
+                cx
+            ).toDouble()
+    )
+).toFloat()
 
 @Composable
 private fun ResultCard(winner: String, onAccept: () -> Unit, onAgain: () -> Unit) {
@@ -352,7 +376,11 @@ private fun ResultCard(winner: String, onAccept: () -> Unit, onAgain: () -> Unit
             .padding(20.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(stringResource(R.string.result_title), color = WheelColors.Sun, style = MaterialTheme.typography.labelLarge)
+        Text(
+            stringResource(R.string.result_title),
+            color = WheelColors.Sun,
+            style = MaterialTheme.typography.labelLarge
+        )
         Text(
             winner,
             style = MaterialTheme.typography.displaySmall,
@@ -361,7 +389,9 @@ private fun ResultCard(winner: String, onAccept: () -> Unit, onAgain: () -> Unit
             modifier = Modifier.padding(vertical = 8.dp)
         )
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            OutlinedButton(onClick = onAgain, modifier = Modifier.testTag("again")) { Text(stringResource(R.string.result_again)) }
+            OutlinedButton(onClick = onAgain, modifier = Modifier.testTag("again")) {
+                Text(stringResource(R.string.result_again))
+            }
             Button(
                 onClick = onAccept,
                 modifier = Modifier.testTag("accept"),
@@ -372,7 +402,14 @@ private fun ResultCard(winner: String, onAccept: () -> Unit, onAgain: () -> Unit
 }
 
 @Composable
-private fun OptionChip(label: String, color: Color, vetoed: Boolean, recent: Boolean, enabled: Boolean, onClick: () -> Unit) {
+private fun OptionChip(
+    label: String,
+    color: Color,
+    vetoed: Boolean,
+    recent: Boolean,
+    enabled: Boolean,
+    onClick: () -> Unit
+) {
     Row(
         modifier = Modifier
             .minimumInteractiveComponentSize() // 48 dp to tap, whatever the chip's drawn height
@@ -383,7 +420,11 @@ private fun OptionChip(label: String, color: Color, vetoed: Boolean, recent: Boo
             .padding(horizontal = 12.dp, vertical = 7.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Box(Modifier.size(8.dp).clip(CircleShape).background(if (vetoed) WheelColors.Muted.copy(alpha = 0.4f) else color))
+        Box(
+            Modifier.size(
+                8.dp
+            ).clip(CircleShape).background(if (vetoed) WheelColors.Muted.copy(alpha = 0.4f) else color)
+        )
         Spacer(Modifier.size(6.dp))
         Text(
             text = if (recent) "$label ⏱" else label,

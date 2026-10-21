@@ -23,7 +23,9 @@ val LilloRoborazziOptions = RoborazziOptions(
     compareOptions = RoborazziOptions.CompareOptions(changeThreshold = 0.005f)
 )
 
-private val ChecksButContrast = AccessibilityCheckPreset.getAccessibilityHierarchyChecksForPreset(AccessibilityCheckPreset.LATEST)
+private val ChecksButContrast = AccessibilityCheckPreset.getAccessibilityHierarchyChecksForPreset(
+    AccessibilityCheckPreset.LATEST
+)
     .filterNot { it is TextContrastCheck }
     .toSet()
 
@@ -77,7 +79,10 @@ fun ComposeContentTestRule.captureScreenshot(
     )
     onRoot().checkRoboAccessibility(
         roborazziATFAccessibilityCheckOptions = RoborazziATFAccessibilityCheckOptions(
-            checker = RoborazziATFAccessibilityChecker(checks = setOf(TextContrastCheck()), suppressions = NotContrastProblems),
+            checker = RoborazziATFAccessibilityChecker(
+                checks = setOf(TextContrastCheck()),
+                suppressions = NotContrastProblems
+            ),
             failureLevel = RoborazziATFAccessibilityChecker.CheckLevel.Warning
         )
     )

@@ -14,7 +14,10 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         val app = application as ChristmasCountdownApplication
         setLilloContent(ChristmasColorScheme) {
-            ChristmasApp(app, openAdvent = intent?.getBooleanExtra(SeasonNotifications.EXTRA_OPEN_ADVENT, false) == true)
+            ChristmasApp(
+                app,
+                openAdvent = intent?.getBooleanExtra(SeasonNotifications.EXTRA_OPEN_ADVENT, false) == true
+            )
         }
     }
 }

@@ -12,7 +12,15 @@ class ChristmasCountdownTest {
     private val utc = ZoneId.of("UTC")
     private val madrid = ZoneId.of("Europe/Madrid")
 
-    private fun at(year: Int, month: Int, day: Int, hour: Int = 0, minute: Int = 0, second: Int = 0, zone: ZoneId = utc) = ZonedDateTime.of(year, month, day, hour, minute, second, 0, zone)
+    private fun at(
+        year: Int,
+        month: Int,
+        day: Int,
+        hour: Int = 0,
+        minute: Int = 0,
+        second: Int = 0,
+        zone: ZoneId = utc
+    ) = ZonedDateTime.of(year, month, day, hour, minute, second, 0, zone)
 
     private fun counting(now: ZonedDateTime) = assertIs<CountdownState.Counting>(ChristmasCountdown.stateAt(now))
 

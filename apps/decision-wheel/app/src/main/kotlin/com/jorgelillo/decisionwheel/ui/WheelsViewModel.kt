@@ -26,16 +26,45 @@ class WheelsViewModel(private val repository: StateRepository) : ViewModel() {
 
     fun save(wheel: Wheel) = update { state ->
         val exists = state.wheels.any { it.id == wheel.id }
-        state.copy(wheels = if (exists) state.wheels.map { if (it.id == wheel.id) wheel else it } else state.wheels + wheel)
+        state.copy(
+            wheels = if (exists) {
+                state.wheels.map {
+                    if (it.id ==
+                        wheel.id
+                    ) {
+                        wheel
+                    } else {
+                        it
+                    }
+                }
+            } else {
+                state.wheels + wheel
+            }
+        )
     }
 
     fun delete(wheelId: String) = update { state ->
-        state.copy(wheels = state.wheels.filterNot { it.id == wheelId }, history = state.history.filterNot { it.wheelId == wheelId })
+        state.copy(
+            wheels = state.wheels.filterNot { it.id == wheelId },
+            history = state.history.filterNot {
+                it.wheelId ==
+                    wheelId
+            }
+        )
     }
 
-    fun accept(wheelId: String, option: String) = update { it.withDecision(Decision(wheelId, option, System.currentTimeMillis())) }
+    fun accept(wheelId: String, option: String) = update {
+        it.withDecision(Decision(wheelId, option, System.currentTimeMillis()))
+    }
 
-    fun clearHistory(wheelId: String) = update { state -> state.copy(history = state.history.filterNot { it.wheelId == wheelId }) }
+    fun clearHistory(wheelId: String) = update { state ->
+        state.copy(
+            history = state.history.filterNot {
+                it.wheelId ==
+                    wheelId
+            }
+        )
+    }
 
     fun setAvoidRepeats(enabled: Boolean) = update { it.copy(avoidRepeats = enabled) }
 

@@ -29,7 +29,7 @@ import kotlin.math.sin
  * Each slice's size is its real chance. When [winner] is set, the other slices dim.
  */
 @Composable
-fun WheelCanvas(
+internal fun WheelCanvas(
     segments: List<Segment>,
     colorOf: (String) -> Color,
     rotationDegrees: Float,
@@ -85,7 +85,10 @@ fun WheelCanvas(
                     rotate(start + sweep / 2f, pivot = center) {
                         drawText(
                             layout,
-                            topLeft = Offset(center.x + radius * 0.92f - layout.size.width, center.y - layout.size.height / 2f)
+                            topLeft = Offset(
+                                center.x + radius * 0.92f - layout.size.width,
+                                center.y - layout.size.height / 2f
+                            )
                         )
                     }
                 }
@@ -114,4 +117,5 @@ fun WheelCanvas(
  * Colour of each option by its position in the wheel's full list, so a slice keeps its colour
  * (and matches its chip) when other options are vetoed or shrink.
  */
-fun segmentColors(count: Int): List<Color> = DecisionEngine.colorSlots(count, WheelColors.Segments.size).map { WheelColors.Segments[it] }
+fun segmentColors(count: Int): List<Color> =
+    DecisionEngine.colorSlots(count, WheelColors.Segments.size).map { WheelColors.Segments[it] }

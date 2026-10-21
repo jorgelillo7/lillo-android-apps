@@ -20,7 +20,9 @@ class ReminderWorker(context: Context, params: WorkerParameters) : CoroutineWork
             if (date != null && slot != null && date == LocalDate.now()) {
                 val settings = (applicationContext as ChristmasCountdownApplication).settings
                 val opened = date.dayOfMonth in settings.openedDoors(date.year).first()
-                Reminders.due(date, slot, doorOpenedToday = opened)?.let { SeasonNotifications.show(applicationContext, it, date) }
+                Reminders.due(date, slot, doorOpenedToday = opened)?.let {
+                    SeasonNotifications.show(applicationContext, it, date)
+                }
             }
         } finally {
             // Whatever happened to this one, the chain goes on (else it waits for the app to open).

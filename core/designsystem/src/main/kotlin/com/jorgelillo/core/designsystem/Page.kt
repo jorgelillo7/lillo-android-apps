@@ -58,8 +58,8 @@ fun LilloPage(
     title: String?,
     onBack: (() -> Unit)?,
     background: Brush,
-    contentColor: Color = MaterialTheme.colorScheme.onBackground,
     modifier: Modifier = Modifier,
+    contentColor: Color = MaterialTheme.colorScheme.onBackground,
     titleWeight: FontWeight = FontWeight.Bold,
     actions: @Composable RowScope.() -> Unit = {},
     sideActionsWhenShort: Boolean = false,
@@ -69,10 +69,16 @@ fun LilloPage(
     val side = sideActionsWhenShort && isShortScreen()
     Column(modifier.fillMaxSize().background(background).statusBarsPadding().navigationBarsPadding()) {
         if (!side || title != null || onBack != null) {
-            Row(Modifier.fillMaxWidth().height(56.dp).padding(horizontal = 4.dp), verticalAlignment = Alignment.CenterVertically) {
+            Row(
+                Modifier.fillMaxWidth().height(56.dp).padding(horizontal = 4.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 if (onBack != null) {
                     IconButton(onClick = onBack, modifier = Modifier.testTag("back")) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.lillo_back))
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(R.string.lillo_back)
+                        )
                     }
                 } else {
                     Spacer(Modifier.width(12.dp))
@@ -116,9 +122,9 @@ private val SIDE_ACTIONS_WIDTH = 300.dp
 fun LilloBigButton(
     text: String,
     onClick: () -> Unit,
+    modifier: Modifier = Modifier,
     color: Color = MaterialTheme.colorScheme.primary,
     contentColor: Color = MaterialTheme.colorScheme.onPrimary,
-    modifier: Modifier = Modifier,
     enabled: Boolean = true,
     height: Dp = 60.dp,
     fontSize: TextUnit = 20.sp,
@@ -145,6 +151,7 @@ val TestTagsAsResourceIds = Modifier.semantics { testTagsAsResourceId = true }
  * the app's window, so split screen and freeform windows count too.
  */
 @Composable
-fun isShortScreen(): Boolean = with(LocalDensity.current) { LocalWindowInfo.current.containerSize.height.toDp() } < SHORT_SCREEN_DP.dp
+fun isShortScreen(): Boolean =
+    with(LocalDensity.current) { LocalWindowInfo.current.containerSize.height.toDp() } < SHORT_SCREEN_DP.dp
 
 private const val SHORT_SCREEN_DP = 480

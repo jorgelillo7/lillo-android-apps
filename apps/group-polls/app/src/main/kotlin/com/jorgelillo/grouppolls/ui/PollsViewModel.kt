@@ -77,7 +77,13 @@ class PollsViewModel(
     fun acceptTerms() = update { it.copy(acceptedTerms = true) }
 
     /** Creates a poll and returns its code (null on failure). */
-    suspend fun create(question: String, red: String, blue: String, visibility: Visibility, duration: Duration): String? {
+    suspend fun create(
+        question: String,
+        red: String,
+        blue: String,
+        visibility: Visibility,
+        duration: Duration
+    ): String? {
         val state = store.state.first()
         val created = now()
         val poll = Poll(
@@ -106,24 +112,54 @@ class PollsViewModel(
 
     fun vote(poll: Poll, side: Side, prediction: Side) = viewModelScope.launch {
         val state = store.state.first()
-        val vote = Vote(repository.userId(), state.name.takeIf { poll.visibility == Visibility.PRIVATE }, side, prediction, now())
+        val vote =
+            Vote(
+                repository.userId(),
+                state.name.takeIf {
+                    poll.visibility == Visibility.PRIVATE
+                },
+                side,
+                prediction,
+                now()
+            )
         runCatching { repository.vote(poll.code, vote) }
             .onSuccess {
                 store.update { s ->
                     s.copy(
                         votes = s.votes + (poll.code to MyVote(side, prediction)),
-                        myPolls = if (poll.visibility == Visibility.PRIVATE) (listOf(poll.code) + (s.myPolls - poll.code)).take(MAX_MY_POLLS) else s.myPolls
+                        myPolls = if (poll.visibility ==
+                            Visibility.PRIVATE
+                        ) {
+                            (listOf(poll.code) + (s.myPolls - poll.code)).take(MAX_MY_POLLS)
+                        } else {
+                            s.myPolls
+                        }
                     )
                 }
             }
             .onFailure { _error.value = it.message }
     }
 
-    fun close(code: String) = viewModelScope.launch { runCatching { repository.close(code) }.onFailure { _error.value = it.message } }
+    fun close(code: String) = viewModelScope.launch {
+        runCatching { repository.close(code) }.onFailure {
+            _error.value =
+                it.message
+        }
+    }
 
     fun report(poll: Poll, hideCreator: Boolean) = viewModelScope.launch {
         runCatching { repository.report(poll.code) }
-        update { it.copy(reported = it.reported + poll.code, hiddenCreators = if (hideCreator) it.hiddenCreators + poll.creatorId else it.hiddenCreators) }
+        update {
+            it.copy(
+                reported = it.reported + poll.code,
+                hiddenCreators = if (hideCreator) {
+                    it.hiddenCreators +
+                        poll.creatorId
+                } else {
+                    it.hiddenCreators
+                }
+            )
+        }
     }
 
     /** Counts a prediction once its poll has closed with a winner. */
@@ -134,7 +170,14 @@ class PollsViewModel(
         val before = PredictionRecord(state.predictionHits, state.predictionsResolved)
         val after = before.add(mine.prediction, poll, now())
         if (after == before) return
-        update { it.copy(predictionHits = after.hits, predictionsResolved = after.resolved, resolvedPredictions = it.resolvedPredictions + poll.code) }
+        update {
+            it.copy(
+                predictionHits = after.hits,
+                predictionsResolved = after.resolved,
+                resolvedPredictions =
+                    it.resolvedPredictions + poll.code
+            )
+        }
     }
 
     /** "Delete my data": anonymise on the server, forget everything on this phone. */
@@ -154,8 +197,9 @@ class PollsViewModel(
     companion object {
         const val MAX_MY_POLLS = 200
 
-        fun factory(repository: PollRepository, store: LocalStore, language: String): ViewModelProvider.Factory = viewModelFactory {
-            initializer { PollsViewModel(repository, store, language) }
-        }
+        fun factory(repository: PollRepository, store: LocalStore, language: String): ViewModelProvider.Factory =
+            viewModelFactory {
+                initializer { PollsViewModel(repository, store, language) }
+            }
     }
 }

@@ -41,7 +41,10 @@ object Reminders {
             }
 
             ReminderSlot.EVENING ->
-                Reminder.DOOR_WAITING.takeIf { date.month == Month.DECEMBER && day in 2..AdventCalendar.DOORS && !doorOpenedToday }
+                Reminder.DOOR_WAITING.takeIf {
+                    date.month == Month.DECEMBER && day in 2..AdventCalendar.DOORS &&
+                        !doorOpenedToday
+                }
         }
     }
 
@@ -50,7 +53,11 @@ object Reminders {
         var date = now.toLocalDate()
         repeat(MAX_DAYS) {
             for (slot in ReminderSlot.entries) {
-                if (date.atTime(slot.time).isAfter(now) && due(date, slot, doorOpenedToday = false) != null) return date to slot
+                if (date.atTime(slot.time).isAfter(now) &&
+                    due(date, slot, doorOpenedToday = false) != null
+                ) {
+                    return date to slot
+                }
             }
             date = date.plusDays(1)
         }

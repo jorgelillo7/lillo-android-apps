@@ -61,7 +61,13 @@ import com.jorgelillo.whoslying.domain.WordPack
 import com.jorgelillo.whoslying.ui.theme.Neon
 
 @Composable
-fun HomeScreen(onPlay: () -> Unit, onHowTo: () -> Unit, onModes: () -> Unit, onPacks: () -> Unit, onAbout: () -> Unit) {
+internal fun HomeScreen(
+    onPlay: () -> Unit,
+    onHowTo: () -> Unit,
+    onModes: () -> Unit,
+    onPacks: () -> Unit,
+    onAbout: () -> Unit
+) {
     Page(title = null, onBack = null, bottom = {
         BigButton(stringResource(R.string.play), onPlay, Modifier.testTag("play"))
         Spacer(Modifier.height(12.dp))
@@ -95,7 +101,7 @@ fun HomeScreen(onPlay: () -> Unit, onHowTo: () -> Unit, onModes: () -> Unit, onP
 }
 
 @Composable
-private fun HomeChip(emoji: String, label: String, onClick: () -> Unit, modifier: Modifier) {
+private fun HomeChip(emoji: String, label: String, onClick: () -> Unit, modifier: Modifier = Modifier) {
     Column(
         modifier
             .clip(MaterialTheme.shapes.large)
@@ -110,7 +116,7 @@ private fun HomeChip(emoji: String, label: String, onClick: () -> Unit, modifier
 }
 
 @Composable
-fun PlayersScreen(
+internal fun PlayersScreen(
     players: List<String>,
     onAdd: (String) -> Unit,
     onRemove: (String) -> Unit,
@@ -133,12 +139,17 @@ fun PlayersScreen(
                     onValueChange = { draft = it },
                     placeholder = { Text(stringResource(R.string.players_add_hint)) },
                     singleLine = true,
-                    keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Words, imeAction = ImeAction.Done),
+                    keyboardOptions = KeyboardOptions(
+                        capitalization = KeyboardCapitalization.Words,
+                        imeAction = ImeAction.Done
+                    ),
                     keyboardActions = KeyboardActions(onDone = { add() }),
                     modifier = Modifier.weight(1f).testTag("player_name")
                 )
                 Spacer(Modifier.width(10.dp))
-                FilledIconButton(onClick = { add() }, enabled = draft.isNotBlank(), modifier = Modifier.size(52.dp).testTag("add_player")) {
+                FilledIconButton(onClick = {
+                    add()
+                }, enabled = draft.isNotBlank(), modifier = Modifier.size(52.dp).testTag("add_player")) {
                     Icon(Icons.Filled.Add, contentDescription = stringResource(R.string.players_add))
                 }
             }
@@ -167,9 +178,17 @@ fun PlayersScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Avatar(name, players, 38.dp)
-                    Text(name, Modifier.weight(1f).padding(horizontal = 14.dp), style = MaterialTheme.typography.titleMedium)
+                    Text(
+                        name,
+                        Modifier.weight(1f).padding(horizontal = 14.dp),
+                        style = MaterialTheme.typography.titleMedium
+                    )
                     IconButton(onClick = { onRemove(name) }) {
-                        Icon(Icons.Filled.Close, contentDescription = stringResource(R.string.players_remove, name), tint = Neon.Pink)
+                        Icon(
+                            Icons.Filled.Close,
+                            contentDescription = stringResource(R.string.players_remove, name),
+                            tint = Neon.Pink
+                        )
                     }
                 }
             }
@@ -178,7 +197,7 @@ fun PlayersScreen(
 }
 
 @Composable
-fun SetupScreen(
+internal fun SetupScreen(
     playerCount: Int,
     settings: GameSettings,
     packs: List<WordPack>,
@@ -232,18 +251,40 @@ fun SetupScreen(
                     Text(emoji, style = MaterialTheme.typography.headlineMedium)
                     Spacer(Modifier.width(14.dp))
                     Column(Modifier.weight(1f)) {
-                        Text(stringResource(texts.first), fontWeight = FontWeight.Bold, color = if (enabled) Neon.Ink else Neon.Muted)
-                        Text(stringResource(texts.second), style = MaterialTheme.typography.bodySmall, color = Neon.Muted)
+                        Text(
+                            stringResource(texts.first),
+                            fontWeight = FontWeight.Bold,
+                            color = if (enabled) Neon.Ink else Neon.Muted
+                        )
+                        Text(
+                            stringResource(texts.second),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = Neon.Muted
+                        )
                     }
                 }
             }
 
             SettingRow(stringResource(R.string.setup_impostors), null) {
-                IconButton(onClick = { onChange { it.copy(impostors = it.impostors - 1) } }, enabled = settings.impostors > 1, modifier = Modifier.testTag("impostors_minus")) {
+                IconButton(
+                    onClick = { onChange { it.copy(impostors = it.impostors - 1) } },
+                    enabled =
+                        settings.impostors > 1,
+                    modifier = Modifier.testTag("impostors_minus")
+                ) {
                     Text("−", style = MaterialTheme.typography.headlineSmall)
                 }
-                Text("${settings.impostors}", style = MaterialTheme.typography.titleLarge, modifier = Modifier.padding(horizontal = 8.dp))
-                IconButton(onClick = { onChange { it.copy(impostors = it.impostors + 1) } }, enabled = settings.impostors < maxImpostors, modifier = Modifier.testTag("impostors_plus")) {
+                Text(
+                    "${settings.impostors}",
+                    style = MaterialTheme.typography.titleLarge,
+                    modifier = Modifier.padding(horizontal = 8.dp)
+                )
+                IconButton(
+                    onClick = { onChange { it.copy(impostors = it.impostors + 1) } },
+                    enabled =
+                        settings.impostors < maxImpostors,
+                    modifier = Modifier.testTag("impostors_plus")
+                ) {
                     Text("+", style = MaterialTheme.typography.headlineSmall)
                 }
             }
@@ -261,10 +302,16 @@ fun SetupScreen(
             val recommendedRounds = Match.recommendedRounds(playerCount)
             SettingRow(
                 "🏆 " + stringResource(R.string.setup_rounds),
-                stringResource(R.string.setup_rounds_desc) + " · " + stringResource(R.string.setup_recommended, "$recommendedRounds")
+                stringResource(R.string.setup_rounds_desc) + " · " +
+                    stringResource(R.string.setup_recommended, "$recommendedRounds")
             ) {
                 val step = Match.ROUND_OPTIONS.indexOf(settings.rounds).coerceAtLeast(0)
-                IconButton(onClick = { onChange { it.copy(rounds = Match.ROUND_OPTIONS[step - 1]) } }, enabled = step > 0, modifier = Modifier.testTag("rounds_minus")) {
+                IconButton(
+                    onClick = { onChange { it.copy(rounds = Match.ROUND_OPTIONS[step - 1]) } },
+                    enabled =
+                        step > 0,
+                    modifier = Modifier.testTag("rounds_minus")
+                ) {
                     Text("−", style = MaterialTheme.typography.headlineSmall)
                 }
                 Text(
@@ -274,7 +321,12 @@ fun SetupScreen(
                     textAlign = TextAlign.Center,
                     modifier = Modifier.width(40.dp).testTag("rounds")
                 )
-                IconButton(onClick = { onChange { it.copy(rounds = Match.ROUND_OPTIONS[step + 1]) } }, enabled = step < Match.ROUND_OPTIONS.lastIndex, modifier = Modifier.testTag("rounds_plus")) {
+                IconButton(
+                    onClick = { onChange { it.copy(rounds = Match.ROUND_OPTIONS[step + 1]) } },
+                    enabled =
+                        step < Match.ROUND_OPTIONS.lastIndex,
+                    modifier = Modifier.testTag("rounds_plus")
+                ) {
                     Text("+", style = MaterialTheme.typography.headlineSmall)
                 }
             }
@@ -282,10 +334,23 @@ fun SetupScreen(
             SettingRow(
                 "⏱️ " + stringResource(R.string.setup_timer),
                 stringResource(R.string.setup_timer_desc) + " · " +
-                    stringResource(R.string.setup_recommended, stringResource(R.string.setup_timer_minutes, recommendedTimer / 60))
+                    stringResource(
+                        R.string.setup_recommended,
+                        stringResource(
+                            R.string.setup_timer_minutes,
+                            recommendedTimer / 60
+                        )
+                    )
             ) {
                 val step = Rules.TIMER_OPTIONS.indexOf(settings.discussionSeconds).coerceAtLeast(0)
-                IconButton(onClick = { onChange { it.copy(discussionSeconds = Rules.TIMER_OPTIONS[step - 1]) } }, enabled = step > 0, modifier = Modifier.testTag("timer_minus")) {
+                IconButton(
+                    onClick = {
+                        onChange { it.copy(discussionSeconds = Rules.TIMER_OPTIONS[step - 1]) }
+                    },
+                    enabled =
+                        step > 0,
+                    modifier = Modifier.testTag("timer_minus")
+                ) {
                     Text("−", style = MaterialTheme.typography.headlineSmall)
                 }
                 Text(
@@ -299,7 +364,14 @@ fun SetupScreen(
                     textAlign = TextAlign.Center,
                     modifier = Modifier.width(64.dp).testTag("timer_value")
                 )
-                IconButton(onClick = { onChange { it.copy(discussionSeconds = Rules.TIMER_OPTIONS[step + 1]) } }, enabled = step < Rules.TIMER_OPTIONS.lastIndex, modifier = Modifier.testTag("timer_plus")) {
+                IconButton(
+                    onClick = {
+                        onChange { it.copy(discussionSeconds = Rules.TIMER_OPTIONS[step + 1]) }
+                    },
+                    enabled =
+                        step < Rules.TIMER_OPTIONS.lastIndex,
+                    modifier = Modifier.testTag("timer_plus")
+                ) {
                     Text("+", style = MaterialTheme.typography.headlineSmall)
                 }
             }
@@ -331,12 +403,22 @@ fun SetupScreen(
                         color = Neon.Muted,
                         maxLines = 2
                     )
-                    Text(stringResource(R.string.setup_unplayed, left, total), style = MaterialTheme.typography.bodySmall, color = Neon.Muted, modifier = Modifier.testTag("unplayed"))
+                    Text(
+                        stringResource(R.string.setup_unplayed, left, total),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = Neon.Muted,
+                        modifier = Modifier.testTag("unplayed")
+                    )
                 }
                 Text("›", style = MaterialTheme.typography.headlineMedium, color = Neon.Muted)
             }
             if (left * 10 < total) {
-                Text(stringResource(R.string.setup_running_out), style = MaterialTheme.typography.bodySmall, color = Neon.Amber, modifier = Modifier.padding(top = 6.dp))
+                Text(
+                    stringResource(R.string.setup_running_out),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Neon.Amber,
+                    modifier = Modifier.padding(top = 6.dp)
+                )
             }
             Spacer(Modifier.height(16.dp))
             if (short) {

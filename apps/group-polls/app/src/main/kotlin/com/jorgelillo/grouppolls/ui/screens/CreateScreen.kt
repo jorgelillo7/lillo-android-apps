@@ -45,11 +45,11 @@ import kotlinx.coroutines.launch
 
 /** New poll: question, red and blue answers, public or private, and how long it stays open. */
 @Composable
-fun CreateScreen(
+internal fun CreateScreen(
     acceptedTerms: Boolean,
     onAcceptTerms: () -> Unit,
     onCreate: suspend (String, String, String, Visibility, Duration) -> String?,
-    onCreated: (String) -> Unit,
+    onOpenPoll: (String) -> Unit,
     onBack: () -> Unit
 ) {
     var question by rememberSaveable { mutableStateOf("") }
@@ -72,7 +72,7 @@ fun CreateScreen(
         scope.launch {
             val code = onCreate(question, red, blue, visibility, duration)
             busy = false
-            if (code != null) onCreated(code)
+            if (code != null) onOpenPoll(code)
         }
     }
 
@@ -99,16 +99,37 @@ fun CreateScreen(
             )
             Spacer(Modifier.height(12.dp))
             Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                AnswerField(red, { red = it.take(Limits.ANSWER_MAX) }, stringResource(R.string.create_red), Polls.Red, Modifier.weight(1f).testTag("red_input"))
-                AnswerField(blue, { blue = it.take(Limits.ANSWER_MAX) }, stringResource(R.string.create_blue), Polls.Blue, Modifier.weight(1f).testTag("blue_input"))
+                AnswerField(red, {
+                    red = it.take(Limits.ANSWER_MAX)
+                }, stringResource(R.string.create_red), Polls.Red, Modifier.weight(1f).testTag("red_input"))
+                AnswerField(blue, {
+                    blue = it.take(Limits.ANSWER_MAX)
+                }, stringResource(R.string.create_blue), Polls.Blue, Modifier.weight(1f).testTag("blue_input"))
             }
             if (touched && problems.isNotEmpty()) {
-                Text(problemText(problems.first()), color = Polls.Red, style = MaterialTheme.typography.bodySmall, modifier = Modifier.padding(top = 8.dp))
+                Text(
+                    problemText(problems.first()),
+                    color = Polls.Red,
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier.padding(top = 8.dp)
+                )
             }
 
             SectionTitle(stringResource(R.string.create_who))
-            Choice(stringResource(R.string.create_private), stringResource(R.string.create_private_desc), "🔗", visibility == Visibility.PRIVATE, "visibility_private") { visibility = Visibility.PRIVATE }
-            Choice(stringResource(R.string.create_public), stringResource(R.string.create_public_desc), "🌍", visibility == Visibility.PUBLIC, "visibility_public") { visibility = Visibility.PUBLIC }
+            Choice(
+                stringResource(R.string.create_private),
+                stringResource(R.string.create_private_desc),
+                "🔗",
+                visibility == Visibility.PRIVATE,
+                "visibility_private"
+            ) { visibility = Visibility.PRIVATE }
+            Choice(
+                stringResource(R.string.create_public),
+                stringResource(R.string.create_public_desc),
+                "🌍",
+                visibility == Visibility.PUBLIC,
+                "visibility_public"
+            ) { visibility = Visibility.PUBLIC }
 
             SectionTitle(stringResource(R.string.create_duration))
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -118,7 +139,9 @@ fun CreateScreen(
                         Duration.SEVEN_DAYS -> R.string.duration_week
                         Duration.NO_LIMIT -> R.string.duration_none
                     }
-                    Pill(stringResource(label), d == duration, Modifier.weight(1f).testTag("duration_${d.name.lowercase()}")) { duration = d }
+                    Pill(stringResource(label), d == duration, onClick = {
+                        duration = d
+                    }, modifier = Modifier.weight(1f).testTag("duration_${d.name.lowercase()}"))
                 }
             }
             Spacer(Modifier.height(16.dp))
@@ -158,13 +181,23 @@ private fun problemText(problem: DraftProblem): String = stringResource(
 )
 
 @Composable
-private fun AnswerField(value: String, onChange: (String) -> Unit, label: String, color: Color, modifier: Modifier) {
+private fun AnswerField(
+    value: String,
+    onChange: (String) -> Unit,
+    label: String,
+    color: Color,
+    modifier: Modifier = Modifier
+) {
     OutlinedTextField(
         value = value,
         onValueChange = onChange,
         label = { Text(label, color = color) },
         singleLine = true,
-        colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = color, unfocusedBorderColor = color.copy(alpha = 0.5f), cursorColor = color),
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedBorderColor = color,
+            unfocusedBorderColor = color.copy(alpha = 0.5f),
+            cursorColor = color
+        ),
         modifier = modifier
     )
 }
@@ -191,7 +224,7 @@ private fun Choice(title: String, desc: String, emoji: String, selected: Boolean
 }
 
 @Composable
-private fun Pill(text: String, selected: Boolean, modifier: Modifier, onClick: () -> Unit) {
+private fun Pill(text: String, selected: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier) {
     Text(
         text,
         modifier = modifier

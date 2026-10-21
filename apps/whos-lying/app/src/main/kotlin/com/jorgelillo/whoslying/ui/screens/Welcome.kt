@@ -33,7 +33,7 @@ import com.jorgelillo.whoslying.ui.theme.Neon
  * Settings → About this app shows it again.
  */
 @Composable
-fun WelcomeDialog(showCheckbox: Boolean, onDismiss: (dontShowAgain: Boolean) -> Unit) {
+internal fun WelcomeDialog(showCheckbox: Boolean, onDismiss: (dontShowAgain: Boolean) -> Unit) {
     val uriHandler = LocalUriHandler.current
     var dontShowAgain by rememberSaveable { mutableStateOf(true) }
     AlertDialog(
@@ -49,7 +49,9 @@ fun WelcomeDialog(showCheckbox: Boolean, onDismiss: (dontShowAgain: Boolean) -> 
                 Text(stringResource(R.string.welcome_testers))
                 if (showCheckbox) {
                     Row(
-                        Modifier.fillMaxWidth().clickable { dontShowAgain = !dontShowAgain }.padding(top = 4.dp).testTag("welcome_dont_show"),
+                        Modifier.fillMaxWidth().clickable {
+                            dontShowAgain = !dontShowAgain
+                        }.padding(top = 4.dp).testTag("welcome_dont_show"),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Checkbox(
@@ -68,7 +70,9 @@ fun WelcomeDialog(showCheckbox: Boolean, onDismiss: (dontShowAgain: Boolean) -> 
             }
         },
         dismissButton = {
-            TextButton(onClick = { uriHandler.openUri(PLAY_STORE_URL) }, modifier = Modifier.testTag("welcome_feedback")) {
+            TextButton(onClick = {
+                uriHandler.openUri(PLAY_STORE_URL)
+            }, modifier = Modifier.testTag("welcome_feedback")) {
                 Text(stringResource(R.string.welcome_feedback), color = Neon.Muted)
             }
         }

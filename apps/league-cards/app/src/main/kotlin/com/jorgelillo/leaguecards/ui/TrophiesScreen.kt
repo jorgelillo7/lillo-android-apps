@@ -33,7 +33,7 @@ import java.time.format.FormatStyle
 
 /** Endings discovered (the rest locked), achievements, and the last seasons played. */
 @Composable
-fun TrophiesScreen(league: League, saved: Saved, onBack: () -> Unit) {
+internal fun TrophiesScreen(league: League, saved: Saved, onBack: () -> Unit) {
     Page(title = stringResource(R.string.trophies), onBack = onBack) {
         Column(Modifier.fillMaxWidth().verticalScroll(rememberScrollState()).padding(bottom = 24.dp)) {
             val endings = league.endings.keys
@@ -42,14 +42,28 @@ fun TrophiesScreen(league: League, saved: Saved, onBack: () -> Unit) {
                 val seen = key in saved.endingsSeen
                 Tile(
                     emoji = if (seen) endingEmoji(key) else "🔒",
-                    title = if (seen) league.endings.text(key).replace("{position}", "N") else stringResource(R.string.locked),
+                    title = if (seen) {
+                        league.endings.text(
+                            key
+                        ).replace("{position}", "N")
+                    } else {
+                        stringResource(R.string.locked)
+                    },
                     subtitle = null,
                     dim = !seen,
                     tag = "ending_$key"
                 )
             }
 
-            Section(stringResource(R.string.achievements_count, league.achievements.count { it.id in saved.achievements }, league.achievements.size))
+            Section(
+                stringResource(
+                    R.string.achievements_count,
+                    league.achievements.count {
+                        it.id in saved.achievements
+                    },
+                    league.achievements.size
+                )
+            )
             league.achievements.forEach { a ->
                 val done = a.id in saved.achievements
                 Tile(if (done) a.emoji else "🔒", a.title, a.description, dim = !done, tag = "achievement_${a.id}")
@@ -80,7 +94,8 @@ fun endingEmoji(key: String): String = when (key) {
 }
 
 @Composable
-private fun Section(title: String) = LilloSectionTitle(title, modifier = Modifier.padding(top = 20.dp, bottom = 8.dp), fontWeight = FontWeight.Bold)
+private fun Section(title: String) =
+    LilloSectionTitle(title, modifier = Modifier.padding(top = 20.dp, bottom = 8.dp), fontWeight = FontWeight.Bold)
 
 @Composable
 private fun Tile(emoji: String, title: String, subtitle: String?, dim: Boolean, tag: String) {
@@ -97,7 +112,11 @@ private fun Tile(emoji: String, title: String, subtitle: String?, dim: Boolean, 
         Spacer(Modifier.width(12.dp))
         Column {
             // Locked: muted title, still readable (fading the whole row took the text under 4.5:1).
-            Text(title, color = if (dim) Chat.Muted else Chat.Text, fontWeight = if (dim) FontWeight.Normal else FontWeight.Bold)
+            Text(
+                title,
+                color = if (dim) Chat.Muted else Chat.Text,
+                fontWeight = if (dim) FontWeight.Normal else FontWeight.Bold
+            )
             subtitle?.let { Text(it, color = Chat.Muted, style = MaterialTheme.typography.bodySmall) }
         }
     }
@@ -117,7 +136,11 @@ private fun HistoryRow(league: League, r: SeasonRecord) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(endingEmoji(r.ending), style = MaterialTheme.typography.titleLarge)
             Spacer(Modifier.width(10.dp))
-            Text(stringResource(R.string.history_line, r.position, r.points, r.matchdaysPlayed), fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f))
+            Text(
+                stringResource(R.string.history_line, r.position, r.points, r.matchdaysPlayed),
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.weight(1f)
+            )
             Text(date, color = Chat.Muted, style = MaterialTheme.typography.labelSmall)
         }
         if (r.achievements.isNotEmpty()) {

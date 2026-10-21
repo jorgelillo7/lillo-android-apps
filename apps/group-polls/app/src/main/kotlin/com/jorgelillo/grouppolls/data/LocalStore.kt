@@ -30,4 +30,5 @@ data class MyVote(val side: Side, val prediction: Side)
 typealias LocalStore = JsonStore<LocalState>
 
 /** The app's single store: DataStore file "group_polls", as it has always been (users keep their data). */
-fun localStore(context: Context): LocalStore = JsonStore(context, "group_polls", LocalState.serializer()) { LocalState() }
+fun localStore(context: Context): LocalStore =
+    JsonStore(context, "group_polls", LocalState.serializer()) { LocalState() }

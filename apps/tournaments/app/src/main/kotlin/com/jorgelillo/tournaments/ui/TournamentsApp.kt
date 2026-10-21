@@ -40,7 +40,7 @@ private data class TournamentRoute(val id: String)
 private data object Stats
 
 @Composable
-fun TournamentsApp(vm: TournamentsViewModel) {
+internal fun TournamentsApp(vm: TournamentsViewModel) {
     val library by vm.library.collectAsStateWithLifecycle()
     val current = library ?: return // first disk read in progress (a few ms)
     val nav = rememberNavController()

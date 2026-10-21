@@ -27,13 +27,21 @@ class WheelScreensScreenshotTest {
     @get:Rule
     val compose = createComposeRule()
 
-    private val food = Wheel("food", "Where should we eat?", listOf("Pizza", "Sushi", "Tacos", "Burger", "Thai", "Indian"), favorite = true)
+    private val food =
+        Wheel(
+            "food",
+            "Where should we eat?",
+            listOf("Pizza", "Sushi", "Tacos", "Burger", "Thai", "Indian"),
+            favorite = true
+        )
     private val state = AppState(
         wheels = listOf(food, Wheel("plan", "Friday plan", listOf("Cinema", "Board games", "Bowling"))),
         history = listOf(Decision("food", "Sushi", 1_760_000_000_000))
     )
 
-    private fun shot(name: String, content: @Composable () -> Unit) = compose.captureScreenshot(name) { LilloTheme(WheelColorScheme) { content() } }
+    private fun shot(name: String, content: @Composable () -> Unit) = compose.captureScreenshot(name) {
+        LilloTheme(WheelColorScheme) { content() }
+    }
 
     private fun home(name: String) = shot(name) { HomeScreen(state, {}, {}, {}, {}, {}, {}, {}) }
 

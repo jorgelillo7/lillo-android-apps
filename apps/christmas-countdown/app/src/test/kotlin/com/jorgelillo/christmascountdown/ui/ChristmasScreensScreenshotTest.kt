@@ -42,7 +42,14 @@ class ChristmasScreensScreenshotTest {
     }
 
     private fun countdown(name: String, sleeps: Boolean = false) = shot(name) {
-        CountdownScreen(CountdownUiState(ChristmasCountdown.stateAt(october), sleepsMode = sleeps), onSleepsModeChange = {})
+        CountdownScreen(
+            CountdownUiState(
+                ChristmasCountdown.stateAt(october),
+                sleepsMode = sleeps
+            ),
+            onSleepsModeChange = {
+            }
+        )
     }
 
     private fun advent(name: String) = shot(name) {

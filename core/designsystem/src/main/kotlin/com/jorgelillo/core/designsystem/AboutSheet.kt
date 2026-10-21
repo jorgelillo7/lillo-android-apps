@@ -63,19 +63,29 @@ fun LilloAboutSheet(
                 modifier = Modifier.size(88.dp).clip(MaterialTheme.shapes.large).background(iconBackground)
             )
             Text(texts.title, style = MaterialTheme.typography.titleLarge, textAlign = TextAlign.Center)
-            Text(texts.version, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text(
+                texts.version,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
             Text(texts.body, textAlign = TextAlign.Center)
             if (canPickAppLanguage && languages.size > 1) {
-                OutlinedButton(onClick = { pickLanguage = true }, modifier = Modifier.fillMaxWidth().testTag("language")) {
+                OutlinedButton(onClick = {
+                    pickLanguage = true
+                }, modifier = Modifier.fillMaxWidth().testTag("language")) {
                     Text(stringResource(R.string.lillo_language) + ": " + currentAppLanguageName())
                 }
             }
             if (playStoreUrl != null && texts.rate != null) {
-                OutlinedButton(onClick = { uriHandler.openUri(playStoreUrl) }, modifier = Modifier.fillMaxWidth().testTag("rate")) {
+                OutlinedButton(onClick = {
+                    uriHandler.openUri(playStoreUrl)
+                }, modifier = Modifier.fillMaxWidth().testTag("rate")) {
                     Text(texts.rate)
                 }
             }
-            OutlinedButton(onClick = { uriHandler.openUri(privacyUrl) }, modifier = Modifier.fillMaxWidth().testTag("privacy")) {
+            OutlinedButton(onClick = {
+                uriHandler.openUri(privacyUrl)
+            }, modifier = Modifier.fillMaxWidth().testTag("privacy")) {
                 Text(texts.privacy)
             }
         }

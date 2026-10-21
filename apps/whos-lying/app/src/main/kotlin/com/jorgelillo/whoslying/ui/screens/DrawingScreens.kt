@@ -67,7 +67,7 @@ import kotlinx.coroutines.delay
 
 /** Drawing mode's clue round: everyone adds to one picture, passing the phone, no talking. */
 @Composable
-fun DrawingScreen(
+internal fun DrawingScreen(
     game: Game,
     alive: Set<String>,
     strokes: SnapshotStateList<DrawStroke>,
@@ -78,10 +78,20 @@ fun DrawingScreen(
     onQuit: () -> Unit
 ) {
     var ink by rememberSaveable { mutableIntStateOf(0) }
-    val starter = game.starter.takeIf { it in alive } ?: game.cards.first { it.player in alive && it.role != Role.DRIFTER }.player
+    val starter =
+        game.starter.takeIf { it in alive } ?: game.cards.first { it.player in alive && it.role != Role.DRIFTER }.player
     val voteButtons: @Composable ColumnScope.() -> Unit = {
-        BigButton(stringResource(R.string.vote_button), onVote, Modifier.testTag("go_vote"), color = Color(0xFF00D26A), contentColor = Neon.Night)
-        TextButton(onClick = onRevealAll, modifier = Modifier.align(Alignment.CenterHorizontally).testTag("reveal_all")) {
+        BigButton(
+            stringResource(R.string.vote_button),
+            onVote,
+            Modifier.testTag("go_vote"),
+            color = Color(0xFF00D26A),
+            contentColor = Neon.Night
+        )
+        TextButton(
+            onClick = onRevealAll,
+            modifier = Modifier.align(Alignment.CenterHorizontally).testTag("reveal_all")
+        ) {
             Text(stringResource(R.string.vote_reveal_all), color = Neon.Muted)
         }
     }
@@ -98,11 +108,21 @@ fun DrawingScreen(
         if (maxWidth > maxHeight) {
             // Landscape (and wide handhelds): the canvas takes the full height, controls go to the side.
             Page(title = null, onBack = onQuit, background = Neon.Backdrop) {
-                Row(Modifier.weight(1f).fillMaxWidth().padding(bottom = 12.dp), horizontalArrangement = Arrangement.spacedBy(20.dp)) {
+                Row(
+                    Modifier.weight(1f).fillMaxWidth().padding(bottom = 12.dp),
+                    horizontalArrangement = Arrangement.spacedBy(20.dp)
+                ) {
                     Box(Modifier.weight(1f).fillMaxHeight(), contentAlignment = Alignment.Center) {
-                        DrawingCanvas(strokes, InkColors[ink], Modifier.fillMaxHeight().aspectRatio(4f / 5f, matchHeightConstraintsFirst = true))
+                        DrawingCanvas(
+                            strokes,
+                            InkColors[ink],
+                            Modifier.fillMaxHeight().aspectRatio(4f / 5f, matchHeightConstraintsFirst = true)
+                        )
                     }
-                    Column(Modifier.width(300.dp).fillMaxHeight().verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                    Column(
+                        Modifier.width(300.dp).fillMaxHeight().verticalScroll(rememberScrollState()),
+                        verticalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
                         turns()
                         if (discussionSeconds > 0) key(alive.size) { TimerBar(discussionSeconds, onTimeUp) }
                         Tools(ink, strokes, columns = 5) { ink = it }
@@ -185,10 +205,15 @@ private fun DrawingCanvas(strokes: SnapshotStateList<DrawStroke>, ink: Color, mo
             }
             .pointerInput(Unit) {
                 detectDragGestures(
-                    onDragStart = { p -> strokes += DrawStroke(currentInk).apply { points += Offset(p.x / size.width, p.y / size.height) } },
+                    onDragStart = { p ->
+                        strokes +=
+                            DrawStroke(currentInk).apply { points += Offset(p.x / size.width, p.y / size.height) }
+                    },
                     onDrag = { change, _ ->
                         val p = change.position
-                        strokes.lastOrNull()?.points?.add(Offset((p.x / size.width).coerceIn(0f, 1f), (p.y / size.height).coerceIn(0f, 1f)))
+                        strokes.lastOrNull()?.points?.add(
+                            Offset((p.x / size.width).coerceIn(0f, 1f), (p.y / size.height).coerceIn(0f, 1f))
+                        )
                     }
                 )
             }
@@ -226,9 +251,20 @@ private fun TimerBar(seconds: Int, onTimeUp: () -> Unit) {
             .testTag("timer"),
         contentAlignment = Alignment.Center
     ) {
-        Box(Modifier.align(Alignment.CenterStart).fillMaxHeight().fillMaxWidth(left.toFloat() / seconds).background(color.copy(alpha = 0.35f)))
+        Box(
+            Modifier.align(
+                Alignment.CenterStart
+            ).fillMaxHeight().fillMaxWidth(left.toFloat() / seconds).background(color.copy(alpha = 0.35f))
+        )
         Text(
-            if (left == 0) stringResource(R.string.timer_up) else "%d:%02d".format(left / 60, left % 60) + if (paused) "  ⏸" else "",
+            if (left ==
+                0
+            ) {
+                stringResource(R.string.timer_up)
+            } else {
+                "%d:%02d".format(left / 60, left % 60) +
+                    if (paused) "  ⏸" else ""
+            },
             color = if (left == 0) Neon.Pink else Neon.Ink,
             fontWeight = FontWeight.Black
         )
@@ -237,6 +273,8 @@ private fun TimerBar(seconds: Int, onTimeUp: () -> Unit) {
 
 /** The finished drawing, read only, for the result screen. */
 @Composable
-fun DrawingPreview(strokes: List<DrawStroke>, modifier: Modifier = Modifier) {
-    Canvas(modifier.clip(MaterialTheme.shapes.large).background(PaperColor).aspectRatio(4f / 5f)) { drawStrokes(strokes) }
+internal fun DrawingPreview(strokes: List<DrawStroke>, modifier: Modifier = Modifier) {
+    Canvas(modifier.clip(MaterialTheme.shapes.large).background(PaperColor).aspectRatio(4f / 5f)) {
+        drawStrokes(strokes)
+    }
 }

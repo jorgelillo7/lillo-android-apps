@@ -51,6 +51,7 @@ class AdventCalendarTest {
     }
 
     private companion object {
-        val EXPECTED_2026 = listOf(22, 19, 9, 16, 17, 18, 10, 5, 24, 7, 14, 2, 8, 12, 20, 15, 21, 3, 4, 23, 13, 1, 6, 11)
+        val EXPECTED_2026 =
+            listOf(22, 19, 9, 16, 17, 18, 10, 5, 24, 7, 14, 2, 8, 12, 20, 15, 21, 3, 4, 23, 13, 1, 6, 11)
     }
 }

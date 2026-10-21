@@ -68,7 +68,7 @@ private enum class Tab(val label: Int) { Countdown(R.string.tab_countdown), Adve
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ChristmasApp(app: ChristmasCountdownApplication, openAdvent: Boolean = false) {
+internal fun ChristmasApp(app: ChristmasCountdownApplication, openAdvent: Boolean = false) {
     val countdownViewModel: CountdownViewModel = viewModel(factory = CountdownViewModel.factory(app))
     val adventViewModel: AdventViewModel = viewModel(factory = AdventViewModel.factory(app.settings))
     val countdown by countdownViewModel.uiState.collectAsStateWithLifecycle()
@@ -89,7 +89,8 @@ fun ChristmasApp(app: ChristmasCountdownApplication, openAdvent: Boolean = false
         canNotify = granted
         scope.launch { app.settings.dismissReminderPrompt() }
     }
-    val reminderPrompt: (@Composable () -> Unit)? = if (!canNotify && !promptDismissed && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+    val askReminders = !canNotify && !promptDismissed && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+    val reminderPrompt: (@Composable () -> Unit)? = if (askReminders) {
         {
             ReminderPrompt(
                 onYes = { askPermission.launch(Manifest.permission.POST_NOTIFICATIONS) },
@@ -118,11 +119,17 @@ fun ChristmasApp(app: ChristmasCountdownApplication, openAdvent: Boolean = false
                     navigationIcon = {
                         IconButton(onClick = { countdownViewModel.setMusicEnabled(!countdown.musicEnabled) }) {
                             Icon(
-                                painter = painterResource(if (countdown.musicEnabled) R.drawable.ic_music_note else R.drawable.ic_music_off),
+                                painter = painterResource(
+                                    if (countdown.musicEnabled) R.drawable.ic_music_note else R.drawable.ic_music_off
+                                ),
                                 contentDescription = stringResource(
                                     if (countdown.musicEnabled) R.string.action_music_off else R.string.action_music_on
                                 ),
-                                tint = if (countdown.musicEnabled) ChristmasColors.Gold else MaterialTheme.colorScheme.onSurface
+                                tint = if (countdown.musicEnabled) {
+                                    ChristmasColors.Gold
+                                } else {
+                                    MaterialTheme.colorScheme.onSurface
+                                }
                             )
                         }
                     },
@@ -144,7 +151,8 @@ fun ChristmasApp(app: ChristmasCountdownApplication, openAdvent: Boolean = false
                             onClick = { tab = item.ordinal },
                             icon = {
                                 Icon(
-                                    imageVector = if (item == Tab.Countdown) Icons.Filled.Star else Icons.Filled.DateRange,
+                                    imageVector =
+                                        if (item == Tab.Countdown) Icons.Filled.Star else Icons.Filled.DateRange,
                                     contentDescription = null
                                 )
                             },
@@ -218,10 +226,16 @@ private fun ReminderPrompt(onYes: () -> Unit, onNo: () -> Unit) {
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 Button(
                     onClick = onYes,
-                    colors = ButtonDefaults.buttonColors(containerColor = ChristmasColors.Gold, contentColor = Color.Black),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = ChristmasColors.Gold,
+                        contentColor = Color.Black
+                    ),
                     modifier = Modifier.testTag("reminders_yes")
                 ) { Text(stringResource(R.string.reminder_prompt_yes)) }
-                TextButton(onClick = onNo, modifier = Modifier.testTag("reminders_no")) { Text(stringResource(R.string.reminder_prompt_no)) }
+                TextButton(
+                    onClick = onNo,
+                    modifier = Modifier.testTag("reminders_no")
+                ) { Text(stringResource(R.string.reminder_prompt_no)) }
             }
         }
     }

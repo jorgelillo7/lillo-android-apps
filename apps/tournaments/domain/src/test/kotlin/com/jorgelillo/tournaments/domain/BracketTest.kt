@@ -10,7 +10,8 @@ class BracketTest {
 
     private fun names(n: Int) = (1..n).map { "P$it" }
 
-    private fun elimination(n: Int, seed: Int = 1) = Tournaments.create("t", "Cup", 20_000, names(n), Format.ELIMINATION, random = Random(seed))
+    private fun elimination(n: Int, seed: Int = 1) =
+        Tournaments.create("t", "Cup", 20_000, names(n), Format.ELIMINATION, random = Random(seed))
 
     @Test
     fun sizesAndRounds() {

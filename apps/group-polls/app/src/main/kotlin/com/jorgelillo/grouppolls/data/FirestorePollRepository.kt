@@ -73,7 +73,10 @@ class FirestorePollRepository(
     override fun votes(code: String): Flow<List<Vote>> = callbackFlow {
         userId()
         // The rules only allow listing votes of private polls; a public poll's query fails quietly.
-        val registration = polls.document(code).collection("votes").orderBy("votedAt").addSnapshotListener { snapshot, error ->
+        val registration = polls.document(code).collection("votes").orderBy("votedAt").addSnapshotListener {
+                snapshot,
+                error
+            ->
             trySend(if (error != null) emptyList() else snapshot?.documents.orEmpty().mapNotNull(::toVote))
         }
         awaitClose { registration.remove() }
@@ -140,7 +143,10 @@ class FirestorePollRepository(
         val uid = userId()
         val mine = polls.whereEqualTo("creatorId", uid).get().await().documents
         val myVotes = db.collectionGroup("votes").whereEqualTo("voterId", uid).get().await().documents
-        (mine.map { it.reference to "creatorName" } + myVotes.filter { it.contains("name") }.map { it.reference to "name" })
+        (
+            mine.map { it.reference to "creatorName" } +
+                myVotes.filter { it.contains("name") }.map { it.reference to "name" }
+            )
             .chunked(BATCH_LIMIT)
             .forEach { chunk ->
                 val batch = db.batch()
@@ -154,7 +160,9 @@ class FirestorePollRepository(
     private fun toPoll(doc: DocumentSnapshot): Poll? {
         if (!doc.exists()) return null
         // Until the server timestamp lands, a just-created poll reads its local estimate.
-        val created = doc.getTimestamp("createdAt", DocumentSnapshot.ServerTimestampBehavior.ESTIMATE)?.toDate()?.time ?: return null
+        val created =
+            doc.getTimestamp("createdAt", DocumentSnapshot.ServerTimestampBehavior.ESTIMATE)?.toDate()?.time
+                ?: return null
         val days = doc.getLong("durationDays") ?: 0
         val closedAt = doc.getTimestamp("closedAt", DocumentSnapshot.ServerTimestampBehavior.ESTIMATE)?.toDate()?.time
         return Poll(
@@ -181,7 +189,8 @@ class FirestorePollRepository(
             voterName = doc.getString("name"),
             side = side,
             prediction = doc.getString("prediction")?.let(::side) ?: side,
-            votedAt = doc.getTimestamp("votedAt", DocumentSnapshot.ServerTimestampBehavior.ESTIMATE)?.toDate()?.time ?: 0
+            votedAt =
+                doc.getTimestamp("votedAt", DocumentSnapshot.ServerTimestampBehavior.ESTIMATE)?.toDate()?.time ?: 0
         )
     }
 

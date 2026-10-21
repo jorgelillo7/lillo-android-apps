@@ -1,4 +1,5 @@
-# Formatting, enforced by Spotless + ktlint (./gradlew spotlessApply / spotlessCheck, CI "Lint").
+# Formatting, enforced by Spotless + ktlint with the community Compose rules
+# (io.nlopez.compose.rules): ./gradlew spotlessApply / spotlessCheck, CI "Lint".
 root = true
 
 [*]
@@ -12,5 +13,5 @@ indent_size = 4
 ktlint_code_style = android_studio
 # Composables are PascalCase by Compose convention.
 ktlint_function_naming_ignore_when_annotated_with = Composable
-# Long lines are left as they are for now (PENDING.md: bring them under a limit file by file).
-max_line_length = off
+# 120 columns: the Android Kotlin style guide says 100; 120 keeps Compose call chains readable.
+max_line_length = 120

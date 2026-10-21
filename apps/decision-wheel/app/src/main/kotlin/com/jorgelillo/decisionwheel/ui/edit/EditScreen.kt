@@ -48,7 +48,7 @@ import com.jorgelillo.decisionwheel.ui.wheel.segmentColors
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EditScreen(
+internal fun EditScreen(
     initial: Wheel,
     isNew: Boolean,
     onSave: (Wheel) -> Unit,
@@ -75,7 +75,10 @@ fun EditScreen(
                 title = { Text(stringResource(if (isNew) R.string.edit_title_new else R.string.edit_title)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.action_back))
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(R.string.action_back)
+                        )
                     }
                 },
                 actions = {
@@ -115,17 +118,27 @@ fun EditScreen(
                 Button(
                     onClick = { addDraft() },
                     enabled = draft.isNotBlank(),
-                    colors = ButtonDefaults.buttonColors(containerColor = WheelColors.Teal, contentColor = WheelColors.Night)
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = WheelColors.Teal,
+                        contentColor = WheelColors.Night
+                    )
                 ) { Text(stringResource(R.string.edit_add)) }
             }
             if (cleanOptions.size < 2) {
-                Text(stringResource(R.string.edit_need_two), color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall)
+                Text(
+                    stringResource(R.string.edit_need_two),
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodySmall
+                )
             }
             Spacer(Modifier.height(8.dp))
             val colors = segmentColors(options.size)
             LazyColumn(Modifier.weight(1f)) {
                 itemsIndexed(options, key = { _, option -> option }) { i, option ->
-                    Row(Modifier.fillMaxWidth().padding(vertical = 2.dp), verticalAlignment = Alignment.CenterVertically) {
+                    Row(
+                        Modifier.fillMaxWidth().padding(vertical = 2.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
                         androidx.compose.foundation.Canvas(Modifier.padding(end = 12.dp).height(12.dp).padding(0.dp)) {
                             drawCircle(colors[i], radius = 6.dp.toPx())
                         }
@@ -150,8 +163,12 @@ fun EditScreen(
         AlertDialog(
             onDismissRequest = { confirmDelete = false },
             text = { Text(stringResource(R.string.edit_delete_confirm)) },
-            confirmButton = { TextButton(onClick = onDelete) { Text(stringResource(R.string.edit_delete), color = WheelColors.Coral) } },
-            dismissButton = { TextButton(onClick = { confirmDelete = false }) { Text(stringResource(R.string.edit_cancel)) } }
+            confirmButton = {
+                TextButton(onClick = onDelete) { Text(stringResource(R.string.edit_delete), color = WheelColors.Coral) }
+            },
+            dismissButton = {
+                TextButton(onClick = { confirmDelete = false }) { Text(stringResource(R.string.edit_cancel)) }
+            }
         )
     }
 }

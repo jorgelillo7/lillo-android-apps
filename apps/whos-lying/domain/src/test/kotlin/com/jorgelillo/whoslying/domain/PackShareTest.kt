@@ -11,7 +11,12 @@ class PackShareTest {
         id = "custom-1234",
         name = "Clase de 3ºB",
         emoji = "🏫",
-        entries = listOf(Entry("Pizarra", listOf("Tiza")), Entry("Recreo"), Entry("Mochila", listOf("Estuche")), Entry("Profe")),
+        entries = listOf(
+            Entry("Pizarra", listOf("Tiza")),
+            Entry("Recreo"),
+            Entry("Mochila", listOf("Estuche")),
+            Entry("Profe")
+        ),
         custom = true
     )
 

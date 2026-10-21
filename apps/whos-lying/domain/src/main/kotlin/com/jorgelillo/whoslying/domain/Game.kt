@@ -20,10 +20,12 @@ object Rules {
 
     fun minPlayers(mode: GameMode): Int = if (mode == GameMode.DRIFTER) 4 else MIN_PLAYERS
 
-    fun canStart(players: Int, settings: GameSettings): Boolean = players in minPlayers(settings.mode)..MAX_PLAYERS && settings.impostors in 1..maxImpostors(players, settings.mode)
+    fun canStart(players: Int, settings: GameSettings): Boolean = players in minPlayers(settings.mode)..MAX_PLAYERS &&
+        settings.impostors in 1..maxImpostors(players, settings.mode)
 
     /** Lower case, no accents, no surrounding spaces: "Café " matches "cafe". */
-    fun normalize(text: String): String = Normalizer.normalize(text.trim().lowercase(), Normalizer.Form.NFD).replace(Regex("\\p{M}+"), "")
+    fun normalize(text: String): String =
+        Normalizer.normalize(text.trim().lowercase(), Normalizer.Form.NFD).replace(Regex("\\p{M}+"), "")
 }
 
 sealed interface Outcome {
@@ -115,20 +117,16 @@ class Game private constructor(
         /** Chance that a chaos game ignores the configured impostor count. */
         const val CHAOS_PROBABILITY = 1.0 / 3
 
-        fun deal(
-            players: List<String>,
-            settings: GameSettings,
-            pack: WordPack,
-            entry: Entry,
-            random: Random
-        ): Game {
+        fun deal(players: List<String>, settings: GameSettings, pack: WordPack, entry: Entry, random: Random): Game {
             require(Rules.canStart(players.size, settings)) { "Invalid setup" }
             val impostors = impostorCount(players.size, settings, random)
             val drifters = if (impostors == players.size) 0 else Rules.drifters(settings.mode)
             val shuffled = players.indices.shuffled(random)
             val impostorIdx = shuffled.take(impostors).toSet()
             val drifterIdx = shuffled.drop(impostors).take(drifters).toSet()
-            val decoy = entry.decoys.randomOrNull(random) ?: pack.entries.map { it.word }.filter { it != entry.word }.randomOrNull(random)
+            val decoy =
+                entry.decoys.randomOrNull(random)
+                    ?: pack.entries.map { it.word }.filter { it != entry.word }.randomOrNull(random)
 
             val cards = players.mapIndexed { i, name ->
                 val role = when (i) {

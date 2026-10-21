@@ -73,11 +73,17 @@ import com.jorgelillo.tournaments.ui.theme.Arena
 import com.jorgelillo.tournaments.ui.today
 
 private const val DAY_MILLIS = 86_400_000L
-private val GAME_SUGGESTIONS = listOf("Magic", "Pokémon", "Lorcana", "One Piece", "Yu-Gi-Oh!", "FIFA", "Ping-pong", "Catan")
+private val GAME_SUGGESTIONS =
+    listOf("Magic", "Pokémon", "Lorcana", "One Piece", "Yu-Gi-Oh!", "FIFA", "Ping-pong", "Catan")
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun NewTournamentScreen(library: Library, newId: () -> String, onCreate: (Tournament) -> Unit, onBack: () -> Unit) {
+internal fun NewTournamentScreen(
+    library: Library,
+    newId: () -> String,
+    onCreate: (Tournament) -> Unit,
+    onBack: () -> Unit
+) {
     val context = LocalContext.current
     val resources = LocalResources.current
     var name by rememberSaveable { mutableStateOf("") }
@@ -139,7 +145,10 @@ fun NewTournamentScreen(library: Library, newId: () -> String, onCreate: (Tourna
                     label = { Text(stringResource(R.string.setup_name)) },
                     placeholder = { Text(defaultName) },
                     singleLine = true,
-                    keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences, imeAction = ImeAction.Next),
+                    keyboardOptions = KeyboardOptions(
+                        capitalization = KeyboardCapitalization.Sentences,
+                        imeAction = ImeAction.Next
+                    ),
                     modifier = Modifier.fillMaxWidth().testTag("name")
                 )
             }
@@ -150,12 +159,18 @@ fun NewTournamentScreen(library: Library, newId: () -> String, onCreate: (Tourna
                     label = { Text(stringResource(R.string.setup_game)) },
                     placeholder = { Text(stringResource(R.string.setup_game_hint)) },
                     singleLine = true,
-                    keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Words, imeAction = ImeAction.Next),
+                    keyboardOptions = KeyboardOptions(
+                        capitalization = KeyboardCapitalization.Words,
+                        imeAction = ImeAction.Next
+                    ),
                     modifier = Modifier.fillMaxWidth().testTag("game")
                 )
                 FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                     (library.knownGames + GAME_SUGGESTIONS).distinctBy { it.lowercase() }.take(8).forEach { g ->
-                        FilterChip(selected = game.equals(g, ignoreCase = true), onClick = { game = if (game == g) "" else g }, label = { Text(g) })
+                        FilterChip(selected = game.equals(g, ignoreCase = true), onClick = {
+                            game =
+                                if (game == g) "" else g
+                        }, label = { Text(g) })
                     }
                 }
             }
@@ -163,21 +178,40 @@ fun NewTournamentScreen(library: Library, newId: () -> String, onCreate: (Tourna
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(stringResource(R.string.setup_date), color = Arena.Muted, modifier = Modifier.weight(1f))
                     OutlinedButton(onClick = { pickDate = true }, modifier = Modifier.testTag("date")) {
-                        Text(if (day == today()) stringResource(R.string.setup_today, formatDay(day)) else formatDay(day))
+                        Text(
+                            if (day ==
+                                today()
+                            ) {
+                                stringResource(R.string.setup_today, formatDay(day))
+                            } else {
+                                formatDay(day)
+                            }
+                        )
                     }
                 }
             }
             item {
                 Label(stringResource(R.string.setup_format))
                 Segmented(
-                    options = listOf(Format.ELIMINATION to stringResource(R.string.format_elimination), Format.SWISS to stringResource(R.string.format_swiss)),
+                    options = listOf(
+                        Format.ELIMINATION to stringResource(R.string.format_elimination),
+                        Format.SWISS to stringResource(R.string.format_swiss)
+                    ),
                     selected = format,
                     onSelect = { format = it },
                     tag = "format"
                 )
                 Spacer(Modifier.height(4.dp))
                 Text(
-                    stringResource(if (format == Format.ELIMINATION) R.string.format_elimination_help else R.string.format_swiss_help),
+                    stringResource(
+                        if (format ==
+                            Format.ELIMINATION
+                        ) {
+                            R.string.format_elimination_help
+                        } else {
+                            R.string.format_swiss_help
+                        }
+                    ),
                     color = Arena.Muted,
                     fontSize = 13.sp
                 )
@@ -195,13 +229,26 @@ fun NewTournamentScreen(library: Library, newId: () -> String, onCreate: (Tourna
                 item {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(stringResource(R.string.setup_swiss_rounds), modifier = Modifier.weight(1f))
-                        IconButton(onClick = { swissRounds = (rounds - 1).coerceAtLeast(1) }) { Text("−", fontSize = 22.sp) }
+                        IconButton(onClick = {
+                            swissRounds = (rounds - 1).coerceAtLeast(1)
+                        }) { Text("−", fontSize = 22.sp) }
                         Text("$rounds", fontWeight = FontWeight.Bold, fontSize = 18.sp)
-                        IconButton(onClick = { swissRounds = (rounds + 1).coerceAtMost(maxOf(1, players.size - 1)) }) { Icon(Icons.Filled.Add, null) }
+                        IconButton(onClick = {
+                            swissRounds = (rounds + 1).coerceAtMost(maxOf(1, players.size - 1))
+                        }) { Icon(Icons.Filled.Add, null) }
                     }
                     Label(stringResource(R.string.setup_top_cut))
                     Segmented(
-                        options = Tournaments.TOP_CUTS.map { it to if (it == 0) stringResource(R.string.setup_top_cut_none) else stringResource(R.string.setup_top_cut_n, it) },
+                        options = Tournaments.TOP_CUTS.map {
+                            it to
+                                if (it ==
+                                    0
+                                ) {
+                                    stringResource(R.string.setup_top_cut_none)
+                                } else {
+                                    stringResource(R.string.setup_top_cut_n, it)
+                                }
+                        },
                         selected = topCut,
                         onSelect = { topCut = it },
                         tag = "cut",
@@ -219,15 +266,22 @@ fun NewTournamentScreen(library: Library, newId: () -> String, onCreate: (Tourna
                         singleLine = true,
                         isError = error != null,
                         supportingText = error?.let { { Text(it) } },
-                        keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Words, imeAction = ImeAction.Done),
+                        keyboardOptions = KeyboardOptions(
+                            capitalization = KeyboardCapitalization.Words,
+                            imeAction = ImeAction.Done
+                        ),
                         keyboardActions = KeyboardActions(onDone = { if (newPlayer.isNotBlank()) add(newPlayer) }),
                         modifier = Modifier.weight(1f).testTag("player")
                     )
-                    IconButton(onClick = { add(newPlayer) }, enabled = newPlayer.isNotBlank(), modifier = Modifier.testTag("add_player")) {
+                    IconButton(onClick = {
+                        add(newPlayer)
+                    }, enabled = newPlayer.isNotBlank(), modifier = Modifier.testTag("add_player")) {
                         Icon(Icons.Filled.Add, contentDescription = stringResource(R.string.setup_add))
                     }
                 }
-                val suggestions = library.knownNames.filter { n -> players.none { Stats.key(it) == Stats.key(n) } }.take(12)
+                val suggestions = library.knownNames.filter { n ->
+                    players.none { Stats.key(it) == Stats.key(n) }
+                }.take(12)
                 if (suggestions.isNotEmpty()) {
                     FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                         suggestions.forEach { n -> SuggestionChip(onClick = { add(n) }, label = { Text("+ $n") }) }
@@ -235,7 +289,15 @@ fun NewTournamentScreen(library: Library, newId: () -> String, onCreate: (Tourna
                 }
                 if (format == Format.ELIMINATION && players.size >= 3) {
                     val byes = Bracket.size(players.size) - players.size
-                    if (byes > 0) Text(pluralStringResource(R.plurals.setup_byes, byes, byes), color = Arena.Muted, fontSize = 13.sp)
+                    if (byes >
+                        0
+                    ) {
+                        Text(
+                            pluralStringResource(R.plurals.setup_byes, byes, byes),
+                            color = Arena.Muted,
+                            fontSize = 13.sp
+                        )
+                    }
                 }
             }
             itemsIndexed(players, key = { _, n -> n }) { i, n ->
@@ -246,7 +308,11 @@ fun NewTournamentScreen(library: Library, newId: () -> String, onCreate: (Tourna
                     Text("${i + 1}", color = Arena.Muted, modifier = Modifier.width(28.dp))
                     Text(n, fontWeight = FontWeight.SemiBold, modifier = Modifier.weight(1f))
                     IconButton(onClick = { players.removeAt(i) }) {
-                        Icon(Icons.Filled.Close, contentDescription = stringResource(R.string.setup_remove, n), tint = Arena.Muted)
+                        Icon(
+                            Icons.Filled.Close,
+                            contentDescription = stringResource(R.string.setup_remove, n),
+                            tint = Arena.Muted
+                        )
                     }
                 }
             }
@@ -267,7 +333,13 @@ fun NewTournamentScreen(library: Library, newId: () -> String, onCreate: (Tourna
 private fun Label(text: String) = LilloSectionTitle(text, modifier = Modifier.padding(bottom = 6.dp))
 
 @Composable
-private fun <T> Segmented(options: List<Pair<T, String>>, selected: T, onSelect: (T) -> Unit, tag: String, enabled: (T) -> Boolean = { true }) {
+private fun <T> Segmented(
+    options: List<Pair<T, String>>,
+    selected: T,
+    onSelect: (T) -> Unit,
+    tag: String,
+    enabled: (T) -> Boolean = { true }
+) {
     SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth()) {
         options.forEachIndexed { i, (value, label) ->
             SegmentedButton(
@@ -276,7 +348,10 @@ private fun <T> Segmented(options: List<Pair<T, String>>, selected: T, onSelect:
                 enabled = enabled(value),
                 shape = SegmentedButtonDefaults.itemShape(i, options.size),
                 modifier = Modifier.testTag("${tag}_$i"),
-                colors = SegmentedButtonDefaults.colors(activeContainerColor = Arena.Gold, activeContentColor = Arena.Ink),
+                colors = SegmentedButtonDefaults.colors(
+                    activeContainerColor = Arena.Gold,
+                    activeContentColor = Arena.Ink
+                ),
                 label = { Text(label, maxLines = 1) }
             )
         }
@@ -291,7 +366,9 @@ private fun DateDialog(day: Long, onPick: (Long) -> Unit, onDismiss: () -> Unit)
         onDismissRequest = onDismiss,
         modifier = TestTagsAsResourceIds,
         confirmButton = {
-            TextButton(onClick = { onPick((state.selectedDateMillis ?: (day * DAY_MILLIS)) / DAY_MILLIS) }, modifier = Modifier.testTag("date_ok")) {
+            TextButton(onClick = {
+                onPick((state.selectedDateMillis ?: (day * DAY_MILLIS)) / DAY_MILLIS)
+            }, modifier = Modifier.testTag("date_ok")) {
                 Text(stringResource(android.R.string.ok))
             }
         },
@@ -299,7 +376,8 @@ private fun DateDialog(day: Long, onPick: (Long) -> Unit, onDismiss: () -> Unit)
     ) { DatePicker(state) }
 }
 
-private fun listSaver() = androidx.compose.runtime.saveable.listSaver<androidx.compose.runtime.snapshots.SnapshotStateList<String>, String>(
-    save = { it.toList() },
-    restore = { mutableStateListOf<String>().apply { addAll(it) } }
-)
+private fun listSaver() =
+    androidx.compose.runtime.saveable.listSaver<androidx.compose.runtime.snapshots.SnapshotStateList<String>, String>(
+        save = { it.toList() },
+        restore = { mutableStateListOf<String>().apply { addAll(it) } }
+    )

@@ -41,32 +41,50 @@ import com.jorgelillo.tournaments.ui.theme.Arena
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ShareSheet(t: Tournament, onDismiss: () -> Unit) {
+internal fun ShareSheet(t: Tournament, onDismiss: () -> Unit) {
     val context = LocalContext.current
     val link = remember(t) { Share.link(t) }
     val message = stringResource(R.string.share_message, t.name, link)
 
-    ModalBottomSheet(onDismissRequest = onDismiss, sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true), containerColor = Arena.Raised) {
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
+        containerColor = Arena.Raised
+    ) {
         Column(
-            TestTagsAsResourceIds.verticalScroll(rememberScrollState()).padding(horizontal = 20.dp).navigationBarsPadding(),
+            TestTagsAsResourceIds.verticalScroll(
+                rememberScrollState()
+            ).padding(horizontal = 20.dp).navigationBarsPadding(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Text(stringResource(R.string.share_title), fontSize = 22.sp, fontWeight = FontWeight.Black)
             if (link.length <= Share.QR_MAX_CHARS) {
                 LilloQrCode(link, Modifier.testTag("qr"))
-                Text(stringResource(R.string.share_qr_help), color = Arena.Muted, textAlign = TextAlign.Center, fontSize = 14.sp)
+                Text(
+                    stringResource(R.string.share_qr_help),
+                    color = Arena.Muted,
+                    textAlign = TextAlign.Center,
+                    fontSize = 14.sp
+                )
             }
             BigButton(stringResource(R.string.share_send_link), { context.shareText(message) }, "send_link")
             Row(horizontalArrangement = Arrangement.spacedBy(10.dp), modifier = Modifier.fillMaxWidth()) {
-                OutlinedButton(onClick = { shareImage(context, t) }, modifier = Modifier.weight(1f).testTag("share_image")) {
+                OutlinedButton(onClick = {
+                    shareImage(context, t)
+                }, modifier = Modifier.weight(1f).testTag("share_image")) {
                     Text(stringResource(R.string.export_image_short))
                 }
                 OutlinedButton(onClick = { shareCsv(context, t) }, modifier = Modifier.weight(1f)) {
                     Text(stringResource(R.string.export_csv_short))
                 }
             }
-            Text(stringResource(R.string.share_snapshot_note), color = Arena.Muted, textAlign = TextAlign.Center, fontSize = 12.sp)
+            Text(
+                stringResource(R.string.share_snapshot_note),
+                color = Arena.Muted,
+                textAlign = TextAlign.Center,
+                fontSize = 12.sp
+            )
             Spacer(Modifier.height(12.dp))
         }
     }
