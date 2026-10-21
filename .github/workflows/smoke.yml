@@ -71,7 +71,10 @@ jobs:
         with:
           api-level: 36
           arch: x86_64
-          target: google_apis
+          # Automated Test Device image: made for CI, without the Google apps that index in the
+          # background on a fresh boot. With google_apis the emulator died on whos-lying in 9 of 11
+          # runs (also with 4 GB of RAM, API 35 or AOSP); on ATD it passed 6 of 6.
+          target: google_atd
           # A phone-sized screen like the local AVD (the default profile is 320x640, too small for the steps).
           profile: pixel_7
           disable-animations: true
