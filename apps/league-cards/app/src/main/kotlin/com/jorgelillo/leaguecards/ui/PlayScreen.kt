@@ -246,14 +246,12 @@ private fun SwipeCard(
                 .padding(if (isShortScreen()) 16.dp else 24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(
-                leaningLabel.orEmpty(),
-                color = Chat.Gold,
-                fontWeight = FontWeight.Black,
-                style = MaterialTheme.typography.titleMedium,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth().height(48.dp)
-            )
+            // The answer the card leans to while dragged; the room is kept when there is none.
+            Box(Modifier.fillMaxWidth().height(48.dp), contentAlignment = Alignment.Center) {
+                if (leaningLabel != null) {
+                    Text(leaningLabel, color = Chat.Gold, fontWeight = FontWeight.Black, style = MaterialTheme.typography.titleMedium, textAlign = TextAlign.Center)
+                }
+            }
             Avatar(character?.emoji?.ifBlank { null } ?: character?.name ?: card.character, color, size = if (isShortScreen()) 48 else 72)
             Spacer(Modifier.height(10.dp))
             Text(character?.name ?: card.character, color = color, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleLarge)

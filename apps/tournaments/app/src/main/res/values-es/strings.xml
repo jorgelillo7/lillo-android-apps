@@ -125,4 +125,5 @@
     </plurals>
     <string name="stats_line">Torneos: %1$d · Finales: %2$d · G-E-P: %3$d-%4$d-%5$d</string>
     <string name="stats_win_rate">%d%% victorias</string>
+    <string name="bracket_a11y">Cuadro del torneo. La pestaña Partidas tiene todas las partidas.</string>
 </resources>

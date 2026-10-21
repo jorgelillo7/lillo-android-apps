@@ -121,4 +121,5 @@
     </plurals>
     <string name="stats_line">Tournaments: %1$d · Finals: %2$d · W-D-L: %3$d-%4$d-%5$d</string>
     <string name="stats_win_rate">%d%% wins</string>
+    <string name="bracket_a11y">Tournament bracket. The Matches tab lists every match.</string>
 </resources>

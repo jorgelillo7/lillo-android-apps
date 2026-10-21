@@ -4,4 +4,4 @@
 - Comparte por WhatsApp lo que te ha tocado cada día
 - Avisos 🔔: un mes y una semana antes, el adviento, tu puerta del día y Navidad
 - «Acerca de» renovada: elige el idioma de la app
-- Mejor en horizontal y en consolas portátiles
+- Mejor en horizontal, en consolas portátiles y con el lector de pantalla

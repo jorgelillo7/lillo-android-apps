@@ -77,14 +77,19 @@ fun LilloPage(
                 } else {
                     Spacer(Modifier.width(12.dp))
                 }
-                Text(
-                    title.orEmpty(),
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = titleWeight,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.weight(1f)
-                )
+                if (title != null) {
+                    Text(
+                        title,
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = titleWeight,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.weight(1f)
+                    )
+                } else {
+                    // No empty text node: screen readers announce it as an unlabelled item.
+                    Spacer(Modifier.weight(1f))
+                }
                 actions()
             }
         }

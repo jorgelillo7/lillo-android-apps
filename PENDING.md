@@ -76,7 +76,7 @@ Lines are pruned as items ship. What has **shipped** lives in `apps/<app>/releas
 | 🔨 | Line length under ktlint (`max_line_length` is off: ~100 Kotlin lines over 150 to wrap by hand) and Compose rules (`io.nlopez.compose.rules` for ktlint) | — |
 | 👤 | Renovate is configured (`renovate.json`): install the Renovate GitHub app on the repo so the weekly PRs start | You · one click |
 | 🔨 | Semantic colours in `LilloTheme` (card, muted, line, accent) so core components stop taking colours per call and the per-app wrappers shrink | — |
-| 🔨 | Accessibility pass: content descriptions (avatars, emoji buttons), contrast (e.g. the Drifter's guess placeholder), touch targets; TalkBack once per app | — |
+| 🔨 | Text contrast: the accessibility checks in every screenshot test log ~145 contrast warnings (white on the light end of gradients, muted greys, coloured text on tinted chips); fix them with the semantic colours below, then make `TextContrastCheck` fail like the other checks (`core/screenshot-testing`) | Semantic colours |
 | 🔨 | Component catalogue: `@Preview`s of every core component (light/dark, short screen) | — |
 | ⏳ | `minSdk` 23 → 24 (blocks WorkManager 2.12; check the Play Console share of API 23 first) | Christmas's install stats |
 | ⏳ | Baseline profiles for startup | An app where startup feels slow |
