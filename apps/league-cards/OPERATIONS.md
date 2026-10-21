@@ -36,8 +36,18 @@ ends. Renaming an achievement id loses it on the phones that had it.
 
 ## Release
 
-Upload key: not created yet. Create it with `scripts/new-upload-key.sh league-cards` in your own
-terminal (see [docs/signing.md](../../docs/signing.md)), then record its serial and SHA-256 here.
+Upload key (created 21 Oct 2026 with `scripts/new-upload-key.sh`, see [docs/signing.md](../../docs/signing.md)):
+
+| | |
+|---|---|
+| File | `~/Projects/documentation/keys/league-cards/upload-league-cards.jks` (+ off-Mac backup) |
+| Alias | `upload` |
+| Serial | `8a0e28359f63b675` |
+| SHA-1 | `6D:C9:AA:F8:3C:13:94:FF:E7:25:D8:70:5D:AC:AD:EA:4B:4E:26:09` |
+| SHA-256 | `21:3F:3F:F8:8D:25:5B:FD:1A:C5:5B:11:33:8B:D1:4D:0E:C5:65:51:F7:24:FD:08:6C:2C:E0:8B:5E:38:FE:BA` |
+
+App created in Play Console on 21 Oct 2026. The first bundle (versionCode 1, with the private deck)
+goes to internal testing by hand; later ones from the Release workflow.
 
 Internal testing only, for the league: the bundle carries the private deck, so it is never
 published openly while it does. CI's Release workflow takes the deck from a GitHub secret

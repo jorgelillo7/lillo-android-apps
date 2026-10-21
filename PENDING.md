@@ -47,7 +47,7 @@ Lines are pruned as items ship. What has **shipped** lives in `apps/<app>/releas
 
 | | What is missing | Waiting on |
 |---|---|---|
-| 👤 | Create the app in Play Console (`com.jorgelillo.tournaments`, App · Tools or Board games) and upload the signed bundle (`build/releases/torneos-v1.aab`) to internal testing. Listing texts, screenshots and feature graphics are ready in `app/src/main/play/listings` | You |
+| 👤 | App created in Play Console: App content forms, then upload the first signed bundle to internal testing by hand. Listing texts, screenshots and feature graphics are ready in `app/src/main/play/listings` | You |
 | 🔨 | Then: Play signing SHA-256 in `assetlinks.json` and publish `/t/` (ready locally in the website repo: shows the tournament in the browser) with it, internal test | The step above · plan in [docs/plans/tournaments.md](docs/plans/tournaments.md) |
 | ⏳ | Double elimination and round robin | Feedback after real use |
 
@@ -55,7 +55,7 @@ Lines are pruned as items ship. What has **shipped** lives in `apps/<app>/releas
 
 | | What is missing | Waiting on |
 |---|---|---|
-| 👤 | Upload key (`scripts/new-upload-key.sh league-cards`), create the app in Play Console (`com.jorgelillo.leaguecards`, Game · Card), internal testing only, add the tester's Gmail; then the bundle built here with the private deck | You · [OPERATIONS.md](apps/league-cards/OPERATIONS.md) |
+| 👤 | App created, key and release secrets in place: App content forms, upload the first bundle (with the private deck) to internal testing by hand, add the league's Gmail addresses as testers | You · [OPERATIONS.md](apps/league-cards/OPERATIONS.md) |
 | 👤 | Each league member's OK to appear in the private deck | You |
 | ⏳ | More cards and chat lines from the group | Ideas from the league · private deck, never in this repo |
 
@@ -71,6 +71,6 @@ Lines are pruned as items ship. What has **shipped** lives in `apps/<app>/releas
 |---|---|---|
 | ⏳ | Move into `lillorepo` (Bazel) | Gradle builds or the Play publishing loop slowing you down · domain modules are pure Kotlin to make it easy |
 | 👤 | Publishing from CI is ready (Release workflow): create the Google Cloud service account and give it access in Play Console, then `scripts/set-release-secrets.sh --play` and `scripts/set-release-secrets.sh <app>` per app, in your terminal (docs/publishing-on-google-play.md §6) | You |
-| 👤 | Renovate is configured (`renovate.json`): install the Renovate GitHub app on the repo so the weekly PRs start | You · one click |
+| ⏳ | Release workflow without a stored key: Workload Identity Federation (GitHub OIDC → the `play-publisher` service account), then delete its JSON key | The first CI releases working with the key |
 | ⏳ | `minSdk` 23 → 24 (blocks WorkManager 2.12; check the Play Console share of API 23 first) | Christmas's install stats |
 | ⏳ | Baseline profiles for startup | An app where startup feels slow |
