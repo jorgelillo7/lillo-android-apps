@@ -31,7 +31,6 @@ Lines are pruned as items ship. What has **shipped** lives in `apps/<app>/releas
 |---|---|---|
 | ⏳ | 1.1 in production since 2026-10-22 (and internal testing): first public release; gather feedback from the friends who tested it | Google's review |
 | ⏳ | A tester got "Item not found" on the opt-in link: likely the first review still pending or the wrong Google account in Play | Their next try |
-| 🔨 | Pack links: publish `/p/` and the impostor entry of `assetlinks.json` (both ready locally in the website repo; add the Play signing SHA-256 from Play Console → App integrity). Until then packs travel by share-to-app or Import → paste | You · the SHA-256, then a website commit |
 
 ## group-polls (new app)
 
@@ -46,7 +45,6 @@ Lines are pruned as items ship. What has **shipped** lives in `apps/<app>/releas
 | | What is missing | Waiting on |
 |---|---|---|
 | 👤 | v1 in internal testing (2026-10-22, listing published): add testers and send them the opt-in link; production needs its countries and, after testing, `action=promote` | You |
-| 🔨 | Then: Play signing SHA-256 in `assetlinks.json` and publish `/t/` (ready locally in the website repo: shows the tournament in the browser) with it, internal test | The step above · plan in [docs/plans/tournaments.md](docs/plans/tournaments.md) |
 | ⏳ | Double elimination and round robin | Feedback after real use |
 
 ## league-cards (new game, internal test with the league)
