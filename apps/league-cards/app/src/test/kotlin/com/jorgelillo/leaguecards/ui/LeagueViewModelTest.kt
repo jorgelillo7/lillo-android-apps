@@ -69,14 +69,17 @@ class LeagueViewModelTest {
         vm.saved.filterNotNull().test {
             vm.newSeason()
             var season = awaitMatching { it.season != null }.season!!
-            // Answer the matchday's cards until its report comes up.
-            while (!season.reportPending) {
-                val answered = season.handIndex to season.matchday
+            // Answer cards until the matchday's report comes up. The deal is random: a meter can
+            // also run out first and end the season, which leaves nothing to answer.
+            while (!season.reportPending && season.ending == null) {
+                val before = season
                 vm.choose(right = true)
-                season = awaitMatching { (it.season!!.handIndex to it.season!!.matchday) != answered }.season!!
+                season = awaitMatching { it.season != before }.season!!
             }
-            vm.dismissReport()
-            assertFalse(awaitMatching { !it.season!!.reportPending }.season!!.reportPending)
+            if (season.reportPending) {
+                vm.dismissReport()
+                assertFalse(awaitMatching { !it.season!!.reportPending }.season!!.reportPending)
+            }
         }
     }
 
