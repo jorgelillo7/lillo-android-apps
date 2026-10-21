@@ -124,3 +124,8 @@ keyPassword=...
 - **Now:** one repo, Gradle, more apps added as folders under `apps/`.
 - **Later:** possible move into a larger monorepo. The pure Kotlin domain modules are the parts
   designed to migrate first.
+
+## ⚖️ License
+
+The code is [MIT](LICENSE), like [lillorepo](https://github.com/jorgelillo7/lillorepo): reuse it freely.
+The apps' names, icons, store graphics and screenshots are not covered: all rights reserved.
