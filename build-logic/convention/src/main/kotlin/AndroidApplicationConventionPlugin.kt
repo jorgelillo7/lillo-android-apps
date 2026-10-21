@@ -32,6 +32,7 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
         val keystore = Properties().apply { if (keystoreFile.exists()) keystoreFile.inputStream().use { load(it) } }
         extensions.configure<ApplicationExtension> {
             configureKotlinAndroid(this)
+            defaultConfig.minSdk = libs.intVersion("appMinSdk")
             defaultConfig.targetSdk = libs.intVersion("targetSdk")
             androidResources.generateLocaleConfig = true
             signingConfigs.create("release") {

@@ -10,7 +10,6 @@ android {
 
     defaultConfig {
         applicationId = "com.jorgelillo.tournaments"
-        minSdk = 24 // navigation-compose needs API 24
         versionCode = 1
         versionName = "1.0"
     }

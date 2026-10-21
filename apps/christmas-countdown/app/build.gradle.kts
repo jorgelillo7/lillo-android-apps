@@ -9,6 +9,7 @@ android {
 
     defaultConfig {
         applicationId = "com.jorgelillo.christmascountdown"
+        minSdk = 23 // live with users on API 23: raise it once Play Console shows that share (PENDING)
         versionCode = 5
         versionName = "4.1"
     }
