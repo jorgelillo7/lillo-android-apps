@@ -102,7 +102,9 @@ Project skills in `.claude/skills/`: `new-android-app` (competitor study → des
   `jorgelillo.android.screenshots` and writes tests with `captureScreenshot` from
   `:core:screenshot-testing` (frozen clock, shared tolerance), upright and `@Config(qualifiers = "+land")`.
   Images live in `src/test/screenshots/` and are reviewed like code. Every capture also runs Google's
-  Accessibility Test Framework (labels, touch targets… fail the test; text contrast is logged for now). Unit tests that need Android
+  Accessibility Test Framework: labels, touch targets and text contrast (WCAG AA, 4.5:1) fail the test.
+  Core components take their colours from the app's Material 3 colour roles (`surfaceContainer`,
+  `onSurfaceVariant`, `primary`…): set them in the app's `ColorScheme`, not per call. Unit tests that need Android
   classes use `jorgelillo.android.robolectric`.
 - Snapshot tests pin anything users already see that is derived algorithmically (e.g. Christmas
   Countdown's yearly advent door order and `AdventPlan` contents); don't change those algorithms. Add

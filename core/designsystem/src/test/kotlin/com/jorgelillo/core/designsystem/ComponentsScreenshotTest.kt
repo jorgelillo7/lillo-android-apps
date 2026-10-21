@@ -45,7 +45,7 @@ class ComponentsScreenshotTest {
         Row(Modifier.background(night).padding(16.dp), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             LilloAvatar("Ana", Color(0xFFFF4D8D), 56.dp)
             LilloAvatar("álvaro", Color(0xFF00D2B4), 56.dp, ring = Color(0xFFFFC83D))
-            LilloAvatar("Bea", Color(0xFF7C5CFF), 56.dp, style = AvatarStyle.Tinted)
+            LilloAvatar("Bea", Color(0xFFB3A1FF), 56.dp, style = AvatarStyle.Tinted)
             LilloAvatar("🦁 Leones", Color(0xFFFFC83D), 56.dp, style = AvatarStyle.Tinted)
             LilloAvatar("👨‍🍳 Chef", Color(0xFF3DDC97), 56.dp)
         }
@@ -75,7 +75,7 @@ class ComponentsScreenshotTest {
     private fun SamplePage(sideActions: Boolean) = LilloPage(
         title = null,
         onBack = null,
-        background = Brush.verticalGradient(listOf(Color(0xFF00B4FF), Color(0xFF2448E0))),
+        background = Brush.verticalGradient(listOf(Color(0xFF0A72D6), Color(0xFF2448E0))),
         contentColor = Color.White,
         sideActionsWhenShort = sideActions,
         bottom = { LilloBigButton("Continue", {}, Color(0xFF00D26A), Color.Black) }

@@ -23,7 +23,7 @@ val LilloRoborazziOptions = RoborazziOptions(
     compareOptions = RoborazziOptions.CompareOptions(changeThreshold = 0.005f)
 )
 
-private val FailingChecks = AccessibilityCheckPreset.getAccessibilityHierarchyChecksForPreset(AccessibilityCheckPreset.LATEST)
+private val ChecksButContrast = AccessibilityCheckPreset.getAccessibilityHierarchyChecksForPreset(AccessibilityCheckPreset.LATEST)
     .filterNot { it is TextContrastCheck }
     .toSet()
 
@@ -51,10 +51,6 @@ private val NotContrastProblems = object : TypeSafeMatcher<AccessibilityViewChec
     }
 }
 
-/** Text contrast fails the test with -PstrictContrast (per app as it is fixed); otherwise it is logged. */
-private val ContrastLevel =
-    if (System.getProperty("lillo.strictContrast") == "true") RoborazziATFAccessibilityChecker.CheckLevel.Warning else RoborazziATFAccessibilityChecker.CheckLevel.LogOnly
-
 /**
  * Shows [content] and records or verifies it as `src/test/screenshots/<name>.png` (recordRoborazziDebug
  * / verifyRoborazziDebug). The clock is frozen first, so animations (confetti, countdowns) are
@@ -72,18 +68,17 @@ fun ComposeContentTestRule.captureScreenshot(
     beforeCapture()
     onRoot().captureRoboImage("src/test/screenshots/$name.png", roborazziOptions = LilloRoborazziOptions)
     // The same screen through Google's Accessibility Test Framework: every screenshot test is an
-    // accessibility audit too. Labels, touch targets and the rest fail the test; text contrast is
-    // only logged until the semantic colours land (PENDING.md), then it joins the failing checks.
+    // accessibility audit too (labels, touch targets, text contrast at WCAG AA…).
     onRoot().checkRoboAccessibility(
         roborazziATFAccessibilityCheckOptions = RoborazziATFAccessibilityCheckOptions(
-            checker = RoborazziATFAccessibilityChecker(checks = FailingChecks),
+            checker = RoborazziATFAccessibilityChecker(checks = ChecksButContrast),
             failureLevel = RoborazziATFAccessibilityChecker.CheckLevel.Warning
         )
     )
     onRoot().checkRoboAccessibility(
         roborazziATFAccessibilityCheckOptions = RoborazziATFAccessibilityCheckOptions(
             checker = RoborazziATFAccessibilityChecker(checks = setOf(TextContrastCheck()), suppressions = NotContrastProblems),
-            failureLevel = ContrastLevel
+            failureLevel = RoborazziATFAccessibilityChecker.CheckLevel.Warning
         )
     )
 }

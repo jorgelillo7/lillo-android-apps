@@ -15,11 +15,8 @@ class AndroidRobolectricConventionPlugin : Plugin<Project> {
             extensions.getByType(CommonExtension::class.java).testOptions.unitTests.isIncludeAndroidResources = true
         }
         // Robolectric reaches into FileDescriptor (SDK 36 shared memory); recent JDKs need it opened.
-        val strictContrast = providers.gradleProperty("strictContrast").isPresent
         tasks.withType(Test::class.java).configureEach {
             jvmArgs("--add-opens=java.base/java.io=ALL-UNNAMED", "--add-exports=java.base/jdk.internal.access=ALL-UNNAMED")
-            // -PstrictContrast: text contrast fails the screenshot tests (core:screenshot-testing).
-            systemProperty("lillo.strictContrast", strictContrast.toString())
         }
         dependencies {
             add("testImplementation", libs.findLibrary("junit").get())
