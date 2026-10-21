@@ -12,7 +12,7 @@ android {
         applicationId = "com.jorgelillo.whoslying"
         minSdk = 24 // navigation-compose needs API 24
         versionCode = 5
-        versionName = "1.0"
+        versionName = "1.1"
     }
 
     // Release signing and R8: the jorgelillo.android.application convention plugin.
