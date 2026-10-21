@@ -223,9 +223,9 @@ fun SettingsSheet(onHowTo: () -> Unit, onModes: () -> Unit, onWelcome: () -> Uni
 @Composable
 private fun SettingsRow(emoji: String, title: String, subtitle: String?, tag: String, onClick: () -> Unit) = LilloSettingRow(
     title,
+    // Darker than the sheet's surfaceContainer, so the rows stand out on it.
     Neon.Night,
     subtitle = subtitle,
-    subtitleColor = Neon.Muted,
     leading = emoji,
     tag = tag,
     contentPadding = PaddingValues(horizontal = 16.dp, vertical = 14.dp),

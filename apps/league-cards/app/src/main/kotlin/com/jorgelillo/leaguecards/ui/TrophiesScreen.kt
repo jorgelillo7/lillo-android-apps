@@ -80,7 +80,7 @@ fun endingEmoji(key: String): String = when (key) {
 }
 
 @Composable
-private fun Section(title: String) = LilloSectionTitle(title, Chat.Muted, Modifier.padding(top = 20.dp, bottom = 8.dp), fontWeight = FontWeight.Bold)
+private fun Section(title: String) = LilloSectionTitle(title, modifier = Modifier.padding(top = 20.dp, bottom = 8.dp), fontWeight = FontWeight.Bold)
 
 @Composable
 private fun Tile(emoji: String, title: String, subtitle: String?, dim: Boolean, tag: String) {

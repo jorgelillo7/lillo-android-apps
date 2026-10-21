@@ -264,7 +264,7 @@ fun NewTournamentScreen(library: Library, newId: () -> String, onCreate: (Tourna
 }
 
 @Composable
-private fun Label(text: String) = LilloSectionTitle(text, Arena.Muted, Modifier.padding(bottom = 6.dp))
+private fun Label(text: String) = LilloSectionTitle(text, modifier = Modifier.padding(bottom = 6.dp))
 
 @Composable
 private fun <T> Segmented(options: List<Pair<T, String>>, selected: T, onSelect: (T) -> Unit, tag: String, enabled: (T) -> Boolean = { true }) {

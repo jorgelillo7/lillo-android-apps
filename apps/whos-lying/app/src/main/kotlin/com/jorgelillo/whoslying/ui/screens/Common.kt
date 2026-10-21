@@ -54,7 +54,7 @@ fun Page(
     sideActionsWhenShort: Boolean = false,
     bottom: @Composable ColumnScope.() -> Unit = {},
     content: @Composable ColumnScope.() -> Unit
-) = LilloPage(title, onBack, background, Neon.Ink, modifier, actions = actions, sideActionsWhenShort = sideActionsWhenShort, bottom = bottom, content = content)
+) = LilloPage(title, onBack, background, modifier = modifier, actions = actions, sideActionsWhenShort = sideActionsWhenShort, bottom = bottom, content = content)
 
 @Composable
 fun BigButton(
@@ -62,8 +62,8 @@ fun BigButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    color: Color = Neon.Violet,
-    contentColor: Color = Color.White
+    color: Color = MaterialTheme.colorScheme.primary,
+    contentColor: Color = MaterialTheme.colorScheme.onPrimary
 ) = LilloBigButton(text, onClick, color, contentColor, modifier, enabled)
 
 /** Player colors for avatars, by position in the group. */

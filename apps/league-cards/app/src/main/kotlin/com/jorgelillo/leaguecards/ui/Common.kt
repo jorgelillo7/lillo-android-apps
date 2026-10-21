@@ -40,10 +40,10 @@ fun Page(
     sideActionsWhenShort: Boolean = false,
     bottom: @Composable ColumnScope.() -> Unit = {},
     content: @Composable ColumnScope.() -> Unit
-) = LilloPage(title, onBack, Chat.Background, Chat.Text, modifier, actions = actions, sideActionsWhenShort = sideActionsWhenShort, bottom = bottom, content = content)
+) = LilloPage(title, onBack, Chat.Background, modifier = modifier, actions = actions, sideActionsWhenShort = sideActionsWhenShort, bottom = bottom, content = content)
 
 @Composable
-fun BigButton(text: String, onClick: () -> Unit, tag: String, modifier: Modifier = Modifier, color: Color = Chat.Green) = LilloBigButton(text, onClick, color, Chat.Ink, modifier.testTag(tag))
+fun BigButton(text: String, onClick: () -> Unit, tag: String, modifier: Modifier = Modifier, color: Color = Chat.Green) = LilloBigButton(text, onClick, color, modifier = modifier.testTag(tag))
 
 /** A member's name colour; the player is always green, like your own messages. */
 fun League.colorOf(id: String): Color = if (id == YOU) Chat.Green else character(id)?.color?.let { runCatching { Color(it.toColorInt()) }.getOrNull() } ?: Chat.Muted

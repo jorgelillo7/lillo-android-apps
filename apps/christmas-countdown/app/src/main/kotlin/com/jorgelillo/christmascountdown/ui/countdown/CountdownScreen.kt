@@ -165,7 +165,7 @@ private fun ChristmasDayContent() {
 }
 
 @Composable
-private fun SectionLabel(text: String) = LilloSectionTitle(text, MaterialTheme.colorScheme.onSurfaceVariant, uppercase = true, style = MaterialTheme.typography.labelSmall)
+private fun SectionLabel(text: String) = LilloSectionTitle(text, uppercase = true, style = MaterialTheme.typography.labelSmall)
 
 @Composable
 private fun HeroNumber(value: String) {
