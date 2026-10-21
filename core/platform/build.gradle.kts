@@ -1,5 +1,7 @@
 plugins {
     alias(libs.plugins.jorgelillo.android.library)
+    alias(libs.plugins.jorgelillo.android.robolectric)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
