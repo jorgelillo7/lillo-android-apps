@@ -23,7 +23,6 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -41,15 +40,14 @@ import com.jorgelillo.grouppolls.domain.Duration
 import com.jorgelillo.grouppolls.domain.Limits
 import com.jorgelillo.grouppolls.domain.Visibility
 import com.jorgelillo.grouppolls.ui.theme.Polls
-import kotlinx.coroutines.launch
 
 /** New poll: question, red and blue answers, public or private, and how long it stays open. */
 @Composable
 internal fun CreateScreen(
     acceptedTerms: Boolean,
     onAcceptTerms: () -> Unit,
-    onCreate: suspend (String, String, String, Visibility, Duration) -> String?,
-    onOpenPoll: (String) -> Unit,
+    creating: Boolean,
+    onCreate: (String, String, String, Visibility, Duration) -> Unit,
     onBack: () -> Unit
 ) {
     var question by rememberSaveable { mutableStateOf("") }
@@ -58,8 +56,6 @@ internal fun CreateScreen(
     var visibility by rememberSaveable { mutableStateOf(Visibility.PRIVATE) }
     var duration by rememberSaveable { mutableStateOf(Duration.SEVEN_DAYS) }
     var showTerms by rememberSaveable { mutableStateOf(false) }
-    var busy by rememberSaveable { mutableStateOf(false) }
-    val scope = rememberCoroutineScope()
     val problems = Drafts.problems(question, red, blue, visibility)
     val touched = question.isNotBlank() || red.isNotBlank() || blue.isNotBlank()
 
@@ -68,12 +64,7 @@ internal fun CreateScreen(
             showTerms = true
             return
         }
-        busy = true
-        scope.launch {
-            val code = onCreate(question, red, blue, visibility, duration)
-            busy = false
-            if (code != null) onOpenPoll(code)
-        }
+        onCreate(question, red, blue, visibility, duration)
     }
 
     Page(
@@ -84,7 +75,7 @@ internal fun CreateScreen(
             BigButton(
                 stringResource(R.string.create_button),
                 ::submit,
-                enabled = problems.isEmpty() && !busy,
+                enabled = problems.isEmpty() && !creating,
                 modifier = Modifier.testTag("submit")
             )
         }
