@@ -10,7 +10,6 @@ android {
 
     defaultConfig {
         applicationId = "com.jorgelillo.decisionwheel"
-        minSdk = 24 // navigation-compose needs API 24; new app, so no existing users lose updates
         versionCode = 2
         versionName = "1.1"
     }

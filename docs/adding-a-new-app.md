@@ -56,9 +56,9 @@ include(":apps:roulette:domain")
 SDK levels, Java target, desugaring and Compose setup come from `build-logic`; nothing else to configure.
 
 Notes from app #2:
-- An app may override `minSdk` in its own `defaultConfig` when a library needs it (the decision
-  wheel uses 24 for navigation-compose); never raise it for an app that already has users without
-  reason.
+- Apps get `minSdk` 24 (`appMinSdk` in the catalogue): Play's automatic protection rejects bundles
+  below it, and navigation-compose needs it. Only an app already live on a lower one keeps it in its
+  own `defaultConfig` (Christmas, 23); never raise it for an app with users without checking them.
 - Wrap the content in `Modifier.semantics { testTagsAsResourceId = true }` and give buttons a
   `testTag`: some Compose components (e.g. extended FABs) don't expose their text to UI Automator.
 

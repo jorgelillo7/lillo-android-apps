@@ -72,5 +72,5 @@ Lines are pruned as items ship. What has **shipped** lives in `apps/<app>/releas
 | ⏳ | Move into `lillorepo` (Bazel) | Gradle builds or the Play publishing loop slowing you down · domain modules are pure Kotlin to make it easy |
 | 👤 | Publishing from CI is ready (Release workflow): create the Google Cloud service account and give it access in Play Console, then `scripts/set-release-secrets.sh --play` and `scripts/set-release-secrets.sh <app>` per app, in your terminal (docs/publishing-on-google-play.md §6) | You |
 | ⏳ | Release workflow without a stored key: Workload Identity Federation (GitHub OIDC → the `play-publisher` service account), then delete its JSON key | The first CI releases working with the key |
-| ⏳ | `minSdk` 23 → 24 (blocks WorkManager 2.12; check the Play Console share of API 23 first) | Christmas's install stats |
+| ⏳ | Christmas Countdown's `minSdk` 23 → 24, the only app still on 23 (blocks WorkManager 2.12 repo-wide; check the Play Console share of API 23 first) | Christmas's install stats |
 | ⏳ | Baseline profiles for startup | An app where startup feels slow |

@@ -20,7 +20,6 @@ android {
 
     defaultConfig {
         applicationId = "com.jorgelillo.grouppolls"
-        minSdk = 24 // navigation-compose needs API 24
         versionCode = 1
         versionName = "1.0"
         buildConfigField("String", "FIREBASE_PROJECT_ID", firebase("projectId"))

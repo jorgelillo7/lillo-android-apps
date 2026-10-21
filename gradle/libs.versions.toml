@@ -37,7 +37,12 @@ junit = "4.13.2"
 # Shared Android configuration, read by the convention plugins in build-logic.
 compileSdk = "37"
 targetSdk = "36"
+# minSdk: the floor of the shared libraries (core), low enough for every app.
+# appMinSdk: what an app gets unless it says otherwise. 24: Play's automatic protection requires it
+# and navigation-compose needs it. Christmas Countdown (live since 23) keeps 23 in its own build file
+# until its API 23 share is checked.
 minSdk = "23"
+appMinSdk = "24"
 
 firebaseBom = "34.19.0"
 kotlinxCoroutines = "1.11.0"
