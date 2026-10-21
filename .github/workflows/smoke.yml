@@ -1,8 +1,10 @@
 # Release smoke tests on an emulator: every app's tools/smoke_test.sh on its R8 release build
 # (debug-signed without the upload keys). The release build in ci.yml catches R8 build errors;
 # only running the app catches a stripped class (WorkManager's WorkDatabase_Impl once crashed the
-# Christmas app on start). It is a required check, so it runs on every pull request, but the
-# emulator only starts when the change touches app code: a docs-only change passes in seconds.
+# Christmas app on start). One job per app, in parallel, each on a fresh emulator (six apps in a
+# row on one emulator took an hour and the emulator once died on the last one). "Smoke" sums them
+# up: it is the required check, so it reports on every pull request, and a docs-only change skips
+# the emulators and passes in seconds.
 name: Smoke
 
 on:
@@ -18,15 +20,15 @@ permissions:
   pull-requests: read # paths-filter lists the PR's files
 
 jobs:
-  smoke:
-    name: Smoke
+  changes:
+    name: Changed app code?
     runs-on: ubuntu-latest
-    timeout-minutes: 75
+    outputs:
+      code: ${{ steps.filter.outputs.code == 'true' || github.event_name == 'workflow_dispatch' }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - name: Changed app code?
-        uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d # v4.0.3
-        id: changes
+      - uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d # v4.0.3
+        id: filter
         with:
           filters: |
             code:
@@ -37,29 +39,34 @@ jobs:
               - "scripts/**"
               - "*.gradle.kts"
               - ".github/workflows/smoke.yml"
-      - name: Decide whether to run
-        if: steps.changes.outputs.code == 'true' || github.event_name == 'workflow_dispatch'
-        run: echo "RUN_SMOKE=true" >> "$GITHUB_ENV"
+
+  app:
+    name: Smoke (${{ matrix.app }})
+    needs: changes
+    if: needs.changes.outputs.code == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        app: [christmas-countdown, decision-wheel, tournaments, group-polls, league-cards, whos-lying]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6.0.1
-        if: env.RUN_SMOKE == 'true'
         with:
           distribution: temurin
           java-version: 21
       - uses: gradle/actions/setup-gradle@3f5f9adaf7d9fecd50b5935e54106014257a94e6 # v6.4.0
-        if: env.RUN_SMOKE == 'true'
       # Hardware acceleration for the emulator on GitHub's Linux runners.
       - name: Enable KVM
-        if: env.RUN_SMOKE == 'true'
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
       # Built before the emulator starts: the runner then has its memory for the emulator.
-      - name: Build release APKs
-        if: env.RUN_SMOKE == 'true'
-        run: ./gradlew assembleRelease -Dorg.gradle.jvmargs="-Xmx4g -Dfile.encoding=UTF-8"
-      - name: Smoke tests
-        if: env.RUN_SMOKE == 'true'
+      - name: Build the release APK
+        run: ./gradlew :apps:${{ matrix.app }}:app:assembleRelease -Dorg.gradle.jvmargs="-Xmx4g -Dfile.encoding=UTF-8"
+      - name: Smoke test
         uses: reactivecircus/android-emulator-runner@a421e43855164a8197daf9d8d40fe71c6996bb0d # v2.38.0
         with:
           api-level: 36
@@ -69,12 +76,22 @@ jobs:
           profile: pixel_7
           disable-animations: true
           emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim
-          # One app at a time (two UI runs on one emulator tap over each other); each builds nothing new.
-          script: |
-            for app in christmas-countdown decision-wheel tournaments group-polls league-cards whos-lying; do echo "== $app"; apps/$app/tools/smoke_test.sh || exit 1; done
+          script: apps/${{ matrix.app }}/tools/smoke_test.sh
       - name: Upload smoke screenshots
         if: failure()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: smoke-screenshots
+          name: smoke-screenshots-${{ matrix.app }}
           path: build/smoke-test/**
+
+  smoke:
+    name: Smoke
+    needs: [changes, app]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Every app passed, or no app code changed
+        run: |
+          echo "changes: ${{ needs.changes.result }}, apps: ${{ needs.app.result }}"
+          [ "${{ needs.changes.result }}" = success ] || exit 1
+          case "${{ needs.app.result }}" in success|skipped) ;; *) exit 1 ;; esac
