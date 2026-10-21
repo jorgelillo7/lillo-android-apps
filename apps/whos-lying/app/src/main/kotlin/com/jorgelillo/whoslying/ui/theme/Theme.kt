@@ -21,6 +21,12 @@ object Neon {
     val AmberText = Color(0xFFFFE29A)
     val VioletLight = Color(0xFF8B6EFF)
 
+    /** "Go" actions: hide the card, vote, next round. */
+    val Go = Color(0xFF00D26A)
+
+    /** Confetti and fireworks. */
+    val Confetti = listOf(Amber, Pink, Turquoise, Color.White, Color(0xFF7CFF6B), Violet)
+
     val Backdrop = Brush.verticalGradient(listOf(Color(0xFF2B1B6B), Night, Night))
     val RevealBackdrop = Brush.verticalGradient(listOf(Color(0xFF6A4AF0), Color(0xFF4B2BD6)))
 

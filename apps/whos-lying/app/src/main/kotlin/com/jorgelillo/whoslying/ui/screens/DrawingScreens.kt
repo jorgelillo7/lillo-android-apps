@@ -85,7 +85,7 @@ internal fun DrawingScreen(
             stringResource(R.string.vote_button),
             onVote,
             Modifier.testTag("go_vote"),
-            color = Color(0xFF00D26A),
+            color = Neon.Go,
             contentColor = Neon.Night
         )
         TextButton(
