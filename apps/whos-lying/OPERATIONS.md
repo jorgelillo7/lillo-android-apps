@@ -41,7 +41,7 @@ Releases follow the `release-android-app` skill.
 | 2 | 1.0 | 2026-10-07 | Internal testing | First test with friends. Word packs without alcohol / drinking games, for a PEGI 3 rating |
 | 3 | 1.0 | 2026-10-08 | Internal testing | Landscape / short screens (AYN Thor): compact reveal curtain and secret card, drawing canvas beside the tools, voting grid without the header, start button inside the setup list |
 | 4 | 1.0 | 2026-10-12 | Never uploaded (shipped in 5) | New icon, share packs by link / QR, lint fixes, shared core code |
-| 5 | 1.1 | 2026-10-21 | Internal testing (to upload, first release from CI) | Everything since 3: v4's icon and pack sharing, editable copies of included packs, contrast and touch targets, landscape fixes |
+| 5 | 1.1 | 2026-10-22 | Internal testing → production (first release from CI) | Everything since 3: v4's icon and pack sharing, editable copies of included packs, contrast and touch targets, landscape fixes |
 
 Upload key (created 5 Oct 2026 with `scripts/new-upload-key.sh`, see [docs/signing.md](../../docs/signing.md)):
 
@@ -52,6 +52,9 @@ Upload key (created 5 Oct 2026 with `scripts/new-upload-key.sh`, see [docs/signi
 | Serial | `bd4c0d6a8362aa0` (valid until Feb 2054) |
 | SHA-1 | `A9:9E:E3:39:4B:17:81:7F:0E:21:D5:C7:FC:BA:8C:35:33:02:73:A3` |
 | SHA-256 | `85:7F:D2:53:4D:0A:5A:BE:FF:67:B8:8E:06:4B:B0:FB:9C:5B:BE:CF:DE:85:4B:08:6C:14:37:B7:34:B8:1A:3D` |
+
+Play app signing SHA-256 (what installs from Play carry; in `assetlinks.json` for the `/p/` pack links
+since 2026-10-22): `71:51:26:6B:B6:C3:24:11:52:0B:C2:2B:49:C1:C8:DC:54:EE:F3:08:00:1A:BF:EA:7B:EE:C9:34:5D:64:ED:78`
 
 ```bash
 ./gradlew :apps:whos-lying:app:bundleRelease

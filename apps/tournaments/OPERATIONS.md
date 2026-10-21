@@ -50,7 +50,9 @@ Upload key (created 13 Oct 2026 with `scripts/new-upload-key.sh`, see [docs/sign
 | SHA-256 | `2F:3A:F8:8E:A6:79:17:86:09:7F:7B:1D:AA:9A:0B:EF:F9:54:02:29:EB:26:B7:BD:DD:E0:8E:89:ED:A6:FF:47` |
 
 The App Links in `assetlinks.json` need the **Play app signing** key's SHA-256 (Play Console →
-App integrity), not this one: Play re-signs the bundle.
+App integrity), not this one: Play re-signs the bundle. Play app signing SHA-256:
+`55:3E:89:06:A5:92:3D:3F:D5:B0:2E:FF:C0:AA:5C:74:A6:D4:E7:2D:DD:F5:AF:A0:6C:F5:BB:F2:AE:6D:6A:B5`
+(in `assetlinks.json` since 2026-10-22, with the upload and debug keys).
 
 | versionCode | Version | Notes |
 |---|---|---|

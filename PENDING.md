@@ -14,8 +14,7 @@ Lines are pruned as items ship. What has **shipped** lives in `apps/<app>/releas
 
 | | What is missing | Waiting on |
 |---|---|---|
-| 👤 | Upload v5 (4.1: new name "¿Ya es Navidad? Cuenta atrás" / "Is it Christmas yet? Countdown", new advent calendar with music days and sharing) and, with it, the new titles, full description and feature graphics from `app/src/main/play/listings` | You · Release workflow (`listing=true` for the new name and graphics) |
-| ⏳ | Check v4 on a real phone after Play approval: the 3 new carols (transcribed from memory), share text in both modes, widget | Google's review of v4 |
+| ⏳ | v5 (4.1, new name and listing) sent to production on 2026-10-22: check it on a real phone after Google's review (advent, music days, sharing, reminders) | Google's review |
 | 👤 | Spanish carols (Los peces en el río, Campana sobre campana, Fum fum fum, Marimorena) | Reliable public-domain scores from you · *El burrito sabanero* is copyrighted (1972), not allowed |
 | ⏳ | Grow the advent pool (activities and songs) between January and November, never during an Advent in progress | Ideas from you · `AdventActivity` / `AdventSong` in the domain |
 | ⏳ | Raise `targetSdk` to 37 (Android 17 behaviour changes, test on an API 37 emulator) | Google Play announcing API 37 as the requirement (usually each August) |
@@ -24,16 +23,14 @@ Lines are pruned as items ship. What has **shipped** lives in `apps/<app>/releas
 
 | | What is missing | Waiting on |
 |---|---|---|
-| 👤 | Upload v2 (1.1: favourites, launcher shortcuts, restore example wheels) to production, with the updated full description | You · Release workflow (`listing=true`) |
+| ⏳ | v2 (1.1) sent to production on 2026-10-22 with the new listing: check it on a real phone after Google's review | Google's review |
 
 ## whos-lying
 
 | | What is missing | Waiting on |
 |---|---|---|
-| 👤 | Upload v5 / 1.1 (everything since v3: new icon, pack sharing, editable copies, readability, landscape) to internal testing with the Release workflow, with `listing=true` for the new icon and graphics; test with 4–5 friends | You · the service account and `scripts/set-release-secrets.sh --play` / `whos-lying` first |
+| ⏳ | 1.1 in production since 2026-10-22 (and internal testing): first public release; gather feedback from the friends who tested it | Google's review |
 | ⏳ | A tester got "Item not found" on the opt-in link: likely the first review still pending or the wrong Google account in Play | Their next try |
-| 🔨 | Pack links: publish `/p/` and the impostor entry of `assetlinks.json` (both ready locally in the website repo; add the Play signing SHA-256 from Play Console → App integrity). Until then packs travel by share-to-app or Import → paste | You · the SHA-256, then a website commit |
-| 👤 | New icon (a line-up, the liar in a fedora): upload `store/play-icon-512.png` and the feature graphics to the listing | You · Play Console → Main store listing |
 
 ## group-polls (new app)
 
@@ -47,15 +44,14 @@ Lines are pruned as items ship. What has **shipped** lives in `apps/<app>/releas
 
 | | What is missing | Waiting on |
 |---|---|---|
-| 👤 | App created in Play Console: App content forms, then upload the first signed bundle to internal testing by hand. Listing texts, screenshots and feature graphics are ready in `app/src/main/play/listings` | You |
-| 🔨 | Then: Play signing SHA-256 in `assetlinks.json` and publish `/t/` (ready locally in the website repo: shows the tournament in the browser) with it, internal test | The step above · plan in [docs/plans/tournaments.md](docs/plans/tournaments.md) |
+| 👤 | v1 in internal testing (2026-10-22, listing published): add testers and send them the opt-in link; production needs its countries and, after testing, `action=promote` | You |
 | ⏳ | Double elimination and round robin | Feedback after real use |
 
 ## league-cards (new game, internal test with the league)
 
 | | What is missing | Waiting on |
 |---|---|---|
-| 👤 | App created, key and release secrets in place: App content forms, upload the first bundle (with the private deck) to internal testing by hand, add the league's Gmail addresses as testers | You · [OPERATIONS.md](apps/league-cards/OPERATIONS.md) |
+| 👤 | v1 in internal testing (2026-10-22, listing with the sample deck published): add the league's Gmail addresses as testers and send the opt-in link | You |
 | 👤 | Each league member's OK to appear in the private deck | You |
 | ⏳ | More cards and chat lines from the group | Ideas from the league · private deck, never in this repo |
 
