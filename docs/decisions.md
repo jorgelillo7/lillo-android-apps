@@ -26,6 +26,7 @@ lives in the PR. Add a line when a decision is taken; change it when it is rever
 | Every screenshot test also runs Google's Accessibility Test Framework | Labels, touch targets and contrast checked on every screen, every PR | #58 |
 | Disabled controls and emoji are exempt from the contrast check | WCAG exempts inactive controls; ATF measures emoji as if they were letters | #60 |
 | A frozen clock and fixed dates in screenshot tests | Confetti, countdowns and "2 h ago" must look the same every run | #54 |
+| Core's `@Preview` catalogue is its screenshot test (ComposablePreviewScanner) | One place to show and pin each component; it found unreadable colours in the previews themselves | #73 |
 | ViewModel tests with Turbine; one whole-flow test per app through the real `MainActivity` on the JVM | The smoke test's journey in seconds on every PR; the first one found routes kotlinx.serialization couldn't reach | #67, #69 |
 | Release smoke tests on an emulator, locally and in CI (one job per app, ATD image, required check) | R8 once stripped a class and crashed an app on start; only running the app catches that. ATD: the Google image crashed in CI | #63, #68 |
 | One UI run on the emulator at a time | Two runs tap over each other and void the results | #56 |
