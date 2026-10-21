@@ -43,6 +43,9 @@ Short, one line each. Add to it whenever something bites.
 - **Compose only redraws what it can observe.** A screen that reads a plain `var` of a mutable domain
   object never updates when it changes (the "next vote" button never came back after a wrong Drifter
   guess). Keep UI state in `StateFlow` / `mutableStateOf`, or immutable objects replaced on change.
+- **Stacked PRs and `--delete-branch`.** Squash-merging the lower PR with `--delete-branch` deletes
+  the upper PR's base, and GitHub closes the upper PR for good. Retarget the upper PR to `master`
+  first (or rebase it onto `master` once the lower one is in), then delete the branch.
 - **One UI run on the emulator at a time.** Two scripts driving the same emulator (a smoke test
   moved to the background by a timeout plus a new one in the foreground) tap over each other and
   crash `uiautomator` ("already registered"): every result of that round is void. Wait for the

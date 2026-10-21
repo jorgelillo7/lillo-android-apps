@@ -60,6 +60,17 @@ such as `apps/whos-lying/tools/battery_test.py` run on); each app's `tools/` onl
 Project skills in `.claude/skills/`: `new-android-app` (competitor study → design → scaffold),
 `upgrade-android-deps` (toolchain/dependency upgrades) and `release-android-app` (ship a version).
 
+## Working on a change
+
+- **Decisions**: `docs/decisions.md` lists the choices that shape the repo, with their reason.
+  Read it before changing a convention; add a line when a new decision is taken.
+- **Before the PR**: `./gradlew spotlessApply`, then `test verifyRoborazziDebug lintDebug`, and
+  the release smoke test of every app touched. A new or changed screen gets a screenshot test,
+  upright and `+land`; re-record on purpose and review the images.
+- **One UI run on the emulator at a time** (smoke, battery, captures). A run moved to the
+  background by a timeout is still running: wait for its notification before starting another.
+- Each PR goes through CI (Lint, Test, Release, Smoke) and is squash-merged.
+
 ## Build architecture
 
 - **Version catalog** `gradle/libs.versions.toml` is the single source of truth for every version,
