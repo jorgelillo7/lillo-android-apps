@@ -34,7 +34,7 @@ for i in $(seq 1 120); do
     break
   fi
   if [ "$reports" = 3 ] && [ "${table_shot:-}" = "" ] && on_screen table; then
-    table_shot=1; tap table 2; shot table; "$ADB" shell input keyevent KEYCODE_BACK; sleep 1
+    table_shot=1; tap table 2; shot table; back 1
   fi
 done
 ended=0

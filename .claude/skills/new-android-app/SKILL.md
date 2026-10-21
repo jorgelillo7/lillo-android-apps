@@ -79,8 +79,9 @@ Follow [docs/adding-a-new-app.md](../../../docs/adding-a-new-app.md). Checklist:
   on a dark gradient, checked at 48/72 px next to the other apps; study the competitors' icons
   first.
 - `tools/smoke_test.sh` on `scripts/smoke_lib.sh` (`smoke_start` … `smoke_finish`), tapping test
-  tags with `tap` (never coordinates); longer UI runs (a battery of scenarios) build on
-  `scripts/ui_lib.py` like `apps/whos-lying/tools/battery_test.py`; `tools/capture_store_screenshots.sh` and
+  tags with `tap` (never coordinates); `tools/capture_store_screenshots.sh` on `scripts/capture_lib.sh`
+  (`capture_start` … `capture_open` per locale … `shot`); longer UI runs (a battery of scenarios) build on
+  `scripts/ui_lib.py` like `apps/whos-lying/tools/battery_test.py`; and
   `tools/generate_store_assets.py` (only `STYLE` + `LOCALES`, the drawing is `scripts/store_assets.py`).
 - `app/src/main/play/listings/{en-US,es-ES}/` with `title.txt` (≤30), `short-description.txt` (≤80),
   `full-description.txt`, and `app/src/main/play/release-notes/{en-US,es-ES}/default.txt`

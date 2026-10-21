@@ -71,10 +71,10 @@ Lines are pruned as items ship. What has **shipped** lives in `apps/<app>/releas
 | | What is missing | Waiting on |
 |---|---|---|
 | ⏳ | Move into `lillorepo` (Bazel) | Gradle builds or the Play publishing loop slowing you down · domain modules are pure Kotlin to make it easy |
-| 🔨 | Publish from the terminal with Gradle Play Publisher (bundle + notes to a track, listing, promote): move every app's `store/metadata` (fastlane layout) to GPP's own `app/src/main/play`, store-asset generators and release skill included | In progress · then 👤 a Google Cloud service account with Play Console access (one-time) |
+| 👤 | Publishing from the terminal is ready (Gradle Play Publisher): create the Google Cloud service account and give it access in Play Console, once (docs/publishing-on-google-play.md §6) | You |
 | 🔨 | Release smoke tests in CI on an emulator (`reactivecircus/android-emulator-runner`): the release build in CI catches R8 build errors, but only running the app catches a stripped class like WorkManager's | `scripts/env.sh` to work on Linux runners |
 | 🔨 | Line length under ktlint (`max_line_length` is off: ~100 Kotlin lines over 150 to wrap by hand) and Compose rules (`io.nlopez.compose.rules` for ktlint) | — |
-| 🔨 | Dependency update PRs (Renovate or Dependabot); lint already lists 7 newer versions | — |
+| 👤 | Renovate is configured (`renovate.json`): install the Renovate GitHub app on the repo so the weekly PRs start | You · one click |
 | 🔨 | Semantic colours in `LilloTheme` (card, muted, line, accent) so core components stop taking colours per call and the per-app wrappers shrink | — |
 | 🔨 | Accessibility pass: content descriptions (avatars, emoji buttons), contrast (e.g. the Drifter's guess placeholder), touch targets; TalkBack once per app | — |
 | 🔨 | Component catalogue: `@Preview`s of every core component (light/dark, short screen) | — |

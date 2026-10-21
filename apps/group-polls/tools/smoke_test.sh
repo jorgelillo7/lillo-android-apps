@@ -26,10 +26,10 @@ tap create 2
 type_in question_input "Friday%sdinner"
 type_in red_input "Pizza"
 type_in blue_input "Sushi"
-"$ADB" shell input keyevent KEYCODE_ESCAPE; sleep 1
+hide_keyboard
 tap submit 3
 shot share
-"$ADB" shell input keyevent KEYCODE_BACK; sleep 1
+back 1
 tap vote_blue 1
 tap predict_blue 2
 shot private_result

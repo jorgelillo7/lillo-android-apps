@@ -14,7 +14,7 @@ tap play 3
 for name in Ana Bea Carlos; do
   tap player_name 1; "$ADB" shell input text "$name"; "$ADB" shell input keyevent KEYCODE_ENTER; sleep 1
 done
-"$ADB" shell input keyevent KEYCODE_ESCAPE; sleep 1
+hide_keyboard
 shot players
 tap continue 3
 tap mode_classic 1
