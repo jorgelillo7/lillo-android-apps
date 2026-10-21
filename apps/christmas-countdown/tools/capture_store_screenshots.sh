@@ -1,18 +1,11 @@
 #!/usr/bin/env bash
 # Captures the raw Play Store screenshots (store/raw/<locale>/) for every locale.
-# Needs a running emulator with the app installed. Taps go by on-screen text (scripts/tap-text.sh).
+# Needs a running emulator; scripts/capture_lib.sh installs the app and does the rest.
 # Then run: .venv/bin/python apps/christmas-countdown/tools/generate_store_assets.py
 #
-# Usage: apps/christmas-countdown/tools/capture_store_screenshots.sh
+# Usage: apps/christmas-countdown/tools/capture_store_screenshots.sh   (LOCALES="es-ES" for one)
 set -euo pipefail
-ROOT="$(cd "$(dirname "$0")/../../.." && pwd)"
-source "$ROOT/scripts/env.sh"
-PKG=com.jorgelillo.christmascountdown
-RAW="$ROOT/apps/christmas-countdown/store/raw"
-
-tap() { "$ROOT/scripts/tap-text.sh" "$@"; }
-back() { "$ADB" shell input keyevent KEYCODE_BACK; sleep 2; }
-shot() { "$ROOT/scripts/screenshot.sh" "$RAW/$1/$2.png"; }
+source "$(dirname "$0")/../../../scripts/capture_lib.sh"
 
 # On-screen labels per locale (taps go by text, so layout differences between languages don't matter).
 label() {
@@ -25,20 +18,17 @@ label() {
   esac
 }
 
-"$ROOT/scripts/emulator.sh" date 121810002026   # 18 December 2026: most doors open, music days 17 and 18 unlocked
-"$ROOT/scripts/emulator.sh" demo on
-"$ADB" shell pm clear "$PKG" >/dev/null
+capture_start christmas-countdown com.jorgelillo.christmascountdown
+capture_date 121810002026   # 18 December 2026: most doors open, music days 17 and 18 unlocked
+"$ADB" shell pm clear "$PKG" >/dev/null   # once: the doors opened in English stay open in Spanish
 
 first=1
-for locale in en-US es-ES; do
-  "$ADB" shell cmd locale set-app-locales "$PKG" --locales "$locale"
-  "$ADB" shell am force-stop "$PKG"
-  "$ADB" shell am start -n "$PKG/.MainActivity" >/dev/null
-  sleep 30
+for locale in $CAPTURE_LOCALES; do
+  capture_open "$locale" 30 keep
 
-  tap "$(label $locale time)";   shot "$locale" 01-countdown
-  tap "$(label $locale sleeps)"; shot "$locale" 02-sleeps
-  tap "$(label $locale advent)" 6
+  tap "$(label "$locale" time)";   shot "$locale" 01-countdown
+  tap "$(label "$locale" sleeps)"; shot "$locale" 02-sleeps
+  tap "$(label "$locale" advent)" 6
   if [ "$first" = 1 ]; then
     # Open some unlocked doors (the layout changes every year) so the grid shows gifts; doors 15-18
     # of the 2026 calendar stay closed for the plan and music screenshots (18 is today).
@@ -54,11 +44,6 @@ for locale in en-US es-ES; do
   # A music day: Jingle Bell Rock (door 18) in English, Campana sobre campana (door 17) in Spanish.
   if [ "$locale" = en-US ]; then tap "18" 5; else tap "17" 5; fi
   shot "$locale" 05-music; back
-  tap "$(label $locale about)" 6; shot "$locale" 06-about; back
-  tap "$(label $locale home)"
+  tap "$(label "$locale" about)" 6; shot "$locale" 06-about; back
+  tap "$(label "$locale" home)"
 done
-
-"$ADB" shell cmd locale set-app-locales "$PKG" --locales ""
-"$ROOT/scripts/emulator.sh" demo off
-"$ROOT/scripts/emulator.sh" date auto
-echo "Raw screenshots in $RAW. Check them before generating the store graphics."

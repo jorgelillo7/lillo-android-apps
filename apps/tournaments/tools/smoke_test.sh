@@ -17,7 +17,7 @@ type_in name "Smoke%scup" hide
 tap player 1
 "$ADB" shell input text "Ann,Bob,Cat,Dan"
 "$ADB" shell input keyevent KEYCODE_ENTER; sleep 1
-"$ADB" shell input keyevent KEYCODE_BACK; sleep 1
+back 1
 shot setup
 tap start 3
 tap tab_matches 2
@@ -31,7 +31,7 @@ tap tab_bracket 2
 shot bracket
 tap share 3
 shot share
-"$ADB" shell input keyevent KEYCODE_BACK; sleep 1
+back 1
 tap back 2
 tap stats 2
 shot stats

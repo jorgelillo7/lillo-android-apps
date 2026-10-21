@@ -10,7 +10,7 @@ tap "Time"; shot countdown
 tap "Sleeps"; shot sleeps
 tap "Advent" 5; shot advent
 tap "About" 5; shot about
-"$ADB" shell input keyevent KEYCODE_BACK; sleep 2
+back 2
 tap "Countdown"
 tap "Play carols" 6                                    # music on
 pid="$("$ADB" shell pidof "$PKG" || true)"

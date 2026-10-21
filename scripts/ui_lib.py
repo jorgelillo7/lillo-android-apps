@@ -11,6 +11,7 @@ From the shell (tap-text.sh and smoke_lib.sh use these):
     python3 scripts/ui_lib.py tap "<text|tag>" [wait-seconds]
     python3 scripts/ui_lib.py hide-keyboard
     python3 scripts/ui_lib.py screenshot <out.png>
+    python3 scripts/ui_lib.py swipe-up [start end]      fractions of the screen height (0.70 0.45)
 """
 import html
 import re
@@ -169,6 +170,8 @@ if __name__ == "__main__":
             sys.exit(f'tap: "{rest[0]}" not found on screen')
     elif command == "hide-keyboard":
         hide_keyboard()
+    elif command == "swipe-up":
+        swipe_up(*(float(x) for x in rest[:2]))
     elif command == "screenshot" and rest:
         print(f"Saved {screenshot(rest[0])}")
     else:

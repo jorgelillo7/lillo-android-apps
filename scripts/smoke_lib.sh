@@ -1,23 +1,15 @@
 # Shared start and finish of every app's tools/smoke_test.sh. Source it, then:
 #
 #   smoke_start <app-folder> <package> [wait-seconds]   build + clean install of the RELEASE apk
-#   ... tap / type_in / shot / $ADB, the app's own steps ...
+#   ... tap / type_in / swipe_up / back / shot / $ADB, the app's own steps ...
 #   smoke_finish [extra-check-ok] [extra-message]       crashes + process alive → PASSED/FAILED
 #
 # Release only: R8 only affects release builds. The app is uninstalled first (a debug build on the
 # emulator has another signature) and runs in English, so the steps can tap English labels.
 
-# shellcheck disable=SC2034  # ROOT/OUT/PKG are used by the calling script
-ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-source "$ROOT/scripts/env.sh"
+# shellcheck disable=SC2034  # OUT/PKG are used by the calling script
+source "$(dirname "${BASH_SOURCE[0]}")/ui_lib.sh"   # ROOT, tap, type_in, hide_keyboard, swipe_up, back
 
-tap() { "$ROOT/scripts/tap-text.sh" "$@"; }
-# type_in <tag> <text> [hide]: tap a field and type (%s for spaces); "hide" closes the keyboard after.
-type_in() {
-  tap "$1" 1
-  "$ADB" shell input text "$2"
-  if [ "${3:-}" = hide ]; then python3 "$ROOT/scripts/ui_lib.py" hide-keyboard; fi
-}
 shot() { "$ROOT/scripts/screenshot.sh" "$OUT/$1.png" >/dev/null; echo "screen: $1"; }
 
 smoke_start() {

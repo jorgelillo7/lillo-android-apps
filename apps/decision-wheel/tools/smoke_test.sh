@@ -15,15 +15,15 @@ tap spin 1; shot spinning
 sleep 7; shot result
 tap accept 3
 tap history 3; shot history
-"$ADB" shell input keyevent KEYCODE_BACK; sleep 2
+back 2
 tap back 3
 tap new_wheel 3
 tap name 1; "$ADB" shell input text "Smoke"
 tap new_option 1
 for option in One Two Three; do "$ADB" shell input text "$option"; "$ADB" shell input keyevent KEYCODE_ENTER; sleep 1; done
-"$ADB" shell input keyevent KEYCODE_ESCAPE; sleep 1
+hide_keyboard
 tap save 5; shot new-wheel
-"$ADB" shell input keyevent KEYCODE_BACK; sleep 2
+back 2
 tap more 2; tap restore_presets 3; shot restored
 
 smoke_finish

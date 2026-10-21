@@ -1,17 +1,13 @@
 #!/usr/bin/env bash
 # Captures the raw Play Store screenshots (store/raw/<locale>/) for every locale.
-# Needs a running emulator with the app installed. Taps go by text or test tag (scripts/tap-text.sh).
+# Needs a running emulator; scripts/capture_lib.sh installs the app and does the rest. The
+# curtain and the drawing use fixed coordinates on purpose: store screenshots are always upright.
 # Then run: .venv/bin/python apps/whos-lying/tools/generate_store_assets.py
 #
-# Usage: apps/whos-lying/tools/capture_store_screenshots.sh
+# Usage: apps/whos-lying/tools/capture_store_screenshots.sh   (LOCALES="es-ES" for one)
 set -euo pipefail
-ROOT="$(cd "$(dirname "$0")/../../.." && pwd)"
-source "$ROOT/scripts/env.sh"
-PKG=com.jorgelillo.whoslying
-RAW="$ROOT/apps/whos-lying/store/raw"
+source "$(dirname "$0")/../../../scripts/capture_lib.sh"
 
-tap() { "$ROOT/scripts/tap-text.sh" "$@"; }
-shot() { "$ROOT/scripts/screenshot.sh" "$RAW/$1/$2.png"; }
 ui() { "$ADB" shell uiautomator dump /sdcard/ui.xml >/dev/null && "$ADB" shell cat /sdcard/ui.xml; }
 
 # ASCII names only: `adb shell input text` can't type accents (macOS bash 3.2: no associative arrays).
@@ -83,13 +79,10 @@ draw_house() {
   done
 }
 
-"$ROOT/scripts/emulator.sh" demo on
-for locale in en-US es-ES; do
+capture_start whos-lying com.jorgelillo.whoslying
+for locale in $CAPTURE_LOCALES; do
   names "$locale"
-  "$ADB" shell pm clear "$PKG" >/dev/null
-  "$ADB" shell cmd locale set-app-locales "$PKG" --locales "$locale"
-  "$ADB" shell am start -W -n "$PKG/.MainActivity" >/dev/null
-  sleep 4
+  capture_open "$locale" 4
   tap welcome_ok 2   # first-launch welcome note
   shot "$locale" 07-home
 
@@ -97,9 +90,9 @@ for locale in en-US es-ES; do
   for name in "${PLAYERS[@]}"; do
     tap player_name 1; "$ADB" shell input text "$name"; "$ADB" shell input keyevent KEYCODE_ENTER; sleep 1
   done
-  "$ADB" shell input keyevent KEYCODE_ESCAPE; sleep 1
+  hide_keyboard
   tap continue 2
-  "$ADB" shell input swipe 540 1800 540 500 300; sleep 1    # scroll setup down to the timer
+  swipe_up 0.74 0.2    # scroll setup down to the timer
   for _ in 1 2 3 4 5; do tap timer_plus 1; done      # 5 min, the recommendation for 5 players
   tap choose_packs 2
   shot "$locale" 06-packs
@@ -122,7 +115,7 @@ for locale in en-US es-ES; do
   tap home 2
   tap play 2
   tap continue 2
-  "$ADB" shell input swipe 540 1800 540 500 300; sleep 1
+  swipe_up 0.74 0.2
   tap drawing 1
   tap start 3
   reveal_all
@@ -131,6 +124,3 @@ for locale in en-US es-ES; do
   sleep 1
   shot "$locale" 05-drawing
 done
-"$ADB" shell cmd locale set-app-locales "$PKG" --locales ""
-"$ROOT/scripts/emulator.sh" demo off
-echo "Raw screenshots in $RAW. Check them before generating the store graphics."
