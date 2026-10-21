@@ -34,9 +34,9 @@ import androidx.compose.ui.unit.sp
 import com.jorgelillo.christmascountdown.R
 import com.jorgelillo.christmascountdown.domain.CountdownState
 import com.jorgelillo.christmascountdown.domain.TimeLeft
+import com.jorgelillo.christmascountdown.ui.GlassCard
 import com.jorgelillo.christmascountdown.ui.theme.ChristmasColorScheme
 import com.jorgelillo.christmascountdown.ui.theme.ChristmasColors
-import com.jorgelillo.core.designsystem.GlassCard
 import com.jorgelillo.core.designsystem.LilloSectionTitle
 import com.jorgelillo.core.designsystem.LilloTheme
 import com.jorgelillo.core.designsystem.isShortScreen

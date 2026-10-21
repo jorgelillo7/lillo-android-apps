@@ -14,7 +14,6 @@ import com.jorgelillo.christmascountdown.ui.countdown.CountdownScreen
 import com.jorgelillo.christmascountdown.ui.countdown.CountdownUiState
 import com.jorgelillo.christmascountdown.ui.theme.ChristmasColorScheme
 import com.jorgelillo.christmascountdown.ui.theme.ChristmasColors
-import com.jorgelillo.core.designsystem.GradientBackground
 import com.jorgelillo.core.designsystem.LilloTheme
 import com.jorgelillo.core.screenshottesting.captureScreenshot
 import java.time.LocalDate

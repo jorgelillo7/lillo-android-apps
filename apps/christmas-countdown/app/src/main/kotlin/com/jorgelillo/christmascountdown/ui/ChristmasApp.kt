@@ -45,6 +45,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.LifecycleStartEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -60,8 +61,6 @@ import com.jorgelillo.christmascountdown.ui.components.Snowfall
 import com.jorgelillo.christmascountdown.ui.countdown.CountdownScreen
 import com.jorgelillo.christmascountdown.ui.countdown.CountdownViewModel
 import com.jorgelillo.christmascountdown.ui.theme.ChristmasColors
-import com.jorgelillo.core.designsystem.GlassCard
-import com.jorgelillo.core.designsystem.GradientBackground
 import com.jorgelillo.core.platform.shareText
 import kotlinx.coroutines.launch
 
@@ -79,6 +78,11 @@ fun ChristmasApp(app: ChristmasCountdownApplication, openAdvent: Boolean = false
     var tab by rememberSaveable { mutableIntStateOf(if (openAdvent) Tab.Advent.ordinal else Tab.Countdown.ordinal) }
     // "Shall we remind you?": Android 13+ needs the permission; asked in context, once.
     var canNotify by remember { mutableStateOf(SeasonNotifications.canNotify(context)) }
+    // Granted (or revoked) in system settings while away: check again on the way back.
+    LifecycleResumeEffect(Unit) {
+        canNotify = SeasonNotifications.canNotify(context)
+        onPauseOrDispose { }
+    }
     val promptDismissed by app.settings.reminderPromptDismissed.collectAsStateWithLifecycle(initialValue = true)
     val scope = rememberCoroutineScope()
     val askPermission = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->

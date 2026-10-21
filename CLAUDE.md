@@ -79,13 +79,14 @@ Project skills in `.claude/skills/`: `new-android-app` (competitor study → des
   tested with `kotlin.test`. This keeps them portable (a later move into the `lillorepo` Bazel
   monorepo starts with these modules).
 - `:apps:<app>:app`: Compose + Material 3, MVVM (`ViewModel` + `StateFlow`, collected with
-  `collectAsStateWithLifecycle`). No DI framework: app-wide singletons live on the app's
+  `collectAsStateWithLifecycle`; domain state immutable, replaced on change — never a mutable object
+  Compose can't observe). No DI framework: app-wide singletons live on the app's
   `Application` subclass and reach ViewModels through `viewModelFactory` companions.
 - `:core:designsystem` holds `LilloTheme` (each app passes its own `ColorScheme`) and what two or
   more apps share: `LilloPage` (with `sideActionsWhenShort`) / `LilloBigButton` (apps wrap them with
   their colours in `ui/…/Common.kt`), `LilloAboutSheet` (language, rate, privacy),
   `LilloLanguageDialog`, `isShortScreen()` for landscape and handhelds, `TestTagsAsResourceIds`,
-  `ConfettiBurst`, `LilloQrCode`, plus Christmas's `GlassCard` / `GradientBackground`. `:core:platform` has
+  `ConfettiBurst` / `ConfettiRain`, `LilloAvatar`, `LilloSettingRow`, `LilloSectionTitle`, `LilloQrCode`. `:core:platform` has
   `JsonStore`, sharing and links; `:core:sharelink` (pure Kotlin) puts any serializable value in a
   `jorgelillo7.github.io/<path>/#…` link (tournaments `/t/`, impostor packs `/p/`).
 - **Reuse first; the second copy goes to core.** Every app should get what the others already

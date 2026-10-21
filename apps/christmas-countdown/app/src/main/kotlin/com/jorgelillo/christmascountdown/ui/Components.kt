@@ -1,4 +1,4 @@
-package com.jorgelillo.core.designsystem
+package com.jorgelillo.christmascountdown.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border

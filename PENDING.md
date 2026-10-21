@@ -19,7 +19,6 @@ Lines are pruned as items ship. What has **shipped** lives in `apps/<app>/releas
 | 👤 | Spanish carols (Los peces en el río, Campana sobre campana, Fum fum fum, Marimorena) | Reliable public-domain scores from you · *El burrito sabanero* is copyrighted (1972), not allowed |
 | ⏳ | Grow the advent pool (activities and songs) between January and November, never during an Advent in progress | Ideas from you · `AdventActivity` / `AdventSong` in the domain |
 | ⏳ | Raise `targetSdk` to 37 (Android 17 behaviour changes, test on an API 37 emulator) | Google Play announcing API 37 as the requirement (usually each August) |
-| 🔨 | Reminders: re-check `canNotify` on resume (granted from system settings, the prompt stays until restart) and plan the next reminder in a `finally` in `ReminderWorker` (a failed run breaks the chain until the app opens) | — |
 
 ## decision-wheel
 
@@ -77,12 +76,9 @@ Lines are pruned as items ship. What has **shipped** lives in `apps/<app>/releas
 | 🔨 | Line length under ktlint (`max_line_length` is off: ~100 Kotlin lines over 150 to wrap by hand) and Compose rules (`io.nlopez.compose.rules` for ktlint) | — |
 | 🔨 | Dependency update PRs (Renovate or Dependabot); lint already lists 7 newer versions | — |
 | 🔨 | Semantic colours in `LilloTheme` (card, muted, line, accent) so core components stop taking colours per call and the per-app wrappers shrink | — |
-| 🔨 | `GlassCard` / `GradientBackground` are Christmas-only: back to that app, or a second user | — |
-| 🔨 | One UI-state convention for every ViewModel (`StateFlow` + `collectAsStateWithLifecycle`; some still use `mutableStateOf`) | — |
 | 🔨 | Accessibility pass: content descriptions (avatars, emoji buttons), contrast (e.g. the Drifter's guess placeholder), touch targets; TalkBack once per app | — |
 | 🔨 | Component catalogue: `@Preview`s of every core component (light/dark, short screen) | — |
 | ⏳ | `minSdk` 23 → 24 (blocks WorkManager 2.12; check the Play Console share of API 23 first) | Christmas's install stats |
 | ⏳ | Baseline profiles for startup | An app where startup feels slow |
 | 👤 | Repo licence (only whos-lying was discussed: GPL-3.0 candidate) | Your decision |
 | 🔨 | Type-safe navigation (`@Serializable` routes, Navigation 2.10) instead of string routes in decision-wheel, group-polls, tournaments and whos-lying, one app at a time | — |
-| 🔨 | `dataExtractionRules` for the 5 apps with `allowBackup="true"` (only group-polls declares them): say what is restored on a new phone | — |

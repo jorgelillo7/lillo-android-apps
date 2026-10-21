@@ -2,7 +2,6 @@ package com.jorgelillo.whoslying.ui
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -45,18 +44,31 @@ class GameViewModel(private val repository: StateRepository, language: String) :
     /** The game in progress (null before the first one); a new immutable [Game] after every move. */
     val game: StateFlow<Game?> = _game.asStateFlow()
 
-    var lastElimination: Elimination? by mutableStateOf(null)
-        private set
+    private val _lastElimination = MutableStateFlow<Elimination?>(null)
 
-    /** Drawing mode: the shared canvas of the game in progress, kept across rounds. */
+    /** Who the last vote sent out; null once the group moves on to the next vote. */
+    val lastElimination: StateFlow<Elimination?> = _lastElimination.asStateFlow()
+
+    /**
+     * Drawing mode: the shared canvas of the game in progress, kept across rounds. The one piece of
+     * state kept as a Compose list rather than a StateFlow: the canvas adds a point on every touch
+     * event (~60 a second), which a snapshot list takes in place and a flow would copy each time.
+     */
     val strokes = mutableStateListOf<DrawStroke>()
 
+    private val _lastPoints = MutableStateFlow<Map<String, Int>>(emptyMap())
+
     /** Points the last finished game gave, to show next to the totals. */
-    var lastPoints: Map<String, Int> by mutableStateOf(emptyMap())
-        private set
+    val lastPoints: StateFlow<Map<String, Int>> = _lastPoints.asStateFlow()
+
+    private val _voteForced = MutableStateFlow(false)
 
     /** The discussion timer ran out this round: the group must vote. */
-    var voteForced by mutableStateOf(false)
+    val voteForced: StateFlow<Boolean> = _voteForced.asStateFlow()
+
+    fun forceVote() {
+        _voteForced.value = true
+    }
 
     private var scoredGame: Game? = null
 
@@ -134,25 +146,25 @@ class GameViewModel(private val repository: StateRepository, language: String) :
         if (Match.isOver(s.roundsPlayed, s.settings.rounds)) resetScores()
         val (pack, entry) = WordPicker.pick(selectedPacks(s), s.recentWords, Random.Default)
         _game.value = Game.deal(s.players, s.settings, pack, entry, Random.Default)
-        lastElimination = null
-        lastPoints = emptyMap()
-        voteForced = false
+        _lastElimination.value = null
+        _lastPoints.value = emptyMap()
+        _voteForced.value = false
         strokes.clear()
         update { it.copy(recentWords = (listOf(entry.word) + (it.recentWords - entry.word)).take(WordPicker.RECENT_MEMORY)) }
         return true
     }
 
     fun eliminate(player: String) {
-        voteForced = false
+        _voteForced.value = false
         val next = move { it.eliminate(player) } ?: return
-        lastElimination = next.lastElimination
+        _lastElimination.value = next.lastElimination
     }
 
     /** True if the drifter guessed the word. */
     fun guess(text: String): Boolean = move { it.guess(text) }?.drifterGuessed ?: false
 
     fun dismissElimination() {
-        lastElimination = null
+        _lastElimination.value = null
     }
 
     fun revealAll() {
@@ -174,7 +186,7 @@ class GameViewModel(private val repository: StateRepository, language: String) :
         if (!current.isOver || scoredGame === current) return
         scoredGame = current
         val points = Scoring.points(current)
-        lastPoints = points
+        _lastPoints.value = points
         if (!Match.counts(current.outcome)) return
         update { s ->
             s.copy(
