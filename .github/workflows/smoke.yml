@@ -49,6 +49,8 @@ jobs:
           api-level: 36
           arch: x86_64
           target: google_apis
+          # A phone-sized screen like the local AVD (the default profile is 320x640, too small for the steps).
+          profile: pixel_7
           disable-animations: true
           emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim
           # One app at a time (two UI runs on one emulator tap over each other); each builds nothing new.
