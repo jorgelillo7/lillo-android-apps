@@ -28,7 +28,7 @@
 |---|---|
 | `domain` | Pure Kotlin: countdown and advent rules, carol scores, music-box synthesiser. Unit tested. |
 | `app` | Compose UI (MVVM: `ViewModel` + `StateFlow`), DataStore settings, Glance widget, audio playback. |
-| `:core:designsystem` | Shared theme (`LilloTheme`) and components (`GlassCard`, `GradientBackground`). |
+| `:core:designsystem` | Shared theme (`LilloTheme`) and components used by several apps (About sheet, language, page, avatar…). `GlassCard` and `GradientBackground` are this app's own (`ui/Components.kt`). |
 
 ```
 app/src/main/kotlin/com/jorgelillo/christmascountdown/

@@ -15,13 +15,17 @@ class ReminderWorker(context: Context, params: WorkerParameters) : CoroutineWork
     override suspend fun doWork(): Result {
         val date = inputData.getString(ReminderScheduler.KEY_DATE)?.let(LocalDate::parse)
         val slot = inputData.getString(ReminderScheduler.KEY_SLOT)?.let(ReminderSlot::valueOf)
-        // Ran late (phone off all day): a reminder for another day is no use any more.
-        if (date != null && slot != null && date == LocalDate.now()) {
-            val settings = (applicationContext as ChristmasCountdownApplication).settings
-            val opened = date.dayOfMonth in settings.openedDoors(date.year).first()
-            Reminders.due(date, slot, doorOpenedToday = opened)?.let { SeasonNotifications.show(applicationContext, it, date) }
+        try {
+            // Ran late (phone off all day): a reminder for another day is no use any more.
+            if (date != null && slot != null && date == LocalDate.now()) {
+                val settings = (applicationContext as ChristmasCountdownApplication).settings
+                val opened = date.dayOfMonth in settings.openedDoors(date.year).first()
+                Reminders.due(date, slot, doorOpenedToday = opened)?.let { SeasonNotifications.show(applicationContext, it, date) }
+            }
+        } finally {
+            // Whatever happened to this one, the chain goes on (else it waits for the app to open).
+            ReminderScheduler.scheduleNext(applicationContext)
         }
-        ReminderScheduler.scheduleNext(applicationContext)
         return Result.success()
     }
 }

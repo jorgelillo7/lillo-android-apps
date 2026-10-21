@@ -45,9 +45,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jorgelillo.christmascountdown.R
 import com.jorgelillo.christmascountdown.domain.AdventDoor
+import com.jorgelillo.christmascountdown.ui.GlassCard
 import com.jorgelillo.christmascountdown.ui.about.PLAY_STORE_URL
 import com.jorgelillo.christmascountdown.ui.theme.ChristmasColors
-import com.jorgelillo.core.designsystem.GlassCard
 import com.jorgelillo.core.designsystem.TestTagsAsResourceIds
 import com.jorgelillo.core.designsystem.isShortScreen
 import com.jorgelillo.core.platform.shareText

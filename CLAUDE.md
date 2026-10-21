@@ -85,7 +85,7 @@ Project skills in `.claude/skills/`: `new-android-app` (competitor study → des
   more apps share: `LilloPage` (with `sideActionsWhenShort`) / `LilloBigButton` (apps wrap them with
   their colours in `ui/…/Common.kt`), `LilloAboutSheet` (language, rate, privacy),
   `LilloLanguageDialog`, `isShortScreen()` for landscape and handhelds, `TestTagsAsResourceIds`,
-  `ConfettiBurst`, `LilloQrCode`, plus Christmas's `GlassCard` / `GradientBackground`. `:core:platform` has
+  `ConfettiBurst` / `ConfettiRain`, `LilloAvatar`, `LilloSettingRow`, `LilloSectionTitle`, `LilloQrCode`. `:core:platform` has
   `JsonStore`, sharing and links; `:core:sharelink` (pure Kotlin) puts any serializable value in a
   `jorgelillo7.github.io/<path>/#…` link (tournaments `/t/`, impostor packs `/p/`).
 - **Reuse first; the second copy goes to core.** Every app should get what the others already
