@@ -17,7 +17,7 @@ type_in name "Smoke%scup" hide
 tap player 1
 "$ADB" shell input text "Ann,Bob,Cat,Dan"
 "$ADB" shell input keyevent KEYCODE_ENTER; sleep 1
-back 1
+hide_keyboard
 shot setup
 tap start 3
 tap tab_matches 2

@@ -1,19 +1,14 @@
 # Release smoke tests on an emulator: every app's tools/smoke_test.sh on its R8 release build
 # (debug-signed without the upload keys). The release build in ci.yml catches R8 build errors;
 # only running the app catches a stripped class (WorkManager's WorkDatabase_Impl once crashed the
-# Christmas app on start). Slower than ci.yml, so it runs on pull requests that touch app code.
+# Christmas app on start). One job per app, in parallel, each on a fresh emulator (six apps in a
+# row on one emulator took an hour and the emulator once died on the last one). "Smoke" sums them
+# up: it is the required check, so it reports on every pull request, and a docs-only change skips
+# the emulators and passes in seconds.
 name: Smoke
 
 on:
   pull_request:
-    paths:
-      - "apps/**"
-      - "core/**"
-      - "build-logic/**"
-      - "gradle/**"
-      - "scripts/**"
-      - "*.gradle.kts"
-      - ".github/workflows/smoke.yml"
   workflow_dispatch:
 
 concurrency:
@@ -22,12 +17,39 @@ concurrency:
 
 permissions:
   contents: read
+  pull-requests: read # paths-filter lists the PR's files
 
 jobs:
-  smoke:
-    name: Smoke
+  changes:
+    name: Changed app code?
     runs-on: ubuntu-latest
-    timeout-minutes: 75
+    outputs:
+      code: ${{ steps.filter.outputs.code == 'true' || github.event_name == 'workflow_dispatch' }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d # v4.0.3
+        id: filter
+        with:
+          filters: |
+            code:
+              - "apps/**"
+              - "core/**"
+              - "build-logic/**"
+              - "gradle/**"
+              - "scripts/**"
+              - "*.gradle.kts"
+              - ".github/workflows/smoke.yml"
+
+  app:
+    name: Smoke (${{ matrix.app }})
+    needs: changes
+    if: needs.changes.outputs.code == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        app: [christmas-countdown, decision-wheel, tournaments, group-polls, league-cards, whos-lying]
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6.0.1
@@ -42,23 +64,37 @@ jobs:
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
       # Built before the emulator starts: the runner then has its memory for the emulator.
-      - run: ./gradlew assembleRelease -Dorg.gradle.jvmargs="-Xmx4g -Dfile.encoding=UTF-8"
-      - name: Smoke tests
+      - name: Build the release APK
+        run: ./gradlew :apps:${{ matrix.app }}:app:assembleRelease -Dorg.gradle.jvmargs="-Xmx4g -Dfile.encoding=UTF-8"
+      - name: Smoke test
         uses: reactivecircus/android-emulator-runner@a421e43855164a8197daf9d8d40fe71c6996bb0d # v2.38.0
         with:
           api-level: 36
           arch: x86_64
-          target: google_apis
+          # Automated Test Device image: made for CI, without the Google apps that index in the
+          # background on a fresh boot. With google_apis the emulator died on whos-lying in 9 of 11
+          # runs (also with 4 GB of RAM, API 35 or AOSP); on ATD it passed 6 of 6.
+          target: google_atd
           # A phone-sized screen like the local AVD (the default profile is 320x640, too small for the steps).
           profile: pixel_7
           disable-animations: true
           emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim
-          # One app at a time (two UI runs on one emulator tap over each other); each builds nothing new.
-          script: |
-            for app in christmas-countdown decision-wheel tournaments group-polls league-cards whos-lying; do echo "== $app"; apps/$app/tools/smoke_test.sh || exit 1; done
+          script: apps/${{ matrix.app }}/tools/smoke_test.sh
       - name: Upload smoke screenshots
         if: failure()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: smoke-screenshots
+          name: smoke-screenshots-${{ matrix.app }}
           path: build/smoke-test/**
+
+  smoke:
+    name: Smoke
+    needs: [changes, app]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Every app passed, or no app code changed
+        run: |
+          echo "changes: ${{ needs.changes.result }}, apps: ${{ needs.app.result }}"
+          [ "${{ needs.changes.result }}" = success ] || exit 1
+          case "${{ needs.app.result }}" in success|skipped) ;; *) exit 1 ;; esac
