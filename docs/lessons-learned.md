@@ -53,4 +53,9 @@ Short, one line each. Add to it whenever something bites.
 - **Smoke tests uninstall first.** Once an app has an upload key, its release build is signed
   differently from the debug build on the emulator and `adb install -r` fails with
   `INSTALL_FAILED_UPDATE_INCOMPATIBLE`.
-
+- **CI emulators: the ATD image, one job per app.** On GitHub's runners the `google_apis` image
+  died on whos-lying right after its home screen in 9 of 11 runs (also with 4 GB of RAM, API 35
+  and AOSP; no host OOM, nothing in logcat): a fresh boot indexes Google apps in the background.
+  Google's Automated Test Device image (`google_atd`) passed every run. Six apps in a row on one
+  emulator also took an hour, so each app runs in its own job. ATD shows no on-screen keyboard:
+  close it with `hide_keyboard`, never a bare BACK, which leaves the screen.

@@ -45,7 +45,7 @@ scripts/emulator.sh start|stop|date MMDDhhmmYYYY|date auto|demo on|off
 scripts/screenshot.sh <out.png>                           # dismisses "isn't responding" dialogs first
 scripts/tap-text.sh "<label|test tag>"                    # tap by on-screen text or Compose test tag (never coordinates)
 scripts/verify-bundle.sh <aab>                            # signature, versionCode, permissions, native libs
-apps/<app>/tools/smoke_test.sh                            # release APK on emulator (per app; CI's Smoke workflow runs all six)
+apps/<app>/tools/smoke_test.sh                            # release APK on emulator (per app; CI's Smoke workflow runs each app in its own job on the ATD image)
 ```
 
 Asset generators (icons, store graphics, developer profile) are Python + Pillow:
