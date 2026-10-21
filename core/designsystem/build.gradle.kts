@@ -17,4 +17,5 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.zxing.core)
+    testImplementation(libs.composablePreviewScanner.android)
 }

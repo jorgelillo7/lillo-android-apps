@@ -1,6 +1,7 @@
 package com.jorgelillo.leaguecards.ui
 
 import android.content.Context
+import androidx.lifecycle.viewModelScope
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import app.cash.turbine.test
@@ -30,8 +31,12 @@ class LeagueViewModelTest {
     private val league = context.assets.open("league.json").bufferedReader().use { League.parse(it.readText()) }
 
     // One DataStore per file and process: every test gets its own file.
-    private fun viewModel() =
-        LeagueViewModel(league, JsonStore(context, "test-${UUID.randomUUID()}", Saved.serializer()) { Saved() })
+    private fun viewModel() = LeagueViewModel(
+        league,
+        JsonStore(context, "test-${UUID.randomUUID()}", Saved.serializer()) {
+            Saved()
+        }
+    ).also { main.cancelAtEnd(it.viewModelScope) }
 
     @Test
     fun movesWithoutASeasonAreIgnored() = runTest {
@@ -64,14 +69,17 @@ class LeagueViewModelTest {
         vm.saved.filterNotNull().test {
             vm.newSeason()
             var season = awaitMatching { it.season != null }.season!!
-            // Answer the matchday's cards until its report comes up.
-            while (!season.reportPending) {
-                val answered = season.handIndex to season.matchday
+            // Answer cards until the matchday's report comes up. The deal is random: a meter can
+            // also run out first and end the season, which leaves nothing to answer.
+            while (!season.reportPending && season.ending == null) {
+                val before = season
                 vm.choose(right = true)
-                season = awaitMatching { (it.season!!.handIndex to it.season!!.matchday) != answered }.season!!
+                season = awaitMatching { it.season != before }.season!!
             }
-            vm.dismissReport()
-            assertFalse(awaitMatching { !it.season!!.reportPending }.season!!.reportPending)
+            if (season.reportPending) {
+                vm.dismissReport()
+                assertFalse(awaitMatching { !it.season!!.reportPending }.season!!.reportPending)
+            }
         }
     }
 

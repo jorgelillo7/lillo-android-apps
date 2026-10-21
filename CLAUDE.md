@@ -100,7 +100,9 @@ Project skills in `.claude/skills/`: `new-android-app` (competitor study → des
   more apps share: `LilloPage` (with `sideActionsWhenShort`) / `LilloBigButton` (apps wrap them with
   their colours in `ui/…/Common.kt`), `LilloAboutSheet` (language, rate, privacy),
   `LilloLanguageDialog`, `isShortScreen()` for landscape and handhelds, `TestTagsAsResourceIds`,
-  `ConfettiBurst` / `ConfettiRain`, `LilloAvatar`, `LilloSettingRow`, `LilloSectionTitle`, `LilloQrCode`. `:core:platform` has
+  `ConfettiBurst` / `ConfettiRain`, `LilloAvatar`, `LilloSettingRow`, `LilloSectionTitle`, `LilloQrCode`. Each core component has a
+  `@Preview` in `core/designsystem/.../Catalogue.kt`; `CatalogueScreenshotTest` captures every preview there
+  (with the accessibility checks), so a new component needs a preview, not a hand-written screenshot test. `:core:platform` has
   `JsonStore`, sharing and links; `:core:sharelink` (pure Kotlin) puts any serializable value in a
   `jorgelillo7.github.io/<path>/#…` link (tournaments `/t/`, impostor packs `/p/`).
 - **Reuse first; the second copy goes to core.** Every app should get what the others already

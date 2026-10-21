@@ -1,5 +1,6 @@
 package com.jorgelillo.tournaments.ui
 
+import androidx.lifecycle.viewModelScope
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import app.cash.turbine.test
@@ -33,7 +34,7 @@ class TournamentsViewModelTest {
         JsonStore(ApplicationProvider.getApplicationContext(), "test-${UUID.randomUUID()}", Library.serializer()) {
             Library()
         }
-    )
+    ).also { main.cancelAtEnd(it.viewModelScope) }
 
     private fun cup(id: String = "cup") = Tournaments.create(
         id,
