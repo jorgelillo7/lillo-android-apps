@@ -50,7 +50,7 @@ fun ShareSheet(t: Tournament, onDismiss: () -> Unit) {
         Column(
             TestTagsAsResourceIds.verticalScroll(rememberScrollState()).padding(horizontal = 20.dp).navigationBarsPadding(),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(12.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Text(stringResource(R.string.share_title), fontSize = 22.sp, fontWeight = FontWeight.Black)
             if (link.length <= Share.QR_MAX_CHARS) {
@@ -71,4 +71,3 @@ fun ShareSheet(t: Tournament, onDismiss: () -> Unit) {
         }
     }
 }
-

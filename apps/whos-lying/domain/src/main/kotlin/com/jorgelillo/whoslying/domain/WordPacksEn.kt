@@ -3,7 +3,9 @@ package com.jorgelillo.whoslying.domain
 /** English built-in packs. Each line: word / similar word / similar word. */
 internal val englishPacks = listOf(
     WordPacks.pack(
-        "food", "Food", "🍕",
+        "food",
+        "Food",
+        "🍕",
         """
         Pizza / Burger / Hot dog
         Paella / Risotto / Jambalaya
@@ -35,10 +37,12 @@ internal val englishPacks = listOf(
         Croissant / Muffin / Cupcake
         Cereal / Oatmeal / Granola
         Lemonade / Orange juice / Milkshake
-        """,
+        """
     ),
     WordPacks.pack(
-        "places", "World & places", "🗺️",
+        "places",
+        "World & places",
+        "🗺️",
         """
         Beach / Swimming pool / Lake
         Cinema / Theater / Concert hall
@@ -71,10 +75,12 @@ internal val englishPacks = listOf(
         City hall / Post office / Bank
         Stadium / Arena / Racetrack
         Gas station / Garage / Car wash
-        """,
+        """
     ),
     WordPacks.pack(
-        "animals", "Animals & nature", "🦁",
+        "animals",
+        "Animals & nature",
+        "🦁",
         """
         Lion / Tiger / Leopard
         Dog / Wolf / Fox
@@ -108,10 +114,12 @@ internal val englishPacks = listOf(
         Thunderstorm / Tornado / Hurricane
         Waterfall / River / Fountain
         Oak / Pine / Willow
-        """,
+        """
     ),
     WordPacks.pack(
-        "home", "Everyday life", "☕",
+        "home",
+        "Everyday life",
+        "☕",
         """
         Sofa / Armchair / Beanbag
         Bed / Bunk bed / Hammock
@@ -143,10 +151,12 @@ internal val englishPacks = listOf(
         Clothesline / Iron / Hanger
         Mug / Glass / Thermos
         Fork / Spoon / Chopsticks
-        """,
+        """
     ),
     WordPacks.pack(
-        "jobs", "Jobs", "👩‍🚒",
+        "jobs",
+        "Jobs",
+        "👩‍🚒",
         """
         Firefighter / Police officer / Lifeguard
         Doctor / Nurse / Vet
@@ -178,10 +188,12 @@ internal val englishPacks = listOf(
         Pastry chef / Ice cream maker / Chocolatier
         Tour guide / Receptionist / Travel agent
         Shop assistant / Cashier / Shelf stacker
-        """,
+        """
     ),
     WordPacks.pack(
-        "sports", "Sports", "🏅",
+        "sports",
+        "Sports",
+        "🏅",
         """
         Rugby / American football / Lacrosse
         Basketball / Handball / Volleyball
@@ -213,10 +225,12 @@ internal val englishPacks = listOf(
         Bowling / Pool / Table football
         Zumba / Aerobics / CrossFit
         Sumo / Arm wrestling / Tug of war
-        """,
+        """
     ),
     WordPacks.pack(
-        "football", "Football", "⚽",
+        "football",
+        "Football",
+        "⚽",
         """
         Goal / Penalty / Free kick
         Goalkeeper / Defender / Striker
@@ -248,10 +262,12 @@ internal val englishPacks = listOf(
         Lamine Yamal / Pedri / Gavi
         Mbappé / Haaland / Vinícius
         Manchester United / Liverpool / Chelsea
-        """,
+        """
     ),
     WordPacks.pack(
-        "movies", "Movies & TV", "🎬",
+        "movies",
+        "Movies & TV",
+        "🎬",
         """
         Titanic / Avatar / Pearl Harbor
         Harry Potter / The Lord of the Rings / The Chronicles of Narnia
@@ -284,10 +300,12 @@ internal val englishPacks = listOf(
         The news / Game show / Reality show
         Who Wants to Be a Millionaire? / Jeopardy! / Wheel of Fortune
         The Office / Parks and Recreation / Brooklyn Nine-Nine
-        """,
+        """
     ),
     WordPacks.pack(
-        "famous", "Famous people", "🌟",
+        "famous",
+        "Famous people",
+        "🌟",
         """
         Albert Einstein / Isaac Newton / Stephen Hawking
         Leonardo da Vinci / Michelangelo / Picasso
@@ -320,10 +338,12 @@ internal val englishPacks = listOf(
         Gordon Ramsay / Jamie Oliver / Ferran Adrià
         Dua Lipa / Billie Eilish / Rihanna
         Mark Zuckerberg / Jeff Bezos / Warren Buffett
-        """,
+        """
     ),
     WordPacks.pack(
-        "characters", "Characters", "🧙",
+        "characters",
+        "Characters",
+        "🧙",
         """
         Mickey Mouse / Donald Duck / Goofy
         Super Mario / Luigi / Sonic
@@ -356,10 +376,12 @@ internal val englishPacks = listOf(
         Pac-Man / Donkey Kong / Kirby
         James Bond / Ethan Hunt / Jason Bourne
         Captain Hook / Jack Sparrow / Blackbeard
-        """,
+        """
     ),
     WordPacks.pack(
-        "music", "Music", "🎤",
+        "music",
+        "Music",
+        "🎤",
         """
         Guitar / Bass / Ukulele
         Piano / Keyboard / Organ
@@ -392,10 +414,12 @@ internal val englishPacks = listOf(
         Music video / Live show / Playlist
         Metronome / Sheet music / Music stand
         Gold record / Grammy / Number one
-        """,
+        """
     ),
     WordPacks.pack(
-        "brands", "Brands", "👟",
+        "brands",
+        "Brands",
+        "👟",
         """
         Coca-Cola / Pepsi / Fanta
         Nike / Adidas / Puma
@@ -427,10 +451,12 @@ internal val englishPacks = listOf(
         Gucci / Prada / Louis Vuitton
         Microsoft / IBM / Intel
         Tesla / BMW / Mercedes
-        """,
+        """
     ),
     WordPacks.pack(
-        "body", "Body & health", "❤️",
+        "body",
+        "Body & health",
+        "❤️",
         """
         Heart / Lungs / Liver
         Brain / Neuron / Skull
@@ -462,10 +488,12 @@ internal val englishPacks = listOf(
         Pulse / Blood pressure / Heartbeat
         Wound / Bruise / Scar
         Braces / Retainer / Filling
-        """,
+        """
     ),
     WordPacks.pack(
-        "school", "School", "🎒",
+        "school",
+        "School",
+        "🎒",
         """
         Pencil / Pen / Marker
         Eraser / Pencil sharpener / Correction fluid
@@ -497,10 +525,12 @@ internal val englishPacks = listOf(
         Dictation / Essay / Book report
         Textbook / Required reading / Photocopy
         Periodic table / Times table / Solar system
-        """,
+        """
     ),
     WordPacks.pack(
-        "fantasy", "Fantasy", "🐉",
+        "fantasy",
+        "Fantasy",
+        "🐉",
         """
         Dragon / Dinosaur / Sea serpent
         Unicorn / Pegasus / Centaur
@@ -532,10 +562,12 @@ internal val englishPacks = listOf(
         Minotaur / Cyclops / Medusa
         Enchanted forest / Secret garden / Dragon's cave
         Elixir / Nectar / Ambrosia
-        """,
+        """
     ),
     WordPacks.pack(
-        "tech", "Technology", "📱",
+        "tech",
+        "Technology",
+        "📱",
         """
         Smartphone / Tablet / Smartwatch
         Computer / Laptop / Games console
@@ -567,10 +599,12 @@ internal val englishPacks = listOf(
         Electric scooter / E-bike / Hoverboard
         Airplane mode / Silent mode / Do not disturb
         Router / Antenna / Satellite
-        """,
+        """
     ),
     WordPacks.pack(
-        "transport", "Transport", "🚗",
+        "transport",
+        "Transport",
+        "🚗",
         """
         Car / Motorbike / Quad bike
         Bus / Coach / Tram
@@ -602,10 +636,12 @@ internal val englishPacks = listOf(
         Bus station / Bus stop / Platform
         Gondola / Canoe / Raft
         Jet ski / Banana boat / Pedal boat
-        """,
+        """
     ),
     WordPacks.pack(
-        "fashion", "Fashion & clothes", "👗",
+        "fashion",
+        "Fashion & clothes",
+        "👗",
         """
         T-shirt / Shirt / Polo shirt
         Trousers / Jeans / Leggings
@@ -637,10 +673,12 @@ internal val englishPacks = listOf(
         Tattoo / Piercing / Henna
         Button / Zipper / Velcro
         Wool / Cotton / Silk
-        """,
+        """
     ),
     WordPacks.pack(
-        "summer", "Summer", "🏝️",
+        "summer",
+        "Summer",
+        "🏝️",
         """
         Beach towel / Parasol / Beach mat
         Sunscreen / After-sun / Tanning oil
@@ -672,10 +710,12 @@ internal val englishPacks = listOf(
         Promenade / Pier / Marina
         Coconut water / Pineapple juice / Slushie
         Kite / Pinwheel / Soap bubbles
-        """,
+        """
     ),
     WordPacks.pack(
-        "games", "Games", "🎲",
+        "games",
+        "Games",
+        "🎲",
         """
         Chess / Checkers / Backgammon
         Ludo / Snakes and ladders / Sorry!
@@ -707,10 +747,12 @@ internal val englishPacks = listOf(
         Scrabble / Words With Friends / Wordle
         Truth or dare / Guess Who / Simon says
         Rubik's Cube / Fidget spinner / Slime
-        """,
+        """
     ),
     WordPacks.pack(
-        "parties", "Celebrations", "🎉",
+        "parties",
+        "Celebrations",
+        "🎉",
         """
         Christmas / New Year / Thanksgiving
         Halloween / Day of the Dead / Carnival
@@ -742,6 +784,6 @@ internal val englishPacks = listOf(
         Santa hat / Reindeer antlers / Party hat
         Reindeer / Moose / Deer
         Pumpkin carving / Candy corn / Toffee apple
-        """,
-    ),
+        """
+    )
 )

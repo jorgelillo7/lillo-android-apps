@@ -83,10 +83,10 @@ import com.jorgelillo.decisionwheel.domain.Spin
 import com.jorgelillo.decisionwheel.domain.Wheel
 import com.jorgelillo.decisionwheel.ui.home.FavoriteButton
 import com.jorgelillo.decisionwheel.ui.theme.WheelColors
-import kotlinx.coroutines.launch
 import kotlin.math.abs
 import kotlin.math.atan2
 import kotlin.random.Random
+import kotlinx.coroutines.launch
 
 private val FrictionEasing = Easing { Spin.easeOut(it) }
 
@@ -100,7 +100,7 @@ fun WheelScreen(
     onAccept: (String) -> Unit,
     onClearHistory: () -> Unit,
     onTick: () -> Unit,
-    onToggleFavorite: () -> Unit,
+    onToggleFavorite: () -> Unit
 ) {
     val scope = rememberCoroutineScope()
     val view = LocalView.current
@@ -120,7 +120,7 @@ fun WheelScreen(
         vetoed = vetoed.toSet(),
         history = history,
         nowEpochMillis = System.currentTimeMillis(),
-        avoidRepeats = state.avoidRepeats,
+        avoidRepeats = state.avoidRepeats
     )
     val segments = DecisionEngine.segments(weights)
     val canSpin = segments.size >= 2 && !spinning
@@ -150,7 +150,7 @@ fun WheelScreen(
             rotation.snapTo(rotation.value % 360f)
             winner = DecisionEngine.segmentAtPointer(segments, rotation.value.toDouble())?.option
             view.performHapticFeedback(
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) HapticFeedbackConstants.CONFIRM else HapticFeedbackConstants.LONG_PRESS,
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) HapticFeedbackConstants.CONFIRM else HapticFeedbackConstants.LONG_PRESS
             )
             celebration = (celebration ?: 0) + 1
             spinning = false
@@ -177,9 +177,9 @@ fun WheelScreen(
                         Icon(Icons.Filled.Edit, contentDescription = stringResource(R.string.action_edit))
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
             )
-        },
+        }
     ) { padding ->
         Column(
             modifier = Modifier
@@ -187,7 +187,7 @@ fun WheelScreen(
                 .padding(padding)
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = 20.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Box(
                 modifier = Modifier
@@ -216,10 +216,10 @@ fun WheelScreen(
                                 val velocity = tracker.calculateVelocity()
                                 val speed = abs(velocity.x) + abs(velocity.y)
                                 if (speed > 400f) spin(fling = speed * 2f)
-                            },
+                            }
                         )
                     },
-                contentAlignment = Alignment.Center,
+                contentAlignment = Alignment.Center
             ) {
                 WheelCanvas(segments, { colorByOption[it] ?: WheelColors.Muted }, rotation.value, winner, Modifier.fillMaxSize())
                 ConfettiBurst(celebration, WheelColors.Segments, Modifier.fillMaxSize())
@@ -232,12 +232,12 @@ fun WheelScreen(
                     onClick = { spin() },
                     enabled = canSpin,
                     modifier = Modifier.widthIn(min = 200.dp).height(56.dp).testTag("spin"),
-                    colors = ButtonDefaults.buttonColors(containerColor = WheelColors.Sun, contentColor = WheelColors.Night),
+                    colors = ButtonDefaults.buttonColors(containerColor = WheelColors.Sun, contentColor = WheelColors.Night)
                 ) {
                     Text(
                         stringResource(if (spinning) R.string.spinning else R.string.spin),
                         fontSize = 20.sp,
-                        fontWeight = FontWeight.Black,
+                        fontWeight = FontWeight.Black
                     )
                 }
             }
@@ -245,7 +245,7 @@ fun WheelScreen(
             AnimatedVisibility(
                 visible = winner != null,
                 enter = fadeIn() + scaleIn(initialScale = 0.85f) + slideInVertically { it / 3 },
-                exit = fadeOut(),
+                exit = fadeOut()
             ) {
                 ResultCard(
                     winner = winner.orEmpty(),
@@ -254,7 +254,7 @@ fun WheelScreen(
                         winner = null
                         scope.launch { snackbar.showSnackbar(savedText) }
                     },
-                    onAgain = { spin() },
+                    onAgain = { spin() }
                 )
             }
 
@@ -263,13 +263,13 @@ fun WheelScreen(
             Text(
                 text = stringResource(if (segments.size < 2) R.string.need_two else R.string.veto_hint),
                 style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             Spacer(Modifier.height(10.dp))
             FlowRow(
                 horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth()
             ) {
                 wheel.options.forEachIndexed { i, option ->
                     val isVetoed = option in vetoed
@@ -283,7 +283,7 @@ fun WheelScreen(
                         onClick = {
                             winner = null
                             vetoed = if (isVetoed) vetoed - option else vetoed + option
-                        },
+                        }
                     )
                 }
             }
@@ -296,7 +296,7 @@ fun WheelScreen(
                     stringResource(R.string.recent_hint),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    textAlign = TextAlign.Center,
+                    textAlign = TextAlign.Center
                 )
             }
             Spacer(Modifier.height(24.dp))
@@ -306,14 +306,16 @@ fun WheelScreen(
     if (showHistory) {
         HistorySheet(
             entries = history.map { it.option to it.atEpochMillis },
-            onClear = { onClearHistory(); showHistory = false },
-            onDismiss = { showHistory = false },
+            onClear = {
+                onClearHistory()
+                showHistory = false
+            },
+            onDismiss = { showHistory = false }
         )
     }
 }
 
-private fun angleOf(point: Offset, cx: Float, cy: Float): Float =
-    Math.toDegrees(atan2((point.y - cy).toDouble(), (point.x - cx).toDouble())).toFloat()
+private fun angleOf(point: Offset, cx: Float, cy: Float): Float = Math.toDegrees(atan2((point.y - cy).toDouble(), (point.x - cx).toDouble())).toFloat()
 
 @Composable
 private fun ResultCard(winner: String, onAccept: () -> Unit, onAgain: () -> Unit) {
@@ -324,7 +326,7 @@ private fun ResultCard(winner: String, onAccept: () -> Unit, onAgain: () -> Unit
             .background(WheelColors.NightRaised)
             .border(1.dp, WheelColors.Sun.copy(alpha = 0.5f), MaterialTheme.shapes.large)
             .padding(20.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(stringResource(R.string.result_title), color = WheelColors.Sun, style = MaterialTheme.typography.labelLarge)
         Text(
@@ -332,14 +334,14 @@ private fun ResultCard(winner: String, onAccept: () -> Unit, onAgain: () -> Unit
             style = MaterialTheme.typography.displaySmall,
             fontWeight = FontWeight.Black,
             textAlign = TextAlign.Center,
-            modifier = Modifier.padding(vertical = 8.dp),
+            modifier = Modifier.padding(vertical = 8.dp)
         )
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             OutlinedButton(onClick = onAgain, modifier = Modifier.testTag("again")) { Text(stringResource(R.string.result_again)) }
             Button(
                 onClick = onAccept,
                 modifier = Modifier.testTag("accept"),
-                colors = ButtonDefaults.buttonColors(containerColor = WheelColors.Sun, contentColor = WheelColors.Night),
+                colors = ButtonDefaults.buttonColors(containerColor = WheelColors.Sun, contentColor = WheelColors.Night)
             ) { Text(stringResource(R.string.result_accept), fontWeight = FontWeight.Bold) }
         }
     }
@@ -354,7 +356,7 @@ private fun OptionChip(label: String, color: Color, vetoed: Boolean, recent: Boo
             .border(1.dp, if (vetoed) WheelColors.Muted.copy(alpha = 0.4f) else color.copy(alpha = 0.7f), CircleShape)
             .clickable(enabled = enabled, onClick = onClick)
             .padding(horizontal = 12.dp, vertical = 7.dp),
-        verticalAlignment = Alignment.CenterVertically,
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Box(Modifier.size(8.dp).clip(CircleShape).background(if (vetoed) WheelColors.Muted.copy(alpha = 0.4f) else color))
         Spacer(Modifier.size(6.dp))
@@ -362,7 +364,7 @@ private fun OptionChip(label: String, color: Color, vetoed: Boolean, recent: Boo
             text = if (recent) "$label ⏱" else label,
             color = if (vetoed) WheelColors.Muted.copy(alpha = 0.6f) else WheelColors.Cream,
             textDecoration = if (vetoed) TextDecoration.LineThrough else null,
-            style = MaterialTheme.typography.labelLarge,
+            style = MaterialTheme.typography.labelLarge
         )
     }
 }
@@ -387,7 +389,7 @@ private fun HistorySheet(entries: List<Pair<String, Long>>, onClear: () -> Unit,
                                 } else {
                                     DateUtils.getRelativeTimeSpanString(at).toString()
                                 },
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
                     }

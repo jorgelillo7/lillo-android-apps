@@ -62,7 +62,7 @@ fun PlayScreen(
     onChoose: (right: Boolean) -> Unit,
     onJoker: () -> Unit,
     onTable: () -> Unit,
-    onBack: () -> Unit,
+    onBack: () -> Unit
 ) {
     val card = season.currentCard?.let(league::card) ?: return
     val drag = remember(season.matchday, season.handIndex) { Animatable(0f) }
@@ -90,7 +90,7 @@ fun PlayScreen(
                     Text("🃏 " + joker.label + " · " + stringResource(R.string.joker_once), color = Chat.Gold)
                 }
             }
-        },
+        }
     ) {
         MetersRow(season, leaning?.effects)
         Spacer(Modifier.height(12.dp))
@@ -103,7 +103,7 @@ fun PlayScreen(
                 stringResource(R.string.card_points, "%+d".format(season.matchdayPoints)),
                 color = if (season.matchdayPoints > 0) Chat.Green else Chat.Red,
                 modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
-                textAlign = TextAlign.Center,
+                textAlign = TextAlign.Center
             )
         }
     }
@@ -137,7 +137,7 @@ private fun MetersRow(season: Season, preview: Effects?) {
             } ?: 0
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.weight(1f).testTag("meter_${meter.name.lowercase()}"),
+                modifier = Modifier.weight(1f).testTag("meter_${meter.name.lowercase()}")
             ) {
                 Box(Modifier.height(12.dp), contentAlignment = Alignment.Center) {
                     Box(Modifier.size(if (abs(change) >= 10) 10.dp else 6.dp).alpha(if (change != 0) 1f else 0f).background(Chat.Text, CircleShape))
@@ -147,7 +147,7 @@ private fun MetersRow(season: Season, preview: Effects?) {
                     stringResource(MeterLabels.getValue(meter)),
                     color = Chat.Muted,
                     style = MaterialTheme.typography.labelSmall,
-                    modifier = Modifier.padding(top = 4.dp),
+                    modifier = Modifier.padding(top = 4.dp)
                 )
             }
         }
@@ -158,7 +158,7 @@ private val MeterLabels = mapOf(
     Meter.MONEY to R.string.meter_money,
     Meter.SQUAD to R.string.meter_squad,
     Meter.PATIENCE to R.string.meter_patience,
-    Meter.TEARS to R.string.meter_tears,
+    Meter.TEARS to R.string.meter_tears
 )
 
 @Composable
@@ -171,7 +171,7 @@ private fun MeterTile(icon: String, value: Int, color: Color) {
             .height(64.dp)
             .background(Chat.Bubble, shape)
             .border(1.5.dp, if (danger) Chat.Red else color.copy(alpha = 0.35f), shape),
-        contentAlignment = Alignment.BottomCenter,
+        contentAlignment = Alignment.BottomCenter
     ) {
         Box(Modifier.fillMaxWidth().fillMaxHeight(value / 100f).background((if (danger) Chat.Red else color).copy(alpha = 0.55f), shape))
         Text(icon, style = MaterialTheme.typography.headlineSmall, modifier = Modifier.align(Alignment.Center))
@@ -185,7 +185,7 @@ private fun SwipeCard(
     drag: Animatable<Float, *>,
     leaningLabel: String?,
     onChoose: (Boolean) -> Unit,
-    modifier: Modifier,
+    modifier: Modifier
 ) {
     val scope = rememberCoroutineScope()
     val color = league.colorOf(card.character)
@@ -212,7 +212,7 @@ private fun SwipeCard(
                                 }
                             }
                         },
-                        onDragCancel = { scope.launch { drag.animateTo(0f) } },
+                        onDragCancel = { scope.launch { drag.animateTo(0f) } }
                     ) { change, amount ->
                         change.consume()
                         scope.launch { drag.snapTo(drag.value + amount) }
@@ -220,7 +220,7 @@ private fun SwipeCard(
                 }
                 .testTag("card")
                 .padding(24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
                 leaningLabel.orEmpty(),
@@ -228,7 +228,7 @@ private fun SwipeCard(
                 fontWeight = FontWeight.Black,
                 style = MaterialTheme.typography.titleMedium,
                 textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth().height(48.dp),
+                modifier = Modifier.fillMaxWidth().height(48.dp)
             )
             Avatar(character?.emoji?.ifBlank { null } ?: character?.name ?: card.character, color)
             Spacer(Modifier.height(10.dp))

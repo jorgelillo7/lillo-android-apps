@@ -6,12 +6,11 @@ import kotlinx.serialization.Serializable
 /** Everything the app keeps on the phone. */
 @Serializable
 data class Library(
-    @SerialName("tournaments") val tournaments: List<Tournament> = emptyList(),
+    @SerialName("tournaments") val tournaments: List<Tournament> = emptyList()
 ) {
     fun tournament(id: String): Tournament? = tournaments.firstOrNull { it.id == id }
 
-    fun save(t: Tournament): Library =
-        copy(tournaments = if (tournament(t.id) == null) tournaments + t else tournaments.map { if (it.id == t.id) t else it })
+    fun save(t: Tournament): Library = copy(tournaments = if (tournament(t.id) == null) tournaments + t else tournaments.map { if (it.id == t.id) t else it })
 
     fun delete(id: String): Library = copy(tournaments = tournaments.filterNot { it.id == id })
 

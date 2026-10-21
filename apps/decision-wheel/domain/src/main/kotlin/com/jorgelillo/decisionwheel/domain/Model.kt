@@ -8,7 +8,7 @@ data class Wheel(
     val name: String,
     val options: List<String>,
     /** Starred: listed first and offered as a launcher shortcut. */
-    val favorite: Boolean = false,
+    val favorite: Boolean = false
 )
 
 /** A result the user accepted ("Let's go!"). Only accepted results count as history. */
@@ -16,7 +16,7 @@ data class Wheel(
 data class Decision(
     val wheelId: String,
     val option: String,
-    val atEpochMillis: Long,
+    val atEpochMillis: Long
 )
 
 @Serializable
@@ -24,21 +24,18 @@ data class AppState(
     val wheels: List<Wheel> = emptyList(),
     val history: List<Decision> = emptyList(),
     val avoidRepeats: Boolean = true,
-    val soundOn: Boolean = true,
+    val soundOn: Boolean = true
 ) {
     fun wheel(id: String): Wheel? = wheels.firstOrNull { it.id == id }
 
-    fun historyOf(wheelId: String): List<Decision> =
-        history.filter { it.wheelId == wheelId }.sortedByDescending { it.atEpochMillis }
+    fun historyOf(wheelId: String): List<Decision> = history.filter { it.wheelId == wheelId }.sortedByDescending { it.atEpochMillis }
 
-    fun withDecision(decision: Decision): AppState =
-        copy(history = (listOf(decision) + history).take(MAX_HISTORY))
+    fun withDecision(decision: Decision): AppState = copy(history = (listOf(decision) + history).take(MAX_HISTORY))
 
     /** Home order: favourites first, each group in the user's order. */
     val sortedWheels: List<Wheel> get() = wheels.filter { it.favorite } + wheels.filterNot { it.favorite }
 
-    fun toggleFavorite(wheelId: String): AppState =
-        copy(wheels = wheels.map { if (it.id == wheelId) it.copy(favorite = !it.favorite) else it })
+    fun toggleFavorite(wheelId: String): AppState = copy(wheels = wheels.map { if (it.id == wheelId) it.copy(favorite = !it.favorite) else it })
 
     /**
      * Launcher shortcuts: favourites first, then the most recently used wheels, up to [max]

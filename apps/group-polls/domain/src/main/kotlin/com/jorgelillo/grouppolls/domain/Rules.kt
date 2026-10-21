@@ -34,10 +34,9 @@ object Drafts {
 
 object Text {
     /** Lower case, no accents, single spaces: "  Tortilla  CON cebolla " → "tortilla con cebolla". */
-    fun normalize(text: String): String =
-        Normalizer.normalize(text.trim().lowercase(), Normalizer.Form.NFD)
-            .replace(Regex("\\p{M}+"), "")
-            .replace(Regex("\\s+"), " ")
+    fun normalize(text: String): String = Normalizer.normalize(text.trim().lowercase(), Normalizer.Form.NFD)
+        .replace(Regex("\\p{M}+"), "")
+        .replace(Regex("\\s+"), " ")
 }
 
 /** Random, unguessable invite codes: the code is the only key to a private poll. */

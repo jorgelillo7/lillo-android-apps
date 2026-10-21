@@ -31,7 +31,7 @@ val InkColors = listOf(
     Color(0xFF1FA855),
     Color(0xFF2F6BFF),
     Color(0xFF8B3DFF),
-    Color(0xFFFF2E93),
+    Color(0xFFFF2E93)
 )
 
 /** Stroke width as a share of the canvas width, so previews look like the original. */

@@ -82,13 +82,13 @@ fun HomeScreen(onPlay: () -> Unit, onHowTo: () -> Unit, onModes: () -> Unit, onP
             style = MaterialTheme.typography.displayMedium,
             fontWeight = FontWeight.Black,
             textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth()
         )
         Text(
             stringResource(R.string.home_subtitle),
             color = Neon.Muted,
             textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+            modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
         )
         Spacer(Modifier.weight(1.3f))
     }
@@ -102,7 +102,7 @@ private fun HomeChip(emoji: String, label: String, onClick: () -> Unit, modifier
             .background(Neon.Card)
             .clickable(onClick = onClick)
             .padding(horizontal = 8.dp, vertical = 12.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(emoji, style = MaterialTheme.typography.titleLarge)
         Text(label, fontWeight = FontWeight.SemiBold, maxLines = 1, modifier = Modifier.padding(top = 4.dp))
@@ -115,7 +115,7 @@ fun PlayersScreen(
     onAdd: (String) -> Unit,
     onRemove: (String) -> Unit,
     onContinue: () -> Unit,
-    onBack: () -> Unit,
+    onBack: () -> Unit
 ) {
     var draft by rememberSaveable { mutableStateOf("") }
     fun add() {
@@ -135,7 +135,7 @@ fun PlayersScreen(
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Words, imeAction = ImeAction.Done),
                     keyboardActions = KeyboardActions(onDone = { add() }),
-                    modifier = Modifier.weight(1f).testTag("player_name"),
+                    modifier = Modifier.weight(1f).testTag("player_name")
                 )
                 Spacer(Modifier.width(10.dp))
                 FilledIconButton(onClick = { add() }, enabled = draft.isNotBlank(), modifier = Modifier.size(52.dp).testTag("add_player")) {
@@ -147,21 +147,24 @@ fun PlayersScreen(
                 stringResource(R.string.continue_),
                 onContinue,
                 enabled = players.size >= Rules.MIN_PLAYERS,
-                modifier = Modifier.testTag("continue"),
+                modifier = Modifier.testTag("continue")
             )
-        },
+        }
     ) {
         Text(
-            if (players.size < Rules.MIN_PLAYERS) pluralStringResource(R.plurals.players_need_more, Rules.MIN_PLAYERS, Rules.MIN_PLAYERS)
-            else stringResource(R.string.players_subtitle),
-            color = Neon.Muted,
+            if (players.size < Rules.MIN_PLAYERS) {
+                pluralStringResource(R.plurals.players_need_more, Rules.MIN_PLAYERS, Rules.MIN_PLAYERS)
+            } else {
+                stringResource(R.string.players_subtitle)
+            },
+            color = Neon.Muted
         )
         Spacer(Modifier.height(12.dp))
         LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             items(players, key = { it }) { name ->
                 Row(
                     Modifier.fillMaxWidth().clip(CircleShape).background(Neon.Card).padding(start = 10.dp),
-                    verticalAlignment = Alignment.CenterVertically,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     Avatar(name, players, 38.dp)
                     Text(name, Modifier.weight(1f).padding(horizontal = 14.dp), style = MaterialTheme.typography.titleMedium)
@@ -185,7 +188,7 @@ fun SetupScreen(
     onModesInfo: () -> Unit,
     onChoosePacks: () -> Unit,
     onStart: () -> Unit,
-    onBack: () -> Unit,
+    onBack: () -> Unit
 ) {
     val maxImpostors = Rules.maxImpostors(playerCount, settings.mode).coerceAtLeast(1)
     // On short screens a fixed button would leave almost no room to scroll: it goes at the end of the list.
@@ -195,13 +198,13 @@ fun SetupScreen(
             stringResource(R.string.start),
             onStart,
             enabled = Rules.canStart(playerCount, settings),
-            modifier = Modifier.testTag("start"),
+            modifier = Modifier.testTag("start")
         )
     }
     Page(
         title = stringResource(R.string.setup_title),
         onBack = onBack,
-        bottom = { if (!short) startButton() },
+        bottom = { if (!short) startButton() }
     ) {
         Column(Modifier.verticalScroll(rememberScrollState())) {
             TextButton(onClick = onModesInfo, modifier = Modifier.align(Alignment.End).testTag("modes_info")) {
@@ -210,7 +213,7 @@ fun SetupScreen(
             listOf(
                 Triple(GameMode.CLASSIC, R.string.mode_classic to R.string.mode_classic_desc, "🎭"),
                 Triple(GameMode.BLIND, R.string.mode_blind to R.string.mode_blind_desc, "🙈"),
-                Triple(GameMode.DRIFTER, R.string.mode_drifter to R.string.mode_drifter_desc, "🤷"),
+                Triple(GameMode.DRIFTER, R.string.mode_drifter to R.string.mode_drifter_desc, "🤷")
             ).forEach { (mode, texts, emoji) ->
                 val selected = settings.mode == mode
                 val enabled = playerCount >= Rules.minPlayers(mode)
@@ -224,7 +227,7 @@ fun SetupScreen(
                         .clickable(enabled = enabled) { onChange { it.copy(mode = mode) } }
                         .padding(16.dp)
                         .testTag("mode_${mode.name.lowercase()}"),
-                    verticalAlignment = Alignment.CenterVertically,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(emoji, style = MaterialTheme.typography.headlineMedium)
                     Spacer(Modifier.width(14.dp))
@@ -258,7 +261,7 @@ fun SetupScreen(
             val recommendedRounds = Match.recommendedRounds(playerCount)
             SettingRow(
                 "🏆 " + stringResource(R.string.setup_rounds),
-                stringResource(R.string.setup_rounds_desc) + " · " + stringResource(R.string.setup_recommended, "$recommendedRounds"),
+                stringResource(R.string.setup_rounds_desc) + " · " + stringResource(R.string.setup_recommended, "$recommendedRounds")
             ) {
                 val step = Match.ROUND_OPTIONS.indexOf(settings.rounds).coerceAtLeast(0)
                 IconButton(onClick = { onChange { it.copy(rounds = Match.ROUND_OPTIONS[step - 1]) } }, enabled = step > 0, modifier = Modifier.testTag("rounds_minus")) {
@@ -269,7 +272,7 @@ fun SetupScreen(
                     color = if (settings.rounds == recommendedRounds) Neon.Turquoise else Neon.Ink,
                     style = MaterialTheme.typography.titleLarge,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.width(40.dp).testTag("rounds"),
+                    modifier = Modifier.width(40.dp).testTag("rounds")
                 )
                 IconButton(onClick = { onChange { it.copy(rounds = Match.ROUND_OPTIONS[step + 1]) } }, enabled = step < Match.ROUND_OPTIONS.lastIndex, modifier = Modifier.testTag("rounds_plus")) {
                     Text("+", style = MaterialTheme.typography.headlineSmall)
@@ -279,19 +282,22 @@ fun SetupScreen(
             SettingRow(
                 "⏱️ " + stringResource(R.string.setup_timer),
                 stringResource(R.string.setup_timer_desc) + " · " +
-                    stringResource(R.string.setup_recommended, stringResource(R.string.setup_timer_minutes, recommendedTimer / 60)),
+                    stringResource(R.string.setup_recommended, stringResource(R.string.setup_timer_minutes, recommendedTimer / 60))
             ) {
                 val step = Rules.TIMER_OPTIONS.indexOf(settings.discussionSeconds).coerceAtLeast(0)
                 IconButton(onClick = { onChange { it.copy(discussionSeconds = Rules.TIMER_OPTIONS[step - 1]) } }, enabled = step > 0, modifier = Modifier.testTag("timer_minus")) {
                     Text("−", style = MaterialTheme.typography.headlineSmall)
                 }
                 Text(
-                    if (settings.discussionSeconds == 0) stringResource(R.string.setup_timer_off)
-                    else stringResource(R.string.setup_timer_minutes, settings.discussionSeconds / 60),
+                    if (settings.discussionSeconds == 0) {
+                        stringResource(R.string.setup_timer_off)
+                    } else {
+                        stringResource(R.string.setup_timer_minutes, settings.discussionSeconds / 60)
+                    },
                     color = if (settings.discussionSeconds == recommendedTimer) Neon.Turquoise else Neon.Ink,
                     style = MaterialTheme.typography.titleMedium,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.width(64.dp).testTag("timer_value"),
+                    modifier = Modifier.width(64.dp).testTag("timer_value")
                 )
                 IconButton(onClick = { onChange { it.copy(discussionSeconds = Rules.TIMER_OPTIONS[step + 1]) } }, enabled = step < Rules.TIMER_OPTIONS.lastIndex, modifier = Modifier.testTag("timer_plus")) {
                     Text("+", style = MaterialTheme.typography.headlineSmall)
@@ -308,7 +314,7 @@ fun SetupScreen(
                     .clickable(onClick = onChoosePacks)
                     .padding(horizontal = 16.dp, vertical = 14.dp)
                     .testTag("choose_packs"),
-                verticalAlignment = Alignment.CenterVertically,
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Text("🗂️", style = MaterialTheme.typography.headlineSmall)
                 Spacer(Modifier.width(14.dp))
@@ -323,7 +329,7 @@ fun SetupScreen(
                         },
                         style = MaterialTheme.typography.bodySmall,
                         color = Neon.Muted,
-                        maxLines = 2,
+                        maxLines = 2
                     )
                     Text(stringResource(R.string.setup_unplayed, left, total), style = MaterialTheme.typography.bodySmall, color = Neon.Muted, modifier = Modifier.testTag("unplayed"))
                 }
@@ -341,8 +347,6 @@ fun SetupScreen(
     }
 }
 
-
-
 @Composable
 private fun SettingRow(title: String, subtitle: String?, control: @Composable () -> Unit) = LilloSettingRow(
     title,
@@ -350,7 +354,7 @@ private fun SettingRow(title: String, subtitle: String?, control: @Composable ()
     Modifier.padding(vertical = 6.dp),
     subtitle = subtitle,
     subtitleColor = Neon.Muted,
-    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 10.dp),
+    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 10.dp)
 ) { control() }
 
 @Composable
@@ -359,6 +363,6 @@ private fun NeonSwitch(checked: Boolean, tag: String, onChange: (Boolean) -> Uni
         checked = checked,
         onCheckedChange = onChange,
         modifier = Modifier.testTag(tag),
-        colors = SwitchDefaults.colors(checkedTrackColor = Neon.Violet, checkedThumbColor = Color.White),
+        colors = SwitchDefaults.colors(checkedTrackColor = Neon.Violet, checkedThumbColor = Color.White)
     )
 }

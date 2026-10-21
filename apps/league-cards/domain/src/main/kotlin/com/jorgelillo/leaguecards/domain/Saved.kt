@@ -11,7 +11,7 @@ data class SeasonRecord(
     val position: Int,
     val points: Int,
     val ending: String,
-    val achievements: List<String> = emptyList(),
+    val achievements: List<String> = emptyList()
 )
 
 /** Everything saved on the phone: the season in progress and the player's record and trophies. */
@@ -27,7 +27,7 @@ data class Saved(
     val endingsSeen: Set<String> = emptySet(),
     val achievements: Set<String> = emptySet(),
     /** Newest first, at most [HISTORY]. */
-    val history: List<SeasonRecord> = emptyList(),
+    val history: List<SeasonRecord> = emptyList()
 ) {
     /** The season to resume with [league], if any. */
     fun seasonFor(league: League): Season? = season?.takeIf { deck == league.name && !it.over }
@@ -44,16 +44,22 @@ data class Saved(
             titles = titles + if (ended?.champion == true) 1 else 0,
             bestPosition = listOfNotNull(bestPosition, ended?.position).minOrNull(),
             endingsSeen = endingsSeen + listOfNotNull(ended?.key),
-            history = if (ended == null) history else (listOf(
-                SeasonRecord(
-                    day = today,
-                    matchdaysPlayed = next.matchday - 1,
-                    position = position,
-                    points = next.table[YOU] ?: 0,
-                    ending = ended.key,
-                    achievements = next.unlocked,
-                ),
-            ) + history).take(HISTORY),
+            history = if (ended == null) {
+                history
+            } else {
+                (
+                    listOf(
+                        SeasonRecord(
+                            day = today,
+                            matchdaysPlayed = next.matchday - 1,
+                            position = position,
+                            points = next.table[YOU] ?: 0,
+                            ending = ended.key,
+                            achievements = next.unlocked
+                        )
+                    ) + history
+                    ).take(HISTORY)
+            }
         )
     }
 

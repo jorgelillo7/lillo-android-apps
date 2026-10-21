@@ -1,5 +1,6 @@
 package com.jorgelillo.core.designsystem
 
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Shapes
@@ -8,7 +9,6 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -19,13 +19,13 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun LilloTheme(
     colorScheme: ColorScheme = darkColorScheme(),
-    content: @Composable () -> Unit,
+    content: @Composable () -> Unit
 ) {
     MaterialTheme(
         colorScheme = colorScheme,
         typography = LilloTypography,
         shapes = LilloShapes,
-        content = content,
+        content = content
     )
 }
 
@@ -40,11 +40,11 @@ val LilloTypography = Base.copy(
     displaySmall = Base.displaySmall.copy(fontWeight = FontWeight.ExtraBold, fontFeatureSettings = TABULAR_NUMBERS),
     headlineMedium = Base.headlineMedium.copy(fontWeight = FontWeight.Bold),
     titleLarge = Base.titleLarge.copy(fontWeight = FontWeight.Bold),
-    labelSmall = TextStyle(fontSize = 11.sp, fontWeight = FontWeight.SemiBold, letterSpacing = 1.2.sp),
+    labelSmall = TextStyle(fontSize = 11.sp, fontWeight = FontWeight.SemiBold, letterSpacing = 1.2.sp)
 )
 
 val LilloShapes = Shapes(
     small = RoundedCornerShape(12.dp),
     medium = RoundedCornerShape(20.dp),
-    large = RoundedCornerShape(28.dp),
+    large = RoundedCornerShape(28.dp)
 )

@@ -66,7 +66,7 @@ fun HomeScreen(
     onNew: () -> Unit,
     onImport: () -> Unit,
     onStats: () -> Unit,
-    onAbout: () -> Unit,
+    onAbout: () -> Unit
 ) {
     val short = isShortScreen()
     Page(
@@ -83,13 +83,13 @@ fun HomeScreen(
                 Icon(Icons.Filled.Info, contentDescription = stringResource(R.string.action_about))
             }
         },
-        bottom = { if (!short) BigButton(stringResource(R.string.new_tournament), onNew, "new") },
+        bottom = { if (!short) BigButton(stringResource(R.string.new_tournament), onNew, "new") }
     ) {
         if (library.tournaments.isEmpty()) {
             Column(
                 Modifier.weight(1f).fillMaxWidth(),
                 verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text("🏆", fontSize = 64.sp)
                 Spacer(Modifier.height(12.dp))
@@ -121,10 +121,19 @@ private fun TournamentCard(t: Tournament, onClick: () -> Unit) {
             .clickable(onClick = onClick)
             .padding(16.dp)
             .testTag("tournament_${t.id}"),
-        verticalAlignment = Alignment.CenterVertically,
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Box(Modifier.size(44.dp).background(if (champion != null) Arena.Gold else Arena.High, RoundedCornerShape(12.dp)), contentAlignment = Alignment.Center) {
-            Text(if (champion != null) "🏆" else if (t.format == Format.SWISS) "♟" else "⚔", fontSize = 22.sp)
+            Text(
+                if (champion != null) {
+                    "🏆"
+                } else if (t.format == Format.SWISS) {
+                    "♟"
+                } else {
+                    "⚔"
+                },
+                fontSize = 22.sp
+            )
         }
         Spacer(Modifier.width(14.dp))
         Column(Modifier.weight(1f)) {
@@ -132,7 +141,10 @@ private fun TournamentCard(t: Tournament, onClick: () -> Unit) {
             Text(
                 listOf(t.game, formatDay(t.epochDay), pluralStringResource(R.plurals.players_count, t.players.size, t.players.size))
                     .filter { it.isNotBlank() }.joinToString(" · "),
-                color = Arena.Muted, fontSize = 13.sp, maxLines = 1, overflow = TextOverflow.Ellipsis,
+                color = Arena.Muted,
+                fontSize = 13.sp,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
             val pending = Tournaments.pending(t).size
             Text(
@@ -143,7 +155,7 @@ private fun TournamentCard(t: Tournament, onClick: () -> Unit) {
                 },
                 color = if (champion != null) Arena.Gold else Arena.Teal,
                 fontSize = 13.sp,
-                fontWeight = FontWeight.SemiBold,
+                fontWeight = FontWeight.SemiBold
             )
         }
     }
@@ -167,7 +179,7 @@ fun ImportDialog(onImport: (String) -> Unit, onDismiss: () -> Unit) {
                     placeholder = { Text("https://jorgelillo7.github.io/t/#…") },
                     maxLines = 4,
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                    modifier = Modifier.fillMaxWidth().testTag("import_text"),
+                    modifier = Modifier.fillMaxWidth().testTag("import_text")
                 )
             }
         },
@@ -176,7 +188,7 @@ fun ImportDialog(onImport: (String) -> Unit, onDismiss: () -> Unit) {
                 Text(stringResource(R.string.action_import))
             }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_cancel)) } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_cancel)) } }
     )
 }
 
@@ -190,9 +202,9 @@ fun AboutSheet(onDismiss: () -> Unit) = LilloAboutSheet(
         version = stringResource(R.string.about_version, BuildConfig.VERSION_NAME),
         body = stringResource(R.string.about_body),
         rate = null,
-        privacy = stringResource(R.string.about_open_privacy),
+        privacy = stringResource(R.string.about_open_privacy)
     ),
     privacyUrl = LilloLinks.privacyPolicy("tournaments"),
     playStoreUrl = null, // not on Google Play yet
-    onDismiss = onDismiss,
+    onDismiss = onDismiss
 )

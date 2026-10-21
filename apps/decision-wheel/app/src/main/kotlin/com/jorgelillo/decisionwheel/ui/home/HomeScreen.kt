@@ -38,8 +38,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -61,7 +61,7 @@ fun HomeScreen(
     onSound: (Boolean) -> Unit,
     onAbout: () -> Unit,
     onToggleFavorite: (Wheel) -> Unit,
-    onRestorePresets: () -> Unit,
+    onRestorePresets: () -> Unit
 ) {
     var menu by remember { mutableStateOf(false) }
     Scaffold(
@@ -73,13 +73,13 @@ fun HomeScreen(
                 icon = { Icon(Icons.Filled.Add, contentDescription = null) },
                 text = { Text(stringResource(R.string.new_wheel), fontWeight = FontWeight.Bold) },
                 containerColor = WheelColors.Sun,
-                contentColor = WheelColors.Night,
+                contentColor = WheelColors.Night
             )
-        },
+        }
     ) { padding ->
         LazyColumn(
             modifier = Modifier.fillMaxSize().padding(padding),
-            contentPadding = PaddingValues(start = 20.dp, end = 20.dp, top = 16.dp, bottom = 96.dp),
+            contentPadding = PaddingValues(start = 20.dp, end = 20.dp, top = 16.dp, bottom = 96.dp)
         ) {
             item {
                 Row(verticalAlignment = Alignment.CenterVertically) {
@@ -96,10 +96,16 @@ fun HomeScreen(
                             CheckItem(stringResource(R.string.settings_sound), state.soundOn) { onSound(!state.soundOn) }
                             DropdownMenuItem(
                                 text = { Text(stringResource(R.string.restore_presets)) },
-                                onClick = { menu = false; onRestorePresets() },
-                                modifier = Modifier.testTag("restore_presets"),
+                                onClick = {
+                                    menu = false
+                                    onRestorePresets()
+                                },
+                                modifier = Modifier.testTag("restore_presets")
                             )
-                            DropdownMenuItem(text = { Text(stringResource(R.string.action_about)) }, onClick = { menu = false; onAbout() })
+                            DropdownMenuItem(text = { Text(stringResource(R.string.action_about)) }, onClick = {
+                                menu = false
+                                onAbout()
+                            })
                         }
                     }
                 }
@@ -118,7 +124,7 @@ private fun CheckItem(label: String, checked: Boolean, onClick: () -> Unit) {
     DropdownMenuItem(
         text = { Text(label) },
         trailingIcon = { if (checked) Icon(Icons.Filled.Check, contentDescription = null, tint = WheelColors.Sun) },
-        onClick = onClick,
+        onClick = onClick
     )
 }
 
@@ -132,7 +138,7 @@ private fun WheelCard(wheel: Wheel, onClick: () -> Unit, onToggleFavorite: () ->
             .background(WheelColors.NightRaised)
             .clickable(onClick = onClick)
             .padding(16.dp),
-        verticalAlignment = Alignment.CenterVertically,
+        verticalAlignment = Alignment.CenterVertically
     ) {
         // Mini wheel preview.
         Canvas(Modifier.size(52.dp)) {
@@ -150,12 +156,12 @@ private fun WheelCard(wheel: Wheel, onClick: () -> Unit, onToggleFavorite: () ->
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
+                overflow = TextOverflow.Ellipsis
             )
             Text(
                 pluralStringResource(R.plurals.options_count, wheel.options.size, wheel.options.size),
                 style = MaterialTheme.typography.labelSmall,
-                color = WheelColors.Sun,
+                color = WheelColors.Sun
             )
         }
         FavoriteButton(wheel, onToggleFavorite)
@@ -169,7 +175,7 @@ fun FavoriteButton(wheel: Wheel, onToggle: () -> Unit) {
         Icon(
             Icons.Filled.Star,
             contentDescription = stringResource(if (wheel.favorite) R.string.favorite_remove else R.string.favorite_add, wheel.name),
-            tint = if (wheel.favorite) WheelColors.Sun else WheelColors.Muted.copy(alpha = 0.45f),
+            tint = if (wheel.favorite) WheelColors.Sun else WheelColors.Muted.copy(alpha = 0.45f)
         )
     }
 }

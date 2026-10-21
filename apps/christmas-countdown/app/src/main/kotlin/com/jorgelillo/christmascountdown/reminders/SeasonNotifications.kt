@@ -28,7 +28,7 @@ object SeasonNotifications {
     private enum class Channel(val id: String, val title: Int, val description: Int) {
         COUNTDOWN("countdown", R.string.channel_countdown, R.string.channel_countdown_desc),
         ADVENT("advent", R.string.channel_advent, R.string.channel_advent_desc),
-        CHRISTMAS("christmas", R.string.channel_christmas, R.string.channel_christmas_desc),
+        CHRISTMAS("christmas", R.string.channel_christmas, R.string.channel_christmas_desc)
     }
 
     fun createChannels(context: Context) {
@@ -39,29 +39,32 @@ object SeasonNotifications {
             manager.createNotificationChannel(
                 NotificationChannel(channel.id, context.getString(channel.title), importance).apply {
                     description = context.getString(channel.description)
-                },
+                }
             )
         }
     }
 
-    fun canNotify(context: Context): Boolean =
-        Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU ||
-            ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED
+    fun canNotify(context: Context): Boolean = Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU ||
+        ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED
 
     fun show(context: Context, reminder: Reminder, date: LocalDate) {
         if (!canNotify(context)) return
         val (channel, title, text) = when (reminder) {
             Reminder.ONE_MONTH_LEFT -> Triple(Channel.COUNTDOWN, context.getString(R.string.reminder_month_title), context.getString(R.string.reminder_month_text))
+
             Reminder.ONE_WEEK_LEFT -> Triple(Channel.COUNTDOWN, context.getString(R.string.reminder_week_title), context.getString(R.string.reminder_week_text))
+
             Reminder.ADVENT_STARTS -> Triple(Channel.ADVENT, context.getString(R.string.reminder_advent_title), context.getString(R.string.reminder_advent_text))
+
             Reminder.DOOR_WAITING -> {
                 val music = AdventPlan.forYear(date.year)[date.dayOfMonth] is AdventDoor.Song
                 Triple(
                     Channel.ADVENT,
                     context.getString(R.string.reminder_door_title, date.dayOfMonth),
-                    context.getString(if (music) R.string.reminder_door_music_text else R.string.reminder_door_text),
+                    context.getString(if (music) R.string.reminder_door_music_text else R.string.reminder_door_text)
                 )
             }
+
             Reminder.CHRISTMAS_DAY -> Triple(Channel.CHRISTMAS, context.getString(R.string.reminder_christmas_title), context.getString(R.string.reminder_christmas_text))
         }
         val opensAdvent = reminder == Reminder.ADVENT_STARTS || reminder == Reminder.DOOR_WAITING

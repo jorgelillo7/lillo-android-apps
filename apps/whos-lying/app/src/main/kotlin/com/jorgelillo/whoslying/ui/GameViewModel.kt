@@ -15,20 +15,20 @@ import com.jorgelillo.whoslying.domain.Elimination
 import com.jorgelillo.whoslying.domain.Game
 import com.jorgelillo.whoslying.domain.GameSettings
 import com.jorgelillo.whoslying.domain.Match
+import com.jorgelillo.whoslying.domain.PackShare
 import com.jorgelillo.whoslying.domain.Rules
 import com.jorgelillo.whoslying.domain.Scoring
-import com.jorgelillo.whoslying.domain.PackShare
 import com.jorgelillo.whoslying.domain.WordPack
 import com.jorgelillo.whoslying.domain.WordPacks
 import com.jorgelillo.whoslying.domain.WordPicker
-import kotlinx.coroutines.flow.SharingStarted
+import java.util.UUID
+import kotlin.random.Random
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import java.util.UUID
-import kotlin.random.Random
 
 /**
  * Saved setup (players, settings, custom packs) plus the game in progress. The game lives only
@@ -63,8 +63,7 @@ class GameViewModel(private val repository: StateRepository, language: String) :
     fun allPacks(state: SavedState): List<WordPack> = builtInPacks + state.customPacks
 
     /** Packs the next game draws from: the selected ones, or all of them. */
-    fun selectedPacks(state: SavedState): List<WordPack> =
-        allPacks(state).filter { state.settings.packIds.isEmpty() || it.id in state.settings.packIds }.ifEmpty { builtInPacks }
+    fun selectedPacks(state: SavedState): List<WordPack> = allPacks(state).filter { state.settings.packIds.isEmpty() || it.id in state.settings.packIds }.ifEmpty { builtInPacks }
 
     fun unplayed(state: SavedState): Pair<Int, Int> = WordPicker.unplayed(selectedPacks(state), state.recentWords)
 
@@ -72,8 +71,11 @@ class GameViewModel(private val repository: StateRepository, language: String) :
 
     fun addPlayer(name: String) = update { s ->
         val clean = name.trim()
-        if (clean.isEmpty() || s.players.any { it.equals(clean, ignoreCase = true) } || s.players.size >= Rules.MAX_PLAYERS) s
-        else s.copy(players = s.players + clean)
+        if (clean.isEmpty() || s.players.any { it.equals(clean, ignoreCase = true) } || s.players.size >= Rules.MAX_PLAYERS) {
+            s
+        } else {
+            s.copy(players = s.players + clean)
+        }
     }
 
     fun removePlayer(name: String) = update { it.copy(players = it.players - name) }
@@ -90,8 +92,11 @@ class GameViewModel(private val repository: StateRepository, language: String) :
         val current = s.settings.packIds.ifEmpty { all }
         val next = if (id in current) current - id else current + id
         val ids = when {
-            next.isEmpty() -> current // keep at least one pack
+            next.isEmpty() -> current
+
+            // keep at least one pack
             next.containsAll(all) -> emptySet()
+
             else -> next
         }
         s.copy(settings = s.settings.copy(packIds = ids))
@@ -174,7 +179,7 @@ class GameViewModel(private val repository: StateRepository, language: String) :
         update { s ->
             s.copy(
                 scores = s.scores + points.mapValues { (player, p) -> (s.scores[player] ?: 0) + p },
-                roundsPlayed = s.roundsPlayed + 1,
+                roundsPlayed = s.roundsPlayed + 1
             )
         }
     }

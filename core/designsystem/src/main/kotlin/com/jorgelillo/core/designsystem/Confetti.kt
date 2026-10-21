@@ -35,7 +35,7 @@ fun ConfettiBurst(key: Any?, colors: List<Color>, modifier: Modifier = Modifier)
                 speed = 0.55f + Random.nextFloat() * 0.6f,
                 spin = Random.nextFloat() * 720f - 360f,
                 colorIndex = Random.nextInt(colors.size),
-                wide = Random.nextBoolean(),
+                wide = Random.nextBoolean()
             )
         }
     }
@@ -52,14 +52,14 @@ fun ConfettiBurst(key: Any?, colors: List<Color>, modifier: Modifier = Modifier)
             val distance = reach * piece.speed * (1f - (1f - t) * (1f - t))
             val position = Offset(
                 center.x + cos(rad).toFloat() * distance,
-                center.y + sin(rad).toFloat() * distance + gravity,
+                center.y + sin(rad).toFloat() * distance + gravity
             )
             val w = if (piece.wide) 10.dp.toPx() else 6.dp.toPx()
             rotate(piece.spin * t, pivot = position) {
                 drawRect(
                     color = colors[piece.colorIndex].copy(alpha = 1f - t * t),
                     topLeft = Offset(position.x - w / 2, position.y - 3.dp.toPx()),
-                    size = Size(w, 6.dp.toPx()),
+                    size = Size(w, 6.dp.toPx())
                 )
             }
         }
@@ -81,7 +81,7 @@ fun ConfettiRain(colors: List<Color>, modifier: Modifier = Modifier) {
                 spin = random.nextFloat() * 720f - 360f,
                 color = colors[random.nextInt(colors.size)],
                 width = 6f + random.nextFloat() * 8f,
-                delay = random.nextFloat() * 1.2f,
+                delay = random.nextFloat() * 1.2f
             )
         }
     }
@@ -106,7 +106,7 @@ fun ConfettiRain(colors: List<Color>, modifier: Modifier = Modifier) {
                 drawRect(
                     p.color.copy(alpha = fade.value),
                     topLeft = center - Offset(p.width / 2, p.width / 4),
-                    size = Size(p.width, p.width / 2),
+                    size = Size(p.width, p.width / 2)
                 )
             }
         }

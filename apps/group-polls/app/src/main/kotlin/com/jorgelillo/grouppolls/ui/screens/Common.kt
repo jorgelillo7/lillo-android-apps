@@ -49,7 +49,7 @@ fun Page(
     background: Brush = Polls.Header,
     actions: @Composable RowScope.() -> Unit = {},
     bottom: @Composable ColumnScope.() -> Unit = {},
-    content: @Composable ColumnScope.() -> Unit,
+    content: @Composable ColumnScope.() -> Unit
 ) = LilloPage(title, onBack, background, Polls.Ink, modifier, FontWeight.Black, actions = actions, bottom = bottom, content = content)
 
 @Composable
@@ -58,7 +58,7 @@ fun BigButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    color: Color = Polls.Blue,
+    color: Color = Polls.Blue
 ) = LilloBigButton(text, onClick, color, Color.White, modifier, enabled, height = 56.dp, fontSize = 18.sp, shape = CircleShape)
 
 /** The red/blue bar: proportional to the votes, half and half while nobody has voted. */
@@ -87,8 +87,7 @@ fun age(createdAt: Long, now: Long): String {
 }
 
 @Composable
-fun SectionTitle(text: String, modifier: Modifier = Modifier) =
-    LilloSectionTitle(text, Polls.Muted, modifier.padding(top = 16.dp, bottom = 8.dp), uppercase = true, fontWeight = FontWeight.Bold)
+fun SectionTitle(text: String, modifier: Modifier = Modifier) = LilloSectionTitle(text, Polls.Muted, modifier.padding(top = 16.dp, bottom = 8.dp), uppercase = true, fontWeight = FontWeight.Bold)
 
 @Composable
 fun Dot(color: Color, size: Int = 10) {

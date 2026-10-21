@@ -6,11 +6,11 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -58,7 +58,7 @@ fun HomeScreen(
     pollFlow: (String) -> Flow<Poll?>,
     onOpen: (String) -> Unit,
     onCreate: () -> Unit,
-    onSettings: () -> Unit,
+    onSettings: () -> Unit
 ) {
     var tab by rememberSaveable { mutableIntStateOf(0) }
     val now = remember { System.currentTimeMillis() }
@@ -70,11 +70,11 @@ fun HomeScreen(
                 IconButton(onClick = onSettings, modifier = Modifier.testTag("settings")) {
                     Icon(Icons.Filled.Settings, contentDescription = stringResource(R.string.settings_title))
                 }
-            },
+            }
         ) {
             Row(
                 Modifier.fillMaxWidth().clip(CircleShape).background(Polls.Card).border(1.dp, Polls.Line, CircleShape).padding(4.dp),
-                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                horizontalArrangement = Arrangement.spacedBy(4.dp)
             ) {
                 Tab(stringResource(R.string.tab_public), tab == 0, Modifier.weight(1f).testTag("tab_public")) { tab = 0 }
                 Tab(stringResource(R.string.tab_mine), tab == 1, Modifier.weight(1f).testTag("tab_mine")) { tab = 1 }
@@ -111,7 +111,7 @@ fun HomeScreen(
             text = { Text(stringResource(R.string.create_title), fontWeight = FontWeight.Bold) },
             containerColor = Polls.Ink,
             contentColor = Color.White,
-            modifier = Modifier.align(Alignment.BottomEnd).padding(24.dp).testTag("create"),
+            modifier = Modifier.align(Alignment.BottomEnd).padding(24.dp).testTag("create")
         )
     }
 }
@@ -127,7 +127,7 @@ private fun Tab(text: String, selected: Boolean, modifier: Modifier, onClick: ()
             .padding(vertical = 10.dp),
         color = if (selected) Color.White else Polls.Muted,
         fontWeight = FontWeight.Bold,
-        textAlign = TextAlign.Center,
+        textAlign = TextAlign.Center
     )
 }
 
@@ -151,7 +151,7 @@ fun PollCard(poll: Poll, local: LocalState, now: Long, showVisibility: Boolean, 
             .border(1.dp, Polls.Line, MaterialTheme.shapes.extraLarge)
             .clickable(onClick = onClick)
             .padding(16.dp)
-            .testTag("poll_${poll.code}"),
+            .testTag("poll_${poll.code}")
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             if (showVisibility) {
@@ -160,7 +160,7 @@ fun PollCard(poll: Poll, local: LocalState, now: Long, showVisibility: Boolean, 
                     style = MaterialTheme.typography.labelSmall,
                     fontWeight = FontWeight.Bold,
                     color = Polls.Muted,
-                    modifier = Modifier.clip(CircleShape).background(Polls.Paper).padding(horizontal = 8.dp, vertical = 3.dp),
+                    modifier = Modifier.clip(CircleShape).background(Polls.Paper).padding(horizontal = 8.dp, vertical = 3.dp)
                 )
                 Spacer(Modifier.width(8.dp))
             }
@@ -168,7 +168,7 @@ fun PollCard(poll: Poll, local: LocalState, now: Long, showVisibility: Boolean, 
                 listOfNotNull(poll.creatorName.ifBlank { null }, age(poll.createdAt, now)).joinToString(" · "),
                 style = MaterialTheme.typography.bodySmall,
                 color = Polls.Muted,
-                modifier = Modifier.weight(1f),
+                modifier = Modifier.weight(1f)
             )
             if (!poll.isOpen(now)) Text("🔒", style = MaterialTheme.typography.bodySmall)
         }
@@ -190,7 +190,7 @@ fun PollCard(poll: Poll, local: LocalState, now: Long, showVisibility: Boolean, 
             pluralStringResource(R.plurals.votes, poll.totalVotes, poll.totalVotes),
             style = MaterialTheme.typography.bodySmall,
             color = Polls.Muted,
-            modifier = Modifier.padding(top = 8.dp),
+            modifier = Modifier.padding(top = 8.dp)
         )
     }
 }
@@ -203,9 +203,8 @@ private fun Chip(text: String, background: Color, color: Color, modifier: Modifi
         color = color,
         fontWeight = FontWeight.Bold,
         textAlign = TextAlign.Center,
-        maxLines = 1,
+        maxLines = 1
     )
 }
 
-private fun languageName(code: String): String =
-    Locale.forLanguageTag(code).let { it.getDisplayLanguage(it) }.replaceFirstChar { it.uppercase() }.ifBlank { code }
+private fun languageName(code: String): String = Locale.forLanguageTag(code).let { it.getDisplayLanguage(it) }.replaceFirstChar { it.uppercase() }.ifBlank { code }

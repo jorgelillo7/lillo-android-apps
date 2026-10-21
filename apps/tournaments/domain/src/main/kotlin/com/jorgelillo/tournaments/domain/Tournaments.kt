@@ -19,7 +19,7 @@ object Tournaments {
         game: String = "",
         swissRounds: Int = Swiss.recommendedRounds(names.size),
         topCut: Int = 0,
-        random: Random = Random.Default,
+        random: Random = Random.Default
     ): Tournament {
         require(names.size in MIN_PLAYERS..MAX_PLAYERS) { "players: ${names.size}" }
         require(bestOf in BEST_OF) { "bestOf: $bestOf" }
@@ -28,7 +28,7 @@ object Tournaments {
             id = id, name = name.trim(), game = game.trim(), epochDay = epochDay, bestOf = bestOf,
             format = format, players = players,
             swissRounds = if (format == Format.SWISS) swissRounds.coerceIn(1, names.size - 1 + names.size % 2) else 0,
-            topCut = if (format == Format.SWISS) topCut.takeIf { it < names.size } ?: 0 else 0,
+            topCut = if (format == Format.SWISS) topCut.takeIf { it < names.size } ?: 0 else 0
         )
         return draw(base, random)
     }

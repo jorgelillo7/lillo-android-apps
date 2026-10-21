@@ -1,6 +1,5 @@
 package com.jorgelillo.whoslying.ui.screens
 
-import com.jorgelillo.core.designsystem.TestTagsAsResourceIds
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.Spring
@@ -54,6 +53,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.jorgelillo.core.designsystem.TestTagsAsResourceIds
 import com.jorgelillo.whoslying.R
 import com.jorgelillo.whoslying.domain.Card
 import com.jorgelillo.whoslying.domain.Game
@@ -92,7 +92,7 @@ fun RevealScreen(game: Game, onDone: () -> Unit, onQuit: () -> Unit) {
             } else {
                 Spacer(Modifier.height(60.dp))
             }
-        },
+        }
     ) {
         // Clipped so the lifted curtain never covers the header.
         BoxWithConstraints(Modifier.weight(1f).fillMaxWidth().clipToBounds()) {
@@ -119,7 +119,7 @@ fun RevealScreen(game: Game, onDone: () -> Unit, onQuit: () -> Unit) {
                     }
                     .testTag("tap_to_reveal"),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center,
+                verticalArrangement = Arrangement.Center
             ) {
                 if (compact) {
                     // Short screens: side by side, so the whole instruction fits.
@@ -145,7 +145,7 @@ fun RevealScreen(game: Game, onDone: () -> Unit, onQuit: () -> Unit) {
                         color = Color.White,
                         style = MaterialTheme.typography.titleMedium,
                         textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(horizontal = 24.dp),
+                        modifier = Modifier.padding(horizontal = 24.dp)
                     )
                 }
             }
@@ -168,7 +168,7 @@ private fun SecretCard(card: Card, compact: Boolean) {
             .background(Neon.Night)
             .border(3.dp, accent, MaterialTheme.shapes.extraLarge)
             .padding(if (compact) 14.dp else 28.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         // Short screens drop the name (it is on the curtain) and shrink everything so the word fits.
         if (!compact) {
@@ -182,14 +182,14 @@ private fun SecretCard(card: Card, compact: Boolean) {
                 color = accent,
                 style = if (compact) MaterialTheme.typography.titleLarge else MaterialTheme.typography.headlineMedium,
                 fontWeight = FontWeight.Black,
-                textAlign = TextAlign.Center,
+                textAlign = TextAlign.Center
             )
             Text(
                 stringResource(if (card.role == Role.DRIFTER) R.string.reveal_drifter_desc else R.string.reveal_impostor_desc),
                 color = Neon.Muted,
                 style = if (compact) MaterialTheme.typography.bodySmall else MaterialTheme.typography.bodyLarge,
                 textAlign = TextAlign.Center,
-                modifier = Modifier.padding(top = if (compact) 2.dp else 8.dp),
+                modifier = Modifier.padding(top = if (compact) 2.dp else 8.dp)
             )
         } else {
             // CLASSIC impostors also land here: same layout as civilians, so nothing gives them away.
@@ -201,7 +201,7 @@ private fun SecretCard(card: Card, compact: Boolean) {
                 fontWeight = FontWeight.Black,
                 textAlign = TextAlign.Center,
                 lineHeight = if (compact) 36.sp else 48.sp,
-                modifier = Modifier.padding(vertical = if (compact) 2.dp else 8.dp).testTag("secret_word"),
+                modifier = Modifier.padding(vertical = if (compact) 2.dp else 8.dp).testTag("secret_word")
             )
         }
         card.hint?.let { hint ->
@@ -229,7 +229,7 @@ fun CountdownScreen(starter: String, onDone: () -> Unit) {
             style = MaterialTheme.typography.headlineLarge,
             fontWeight = FontWeight.Black,
             textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth()
         )
         Text(
             stringResource(R.string.countdown_ready),
@@ -237,7 +237,7 @@ fun CountdownScreen(starter: String, onDone: () -> Unit) {
             style = MaterialTheme.typography.headlineLarge,
             fontWeight = FontWeight.Black,
             textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth()
         )
         AnimatedContent(count, transitionSpec = { scaleIn(initialScale = 1.6f) + fadeIn() togetherWith fadeOut() }, modifier = Modifier.fillMaxWidth(), label = "count") {
             Text("${it.coerceAtLeast(1)}", color = Color.White, fontSize = 180.sp, fontWeight = FontWeight.Black, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())

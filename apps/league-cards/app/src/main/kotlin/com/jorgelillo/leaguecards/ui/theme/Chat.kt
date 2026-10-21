@@ -44,5 +44,5 @@ val ChatColorScheme = darkColorScheme(
     secondaryContainer = Chat.Bubble,
     onSecondaryContainer = Chat.Text,
     outline = Chat.Faint,
-    outlineVariant = Chat.Faint,
+    outlineVariant = Chat.Faint
 )

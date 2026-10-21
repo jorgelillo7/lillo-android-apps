@@ -19,7 +19,7 @@ data class Standing(
     /** Games won / games played (floored at 33 %), the second tie-breaker. */
     val gameWinRate: Double,
     /** Opponents' game-win percentage, the third. */
-    val opponentsGameWinRate: Double,
+    val opponentsGameWinRate: Double
 )
 
 object Standings {
@@ -32,7 +32,9 @@ object Standings {
         val stage = if (t.format == Format.SWISS) Stage.SWISS else Stage.ELIMINATION
         val played = t.matches.filter { it.stage == stage && it.isDone(t.bestOf) }
         fun record(p: Int): Triple<Int, Int, Int> {
-            var w = 0; var d = 0; var l = 0
+            var w = 0
+            var d = 0
+            var l = 0
             played.filter { it.involves(p) }.forEach { m ->
                 when {
                     m.draw -> d++
@@ -60,17 +62,19 @@ object Standings {
             Standing(
                 player = p,
                 points = w * WIN + d * DRAW,
-                wins = w, draws = d, losses = l,
+                wins = w,
+                draws = d,
+                losses = l,
                 opponentsWinRate = if (opponents.isEmpty()) 0.0 else opponents.map(::matchWinRate).average(),
                 gameWinRate = gameWinRate(p),
-                opponentsGameWinRate = if (opponents.isEmpty()) 0.0 else opponents.map(::gameWinRate).average(),
+                opponentsGameWinRate = if (opponents.isEmpty()) 0.0 else opponents.map(::gameWinRate).average()
             )
         }.sortedWith(
             compareByDescending<Standing> { it.points }
                 .thenByDescending { it.opponentsWinRate }
                 .thenByDescending { it.gameWinRate }
                 .thenByDescending { it.opponentsGameWinRate }
-                .thenBy { t.players.indexOfFirst { p -> p.id == it.player } },
+                .thenBy { t.players.indexOfFirst { p -> p.id == it.player } }
         )
     }
 }

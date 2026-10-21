@@ -17,14 +17,13 @@ object WordReport {
     private const val REASON = "entry.1131699029"
     private const val COMMENT = "entry.1013901262"
 
-    fun url(word: String, decoy: String?, pack: String, language: String, reasons: List<String>, comment: String): Uri =
-        FORM_URL.toUri().buildUpon()
-            .appendQueryParameter("usp", "pp_url")
-            .appendQueryParameter(WORD, word)
-            .appendQueryParameter(DECOY, decoy.orEmpty())
-            .appendQueryParameter(PACK, pack)
-            .appendQueryParameter(LANGUAGE, language)
-            .appendQueryParameter(REASON, reasons.joinToString(", "))
-            .appendQueryParameter(COMMENT, comment.trim())
-            .build()
+    fun url(word: String, decoy: String?, pack: String, language: String, reasons: List<String>, comment: String): Uri = FORM_URL.toUri().buildUpon()
+        .appendQueryParameter("usp", "pp_url")
+        .appendQueryParameter(WORD, word)
+        .appendQueryParameter(DECOY, decoy.orEmpty())
+        .appendQueryParameter(PACK, pack)
+        .appendQueryParameter(LANGUAGE, language)
+        .appendQueryParameter(REASON, reasons.joinToString(", "))
+        .appendQueryParameter(COMMENT, comment.trim())
+        .build()
 }

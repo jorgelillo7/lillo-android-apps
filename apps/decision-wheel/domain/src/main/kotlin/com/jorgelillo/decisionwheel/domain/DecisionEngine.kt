@@ -22,7 +22,7 @@ object DecisionEngine {
         vetoed: Set<String>,
         history: List<Decision>,
         nowEpochMillis: Long,
-        avoidRepeats: Boolean,
+        avoidRepeats: Boolean
     ): Map<String, Double> {
         val eligible = options.distinct().filterNot { it in vetoed }
         if (!avoidRepeats) return eligible.associateWith { 1.0 }

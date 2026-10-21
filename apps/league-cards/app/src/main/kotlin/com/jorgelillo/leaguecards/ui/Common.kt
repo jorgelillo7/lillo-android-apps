@@ -37,16 +37,14 @@ fun Page(
     modifier: Modifier = Modifier,
     actions: @Composable RowScope.() -> Unit = {},
     bottom: @Composable ColumnScope.() -> Unit = {},
-    content: @Composable ColumnScope.() -> Unit,
+    content: @Composable ColumnScope.() -> Unit
 ) = LilloPage(title, onBack, Chat.Background, Chat.Text, modifier, actions = actions, bottom = bottom, content = content)
 
 @Composable
-fun BigButton(text: String, onClick: () -> Unit, tag: String, modifier: Modifier = Modifier, color: Color = Chat.Green) =
-    LilloBigButton(text, onClick, color, Chat.Ink, modifier.testTag(tag))
+fun BigButton(text: String, onClick: () -> Unit, tag: String, modifier: Modifier = Modifier, color: Color = Chat.Green) = LilloBigButton(text, onClick, color, Chat.Ink, modifier.testTag(tag))
 
 /** A member's name colour; the player is always green, like your own messages. */
-fun League.colorOf(id: String): Color =
-    if (id == YOU) Chat.Green else character(id)?.color?.let { runCatching { Color(it.toColorInt()) }.getOrNull() } ?: Chat.Muted
+fun League.colorOf(id: String): Color = if (id == YOU) Chat.Green else character(id)?.color?.let { runCatching { Color(it.toColorInt()) }.getOrNull() } ?: Chat.Muted
 
 @Composable
 fun League.nameOf(id: String): String = if (id == YOU) stringResource(R.string.you) else character(id)?.name ?: id
@@ -58,7 +56,7 @@ fun ChatBubble(league: League, from: String, text: String, modifier: Modifier = 
         modifier
             .widthIn(max = 320.dp)
             .background(Chat.Bubble, RoundedCornerShape(topStart = 4.dp, topEnd = 14.dp, bottomStart = 14.dp, bottomEnd = 14.dp))
-            .padding(horizontal = 12.dp, vertical = 8.dp),
+            .padding(horizontal = 12.dp, vertical = 8.dp)
     ) {
         if (from.isNotEmpty()) {
             Text(league.nameOf(from), color = league.colorOf(from), fontWeight = FontWeight.Bold, style = MaterialTheme.typography.labelLarge)
@@ -81,7 +79,7 @@ fun SystemNotice(text: String, modifier: Modifier = Modifier) {
             style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier
                 .background(Chat.System, RoundedCornerShape(8.dp))
-                .padding(horizontal = 12.dp, vertical = 6.dp),
+                .padding(horizontal = 12.dp, vertical = 6.dp)
         )
     }
 }
@@ -96,7 +94,7 @@ fun AchievementBanner(a: Achievement, modifier: Modifier = Modifier) {
             .background(Chat.Gold.copy(alpha = 0.16f), RoundedCornerShape(12.dp))
             .padding(horizontal = 12.dp, vertical = 8.dp)
             .testTag("achievement_unlocked"),
-        verticalAlignment = Alignment.CenterVertically,
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Text(a.emoji, style = MaterialTheme.typography.headlineSmall)
         Column(Modifier.padding(start = 10.dp)) {

@@ -42,7 +42,7 @@ object Carols {
             F5:1 F5:1 F5:1.5 F5:0.5 | F5:1 E5:1 E5:1 E5:0.5 E5:0.5 | E5:1 D5:1 D5:1 E5:1 | D5:2 G5:2
             E5:1 E5:1 E5:2 | E5:1 E5:1 E5:2 | E5:1 G5:1 C5:1.5 D5:0.5 | E5:4
             F5:1 F5:1 F5:1.5 F5:0.5 | F5:1 E5:1 E5:1 E5:0.5 E5:0.5 | G5:1 G5:1 F5:1 D5:1 | C5:4
-        """,
+        """
     )
 
     val weWishYouAMerryChristmas = Melody.parse(
@@ -53,7 +53,7 @@ object Carols {
             R:2 D5:1 | G5:1 G5:0.5 A5:0.5 G5:0.5 F#5:0.5 | E5:1 E5:1 E5:1
             A5:1 A5:0.5 B5:0.5 A5:0.5 G5:0.5 | F#5:1 D5:1 D5:1
             B5:1 B5:0.5 C6:0.5 B5:0.5 A5:0.5 | G5:1 E5:1 D5:0.5 D5:0.5 | E5:1 A5:1 F#5:1 | G5:3
-        """,
+        """
     )
 
     val silentNight = Melody.parse(
@@ -67,7 +67,7 @@ object Carols {
             A5:2 A5:1 | C6:1.5 B5:0.5 A5:1 | G5:1.5 A5:0.5 G5:1 | E5:3
             D6:2 D6:1 | F6:1.5 D6:0.5 B5:1 | C6:3 | E6:3
             C6:1 G5:1 E5:1 | G5:1.5 F5:0.5 D5:1 | C5:3 | R:3
-        """,
+        """
     )
 
     val oChristmasTree = Melody.parse(
@@ -81,7 +81,7 @@ object Carols {
             A#5:0.5 G5:0.5 C6:1.5 A#5:0.5 | A#5:0.5 A5:0.5 A5:1 C5:1
             F5:0.75 F5:0.25 F5:1.5 G5:0.5 | A5:0.75 A5:0.25 A5:1.5 A5:0.5
             G5:0.5 A5:0.5 A#5:1 E5:1 | G5:1 F5:2 | R:2
-        """,
+        """
     )
 
     val joyToTheWorld = Melody.parse(
@@ -96,7 +96,7 @@ object Carols {
             F#5:0.5 F#5:0.5 F#5:0.5 F#5:0.25 G5:0.25 | A5:1.5 G5:0.25 F#5:0.25
             E5:0.5 E5:0.5 E5:0.5 E5:0.25 F#5:0.25 | G5:1.5 F#5:0.25 E5:0.25
             D5:0.5 D6:1 B5:0.5 | A5:0.75 G5:0.25 F#5:0.5 G5:0.5 | F#5:1 E5:1 | D5:2
-        """,
+        """
     )
 
     val all: List<Melody> = listOf(jingleBells, weWishYouAMerryChristmas, silentNight, oChristmasTree, joyToTheWorld)

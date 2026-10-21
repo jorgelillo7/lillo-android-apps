@@ -64,7 +64,7 @@ fun LilloPage(
     actions: @Composable RowScope.() -> Unit = {},
     sideActionsWhenShort: Boolean = false,
     bottom: @Composable ColumnScope.() -> Unit = {},
-    content: @Composable ColumnScope.() -> Unit,
+    content: @Composable ColumnScope.() -> Unit
 ) = CompositionLocalProvider(LocalContentColor provides contentColor) {
     val side = sideActionsWhenShort && isShortScreen()
     Column(modifier.fillMaxSize().background(background).statusBarsPadding().navigationBarsPadding()) {
@@ -83,7 +83,7 @@ fun LilloPage(
                     fontWeight = titleWeight,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier.weight(1f)
                 )
                 actions()
             }
@@ -94,7 +94,7 @@ fun LilloPage(
                 Column(
                     Modifier.width(SIDE_ACTIONS_WIDTH).fillMaxHeight().padding(20.dp),
                     verticalArrangement = Arrangement.Center,
-                    content = bottom,
+                    content = bottom
                 )
             }
         } else {
@@ -117,14 +117,14 @@ fun LilloBigButton(
     enabled: Boolean = true,
     height: Dp = 60.dp,
     fontSize: TextUnit = 20.sp,
-    shape: Shape = ButtonDefaults.shape,
+    shape: Shape = ButtonDefaults.shape
 ) {
     Button(
         onClick = onClick,
         enabled = enabled,
         modifier = modifier.fillMaxWidth().height(height),
         shape = shape,
-        colors = ButtonDefaults.buttonColors(containerColor = color, contentColor = contentColor),
+        colors = ButtonDefaults.buttonColors(containerColor = color, contentColor = contentColor)
     ) { Text(text, fontSize = fontSize, fontWeight = FontWeight.Black) }
 }
 

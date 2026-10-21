@@ -10,7 +10,7 @@ data class PlayerStats(
     val draws: Int,
     val losses: Int,
     val gamesWon: Int,
-    val gamesLost: Int,
+    val gamesLost: Int
 ) {
     val matches: Int get() = wins + draws + losses
     val winRate: Double get() = if (matches == 0) 0.0 else wins.toDouble() / matches
@@ -58,7 +58,7 @@ object Stats {
             listOf(
                 t.name, t.game, t.epochDay.toString(), roundName(m), m.round.toString(),
                 t.player(m.a)?.name.orEmpty(), t.player(m.b)?.name.orEmpty(),
-                m.winsA.toString(), m.winsB.toString(), winner, m.comment,
+                m.winsA.toString(), m.winsB.toString(), winner, m.comment
             ).joinTo(this, ",") { field -> if (field.any { it in ",\"\n" }) "\"" + field.replace("\"", "\"\"") + "\"" else field }
             appendLine()
         }

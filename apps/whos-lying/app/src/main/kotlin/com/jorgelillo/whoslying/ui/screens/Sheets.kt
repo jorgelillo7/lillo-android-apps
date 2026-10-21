@@ -53,13 +53,13 @@ fun HowToSheet(onDismiss: () -> Unit) {
     ModalBottomSheet(onDismissRequest = onDismiss, containerColor = Neon.Card) {
         Column(
             Modifier.verticalScroll(rememberScrollState()).padding(horizontal = 24.dp).padding(bottom = 32.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             listOf(
                 Triple("🤫", R.string.how_1_title, R.string.how_1),
                 Triple("💬", R.string.how_2_title, R.string.how_2),
                 Triple("🗳️", R.string.how_3_title, R.string.how_3),
-                Triple("🏆", R.string.how_4_title, R.string.how_4),
+                Triple("🏆", R.string.how_4_title, R.string.how_4)
             ).forEach { (emoji, title, body) ->
                 Column(Modifier.fillMaxWidth().clip(MaterialTheme.shapes.large).background(Neon.Night).padding(18.dp)) {
                     Text("$emoji  " + stringResource(title), color = Neon.Amber, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
@@ -77,14 +77,14 @@ fun ModesSheet(onDismiss: () -> Unit) {
     ModalBottomSheet(onDismissRequest = onDismiss, containerColor = Neon.Card) {
         Column(
             Modifier.verticalScroll(rememberScrollState()).padding(horizontal = 24.dp).padding(bottom = 32.dp).then(DialogTags).testTag("modes_sheet"),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Text(stringResource(R.string.modes_title), style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Black)
             Text(stringResource(R.string.modes_intro), color = Neon.Muted)
             listOf(
                 ModeGuide("🎭", R.string.mode_classic, R.string.modes_classic_who, R.string.modes_classic_win, R.string.modes_classic_tip),
                 ModeGuide("🙈", R.string.mode_blind, R.string.modes_blind_who, R.string.modes_blind_win, R.string.modes_blind_tip),
-                ModeGuide("🤷", R.string.mode_drifter, R.string.modes_drifter_who, R.string.modes_drifter_win, R.string.modes_drifter_tip),
+                ModeGuide("🤷", R.string.mode_drifter, R.string.modes_drifter_who, R.string.modes_drifter_win, R.string.modes_drifter_tip)
             ).forEach { mode ->
                 Column(Modifier.fillMaxWidth().clip(MaterialTheme.shapes.large).background(Neon.Night).padding(18.dp)) {
                     Text("${mode.emoji}  " + stringResource(mode.title), color = Neon.Amber, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
@@ -99,7 +99,7 @@ fun ModesSheet(onDismiss: () -> Unit) {
                 Triple("🏆", R.string.modes_scores_title, R.string.modes_scores),
                 Triple("🌀", R.string.modes_chaos_title, R.string.modes_chaos),
                 Triple("💡", R.string.modes_hint_title, R.string.modes_hint),
-                Triple("⏱️", R.string.modes_timer_title, R.string.modes_timer),
+                Triple("⏱️", R.string.modes_timer_title, R.string.modes_timer)
             ).forEach { (emoji, title, body) ->
                 Column(Modifier.fillMaxWidth().clip(MaterialTheme.shapes.large).background(Neon.Night).padding(18.dp)) {
                     Text("$emoji  " + stringResource(title), color = Neon.Amber, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
@@ -115,7 +115,7 @@ private class ModeGuide(
     @param:StringRes val title: Int,
     @param:StringRes val who: Int,
     @param:StringRes val win: Int,
-    @param:StringRes val tip: Int,
+    @param:StringRes val tip: Int
 )
 
 /** Lets the player say what's wrong with a word, then opens the prefilled report form. */
@@ -130,7 +130,7 @@ fun ReportSheet(word: String, decoy: String?, pack: String, language: String, on
     ModalBottomSheet(onDismissRequest = onDismiss, containerColor = Neon.Card) {
         Column(
             Modifier.verticalScroll(rememberScrollState()).padding(horizontal = 24.dp).padding(bottom = 32.dp).then(DialogTags).testTag("report_sheet"),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Text("⚠️  " + stringResource(R.string.report_title), style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Black)
             Text(stringResource(R.string.report_word, word), color = Neon.Amber, fontWeight = FontWeight.Bold)
@@ -146,7 +146,7 @@ fun ReportSheet(word: String, decoy: String?, pack: String, language: String, on
                         .clickable { chosen = if (selected) chosen - reason else chosen + reason }
                         .padding(horizontal = 16.dp, vertical = 14.dp)
                         .testTag("reason_$i"),
-                    verticalAlignment = Alignment.CenterVertically,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(reason, Modifier.weight(1f), fontWeight = FontWeight.SemiBold)
                     Text(if (selected) "✅" else "⚪")
@@ -156,7 +156,7 @@ fun ReportSheet(word: String, decoy: String?, pack: String, language: String, on
                 value = comment,
                 onValueChange = { comment = it },
                 placeholder = { Text(stringResource(R.string.report_comment)) },
-                modifier = Modifier.fillMaxWidth().testTag("report_comment"),
+                modifier = Modifier.fillMaxWidth().testTag("report_comment")
             )
             Text(stringResource(R.string.report_privacy), color = Neon.Muted, style = MaterialTheme.typography.bodySmall)
             BigButton(
@@ -166,7 +166,7 @@ fun ReportSheet(word: String, decoy: String?, pack: String, language: String, on
                     onDismiss()
                 },
                 Modifier.testTag("report_send"),
-                enabled = chosen.isNotEmpty() || comment.isNotBlank(),
+                enabled = chosen.isNotEmpty() || comment.isNotBlank()
             )
         }
     }
@@ -183,18 +183,27 @@ fun SettingsSheet(onHowTo: () -> Unit, onModes: () -> Unit, onWelcome: () -> Uni
     ModalBottomSheet(onDismissRequest = onDismiss, containerColor = Neon.Card) {
         Column(
             Modifier.verticalScroll(rememberScrollState()).padding(horizontal = 24.dp).padding(bottom = 32.dp).then(DialogTags).testTag("settings_sheet"),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Text(stringResource(R.string.settings_title), style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Black)
             if (canPickAppLanguage) {
                 SettingsRow("🌐", stringResource(CoreR.string.lillo_language), currentAppLanguageName(), "language") { pickLanguage = true }
             }
-            SettingsRow("📖", stringResource(R.string.how_to_play), null, "settings_how_to") { onDismiss(); onHowTo() }
-            SettingsRow("🎭", stringResource(R.string.modes_title), null, "settings_modes") { onDismiss(); onModes() }
+            SettingsRow("📖", stringResource(R.string.how_to_play), null, "settings_how_to") {
+                onDismiss()
+                onHowTo()
+            }
+            SettingsRow("🎭", stringResource(R.string.modes_title), null, "settings_modes") {
+                onDismiss()
+                onModes()
+            }
             SettingsRow("💌", stringResource(R.string.settings_share), stringResource(R.string.settings_share_desc), "share") {
                 context.shareText(shareText)
             }
-            SettingsRow("🤝", stringResource(R.string.welcome_settings), null, "settings_welcome") { onDismiss(); onWelcome() }
+            SettingsRow("🤝", stringResource(R.string.welcome_settings), null, "settings_welcome") {
+                onDismiss()
+                onWelcome()
+            }
             SettingsRow("⭐", stringResource(R.string.about_rate), null, "rate") { uriHandler.openUri(PLAY_STORE_URL) }
             SettingsRow("🔒", stringResource(R.string.about_privacy), null, "privacy") { uriHandler.openUri(PRIVACY_POLICY_URL) }
             Text(
@@ -202,7 +211,7 @@ fun SettingsSheet(onHowTo: () -> Unit, onModes: () -> Unit, onWelcome: () -> Uni
                 style = MaterialTheme.typography.bodySmall,
                 color = Neon.Muted,
                 textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth().padding(top = 12.dp),
+                modifier = Modifier.fillMaxWidth().padding(top = 12.dp)
             )
         }
     }
@@ -220,5 +229,5 @@ private fun SettingsRow(emoji: String, title: String, subtitle: String?, tag: St
     leading = emoji,
     tag = tag,
     contentPadding = PaddingValues(horizontal = 16.dp, vertical = 14.dp),
-    onClick = onClick,
+    onClick = onClick
 ) { Text("›", style = MaterialTheme.typography.headlineSmall, color = Neon.Muted) }

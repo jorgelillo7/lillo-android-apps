@@ -59,8 +59,15 @@ fun StatsScreen(library: Library, onBack: () -> Unit) {
                 Column(Modifier.fillMaxWidth().background(Arena.Raised, RoundedCornerShape(14.dp)).padding(14.dp)) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(
-                            when (i) { 0 -> "🥇"; 1 -> "🥈"; 2 -> "🥉"; else -> "${i + 1}" },
-                            fontSize = 18.sp, fontWeight = FontWeight.Bold, modifier = Modifier.width(36.dp),
+                            when (i) {
+                                0 -> "🥇"
+                                1 -> "🥈"
+                                2 -> "🥉"
+                                else -> "${i + 1}"
+                            },
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.width(36.dp)
                         )
                         Text(s.name, fontWeight = FontWeight.Black, fontSize = 17.sp, maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f))
                         if (s.titles > 0) Text("🏆 ${s.titles}", color = Arena.Gold, fontWeight = FontWeight.Black)
@@ -68,7 +75,8 @@ fun StatsScreen(library: Library, onBack: () -> Unit) {
                     Spacer(Modifier.height(6.dp))
                     Text(
                         stringResource(R.string.stats_line, s.tournaments, s.finals, s.wins, s.draws, s.losses),
-                        color = Arena.Muted, fontSize = 13.sp,
+                        color = Arena.Muted,
+                        fontSize = 13.sp
                     )
                     Spacer(Modifier.height(8.dp))
                     WinRateBar(s.winRate)

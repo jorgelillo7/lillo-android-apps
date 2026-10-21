@@ -76,8 +76,10 @@ fun MatchList(t: Tournament, onEdit: (Match) -> Unit) {
             item(key = "${key.first}${key.second}") {
                 Text(
                     roundName(t, key.first, key.second),
-                    color = Arena.Gold, fontWeight = FontWeight.Bold, fontSize = 14.sp,
-                    modifier = Modifier.padding(top = 8.dp),
+                    color = Arena.Gold,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 14.sp,
+                    modifier = Modifier.padding(top = 8.dp)
                 )
             }
             items(matches.sortedBy { it.slot }, key = { "${it.stage}${it.round}-${it.slot}" }) { MatchCard(t, it, onEdit) }
@@ -98,7 +100,7 @@ private fun MatchCard(t: Tournament, m: Match, onEdit: (Match) -> Unit) {
             .then(if (playable && !done) Modifier.border(BorderStroke(1.dp, Arena.Faint), RoundedCornerShape(14.dp)) else Modifier)
             .clickable(enabled = playable) { onEdit(m) }
             .padding(horizontal = 14.dp, vertical = 10.dp)
-            .testTag("match_${m.stage.name.lowercase()}_${m.round}_${m.slot}"),
+            .testTag("match_${m.stage.name.lowercase()}_${m.round}_${m.slot}")
     ) {
         if (m.isBye) {
             Text(stringResource(R.string.match_bye, t.player(m.a ?: m.b)?.name.orEmpty()), color = Arena.Muted)
@@ -131,7 +133,7 @@ private fun PlayerLine(name: String?, wins: Int, done: Boolean, won: Boolean) {
             fontSize = 16.sp,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
-            modifier = Modifier.weight(1f),
+            modifier = Modifier.weight(1f)
         )
         if (done) Text("$wins", fontWeight = FontWeight.Black, fontSize = 18.sp, color = if (won) Arena.Gold else Arena.Muted)
     }
@@ -148,7 +150,7 @@ fun ResultSheet(
     match: Match,
     onSave: (winsA: Int, winsB: Int, draw: Boolean, comment: String) -> Unit,
     onClear: () -> Unit,
-    onDismiss: () -> Unit,
+    onDismiss: () -> Unit
 ) {
     val res = LocalResources.current
     val needed = Match.needed(t.bestOf)
@@ -156,9 +158,31 @@ fun ResultSheet(
     val b = t.player(match.b)!!.name
     val current = match.winner(t.bestOf)
     // 0 = A won, 1 = B won, 2 = draw, -1 = not chosen yet.
-    var outcome by rememberSaveable { mutableIntStateOf(if (match.draw) 2 else if (current == match.a) 0 else if (current == match.b) 1 else -1) }
+    var outcome by rememberSaveable {
+        mutableIntStateOf(
+            if (match.draw) {
+                2
+            } else if (current == match.a) {
+                0
+            } else if (current == match.b) {
+                1
+            } else {
+                -1
+            }
+        )
+    }
     var loserGames by rememberSaveable {
-        mutableIntStateOf(if (current == match.a) match.winsB else if (current == match.b) match.winsA else if (match.draw) match.winsA else 0)
+        mutableIntStateOf(
+            if (current == match.a) {
+                match.winsB
+            } else if (current == match.b) {
+                match.winsA
+            } else if (match.draw) {
+                match.winsA
+            } else {
+                0
+            }
+        )
     }
     var comment by rememberSaveable { mutableStateOf(match.comment) }
     val allowDraw = match.stage == Stage.SWISS
@@ -178,7 +202,7 @@ fun ResultSheet(
     ModalBottomSheet(onDismissRequest = onDismiss, sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true), containerColor = Arena.Raised) {
         Column(
             TestTagsAsResourceIds.verticalScroll(rememberScrollState()).padding(horizontal = 20.dp).navigationBarsPadding(),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Text(res.roundName(t, match), color = Arena.Gold, fontWeight = FontWeight.Bold)
             Text(stringResource(R.string.result_who_won), fontSize = 22.sp, fontWeight = FontWeight.Black)
@@ -205,7 +229,7 @@ fun ResultSheet(
                             onClick = { loserGames = k },
                             label = { Text(label, fontSize = 18.sp, fontWeight = FontWeight.Bold) },
                             colors = FilterChipDefaults.filterChipColors(selectedContainerColor = Arena.Gold, selectedLabelColor = Arena.Ink),
-                            modifier = Modifier.testTag("score_$k"),
+                            modifier = Modifier.testTag("score_$k")
                         )
                     }
                 }
@@ -217,7 +241,7 @@ fun ResultSheet(
                 placeholder = { Text(stringResource(R.string.result_comment_hint)) },
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences),
-                modifier = Modifier.fillMaxWidth().testTag("comment"),
+                modifier = Modifier.fillMaxWidth().testTag("comment")
             )
             preview?.let {
                 Text(it, fontSize = 18.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth().testTag("preview"))
@@ -243,7 +267,7 @@ private fun WinnerButton(name: String, selected: Boolean, onClick: () -> Unit, t
             .clickable(onClick = onClick)
             .padding(12.dp)
             .testTag(tag),
-        contentAlignment = Alignment.Center,
+        contentAlignment = Alignment.Center
     ) {
         Text(
             (if (selected) "🏆 " else "") + name,
@@ -252,7 +276,7 @@ private fun WinnerButton(name: String, selected: Boolean, onClick: () -> Unit, t
             fontSize = 18.sp,
             textAlign = TextAlign.Center,
             maxLines = 2,
-            overflow = TextOverflow.Ellipsis,
+            overflow = TextOverflow.Ellipsis
         )
     }
 }

@@ -1,10 +1,10 @@
 package com.jorgelillo.grouppolls.ui
 
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -67,7 +67,7 @@ fun GroupPollsApp(vm: PollsViewModel) {
                     pollFlow = vm::poll,
                     onOpen = { nav.navigate("poll/$it") },
                     onCreate = { nav.navigate("create") },
-                    onSettings = { nav.navigate("settings") },
+                    onSettings = { nav.navigate("settings") }
                 )
             }
             composable("poll/{code}?share={share}") { entry ->
@@ -85,7 +85,7 @@ fun GroupPollsApp(vm: PollsViewModel) {
                     onClose = { vm.close(it.code) },
                     onReport = vm::report,
                     onResolvePrediction = vm::resolvePrediction,
-                    onBack = { nav.back() },
+                    onBack = { nav.back() }
                 )
             }
             composable("create") {
@@ -94,7 +94,7 @@ fun GroupPollsApp(vm: PollsViewModel) {
                     onAcceptTerms = vm::acceptTerms,
                     onCreate = vm::create,
                     onCreated = { code -> nav.navigate("poll/$code?share=true") { popUpTo("home") } },
-                    onBack = { nav.back() },
+                    onBack = { nav.back() }
                 )
             }
             composable("settings") {
@@ -102,7 +102,7 @@ fun GroupPollsApp(vm: PollsViewModel) {
                     local = state,
                     onRename = vm::setName,
                     onDeleteData = { vm.deleteMyData { nav.popBackStack("home", inclusive = false) } },
-                    onBack = { nav.back() },
+                    onBack = { nav.back() }
                 )
             }
         }

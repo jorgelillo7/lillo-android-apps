@@ -27,15 +27,20 @@ import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel
 fun LilloQrCode(text: String, modifier: Modifier = Modifier, size: Dp = 240.dp) {
     val matrix = remember(text) {
         QRCodeWriter().encode(
-            text, BarcodeFormat.QR_CODE, 0, 0,
-            mapOf(EncodeHintType.ERROR_CORRECTION to ErrorCorrectionLevel.L, EncodeHintType.MARGIN to 0),
+            text,
+            BarcodeFormat.QR_CODE,
+            0,
+            0,
+            mapOf(EncodeHintType.ERROR_CORRECTION to ErrorCorrectionLevel.L, EncodeHintType.MARGIN to 0)
         )
     }
     Box(modifier.background(Color.White, RoundedCornerShape(16.dp)).padding(12.dp)) {
         Canvas(Modifier.size(size)) {
             val cell = this.size.minDimension / matrix.width
-            for (y in 0 until matrix.height) for (x in 0 until matrix.width) {
-                if (matrix[x, y]) drawRect(Color.Black, Offset(x * cell, y * cell), Size(cell + 0.5f, cell + 0.5f))
+            for (y in 0 until matrix.height) {
+                for (x in 0 until matrix.width) {
+                    if (matrix[x, y]) drawRect(Color.Black, Offset(x * cell, y * cell), Size(cell + 0.5f, cell + 0.5f))
+                }
             }
         }
     }

@@ -40,5 +40,5 @@ val WheelColorScheme = darkColorScheme(
     surfaceContainerLow = WheelColors.NightRaised,
     surfaceContainer = WheelColors.NightRaised,
     surfaceContainerHigh = WheelColors.NightHigh,
-    outline = Color(0x55F7F3EE),
+    outline = Color(0x55F7F3EE)
 )

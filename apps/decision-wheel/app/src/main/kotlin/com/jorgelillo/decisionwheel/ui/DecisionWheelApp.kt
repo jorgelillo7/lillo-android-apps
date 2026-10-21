@@ -57,14 +57,17 @@ fun DecisionWheelApp(app: DecisionWheelApplication, openWheelId: String? = null)
                 onSound = viewModel::setSound,
                 onAbout = { showAbout = true },
                 onToggleFavorite = { viewModel.toggleFavorite(it.id) },
-                onRestorePresets = { viewModel.restorePresets(Presets.seed(context)) },
+                onRestorePresets = { viewModel.restorePresets(Presets.seed(context)) }
             )
         }
         composable("wheel/{id}") { entry ->
             val wheel = current.wheel(entry.arguments?.getString("id").orEmpty())
             if (wheel == null) {
                 // Either just created (the save is still landing) or deleted: wait briefly, then leave.
-                LaunchedEffect(Unit) { delay(MISSING_WHEEL_GRACE_MILLIS); nav.popBackStack() }
+                LaunchedEffect(Unit) {
+                    delay(MISSING_WHEEL_GRACE_MILLIS)
+                    nav.popBackStack()
+                }
                 return@composable
             }
             LaunchedEffect(wheel.id) { Shortcuts.reportUsed(context, wheel.id) }
@@ -76,7 +79,7 @@ fun DecisionWheelApp(app: DecisionWheelApplication, openWheelId: String? = null)
                 onAccept = { viewModel.accept(wheel.id, it) },
                 onClearHistory = { viewModel.clearHistory(wheel.id) },
                 onTick = { app.tickPlayer.tick() },
-                onToggleFavorite = { viewModel.toggleFavorite(wheel.id) },
+                onToggleFavorite = { viewModel.toggleFavorite(wheel.id) }
             )
         }
         composable("edit/{id}") { entry ->
@@ -99,7 +102,7 @@ fun DecisionWheelApp(app: DecisionWheelApplication, openWheelId: String? = null)
                     viewModel.delete(initial.id)
                     nav.popBackStack("home", inclusive = false)
                 },
-                onBack = { nav.popBackStack() },
+                onBack = { nav.popBackStack() }
             )
         }
     }

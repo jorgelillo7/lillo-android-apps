@@ -11,7 +11,7 @@ class DomainTest {
     private fun poll(red: Int = 0, blue: Int = 0, closesAt: Long? = null) = Poll(
         code = "abcdefghijkm", visibility = Visibility.PUBLIC, question = "¿Tortilla con cebolla?",
         red = "Con", blue = "Sin", creatorId = "u1", creatorName = "Jorge", language = "es", createdAt = 0, closesAt = closesAt,
-        redVotes = red, blueVotes = blue,
+        redVotes = red, blueVotes = blue
     )
 
     @Test

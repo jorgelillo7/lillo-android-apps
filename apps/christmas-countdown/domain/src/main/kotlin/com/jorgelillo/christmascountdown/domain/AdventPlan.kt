@@ -4,7 +4,7 @@ package com.jorgelillo.christmascountdown.domain
 enum class AdventBlock(val days: IntRange) {
     PREPARE(1..7),
     AT_HOME(8..16),
-    TOGETHER(17..23),
+    TOGETHER(17..23)
 }
 
 /**
@@ -54,7 +54,7 @@ enum class AdventActivity(val block: AdventBlock?) {
     CAROL_KARAOKE(AdventBlock.TOGETHER),
 
     /** Always door 24. */
-    CHRISTMAS_EVE(null),
+    CHRISTMAS_EVE(null)
 }
 
 /** Music days: a song to listen to, opened on YouTube (official videos where they exist). */
@@ -64,7 +64,7 @@ enum class AdventSong(val title: String, val artist: String, val videoId: String
     TAMBORILERO("El tamborilero", "Raphael", "CHWY9KwXSWc"),
     BURRITO_SABANERO("Mi burrito sabanero", "La Rondallita", "xYX6pS3TvcU"),
     JINGLE_BELL_ROCK("Jingle Bell Rock", "Bobby Helms", "ZnDmmiiFSUU"),
-    CAMPANA_SOBRE_CAMPANA("Campana sobre campana", "los Niños Cantores de Navidad", "CgRLvKeT9ss"),
+    CAMPANA_SOBRE_CAMPANA("Campana sobre campana", "los Niños Cantores de Navidad", "CgRLvKeT9ss")
     ;
 
     val url: String get() = "https://www.youtube.com/watch?v=$videoId"
@@ -124,8 +124,7 @@ object AdventPlan {
     }
 
     /** The [count] items used least so far; ties in a shuffled order. */
-    private fun <T> leastUsed(items: List<T>, uses: Map<T, Int>, count: Int, random: SplitMix): List<T> =
-        items.shuffled(random).sortedBy { uses.getValue(it) }.take(count)
+    private fun <T> leastUsed(items: List<T>, uses: Map<T, Int>, count: Int, random: SplitMix): List<T> = items.shuffled(random).sortedBy { uses.getValue(it) }.take(count)
 
     private fun <T> List<T>.shuffled(random: SplitMix): List<T> {
         val list = toMutableList()

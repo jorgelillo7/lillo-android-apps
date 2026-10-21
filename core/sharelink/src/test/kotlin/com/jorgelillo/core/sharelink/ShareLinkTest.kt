@@ -1,10 +1,10 @@
 package com.jorgelillo.core.sharelink
 
-import kotlinx.serialization.Serializable
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
+import kotlinx.serialization.Serializable
 
 class ShareLinkTest {
 

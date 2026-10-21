@@ -1,6 +1,7 @@
-# CI gate for pull requests: lint + unit tests for every app. Branch protection on master requires
-# the "Lint" and "Test" checks below (same names as lillorepo), so a red PR cannot be merged.
-# Release builds and emulator smoke tests stay local: they need signing keys and an emulator.
+# CI gate for pull requests: lint, unit tests and a release (R8) build of every app. Branch
+# protection on master requires the "Lint", "Test" and "Release" checks below, so a red PR cannot be
+# merged. Without the upload keys the release build is signed with the debug key (convention
+# plugin), which is all R8 and the Play listing check need. Emulator smoke tests stay local.
 name: CI
 
 on:
@@ -29,8 +30,9 @@ jobs:
           distribution: temurin
           java-version: 21
       - uses: gradle/actions/setup-gradle@3f5f9adaf7d9fecd50b5935e54106014257a94e6 # v6.4.0
-      # lintDebug runs in every Android module (all apps and core); any error fails the build.
-      - run: ./gradlew lintDebug -Dorg.gradle.jvmargs="-Xmx4g -Dfile.encoding=UTF-8"
+      # Formatting (Spotless + ktlint, rules in .editorconfig), then Android lint in every module
+      # (all apps and core); any error fails the build. Fix formatting with ./gradlew spotlessApply.
+      - run: ./gradlew spotlessCheck lintDebug -Dorg.gradle.jvmargs="-Xmx4g -Dfile.encoding=UTF-8"
       - name: Upload lint reports
         if: failure()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
@@ -53,3 +55,18 @@ jobs:
       # The runner has 16 GB; the 2 GB of gradle.properties (sized for an 8 GB laptop) runs D8
       # out of heap merging five apps.
       - run: ./gradlew test assembleDebug -Dorg.gradle.jvmargs="-Xmx4g -Dfile.encoding=UTF-8"
+
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6.0.1
+        with:
+          distribution: temurin
+          java-version: 21
+      - uses: gradle/actions/setup-gradle@3f5f9adaf7d9fecd50b5935e54106014257a94e6 # v6.4.0
+      # R8 (full mode) on every app: missing keep rules and shrinking errors show up here, not on
+      # a tester's phone. generateReleasePlayResources validates each Play listing (layout, lengths).
+      - run: ./gradlew assembleRelease generateReleasePlayResources -Dorg.gradle.jvmargs="-Xmx4g -Dfile.encoding=UTF-8"
