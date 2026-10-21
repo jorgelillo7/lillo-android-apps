@@ -24,6 +24,7 @@ include(":core:designsystem")
 include(":core:platform")
 include(":core:sharelink")
 include(":core:screenshot-testing")
+include(":core:testing")
 
 // Christmas Countdown
 include(":apps:christmas-countdown:app")

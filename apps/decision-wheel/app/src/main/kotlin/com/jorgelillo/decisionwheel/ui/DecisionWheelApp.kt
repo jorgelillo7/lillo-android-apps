@@ -75,7 +75,7 @@ internal fun DecisionWheelApp(app: DecisionWheelApplication, openWheelId: String
         composable<WheelRoute> { entry ->
             val wheel = current.wheel(entry.toRoute<WheelRoute>().id)
             if (wheel == null) {
-                // Either just created (the save is still landing) or deleted: wait briefly, then leave.
+                // Deleted (or a shortcut to a wheel that is gone): wait briefly, then leave.
                 LaunchedEffect(Unit) {
                     delay(MISSING_WHEEL_GRACE_MILLIS)
                     nav.popBackStack()
@@ -110,13 +110,17 @@ internal fun DecisionWheelApp(app: DecisionWheelApplication, openWheelId: String
                 LaunchedEffect(Unit) { nav.popBackStack() }
                 return@composable
             }
+            var saving by remember { mutableStateOf(false) }
             EditScreen(
                 initial = initial,
                 isNew = isNew,
                 onSave = { wheel ->
-                    viewModel.save(wheel)
-                    nav.popBackStack()
-                    if (isNew) nav.navigate(WheelRoute(wheel.id))
+                    if (saving) return@EditScreen // a second tap while the first save lands
+                    saving = true
+                    viewModel.save(wheel) {
+                        nav.popBackStack()
+                        if (isNew) nav.navigate(WheelRoute(wheel.id))
+                    }
                 },
                 onDelete = {
                     viewModel.delete(initial.id)

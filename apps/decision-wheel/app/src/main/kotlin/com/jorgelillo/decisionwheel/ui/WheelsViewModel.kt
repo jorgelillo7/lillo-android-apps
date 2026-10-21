@@ -24,7 +24,8 @@ class WheelsViewModel(private val repository: StateRepository) : ViewModel() {
 
     fun newWheelId(): String = UUID.randomUUID().toString()
 
-    fun save(wheel: Wheel) = update { state ->
+    /** [then] runs once the wheel is on disk: opening a new wheel earlier could find it missing. */
+    fun save(wheel: Wheel, then: () -> Unit = {}) = update(then) { state ->
         val exists = state.wheels.any { it.id == wheel.id }
         state.copy(
             wheels = if (exists) {
@@ -74,8 +75,11 @@ class WheelsViewModel(private val repository: StateRepository) : ViewModel() {
 
     fun restorePresets(presets: List<Wheel>) = update { it.restorePresets(presets) }
 
-    private fun update(transform: (AppState) -> AppState) {
-        viewModelScope.launch { repository.update(transform) }
+    private fun update(then: () -> Unit = {}, transform: (AppState) -> AppState) {
+        viewModelScope.launch {
+            repository.update(transform)
+            then()
+        }
     }
 
     companion object {
