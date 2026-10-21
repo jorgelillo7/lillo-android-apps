@@ -33,7 +33,8 @@ class TournamentsViewModel(private val repository: LibraryRepository) : ViewMode
     /** Short ids keep shared links small. */
     fun newId(): String = (1..10).map { ID_ALPHABET[Random.nextInt(ID_ALPHABET.length)] }.joinToString("")
 
-    fun save(t: Tournament) = launchUpdate { it.save(t) }
+    /** [then] runs once the tournament is on disk: opening a new one earlier could find it missing. */
+    fun save(t: Tournament, then: () -> Unit = {}) = launchUpdate(then) { it.save(t) }
 
     /** Applies [change] to the stored tournament (the latest copy, not a stale one from the screen). */
     fun change(id: String, change: (Tournament) -> Tournament) = launchUpdate { lib ->
@@ -55,8 +56,11 @@ class TournamentsViewModel(private val repository: LibraryRepository) : ViewMode
         }
     }
 
-    private fun launchUpdate(transform: (Library) -> Library) {
-        viewModelScope.launch { repository.update(transform) }
+    private fun launchUpdate(then: () -> Unit = {}, transform: (Library) -> Library) {
+        viewModelScope.launch {
+            repository.update(transform)
+            then()
+        }
     }
 
     companion object {
