@@ -2,9 +2,10 @@ package com.jorgelillo.whoslying.ui
 
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import app.cash.turbine.ReceiveTurbine
 import app.cash.turbine.test
 import com.jorgelillo.core.platform.JsonStore
+import com.jorgelillo.core.testing.MainDispatcherRule
+import com.jorgelillo.core.testing.awaitMatching
 import com.jorgelillo.whoslying.data.SavedState
 import com.jorgelillo.whoslying.domain.Outcome
 import com.jorgelillo.whoslying.domain.Role
@@ -14,15 +15,9 @@ import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
-import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.test.setMain
-import org.junit.After
-import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -30,14 +25,10 @@ import org.junit.runner.RunWith
  * The ViewModel against a real store (DataStore on Robolectric): what each action saves, and that a
  * finished game is scored exactly once. The game rules themselves are tested in :domain.
  */
-@OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(AndroidJUnit4::class)
 class GameViewModelTest {
-    @Before
-    fun setUp() = Dispatchers.setMain(UnconfinedTestDispatcher())
-
-    @After
-    fun tearDown() = Dispatchers.resetMain()
+    @get:Rule
+    val main = MainDispatcherRule()
 
     // One DataStore per file and process: every test gets its own file.
     private fun viewModel() = GameViewModel(
@@ -47,14 +38,6 @@ class GameViewModelTest {
         language = "en"
     )
 
-    /** Skips saved states until one matches: DataStore writes land asynchronously. */
-    private suspend fun ReceiveTurbine<SavedState>.awaitState(matches: (SavedState) -> Boolean): SavedState {
-        while (true) {
-            val state = awaitItem()
-            if (matches(state)) return state
-        }
-    }
-
     private fun GameViewModel.addPlayers(vararg names: String) = names.forEach(::addPlayer)
 
     @Test
@@ -62,9 +45,9 @@ class GameViewModelTest {
         val vm = viewModel()
         vm.saved.filterNotNull().test {
             vm.addPlayers("  Ana ", "", "ana", "Bea")
-            assertEquals(listOf("Ana", "Bea"), awaitState { it.players.size == 2 }.players)
+            assertEquals(listOf("Ana", "Bea"), awaitMatching { it.players.size == 2 }.players)
             vm.removePlayer("Ana")
-            assertEquals(listOf("Bea"), awaitState { it.players.size == 1 }.players)
+            assertEquals(listOf("Bea"), awaitMatching { it.players.size == 1 }.players)
         }
     }
 
@@ -73,10 +56,10 @@ class GameViewModelTest {
         val vm = viewModel()
         vm.saved.filterNotNull().test {
             vm.addPlayers("Ana", "Bea", "Carlos", "Dani", "Eva", "Fran", "Gus")
-            awaitState { it.players.size == 7 }
+            awaitMatching { it.players.size == 7 }
             vm.updateSettings { it.copy(impostors = 5) }
             // Seven players leave room for three impostors (fewer than half of the others).
-            assertEquals(3, awaitState { it.settings.impostors != 1 }.settings.impostors)
+            assertEquals(3, awaitMatching { it.settings.impostors != 1 }.settings.impostors)
         }
     }
 
@@ -86,18 +69,18 @@ class GameViewModelTest {
         val only = vm.builtInPacks.first().id
         vm.saved.filterNotNull().test {
             vm.builtInPacks.drop(1).forEach { vm.togglePack(it.id) }
-            assertEquals(setOf(only), awaitState { it.settings.packIds == setOf(only) }.settings.packIds)
+            assertEquals(setOf(only), awaitMatching { it.settings.packIds == setOf(only) }.settings.packIds)
             vm.togglePack(only)
             vm.togglePack(vm.builtInPacks[1].id)
             // Taking out the last pack was refused, so adding another one is what changed.
             assertEquals(
                 setOf(only, vm.builtInPacks[1].id),
-                awaitState {
+                awaitMatching {
                     it.settings.packIds.size == 2
                 }.settings.packIds
             )
             vm.selectAllPacks()
-            assertTrue(awaitState { it.settings.packIds.isEmpty() }.settings.packIds.isEmpty())
+            assertTrue(awaitMatching { it.settings.packIds.isEmpty() }.settings.packIds.isEmpty())
         }
     }
 
@@ -106,7 +89,7 @@ class GameViewModelTest {
         val vm = viewModel()
         vm.saved.filterNotNull().test {
             vm.addPlayers("Ana", "Bea")
-            awaitState { it.players.size == 2 }
+            awaitMatching { it.players.size == 2 }
             assertFalse(vm.startGame())
             assertNull(vm.game.value)
         }
@@ -117,7 +100,7 @@ class GameViewModelTest {
         val vm = viewModel()
         vm.saved.filterNotNull().test {
             vm.addPlayers("Ana", "Bea", "Carlos", "Dani")
-            awaitState { it.players.size == 4 }
+            awaitMatching { it.players.size == 4 }
             vm.game.test {
                 assertNull(awaitItem())
                 assertTrue(vm.startGame())
@@ -125,7 +108,7 @@ class GameViewModelTest {
                 assertEquals(1, game.cards.count { it.role == Role.IMPOSTOR })
             }
             val word = vm.game.value!!.civilianWord
-            assertEquals(listOf(word), awaitState { it.recentWords.isNotEmpty() }.recentWords)
+            assertEquals(listOf(word), awaitMatching { it.recentWords.isNotEmpty() }.recentWords)
         }
     }
 
@@ -134,14 +117,14 @@ class GameViewModelTest {
         val vm = viewModel()
         vm.saved.filterNotNull().test {
             vm.addPlayers("Ana", "Bea", "Carlos", "Dani")
-            awaitState { it.players.size == 4 }
+            awaitMatching { it.players.size == 4 }
             vm.startGame()
             val impostor = vm.game.value!!.cards.first { it.role == Role.IMPOSTOR }.player
 
             vm.eliminate(impostor)
             assertEquals(Outcome.CiviliansWin, vm.game.value!!.outcome)
             assertEquals(impostor, vm.lastElimination.value?.player)
-            val scored = awaitState { it.roundsPlayed == 1 }
+            val scored = awaitMatching { it.roundsPlayed == 1 }
             // The three civilians score.
             assertEquals(3, scored.scores.size)
             assertEquals(vm.lastPoints.value, scored.scores)
@@ -150,14 +133,14 @@ class GameViewModelTest {
             // saved, a second scoring would have been too.
             vm.revealAll()
             vm.addPlayer("Eva")
-            val later = awaitState { it.players.size == 5 }
+            val later = awaitMatching { it.players.size == 5 }
             assertEquals(1, later.roundsPlayed)
             assertEquals(scored.scores, later.scores)
 
             vm.dismissElimination()
             assertNull(vm.lastElimination.value)
             vm.resetScores()
-            val reset = awaitState { it.roundsPlayed == 0 }
+            val reset = awaitMatching { it.roundsPlayed == 0 }
             assertTrue(reset.scores.isEmpty())
         }
     }
@@ -167,14 +150,14 @@ class GameViewModelTest {
         val vm = viewModel()
         vm.saved.filterNotNull().test {
             vm.addPlayers("Ana", "Bea", "Carlos", "Dani")
-            awaitState { it.players.size == 4 }
+            awaitMatching { it.players.size == 4 }
             vm.startGame()
-            awaitState { it.recentWords.isNotEmpty() }
+            awaitMatching { it.recentWords.isNotEmpty() }
 
             vm.revealAll()
             assertEquals(Outcome.EndedEarly, vm.game.value!!.outcome)
             vm.addPlayer("Eva") // once this later write is saved, any scoring would have been too
-            val state = awaitState { it.players.size == 5 }
+            val state = awaitMatching { it.players.size == 5 }
             assertEquals(0, state.roundsPlayed)
             assertTrue(state.scores.isEmpty())
         }

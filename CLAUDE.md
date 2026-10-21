@@ -117,7 +117,8 @@ Project skills in `.claude/skills/`: `new-android-app` (competitor study → des
   Accessibility Test Framework: labels, touch targets and text contrast (WCAG AA, 4.5:1) fail the test.
   Core components take their colours from the app's Material 3 colour roles (`surfaceContainer`,
   `onSurfaceVariant`, `primary`…): set them in the app's `ColorScheme`, not per call. Unit tests that need Android
-  classes use `jorgelillo.android.robolectric`.
+  classes use `jorgelillo.android.robolectric`, which also brings `:core:testing` (`MainDispatcherRule`,
+  Turbine's `awaitMatching`) for ViewModel tests.
 - Snapshot tests pin anything users already see that is derived algorithmically (e.g. Christmas
   Countdown's yearly advent door order and `AdventPlan` contents); don't change those algorithms. Add
   advent activities or songs only outside December: later years are recomputed from the pool.

@@ -28,6 +28,8 @@ class AndroidRobolectricConventionPlugin : Plugin<Project> {
             add("testImplementation", libs.findLibrary("androidx-test-ext-junit").get())
             add("testImplementation", libs.findLibrary("kotlinx-coroutines-test").get())
             add("testImplementation", libs.findLibrary("turbine").get())
+            // MainDispatcherRule and Turbine helpers shared by every app's ViewModel tests.
+            add("testImplementation", project(":core:testing"))
         }
     }
 }
