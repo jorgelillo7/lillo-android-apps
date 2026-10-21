@@ -37,6 +37,7 @@ Module paths follow the folders: `:apps:<app>:app`, `:apps:<app>:domain`, `:core
 ./gradlew :apps:<app>:domain:test --tests '*SomeTest.someMethod*'   # single test
 ./gradlew :apps:<app>:app:lintDebug                       # lint (kept at 0 warnings)
 ./gradlew spotlessApply                                   # format Kotlin (ktlint, .editorconfig); CI runs spotlessCheck
+./gradlew recordRoborazziDebug                            # re-record screenshot tests after a deliberate UI change; CI runs verifyRoborazziDebug
 ./gradlew :apps:<app>:app:installDebug                    # run on emulator/phone
 ./gradlew :apps:<app>:app:bundleRelease                   # Play bundle (signed if apps/<app>/keystore.properties exists)
 
@@ -94,6 +95,11 @@ Project skills in `.claude/skills/`: `new-android-app` (competitor study → des
   apps over — never copy it. A one-off stays in the app; a second one never does.
 - Strings ship in English (`values/`) and Spanish (`values-es/`); keep both in sync, including
   plurals (Spanish needs `one`/`many`/`other`).
+- **Screenshot tests** (Roborazzi on Robolectric, no emulator): a module applies
+  `jorgelillo.android.screenshots` and writes tests with `captureScreenshot` from
+  `:core:screenshot-testing` (frozen clock, shared tolerance), upright and `@Config(qualifiers = "+land")`.
+  Images live in `src/test/screenshots/` and are reviewed like code. Unit tests that need Android
+  classes use `jorgelillo.android.robolectric`.
 - Snapshot tests pin anything users already see that is derived algorithmically (e.g. Christmas
   Countdown's yearly advent door order and `AdventPlan` contents); don't change those algorithms. Add
   advent activities or songs only outside December: later years are recomputed from the pool.

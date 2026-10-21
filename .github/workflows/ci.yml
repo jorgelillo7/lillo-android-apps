@@ -51,10 +51,17 @@ jobs:
           distribution: temurin
           java-version: 21
       - uses: gradle/actions/setup-gradle@3f5f9adaf7d9fecd50b5935e54106014257a94e6 # v6.4.0
-      # Unit tests of every module, plus a debug build of every app to catch compile errors.
-      # The runner has 16 GB; the 2 GB of gradle.properties (sized for an 8 GB laptop) runs D8
-      # out of heap merging five apps.
-      - run: ./gradlew test assembleDebug -Dorg.gradle.jvmargs="-Xmx4g -Dfile.encoding=UTF-8"
+      # Unit tests of every module, screenshot tests compared with the committed images
+      # (src/test/screenshots; re-record with ./gradlew recordRoborazziDebug after a deliberate
+      # change), plus a debug build of every app to catch compile errors. The runner has 16 GB; the
+      # 2 GB of gradle.properties (sized for an 8 GB laptop) runs D8 out of heap merging the apps.
+      - run: ./gradlew test verifyRoborazziDebug assembleDebug -Dorg.gradle.jvmargs="-Xmx4g -Dfile.encoding=UTF-8"
+      - name: Upload screenshot diffs
+        if: failure()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: screenshot-diffs
+          path: "**/build/outputs/roborazzi/**"
 
   release:
     name: Release

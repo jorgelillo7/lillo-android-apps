@@ -23,6 +23,7 @@ rootProject.name = "lillo-android-apps"
 include(":core:designsystem")
 include(":core:platform")
 include(":core:sharelink")
+include(":core:screenshot-testing")
 
 // Christmas Countdown
 include(":apps:christmas-countdown:app")

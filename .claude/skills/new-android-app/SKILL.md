@@ -68,6 +68,8 @@ Follow [docs/adding-a-new-app.md](../../../docs/adding-a-new-app.md). Checklist:
 - Need something another app has but core doesn't (an avatar, a settings row, a dialog)? Move it to
   core in this change and point the other app at it too, instead of copying it.
 - Strings in `values/` and `values-es/` from the start.
+- Screenshot tests from the first screen: apply `jorgelillo.android.screenshots` and capture the
+  key screens upright and in landscape (like `apps/whos-lying/app/src/test/.../RoundScreensScreenshotTest.kt`).
 - `./gradlew :apps:<app>:domain:test :apps:<app>:app:lintDebug :apps:<app>:app:assembleDebug`
 
 ## 5. Assets
