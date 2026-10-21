@@ -27,6 +27,7 @@ class AndroidRobolectricConventionPlugin : Plugin<Project> {
             add("testImplementation", libs.findLibrary("robolectric").get())
             add("testImplementation", libs.findLibrary("androidx-test-ext-junit").get())
             add("testImplementation", libs.findLibrary("kotlinx-coroutines-test").get())
+            add("testImplementation", libs.findLibrary("turbine").get())
         }
     }
 }
