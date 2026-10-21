@@ -18,16 +18,19 @@ import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -76,6 +79,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jorgelillo.core.designsystem.ConfettiBurst
+import com.jorgelillo.core.designsystem.isShortScreen
 import com.jorgelillo.decisionwheel.R
 import com.jorgelillo.decisionwheel.domain.AppState
 import com.jorgelillo.decisionwheel.domain.DecisionEngine
@@ -181,19 +185,10 @@ fun WheelScreen(
             )
         }
     ) { padding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .verticalScroll(rememberScrollState())
-                .padding(horizontal = 20.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
+        val short = isShortScreen()
+        val wheelBox = @Composable { sizing: Modifier ->
             Box(
-                modifier = Modifier
-                    .widthIn(max = 420.dp)
-                    .fillMaxWidth()
-                    .aspectRatio(1f)
+                modifier = sizing
                     .pointerInput(segments, spinning) {
                         if (spinning) return@pointerInput
                         val tracker = VelocityTracker()
@@ -224,7 +219,8 @@ fun WheelScreen(
                 WheelCanvas(segments, { colorByOption[it] ?: WheelColors.Muted }, rotation.value, winner, Modifier.fillMaxSize())
                 ConfettiBurst(celebration, WheelColors.Segments, Modifier.fillMaxSize())
             }
-
+        }
+        val controls: @Composable ColumnScope.() -> Unit = {
             Spacer(Modifier.height(12.dp))
 
             AnimatedVisibility(visible = winner == null) {
@@ -300,6 +296,33 @@ fun WheelScreen(
                 )
             }
             Spacer(Modifier.height(24.dp))
+        }
+        if (short) {
+            // Landscape phones and handhelds: the wheel fills the height, the controls go beside it.
+            Row(
+                modifier = Modifier.fillMaxSize().padding(padding).padding(horizontal = 20.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                wheelBox(Modifier.fillMaxHeight().padding(vertical = 8.dp).aspectRatio(1f))
+                Spacer(Modifier.width(24.dp))
+                Column(
+                    modifier = Modifier.weight(1f).fillMaxHeight().verticalScroll(rememberScrollState()),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) { controls() }
+            }
+        } else {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(padding)
+                    .verticalScroll(rememberScrollState())
+                    .padding(horizontal = 20.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                wheelBox(Modifier.widthIn(max = 420.dp).fillMaxWidth().aspectRatio(1f))
+                controls()
+            }
         }
     }
 
