@@ -52,7 +52,7 @@ import kotlinx.coroutines.flow.Flow
 
 /** Two tabs: the public feed (one section per language) and the polls you created or were sent. */
 @Composable
-fun HomeScreen(
+internal fun HomeScreen(
     feed: List<Pair<String, List<Poll>>>,
     local: LocalState,
     pollFlow: (String) -> Flow<Poll?>,
@@ -75,11 +75,17 @@ fun HomeScreen(
             }
         ) {
             Row(
-                Modifier.fillMaxWidth().clip(CircleShape).background(Polls.Card).border(1.dp, Polls.Line, CircleShape).padding(4.dp),
+                Modifier.fillMaxWidth().clip(
+                    CircleShape
+                ).background(Polls.Card).border(1.dp, Polls.Line, CircleShape).padding(4.dp),
                 horizontalArrangement = Arrangement.spacedBy(4.dp)
             ) {
-                Tab(stringResource(R.string.tab_public), tab == 0, Modifier.weight(1f).testTag("tab_public")) { tab = 0 }
-                Tab(stringResource(R.string.tab_mine), tab == 1, Modifier.weight(1f).testTag("tab_mine")) { tab = 1 }
+                Tab(stringResource(R.string.tab_public), tab == 0, onClick = {
+                    tab = 0
+                }, modifier = Modifier.weight(1f).testTag("tab_public"))
+                Tab(stringResource(R.string.tab_mine), tab == 1, onClick = {
+                    tab = 1
+                }, modifier = Modifier.weight(1f).testTag("tab_mine"))
             }
             if (tab == 0) {
                 if (feed.isEmpty()) {
@@ -119,7 +125,7 @@ fun HomeScreen(
 }
 
 @Composable
-private fun Tab(text: String, selected: Boolean, modifier: Modifier, onClick: () -> Unit) {
+private fun Tab(text: String, selected: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier) {
     Text(
         text,
         modifier = modifier
@@ -142,7 +148,7 @@ private fun Empty(emoji: String, text: String) {
 }
 
 @Composable
-fun PollCard(poll: Poll, local: LocalState, now: Long, showVisibility: Boolean, onClick: () -> Unit) {
+internal fun PollCard(poll: Poll, local: LocalState, now: Long, showVisibility: Boolean, onClick: () -> Unit) {
     val mine = local.votes[poll.code]
     Column(
         Modifier
@@ -158,11 +164,21 @@ fun PollCard(poll: Poll, local: LocalState, now: Long, showVisibility: Boolean, 
         Row(verticalAlignment = Alignment.CenterVertically) {
             if (showVisibility) {
                 Text(
-                    stringResource(if (poll.visibility == Visibility.PUBLIC) R.string.badge_public else R.string.badge_private),
+                    stringResource(
+                        if (poll.visibility ==
+                            Visibility.PUBLIC
+                        ) {
+                            R.string.badge_public
+                        } else {
+                            R.string.badge_private
+                        }
+                    ),
                     style = MaterialTheme.typography.labelSmall,
                     fontWeight = FontWeight.Bold,
                     color = Polls.Muted,
-                    modifier = Modifier.clip(CircleShape).background(Polls.Paper).padding(horizontal = 8.dp, vertical = 3.dp)
+                    modifier = Modifier.clip(
+                        CircleShape
+                    ).background(Polls.Paper).padding(horizontal = 8.dp, vertical = 3.dp)
                 )
                 Spacer(Modifier.width(8.dp))
             }
@@ -174,13 +190,29 @@ fun PollCard(poll: Poll, local: LocalState, now: Long, showVisibility: Boolean, 
             )
             if (!poll.isOpen(now)) Text("🔒", style = MaterialTheme.typography.bodySmall)
         }
-        Text(poll.question, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, modifier = Modifier.padding(vertical = 8.dp))
+        Text(
+            poll.question,
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(vertical = 8.dp)
+        )
         if (mine != null || !poll.isOpen(now)) {
             val split = Split.of(poll.redVotes, poll.blueVotes)
             SplitBar(poll)
             Row(Modifier.fillMaxWidth().padding(top = 6.dp)) {
-                Text("${poll.red} ${split.red}%", color = Polls.Red, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.bodySmall, modifier = Modifier.weight(1f))
-                Text("${split.blue}% ${poll.blue}", color = Polls.Blue, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.bodySmall)
+                Text(
+                    "${poll.red} ${split.red}%",
+                    color = Polls.Red,
+                    fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier.weight(1f)
+                )
+                Text(
+                    "${split.blue}% ${poll.blue}",
+                    color = Polls.Blue,
+                    fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.bodySmall
+                )
             }
         } else {
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -198,7 +230,7 @@ fun PollCard(poll: Poll, local: LocalState, now: Long, showVisibility: Boolean, 
 }
 
 @Composable
-private fun Chip(text: String, background: Color, color: Color, modifier: Modifier) {
+private fun Chip(text: String, background: Color, color: Color, modifier: Modifier = Modifier) {
     Text(
         text,
         modifier = modifier.clip(CircleShape).background(background).padding(horizontal = 12.dp, vertical = 8.dp),
@@ -209,4 +241,6 @@ private fun Chip(text: String, background: Color, color: Color, modifier: Modifi
     )
 }
 
-private fun languageName(code: String): String = Locale.forLanguageTag(code).let { it.getDisplayLanguage(it) }.replaceFirstChar { it.uppercase() }.ifBlank { code }
+private fun languageName(code: String): String = Locale.forLanguageTag(code).let {
+    it.getDisplayLanguage(it)
+}.replaceFirstChar { it.uppercase() }.ifBlank { code }

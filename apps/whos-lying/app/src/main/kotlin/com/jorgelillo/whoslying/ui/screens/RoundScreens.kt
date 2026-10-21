@@ -12,6 +12,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -77,7 +78,7 @@ private val GoGreen = Color(0xFF00D26A)
 
 /** Clue round: who starts, the optional countdown and the way to the vote. */
 @Composable
-fun DebateScreen(
+internal fun DebateScreen(
     game: Game,
     /** Players still in. Passed in (not read from the mutable [game]) so the screen recomposes. */
     alive: Set<String>,
@@ -92,15 +93,32 @@ fun DebateScreen(
         onBack = onQuit,
         background = Neon.RevealBackdrop,
         bottom = {
-            BigButton(stringResource(R.string.vote_button), onVote, Modifier.testTag("go_vote"), color = GoGreen, contentColor = Neon.Night)
-            TextButton(onClick = onRevealAll, modifier = Modifier.align(Alignment.CenterHorizontally).testTag("reveal_all")) {
+            BigButton(
+                stringResource(R.string.vote_button),
+                onVote,
+                Modifier.testTag("go_vote"),
+                color = GoGreen,
+                contentColor = Neon.Night
+            )
+            TextButton(
+                onClick = onRevealAll,
+                modifier = Modifier.align(Alignment.CenterHorizontally).testTag("reveal_all")
+            ) {
                 Text(stringResource(R.string.vote_reveal_all), color = Color.White.copy(alpha = 0.75f))
             }
         }
     ) {
-        Column(Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState()), horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(
+            Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             Emoji("💬", size = 72)
-            Text(stringResource(R.string.debate_title), color = Color.White, style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Black)
+            Text(
+                stringResource(R.string.debate_title),
+                color = Color.White,
+                style = MaterialTheme.typography.headlineMedium,
+                fontWeight = FontWeight.Black
+            )
             Text(
                 stringResource(R.string.debate_desc),
                 color = Color.White.copy(alpha = 0.85f),
@@ -108,7 +126,9 @@ fun DebateScreen(
                 modifier = Modifier.padding(top = 6.dp)
             )
             // After the first vote, the next round starts with whoever is still in.
-            val starter = game.starter.takeIf { it in alive } ?: game.cards.first { it.player in alive && it.role != Role.DRIFTER }.player
+            val starter =
+                game.starter.takeIf { it in alive }
+                    ?: game.cards.first { it.player in alive && it.role != Role.DRIFTER }.player
             Text(
                 stringResource(R.string.countdown_starts, starter),
                 color = Neon.Amber,
@@ -122,13 +142,23 @@ fun DebateScreen(
                 key(alive.size) { CircularTimer(discussionSeconds, onTimeUp) }
             } else {
                 Emoji("🗣️", size = 110)
-                Text(stringResource(R.string.debate_no_timer), color = Color.White, textAlign = TextAlign.Center, modifier = Modifier.padding(top = 12.dp))
+                Text(
+                    stringResource(R.string.debate_no_timer),
+                    color = Color.White,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(top = 12.dp)
+                )
             }
             val out = game.cards.filter { it.player !in alive }
             if (out.isNotEmpty()) {
                 val labels = Role.entries.associateWith { roleLabel(it).lowercase() }
                 Text(
-                    stringResource(R.string.debate_out, out.joinToString { "${it.player} (${labels.getValue(it.role)})" }),
+                    stringResource(
+                        R.string.debate_out,
+                        out.joinToString {
+                            "${it.player} (${labels.getValue(it.role)})"
+                        }
+                    ),
                     color = Color.White.copy(alpha = 0.7f),
                     style = MaterialTheme.typography.bodySmall,
                     textAlign = TextAlign.Center,
@@ -173,7 +203,11 @@ private fun CircularTimer(seconds: Int, onTimeUp: () -> Unit) {
         Canvas(Modifier.fillMaxSize().padding(8.dp)) {
             val stroke = 12.dp.toPx()
             drawCircle(Color.Black.copy(alpha = 0.18f), radius = size.minDimension / 2 - stroke / 2)
-            drawCircle(Color.White.copy(alpha = 0.2f), radius = size.minDimension / 2 - stroke / 2, style = Stroke(stroke))
+            drawCircle(
+                Color.White.copy(alpha = 0.2f),
+                radius = size.minDimension / 2 - stroke / 2,
+                style = Stroke(stroke)
+            )
             drawArc(
                 color = color,
                 startAngle = -90f,
@@ -214,7 +248,7 @@ internal fun beep() {
 
 /** The group picks who to vote out, then confirms. */
 @Composable
-fun VotingScreen(
+internal fun VotingScreen(
     game: Game,
     alive: Set<String>,
     /** Time ran out: no going back to the debate. */
@@ -239,7 +273,10 @@ fun VotingScreen(
                 contentColor = Neon.Night
             )
             if (!forced) {
-                TextButton(onClick = onBack, modifier = Modifier.align(Alignment.CenterHorizontally).testTag("back_to_debate")) {
+                TextButton(
+                    onClick = onBack,
+                    modifier = Modifier.align(Alignment.CenterHorizontally).testTag("back_to_debate")
+                ) {
                     Text(stringResource(R.string.voting_back), color = Color.White.copy(alpha = 0.8f))
                 }
             }
@@ -249,8 +286,17 @@ fun VotingScreen(
             // Short screens keep only the question, so the players stay visible.
             if (!short) {
                 Emoji("🗳️", size = 56)
-                Text(stringResource(R.string.voting_title), color = Color.White, style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Black)
-                Text(stringResource(R.string.voting_desc), color = Color.White.copy(alpha = 0.85f), textAlign = TextAlign.Center)
+                Text(
+                    stringResource(R.string.voting_title),
+                    color = Color.White,
+                    style = MaterialTheme.typography.headlineMedium,
+                    fontWeight = FontWeight.Black
+                )
+                Text(
+                    stringResource(R.string.voting_desc),
+                    color = Color.White.copy(alpha = 0.85f),
+                    textAlign = TextAlign.Center
+                )
             }
             Text(
                 stringResource(R.string.voting_question),
@@ -272,17 +318,32 @@ fun VotingScreen(
                     Modifier
                         .clip(MaterialTheme.shapes.large)
                         .background(if (selected) Neon.Night.copy(alpha = 0.55f) else Color.White.copy(alpha = 0.1f))
-                        .border(2.dp, if (selected) GoGreen else Color.White.copy(alpha = 0.25f), MaterialTheme.shapes.large)
+                        .border(
+                            2.dp,
+                            if (selected) GoGreen else Color.White.copy(alpha = 0.25f),
+                            MaterialTheme.shapes.large
+                        )
                         .clickable { chosen = card.player }
                         .testTag("vote_${card.player}")
                 ) {
-                    Column(Modifier.fillMaxWidth().padding(vertical = if (short) 8.dp else 18.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                    Column(
+                        Modifier.fillMaxWidth().padding(vertical = if (short) 8.dp else 18.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
                         Avatar(card.player, game.cards.map { it.player }, if (short) 40.dp else 64.dp)
-                        Text(card.player, color = Color.White, fontWeight = FontWeight.Bold, maxLines = 1, modifier = Modifier.padding(top = if (short) 4.dp else 10.dp))
+                        Text(
+                            card.player,
+                            color = Color.White,
+                            fontWeight = FontWeight.Bold,
+                            maxLines = 1,
+                            modifier = Modifier.padding(top = if (short) 4.dp else 10.dp)
+                        )
                     }
                     if (selected) {
                         Box(
-                            Modifier.align(Alignment.TopEnd).padding(8.dp).size(24.dp).clip(CircleShape).background(GoGreen),
+                            Modifier.align(
+                                Alignment.TopEnd
+                            ).padding(8.dp).size(24.dp).clip(CircleShape).background(GoGreen),
                             contentAlignment = Alignment.Center
                         ) { Text("✓", color = Neon.Night, fontWeight = FontWeight.Black) }
                     }
@@ -297,7 +358,7 @@ fun VotingScreen(
  * result ([onGameOver]); an eliminated drifter first gets one guess at the word.
  */
 @Composable
-fun ExposeScreen(
+internal fun ExposeScreen(
     game: Game,
     elimination: Elimination,
     onGuess: (String) -> Boolean,
@@ -308,12 +369,13 @@ fun ExposeScreen(
     var guessResult by rememberSaveable(elimination) { mutableStateOf<Boolean?>(null) }
     // The effect outlives recompositions: read the newest game, not the one it started with.
     val latestGame by rememberUpdatedState(game)
+    val gameOver by rememberUpdatedState(onGameOver)
     LaunchedEffect(elimination) {
         while (count > 0) {
             delay(800)
             count--
         }
-        if (latestGame.isOver && latestGame.pendingGuess == null) onGameOver()
+        if (latestGame.isOver && latestGame.pendingGuess == null) gameOver()
     }
     val card = game.cardOf(elimination.player)
     // Game is a plain object: read the guess through guessResult (state) so the bar recomposes after it.
@@ -330,7 +392,13 @@ fun ExposeScreen(
         background = background,
         bottom = {
             if (count == 0 && !guessing && !game.isOver) {
-                BigButton(stringResource(R.string.next_vote), onContinue, Modifier.testTag("keep_playing"), color = Color.White, contentColor = Neon.Night)
+                BigButton(
+                    stringResource(R.string.next_vote),
+                    onContinue,
+                    Modifier.testTag("keep_playing"),
+                    color = Color.White,
+                    contentColor = Neon.Night
+                )
             }
         }
     ) {
@@ -358,11 +426,25 @@ fun ExposeScreen(
 }
 
 @Composable
-private fun EliminatedCard(card: Card, game: Game, guessResult: Boolean?, onGuess: (String) -> Unit) {
+private fun ColumnScope.EliminatedCard(card: Card, game: Game, guessResult: Boolean?, onGuess: (String) -> Unit) {
     val (emoji, title, body) = when (card.role) {
-        Role.CIVILIAN -> Triple("😇", stringResource(R.string.out_was_civilian, card.player), stringResource(R.string.out_civilian_desc))
-        Role.IMPOSTOR -> Triple("🕵️", stringResource(R.string.out_was_impostor, card.player), stringResource(R.string.out_impostor_desc))
-        Role.DRIFTER -> Triple("🤷", stringResource(R.string.out_was_drifter, card.player), stringResource(R.string.guess_desc))
+        Role.CIVILIAN -> Triple(
+            "😇",
+            stringResource(R.string.out_was_civilian, card.player),
+            stringResource(R.string.out_civilian_desc)
+        )
+
+        Role.IMPOSTOR -> Triple(
+            "🕵️",
+            stringResource(R.string.out_was_impostor, card.player),
+            stringResource(R.string.out_impostor_desc)
+        )
+
+        Role.DRIFTER -> Triple(
+            "🤷",
+            stringResource(R.string.out_was_drifter, card.player),
+            stringResource(R.string.guess_desc)
+        )
     }
     val short = isShortScreen()
     val header = @Composable {
@@ -379,12 +461,22 @@ private fun EliminatedCard(card: Card, game: Game, guessResult: Boolean?, onGues
     }
     if (game.pendingGuess == card.player) {
         val prompt = @Composable {
-            Text(stringResource(R.string.guess_title, card.player), color = Color.White, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, modifier = Modifier.padding(top = if (short) 8.dp else 20.dp))
+            Text(
+                stringResource(R.string.guess_title, card.player),
+                color = Color.White,
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(top = if (short) 8.dp else 20.dp)
+            )
             Text(body, color = Color.White.copy(alpha = 0.9f), textAlign = TextAlign.Center)
         }
         if (short) {
             // Landscape and handhelds: too low to stack it all, so the field and button sit beside the text.
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(24.dp), verticalAlignment = Alignment.CenterVertically) {
+            Row(
+                Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(24.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally) {
                     header()
                     prompt()
@@ -400,7 +492,12 @@ private fun EliminatedCard(card: Card, game: Game, guessResult: Boolean?, onGues
         header()
         val word = card.word
         if (card.role == Role.IMPOSTOR && word != null) {
-            Text(stringResource(R.string.out_their_word, word), color = Color.White, style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(top = 8.dp))
+            Text(
+                stringResource(R.string.out_their_word, word),
+                color = Color.White,
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.padding(top = 8.dp)
+            )
         }
         Text(
             if (guessResult == false) {
@@ -420,7 +517,7 @@ private fun EliminatedCard(card: Card, game: Game, guessResult: Boolean?, onGues
 
 /** The eliminated drifter's one shot at the civilians' word. */
 @Composable
-private fun GuessInput(onGuess: (String) -> Unit) {
+private fun ColumnScope.GuessInput(onGuess: (String) -> Unit) {
     var text by rememberSaveable { mutableStateOf("") }
     OutlinedTextField(
         value = text,
@@ -429,16 +526,24 @@ private fun GuessInput(onGuess: (String) -> Unit) {
         singleLine = true,
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
         keyboardActions = KeyboardActions(onDone = { if (text.isNotBlank()) onGuess(text) }),
-        colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = Color.White, unfocusedBorderColor = Color.White.copy(alpha = 0.6f), focusedTextColor = Color.White, unfocusedTextColor = Color.White, cursorColor = Color.White),
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedBorderColor = Color.White,
+            unfocusedBorderColor = Color.White.copy(alpha = 0.6f),
+            focusedTextColor = Color.White,
+            unfocusedTextColor = Color.White,
+            cursorColor = Color.White
+        ),
         modifier = Modifier.fillMaxWidth().padding(top = 16.dp).testTag("guess_text")
     )
     Spacer(Modifier.height(12.dp))
-    BigButton(stringResource(R.string.guess_go), { onGuess(text) }, Modifier.testTag("guess"), enabled = text.isNotBlank(), color = Color.White, contentColor = Neon.Night)
+    BigButton(stringResource(R.string.guess_go), {
+        onGuess(text)
+    }, Modifier.testTag("guess"), enabled = text.isNotBlank(), color = Color.White, contentColor = Neon.Night)
 }
 
 /** End of the game: who won, the words, who was who, and confetti when someone won. */
 @Composable
-fun ResultScreen(
+internal fun ResultScreen(
     game: Game,
     lastElimination: Elimination?,
     drawing: List<DrawStroke>,
@@ -461,11 +566,23 @@ fun ResultScreen(
             stringResource(R.string.result_sub_civilians)
         )
 
-        Outcome.DrifterGuessed -> Triple("🤷💡🤯", stringResource(R.string.result_drifter_guessed), stringResource(R.string.result_sub_drifter))
+        Outcome.DrifterGuessed -> Triple(
+            "🤷💡🤯",
+            stringResource(R.string.result_drifter_guessed),
+            stringResource(R.string.result_sub_drifter)
+        )
 
-        Outcome.NoCivilians -> Triple("🎭🎭🎭", stringResource(R.string.result_nobody), stringResource(R.string.result_sub_nobody))
+        Outcome.NoCivilians -> Triple(
+            "🎭🎭🎭",
+            stringResource(R.string.result_nobody),
+            stringResource(R.string.result_sub_nobody)
+        )
 
-        Outcome.EndedEarly -> Triple("🏁", stringResource(R.string.result_ended), stringResource(R.string.result_sub_ended))
+        Outcome.EndedEarly -> Triple(
+            "🏁",
+            stringResource(R.string.result_ended),
+            stringResource(R.string.result_sub_ended)
+        )
 
         is Outcome.InfiltratorsWin -> Triple(
             "😏🕵️😏",
@@ -474,15 +591,30 @@ fun ResultScreen(
                 setOf(Role.IMPOSTOR) -> stringResource(R.string.result_impostors)
                 else -> stringResource(R.string.result_impostors_drifter)
             },
-            if (lastElimination?.role == Role.CIVILIAN) stringResource(R.string.result_sub_infiltrators_vote) else stringResource(R.string.result_sub_infiltrators)
+            if (lastElimination?.role ==
+                Role.CIVILIAN
+            ) {
+                stringResource(R.string.result_sub_infiltrators_vote)
+            } else {
+                stringResource(R.string.result_sub_infiltrators)
+            }
         )
 
         null -> Triple("🕵️", "", "")
     }
     val background = when (outcome) {
         Outcome.CiviliansWin -> Neon.CiviliansBackdrop
+
         Outcome.DrifterGuessed -> Neon.DrifterBackdrop
-        is Outcome.InfiltratorsWin -> if (Role.IMPOSTOR in outcome.roles) Neon.ImpostorsBackdrop else Neon.DrifterBackdrop
+
+        is Outcome.InfiltratorsWin -> if (Role.IMPOSTOR in
+            outcome.roles
+        ) {
+            Neon.ImpostorsBackdrop
+        } else {
+            Neon.DrifterBackdrop
+        }
+
         else -> Neon.RevealBackdrop
     }
     Box(Modifier.fillMaxSize()) {
@@ -493,25 +625,58 @@ fun ResultScreen(
             background = background,
             bottom = {
                 if (roundsLeft == 0) {
-                    BigButton(stringResource(R.string.result_see_winner), onSeeWinner, Modifier.testTag("see_winner"), color = Neon.Amber, contentColor = Neon.Night)
+                    BigButton(
+                        stringResource(R.string.result_see_winner),
+                        onSeeWinner,
+                        Modifier.testTag("see_winner"),
+                        color = Neon.Amber,
+                        contentColor = Neon.Night
+                    )
                 } else {
-                    BigButton(stringResource(R.string.continue_), onContinue, Modifier.testTag("play_again"), color = GoGreen, contentColor = Neon.Night)
+                    BigButton(
+                        stringResource(R.string.continue_),
+                        onContinue,
+                        Modifier.testTag("play_again"),
+                        color = GoGreen,
+                        contentColor = Neon.Night
+                    )
                 }
                 TextButton(onClick = onHome, modifier = Modifier.align(Alignment.CenterHorizontally).testTag("home")) {
                     Text(stringResource(R.string.home), color = Color.White.copy(alpha = 0.85f))
                 }
             }
         ) {
-            Column(Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState()), horizontalAlignment = Alignment.CenterHorizontally) {
+            Column(
+                Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState()),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
                 Text(emojis, fontSize = 64.sp)
-                Text(title, color = Color.White, fontSize = 36.sp, lineHeight = 42.sp, fontWeight = FontWeight.Black, textAlign = TextAlign.Center, modifier = Modifier.padding(top = 8.dp).testTag("result_title"))
-                Text(subtitle, color = Color.White.copy(alpha = 0.9f), style = MaterialTheme.typography.titleMedium, textAlign = TextAlign.Center, modifier = Modifier.padding(top = 8.dp))
+                Text(
+                    title,
+                    color = Color.White,
+                    fontSize = 36.sp,
+                    lineHeight = 42.sp,
+                    fontWeight = FontWeight.Black,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(top = 8.dp).testTag("result_title")
+                )
+                Text(
+                    subtitle,
+                    color = Color.White.copy(alpha = 0.9f),
+                    style = MaterialTheme.typography.titleMedium,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(top = 8.dp)
+                )
                 if (roundsLeft != null && roundsLeft > 0) {
                     Text(
                         pluralStringResource(R.plurals.scores_rounds_left, roundsLeft, roundsLeft),
                         color = Color.White,
                         fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(top = 6.dp).clip(CircleShape).background(Color.Black.copy(alpha = 0.2f)).padding(horizontal = 14.dp, vertical = 4.dp)
+                        modifier = Modifier.padding(
+                            top = 6.dp
+                        ).clip(
+                            CircleShape
+                        ).background(Color.Black.copy(alpha = 0.2f)).padding(horizontal = 14.dp, vertical = 4.dp)
                     )
                 }
                 Spacer(Modifier.height(20.dp))
@@ -521,7 +686,12 @@ fun ResultScreen(
                         LabelValue(stringResource(R.string.result_decoy), decoy)
                     }
                     if (impostors.isNotEmpty() && impostors.size < game.cards.size) {
-                        LabelValue(pluralStringResource(R.plurals.result_impostors_label, impostors.size), impostors.joinToString { it.player })
+                        LabelValue(
+                            pluralStringResource(R.plurals.result_impostors_label, impostors.size),
+                            impostors.joinToString {
+                                it.player
+                            }
+                        )
                     }
                     drifter?.let { LabelValue(stringResource(R.string.role_drifter), it.player) }
                 }
@@ -529,7 +699,12 @@ fun ResultScreen(
                     Spacer(Modifier.height(12.dp))
                     ResultPanel {
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text(stringResource(R.string.result_drawing), color = Color.White.copy(alpha = 0.7f), style = MaterialTheme.typography.labelLarge, modifier = Modifier.weight(1f))
+                            Text(
+                                stringResource(R.string.result_drawing),
+                                color = Color.White.copy(alpha = 0.7f),
+                                style = MaterialTheme.typography.labelLarge,
+                                modifier = Modifier.weight(1f)
+                            )
                             TextButton(onClick = onShareDrawing, modifier = Modifier.testTag("share_drawing")) {
                                 Text("↗ " + stringResource(R.string.result_share), color = Color.White)
                             }
@@ -539,12 +714,24 @@ fun ResultScreen(
                 }
                 Spacer(Modifier.height(12.dp))
                 ResultPanel {
-                    Text(stringResource(R.string.result_roles), color = Color.White.copy(alpha = 0.7f), style = MaterialTheme.typography.labelLarge)
+                    Text(
+                        stringResource(R.string.result_roles),
+                        color = Color.White.copy(alpha = 0.7f),
+                        style = MaterialTheme.typography.labelLarge
+                    )
                     game.cards.forEach { card ->
-                        Row(Modifier.fillMaxWidth().padding(top = 8.dp), verticalAlignment = Alignment.CenterVertically) {
+                        Row(
+                            Modifier.fillMaxWidth().padding(top = 8.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
                             Box(Modifier.size(10.dp).clip(CircleShape).background(roleColor(card.role)))
                             Spacer(Modifier.width(10.dp))
-                            Text(card.player, Modifier.weight(1f), color = Color.White, fontWeight = FontWeight.SemiBold)
+                            Text(
+                                card.player,
+                                Modifier.weight(1f),
+                                color = Color.White,
+                                fontWeight = FontWeight.SemiBold
+                            )
                             Text(card.word ?: "—", color = Color.White.copy(alpha = 0.7f))
                             Spacer(Modifier.width(10.dp))
                             Text(roleLabel(card.role), color = roleColor(card.role), fontWeight = FontWeight.Bold)
@@ -565,14 +752,21 @@ fun ResultScreen(
 @Composable
 private fun ResultPanel(content: @Composable () -> Unit) {
     Column(
-        Modifier.fillMaxWidth().clip(MaterialTheme.shapes.large).background(Color.Black.copy(alpha = 0.25f)).padding(18.dp),
+        Modifier.fillMaxWidth().clip(
+            MaterialTheme.shapes.large
+        ).background(Color.Black.copy(alpha = 0.25f)).padding(18.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) { content() }
 }
 
 @Composable
-private fun LabelValue(label: String, value: String) {
-    Text(label, color = Color.White.copy(alpha = 0.7f), style = MaterialTheme.typography.labelLarge, modifier = Modifier.padding(top = 6.dp))
+private fun ColumnScope.LabelValue(label: String, value: String) {
+    Text(
+        label,
+        color = Color.White.copy(alpha = 0.7f),
+        style = MaterialTheme.typography.labelLarge,
+        modifier = Modifier.padding(top = 6.dp)
+    )
     Text(value, color = Color.White, fontSize = 26.sp, fontWeight = FontWeight.Black, textAlign = TextAlign.Center)
 }
 
@@ -595,7 +789,11 @@ internal fun roleColor(role: Role): Color = when (role) {
 }
 
 /** Players by points, best first. */
-private fun ranking(players: List<String>, scores: Map<String, Int>) = (players + scores.keys).distinct().sortedByDescending { scores[it] ?: 0 }
+private fun ranking(players: List<String>, scores: Map<String, Int>) =
+    (players + scores.keys).distinct().sortedByDescending {
+        scores[it]
+            ?: 0
+    }
 
 @Composable
 private fun RankRow(player: String, players: List<String>, points: Int, gained: Int?) {
@@ -609,13 +807,21 @@ private fun RankRow(player: String, players: List<String>, points: Int, gained: 
         verticalAlignment = Alignment.CenterVertically
     ) {
         Avatar(player, players, 40.dp)
-        Text(player, Modifier.weight(1f).padding(horizontal = 14.dp), color = Color.White, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+        Text(
+            player,
+            Modifier.weight(1f).padding(horizontal = 14.dp),
+            color = Color.White,
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.SemiBold
+        )
         if (gained != null) {
             Text(
                 "+$gained",
                 color = Neon.Night,
                 fontWeight = FontWeight.Black,
-                modifier = Modifier.padding(end = 12.dp).clip(CircleShape).background(GoGreen).padding(horizontal = 12.dp, vertical = 4.dp)
+                modifier = Modifier.padding(
+                    end = 12.dp
+                ).clip(CircleShape).background(GoGreen).padding(horizontal = 12.dp, vertical = 4.dp)
             )
         }
         Text("$points", color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.Black)
@@ -624,7 +830,7 @@ private fun RankRow(player: String, players: List<String>, points: Int, gained: 
 
 /** Between rounds: the running ranking with what the last game gave, then the next round. */
 @Composable
-fun RankingScreen(
+internal fun RankingScreen(
     players: List<String>,
     scores: Map<String, Int>,
     lastPoints: Map<String, Int>,
@@ -642,7 +848,13 @@ fun RankingScreen(
         sideActionsWhenShort = true,
         background = Neon.RevealBackdrop,
         bottom = {
-            BigButton(stringResource(R.string.continue_), onNextRound, Modifier.testTag("next_round"), color = GoGreen, contentColor = Neon.Night)
+            BigButton(
+                stringResource(R.string.continue_),
+                onNextRound,
+                Modifier.testTag("next_round"),
+                color = GoGreen,
+                contentColor = Neon.Night
+            )
             TextButton(
                 onClick = {
                     if (confirmReset) {
@@ -654,13 +866,24 @@ fun RankingScreen(
                 },
                 modifier = Modifier.align(Alignment.CenterHorizontally).testTag("reset_scores")
             ) {
-                Text(stringResource(if (confirmReset) R.string.scores_reset_confirm else R.string.scores_reset), color = Color.White.copy(alpha = 0.75f))
+                Text(
+                    stringResource(if (confirmReset) R.string.scores_reset_confirm else R.string.scores_reset),
+                    color = Color.White.copy(alpha = 0.75f)
+                )
             }
         }
     ) {
-        Column(Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState()), horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(
+            Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             Text("🏆", fontSize = 56.sp)
-            Text(stringResource(R.string.scores_title), color = Color.White, style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Black)
+            Text(
+                stringResource(R.string.scores_title),
+                color = Color.White,
+                style = MaterialTheme.typography.headlineMedium,
+                fontWeight = FontWeight.Black
+            )
             Text(
                 if (roundsLeft != null) {
                     pluralStringResource(R.plurals.scores_rounds_left, roundsLeft, roundsLeft)
@@ -675,14 +898,19 @@ fun RankingScreen(
                 RankRow(player, players, scores[player] ?: 0, lastPoints[player])
                 Spacer(Modifier.height(10.dp))
             }
-            Text(stringResource(R.string.scores_rules), color = Color.White.copy(alpha = 0.85f), style = MaterialTheme.typography.bodySmall, textAlign = TextAlign.Center)
+            Text(
+                stringResource(R.string.scores_rules),
+                color = Color.White.copy(alpha = 0.85f),
+                style = MaterialTheme.typography.bodySmall,
+                textAlign = TextAlign.Center
+            )
         }
     }
 }
 
 /** End of a match: the winner big in the middle with fireworks, everyone else below. */
 @Composable
-fun PodiumScreen(players: List<String>, scores: Map<String, Int>, onNewMatch: () -> Unit, onHome: () -> Unit) {
+internal fun PodiumScreen(players: List<String>, scores: Map<String, Int>, onNewMatch: () -> Unit, onHome: () -> Unit) {
     val leaders = Match.leaders(scores)
     Box(Modifier.fillMaxSize()) {
         Page(
@@ -691,7 +919,13 @@ fun PodiumScreen(players: List<String>, scores: Map<String, Int>, onNewMatch: ()
             sideActionsWhenShort = true,
             background = Neon.RevealBackdrop,
             bottom = {
-                BigButton(stringResource(R.string.podium_new_match), onNewMatch, Modifier.testTag("new_match"), color = GoGreen, contentColor = Neon.Night)
+                BigButton(
+                    stringResource(R.string.podium_new_match),
+                    onNewMatch,
+                    Modifier.testTag("new_match"),
+                    color = GoGreen,
+                    contentColor = Neon.Night
+                )
                 TextButton(onClick = onHome, modifier = Modifier.align(Alignment.CenterHorizontally).testTag("home")) {
                     Text(stringResource(R.string.home), color = Color.White.copy(alpha = 0.85f))
                 }
@@ -702,18 +936,38 @@ fun PodiumScreen(players: List<String>, scores: Map<String, Int>, onNewMatch: ()
                 Text("🏆", fontSize = if (short) 32.sp else 44.sp)
                 if (leaders.size == 1) {
                     val winner = leaders.single()
-                    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(top = if (short) 4.dp else 12.dp)) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.padding(top = if (short) 4.dp else 12.dp)
+                    ) {
                         Text("🎆", fontSize = if (short) 36.sp else 56.sp)
                         Spacer(Modifier.width(16.dp))
                         Avatar(winner, players, if (short) 72.dp else 128.dp, ring = Neon.Amber)
                         Spacer(Modifier.width(16.dp))
                         Text("🎆", fontSize = if (short) 36.sp else 56.sp)
                     }
-                    Text(winner, color = Color.White, fontSize = if (short) 28.sp else 34.sp, fontWeight = FontWeight.Black, modifier = Modifier.padding(top = if (short) 4.dp else 12.dp).testTag("podium_title"))
-                    Text("${scores[winner] ?: 0}", color = Neon.AmberText, fontSize = if (short) 36.sp else 56.sp, fontWeight = FontWeight.Black)
+                    Text(
+                        winner,
+                        color = Color.White,
+                        fontSize = if (short) 28.sp else 34.sp,
+                        fontWeight = FontWeight.Black,
+                        modifier = Modifier.padding(top = if (short) 4.dp else 12.dp).testTag("podium_title")
+                    )
+                    Text(
+                        "${scores[winner] ?: 0}",
+                        color = Neon.AmberText,
+                        fontSize = if (short) 36.sp else 56.sp,
+                        fontWeight = FontWeight.Black
+                    )
                 } else {
                     Text(
-                        if (leaders.isEmpty()) stringResource(R.string.podium_nobody) else stringResource(R.string.podium_tie, leaders.joinToString(" · ")),
+                        if (leaders.isEmpty()) {
+                            stringResource(
+                                R.string.podium_nobody
+                            )
+                        } else {
+                            stringResource(R.string.podium_tie, leaders.joinToString(" · "))
+                        },
                         color = Color.White,
                         fontSize = if (short) 26.sp else 32.sp,
                         lineHeight = if (short) 32.sp else 38.sp,
@@ -731,12 +985,24 @@ fun PodiumScreen(players: List<String>, scores: Map<String, Int>, onNewMatch: ()
             }
             if (short) {
                 // Landscape and handhelds: the winner beside the rest, or the ranking falls below the fold.
-                Row(Modifier.weight(1f).fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(24.dp), verticalAlignment = Alignment.CenterVertically) {
-                    Column(Modifier.weight(1f).verticalScroll(rememberScrollState()), horizontalAlignment = Alignment.CenterHorizontally) { winnerBlock() }
+                Row(
+                    Modifier.weight(1f).fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(24.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Column(
+                        Modifier.weight(1f).verticalScroll(rememberScrollState()),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        winnerBlock()
+                    }
                     Column(Modifier.weight(1f).verticalScroll(rememberScrollState())) { others() }
                 }
             } else {
-                Column(Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState()), horizontalAlignment = Alignment.CenterHorizontally) {
+                Column(
+                    Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState()),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
                     winnerBlock()
                     Spacer(Modifier.height(20.dp))
                     others()
@@ -749,15 +1015,20 @@ fun PodiumScreen(players: List<String>, scores: Map<String, Int>, onNewMatch: ()
 
 /** "Time's up!" for a moment, then straight to the vote. */
 @Composable
-fun TimeUpScreen(onDone: () -> Unit) {
+internal fun TimeUpScreen(onDone: () -> Unit) {
+    val done by rememberUpdatedState(onDone)
     LaunchedEffect(Unit) {
         delay(1_800)
-        onDone()
+        done()
     }
     BackHandler {}
     Page(title = null, onBack = null, background = Neon.ImpostorsBackdrop) {
         val short = isShortScreen()
-        Column(Modifier.weight(1f).fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
+        Column(
+            Modifier.weight(1f).fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
             Emoji("⏰", size = if (short) 64 else 110)
             Text(
                 stringResource(R.string.time_up),

@@ -31,13 +31,19 @@ class RemindersTest {
 
     @Test
     fun nextSlotWalksTheSeasonAndWrapsToNextYear() {
-        assertEquals(LocalDate.of(2026, 11, 25) to ReminderSlot.MORNING, Reminders.nextSlot(LocalDateTime.of(2026, 10, 18, 12, 0)))
+        assertEquals(
+            LocalDate.of(2026, 11, 25) to ReminderSlot.MORNING,
+            Reminders.nextSlot(LocalDateTime.of(2026, 10, 18, 12, 0))
+        )
         assertEquals(dec(1) to ReminderSlot.MORNING, Reminders.nextSlot(LocalDateTime.of(2026, 11, 25, 10, 0)))
         assertEquals(dec(1) to ReminderSlot.MORNING, Reminders.nextSlot(LocalDateTime.of(2026, 11, 30, 23, 0)))
         assertEquals(dec(2) to ReminderSlot.EVENING, Reminders.nextSlot(LocalDateTime.of(2026, 12, 1, 10, 0)))
         assertEquals(dec(18) to ReminderSlot.MORNING, Reminders.nextSlot(LocalDateTime.of(2026, 12, 17, 18, 0)))
         assertEquals(dec(18) to ReminderSlot.EVENING, Reminders.nextSlot(LocalDateTime.of(2026, 12, 18, 10, 0)))
         assertEquals(dec(25) to ReminderSlot.MORNING, Reminders.nextSlot(LocalDateTime.of(2026, 12, 24, 18, 0)))
-        assertEquals(LocalDate.of(2027, 11, 25) to ReminderSlot.MORNING, Reminders.nextSlot(LocalDateTime.of(2026, 12, 25, 10, 0)))
+        assertEquals(
+            LocalDate.of(2027, 11, 25) to ReminderSlot.MORNING,
+            Reminders.nextSlot(LocalDateTime.of(2026, 12, 25, 10, 0))
+        )
     }
 }

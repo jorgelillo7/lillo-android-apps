@@ -20,7 +20,12 @@ class AdventPlanTest {
 
     @Test
     fun christmasEveIsAlwaysDoor24() {
-        for (year in years) assertEquals(AdventDoor.Activity(AdventActivity.CHRISTMAS_EVE), AdventPlan.forYear(year)[24])
+        for (year in years) {
+            assertEquals(
+                AdventDoor.Activity(AdventActivity.CHRISTMAS_EVE),
+                AdventPlan.forYear(year)[24]
+            )
+        }
     }
 
     @Test
@@ -31,7 +36,11 @@ class AdventPlanTest {
             assertTrue(songDays.size in 2..3, "year $year: ${songDays.size} songs")
             assertTrue(songDays.all { it in 8..23 })
             plan.forEach { (day, door) ->
-                if (door is AdventDoor.Activity && day != 24) assertTrue(day in door.activity.block!!.days, "$year: $door on $day")
+                if (door is AdventDoor.Activity &&
+                    day != 24
+                ) {
+                    assertTrue(day in door.activity.block!!.days, "$year: $door on $day")
+                }
             }
         }
     }

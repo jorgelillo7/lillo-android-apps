@@ -21,19 +21,34 @@ import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
 @Composable
-fun Page(
+internal fun Page(
     title: String?,
     onBack: (() -> Unit)?,
     modifier: Modifier = Modifier,
     actions: @Composable RowScope.() -> Unit = {},
     bottom: @Composable ColumnScope.() -> Unit = {},
     content: @Composable ColumnScope.() -> Unit
-) = LilloPage(title, onBack, Arena.Background, modifier = modifier, actions = actions, bottom = bottom, content = content)
+) = LilloPage(
+    title,
+    onBack,
+    Arena.Background,
+    modifier = modifier,
+    actions = actions,
+    bottom = bottom,
+    content = content
+)
 
 @Composable
-fun BigButton(text: String, onClick: () -> Unit, tag: String, modifier: Modifier = Modifier, enabled: Boolean = true) = LilloBigButton(text, onClick, modifier = modifier.testTag(tag), enabled = enabled)
+internal fun BigButton(
+    text: String,
+    onClick: () -> Unit,
+    tag: String,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true
+) = LilloBigButton(text, onClick, modifier = modifier.testTag(tag), enabled = enabled)
 
-fun formatDay(epochDay: Long): String = LocalDate.ofEpochDay(epochDay).format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM))
+fun formatDay(epochDay: Long): String =
+    LocalDate.ofEpochDay(epochDay).format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM))
 
 fun today(): Long = LocalDate.now().toEpochDay()
 
@@ -67,4 +82,10 @@ fun Resources.resultSentence(t: Tournament, m: Match): String? {
     }
 }
 
-fun Resources.bestOfLabel(bestOf: Int): String = if (bestOf == 1) getString(R.string.best_of_one) else getString(R.string.best_of_n, bestOf)
+fun Resources.bestOfLabel(bestOf: Int): String = if (bestOf ==
+    1
+) {
+    getString(R.string.best_of_one)
+} else {
+    getString(R.string.best_of_n, bestOf)
+}

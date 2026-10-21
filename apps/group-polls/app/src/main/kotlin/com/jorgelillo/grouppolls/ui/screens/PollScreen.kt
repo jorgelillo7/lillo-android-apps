@@ -12,6 +12,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -35,6 +36,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -63,7 +65,7 @@ import kotlinx.coroutines.delay
 
 /** Vote on one poll (tap a half, then guess the winner) or see its results. */
 @Composable
-fun PollScreen(
+internal fun PollScreen(
     poll: Poll?,
     votes: List<Vote>,
     local: LocalState,
@@ -87,7 +89,8 @@ fun PollScreen(
             notFound = true
         }
     }
-    LaunchedEffect(poll) { poll?.let(onResolvePrediction) }
+    val resolvePrediction by rememberUpdatedState(onResolvePrediction)
+    LaunchedEffect(poll) { poll?.let(resolvePrediction) }
     val shareText = poll?.let { stringResource(R.string.share_text, it.question) }.orEmpty()
     var shared by rememberSaveable { mutableStateOf(false) }
     LaunchedEffect(poll != null) {
@@ -117,7 +120,9 @@ fun PollScreen(
                 val mine = local.votes[poll.code]
                 val canVote = mine == null && poll.isOpen(now)
                 Header(poll, now)
-                AnimatedContent(canVote, transitionSpec = { fadeIn() togetherWith fadeOut() }, modifier = Modifier.weight(1f), label = "poll") { voting ->
+                AnimatedContent(canVote, transitionSpec = {
+                    fadeIn() togetherWith fadeOut()
+                }, modifier = Modifier.weight(1f), label = "poll") { voting ->
                     if (voting) {
                         Voting(poll) { side, prediction -> onVote(poll, side, prediction) }
                     } else {
@@ -131,14 +136,18 @@ fun PollScreen(
 
 @Composable
 private fun Message(emoji: String, text: String) {
-    Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
+    Column(
+        Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
         Text(emoji, fontSize = 64.sp)
         Text(text, color = Polls.Muted, textAlign = TextAlign.Center, modifier = Modifier.padding(24.dp))
     }
 }
 
 @Composable
-private fun Header(poll: Poll, now: Long) {
+private fun ColumnScope.Header(poll: Poll, now: Long) {
     val closesAt = poll.closesAt
     val meta = buildList {
         poll.creatorName.ifBlank { null }?.let { add(stringResource(R.string.poll_by, it)) }
@@ -163,7 +172,13 @@ private fun Header(poll: Poll, now: Long) {
 @Composable
 private fun remaining(millis: Long): String {
     val hours = (millis / 3_600_000).coerceAtLeast(0)
-    return if (hours >= 24) stringResource(R.string.age_days, hours / 24) else stringResource(R.string.age_hours, hours.coerceAtLeast(1))
+    return if (hours >=
+        24
+    ) {
+        stringResource(R.string.age_days, hours / 24)
+    } else {
+        stringResource(R.string.age_hours, hours.coerceAtLeast(1))
+    }
 }
 
 /** Step 1: tap the red or the blue half. Step 2: guess which one wins. */
@@ -173,13 +188,19 @@ private fun Voting(poll: Poll, onDone: (Side, Side) -> Unit) {
     val chosen = side
     if (chosen == null) {
         Column(Modifier.fillMaxSize().padding(bottom = 16.dp).clip(MaterialTheme.shapes.extraLarge)) {
-            Half(poll.red, Side.RED, Modifier.weight(1f)) { side = Side.RED }
-            Half(poll.blue, Side.BLUE, Modifier.weight(1f)) { side = Side.BLUE }
+            Half(poll.red, Side.RED, onClick = { side = Side.RED }, modifier = Modifier.weight(1f))
+            Half(poll.blue, Side.BLUE, onClick = { side = Side.BLUE }, modifier = Modifier.weight(1f))
         }
     } else {
         Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
             Text(stringResource(R.string.you_chose), color = Polls.Muted)
-            Text(poll.label(chosen), color = Polls.color(chosen), fontSize = 28.sp, fontWeight = FontWeight.Black, textAlign = TextAlign.Center)
+            Text(
+                poll.label(chosen),
+                color = Polls.color(chosen),
+                fontSize = 28.sp,
+                fontWeight = FontWeight.Black,
+                textAlign = TextAlign.Center
+            )
             Spacer(Modifier.height(32.dp))
             Text("🔮", fontSize = 48.sp)
             Text(
@@ -192,8 +213,12 @@ private fun Voting(poll: Poll, onDone: (Side, Side) -> Unit) {
             Text(stringResource(R.string.predict_desc), color = Polls.Muted, textAlign = TextAlign.Center)
             Spacer(Modifier.height(24.dp))
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                PredictButton(poll.red, Side.RED, Modifier.weight(1f)) { onDone(chosen, Side.RED) }
-                PredictButton(poll.blue, Side.BLUE, Modifier.weight(1f)) { onDone(chosen, Side.BLUE) }
+                PredictButton(poll.red, Side.RED, onClick = {
+                    onDone(chosen, Side.RED)
+                }, modifier = Modifier.weight(1f))
+                PredictButton(poll.blue, Side.BLUE, onClick = {
+                    onDone(chosen, Side.BLUE)
+                }, modifier = Modifier.weight(1f))
             }
             TextButton(onClick = { side = null }, modifier = Modifier.padding(top = 16.dp).testTag("change_side")) {
                 Text(stringResource(R.string.change_side), color = Polls.Muted)
@@ -203,20 +228,29 @@ private fun Voting(poll: Poll, onDone: (Side, Side) -> Unit) {
 }
 
 @Composable
-private fun Half(label: String, side: Side, modifier: Modifier, onClick: () -> Unit) {
+private fun Half(label: String, side: Side, onClick: () -> Unit, modifier: Modifier = Modifier) {
     Box(
-        modifier.fillMaxWidth().background(Polls.fill(side)).clickable(onClick = onClick).testTag("vote_${side.name.lowercase()}"),
+        modifier.fillMaxWidth().background(
+            Polls.fill(side)
+        ).clickable(onClick = onClick).testTag("vote_${side.name.lowercase()}"),
         contentAlignment = Alignment.Center
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(if (side == Side.RED) "🔴" else "🔵", fontSize = 32.sp)
-            Text(label, color = Color.White, fontSize = 30.sp, fontWeight = FontWeight.Black, textAlign = TextAlign.Center, modifier = Modifier.padding(horizontal = 24.dp))
+            Text(
+                label,
+                color = Color.White,
+                fontSize = 30.sp,
+                fontWeight = FontWeight.Black,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(horizontal = 24.dp)
+            )
         }
     }
 }
 
 @Composable
-private fun PredictButton(label: String, side: Side, modifier: Modifier, onClick: () -> Unit) {
+private fun PredictButton(label: String, side: Side, onClick: () -> Unit, modifier: Modifier = Modifier) {
     Text(
         label,
         modifier = modifier
@@ -328,8 +362,16 @@ private fun Results(
                 Column {
                     Text(stringResource(R.string.report_desc))
                     if (poll.creatorName.isNotBlank()) {
-                        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(top = 8.dp).clickable { hide = !hide }) {
-                            Checkbox(checked = hide, onCheckedChange = { hide = it }, modifier = Modifier.testTag("hide_creator"))
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.padding(top = 8.dp).clickable {
+                                hide =
+                                    !hide
+                            }
+                        ) {
+                            Checkbox(checked = hide, onCheckedChange = {
+                                hide = it
+                            }, modifier = Modifier.testTag("hide_creator"))
                             Text(stringResource(R.string.hide_creator, poll.creatorName))
                         }
                     }
@@ -362,8 +404,30 @@ private fun ResultRow(label: String, percent: Int, side: Side, mine: Boolean) {
     ) {
         Box(Modifier.fillMaxHeight().fillMaxWidth(fraction).background(Polls.fill(side)))
         Row(Modifier.fillMaxSize().padding(horizontal = 16.dp), verticalAlignment = Alignment.CenterVertically) {
-            Text((if (mine) "✓ " else "") + label, fontWeight = FontWeight.Black, color = if (fraction > 0.35f) Color.White else Polls.color(side), modifier = Modifier.weight(1f))
-            Text("$percent%", fontWeight = FontWeight.Black, fontSize = 22.sp, color = if (fraction > 0.85f) Color.White else Polls.color(side))
+            Text(
+                (if (mine) "✓ " else "") + label,
+                fontWeight = FontWeight.Black,
+                color = if (fraction >
+                    0.35f
+                ) {
+                    Color.White
+                } else {
+                    Polls.color(side)
+                },
+                modifier = Modifier.weight(1f)
+            )
+            Text(
+                "$percent%",
+                fontWeight = FontWeight.Black,
+                fontSize = 22.sp,
+                color = if (fraction >
+                    0.85f
+                ) {
+                    Color.White
+                } else {
+                    Polls.color(side)
+                }
+            )
         }
     }
 }
@@ -371,6 +435,10 @@ private fun ResultRow(label: String, percent: Int, side: Side, mine: Boolean) {
 @Composable
 private fun Card(content: @Composable () -> Unit) {
     Column(
-        Modifier.fillMaxWidth().padding(top = 16.dp).clip(MaterialTheme.shapes.large).background(Polls.Card).border(1.dp, Polls.Line, MaterialTheme.shapes.large).padding(16.dp)
+        Modifier.fillMaxWidth().padding(
+            top = 16.dp
+        ).clip(
+            MaterialTheme.shapes.large
+        ).background(Polls.Card).border(1.dp, Polls.Line, MaterialTheme.shapes.large).padding(16.dp)
     ) { content() }
 }

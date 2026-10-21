@@ -65,12 +65,23 @@ import com.jorgelillo.tournaments.ui.theme.Arena
 
 /** Every round with its matches; opens scrolled to the first round that still needs results. */
 @Composable
-fun MatchList(t: Tournament, onEdit: (Match) -> Unit) {
+internal fun MatchList(t: Tournament, onEdit: (Match) -> Unit) {
     val rounds = t.matches.filter { it.a != null || it.b != null }
         .groupBy { it.stage to it.round }
         .toSortedMap(compareBy({ it.first != Stage.SWISS }, { it.second }))
-    val firstPending = rounds.keys.indexOfFirst { key -> rounds.getValue(key).any { it.a != null && it.b != null && !it.isDone(t.bestOf) } }
-    val listState = rememberLazyListState(initialFirstVisibleItemIndex = rounds.keys.take(firstPending.coerceAtLeast(0)).sumOf { rounds.getValue(it).size + 1 })
+    val firstPending = rounds.keys.indexOfFirst { key ->
+        rounds.getValue(key).any {
+            it.a != null && it.b != null &&
+                !it.isDone(t.bestOf)
+        }
+    }
+    val listState =
+        rememberLazyListState(
+            initialFirstVisibleItemIndex = rounds.keys.take(firstPending.coerceAtLeast(0)).sumOf {
+                rounds.getValue(it).size +
+                    1
+            }
+        )
     LazyColumn(state = listState, verticalArrangement = Arrangement.spacedBy(8.dp)) {
         rounds.forEach { (key, matches) ->
             item(key = "${key.first}${key.second}") {
@@ -82,7 +93,12 @@ fun MatchList(t: Tournament, onEdit: (Match) -> Unit) {
                     modifier = Modifier.padding(top = 8.dp)
                 )
             }
-            items(matches.sortedBy { it.slot }, key = { "${it.stage}${it.round}-${it.slot}" }) { MatchCard(t, it, onEdit) }
+            items(
+                matches.sortedBy {
+                    it.slot
+                },
+                key = { "${it.stage}${it.round}-${it.slot}" }
+            ) { MatchCard(t, it, onEdit) }
         }
         item { Spacer(Modifier.height(8.dp)) }
     }
@@ -97,7 +113,15 @@ private fun MatchCard(t: Tournament, m: Match, onEdit: (Match) -> Unit) {
         Modifier
             .fillMaxWidth()
             .background(Arena.Raised, RoundedCornerShape(14.dp))
-            .then(if (playable && !done) Modifier.border(BorderStroke(1.dp, Arena.Faint), RoundedCornerShape(14.dp)) else Modifier)
+            .then(
+                if (playable &&
+                    !done
+                ) {
+                    Modifier.border(BorderStroke(1.dp, Arena.Faint), RoundedCornerShape(14.dp))
+                } else {
+                    Modifier
+                }
+            )
             .clickable(enabled = playable) { onEdit(m) }
             .padding(horizontal = 14.dp, vertical = 10.dp)
             .testTag("match_${m.stage.name.lowercase()}_${m.round}_${m.slot}")
@@ -110,7 +134,14 @@ private fun MatchCard(t: Tournament, m: Match, onEdit: (Match) -> Unit) {
         PlayerLine(t.player(m.b)?.name, m.winsB, done, winner == m.b && winner != null)
         if (m.draw) Text(stringResource(R.string.match_draw), color = Arena.Muted, fontSize = 12.sp)
         if (m.comment.isNotBlank()) {
-            Text("“${m.comment}”", color = Arena.Muted, fontStyle = FontStyle.Italic, fontSize = 13.sp, maxLines = 2, overflow = TextOverflow.Ellipsis)
+            Text(
+                "“${m.comment}”",
+                color = Arena.Muted,
+                fontStyle = FontStyle.Italic,
+                fontSize = 13.sp,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
+            )
         }
         if (playable && !done) Text(stringResource(R.string.match_tap_to_score), color = Arena.Teal, fontSize = 12.sp)
     }
@@ -119,7 +150,11 @@ private fun MatchCard(t: Tournament, m: Match, onEdit: (Match) -> Unit) {
 @Composable
 private fun PlayerLine(name: String?, wins: Int, done: Boolean, won: Boolean) {
     Row(Modifier.fillMaxWidth().heightIn(min = 28.dp), verticalAlignment = Alignment.CenterVertically) {
-        Box(Modifier.width(4.dp).height(20.dp).background(if (won) Arena.Gold else Color.Transparent, RoundedCornerShape(2.dp)))
+        Box(
+            Modifier.width(
+                4.dp
+            ).height(20.dp).background(if (won) Arena.Gold else Color.Transparent, RoundedCornerShape(2.dp))
+        )
         Spacer(Modifier.width(8.dp))
         Text(
             name ?: stringResource(R.string.match_tbd),
@@ -135,7 +170,14 @@ private fun PlayerLine(name: String?, wins: Int, done: Boolean, won: Boolean) {
             overflow = TextOverflow.Ellipsis,
             modifier = Modifier.weight(1f)
         )
-        if (done) Text("$wins", fontWeight = FontWeight.Black, fontSize = 18.sp, color = if (won) Arena.Gold else Arena.Muted)
+        if (done) {
+            Text(
+                "$wins",
+                fontWeight = FontWeight.Black,
+                fontSize = 18.sp,
+                color = if (won) Arena.Gold else Arena.Muted
+            )
+        }
     }
 }
 
@@ -145,7 +187,7 @@ private fun PlayerLine(name: String?, wins: Int, done: Boolean, won: Boolean) {
  */
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
-fun ResultSheet(
+internal fun ResultSheet(
     t: Tournament,
     match: Match,
     onSave: (winsA: Int, winsB: Int, draw: Boolean, comment: String) -> Unit,
@@ -195,13 +237,29 @@ fun ResultSheet(
         2 -> loserGames to loserGames
         else -> 0 to 0
     }
-    val preview = if (outcome >= 0) res.resultSentence(t, match.copy(winsA = winsA, winsB = winsB, draw = outcome == 2)) else null
+    val preview = if (outcome >=
+        0
+    ) {
+        res.resultSentence(t, match.copy(winsA = winsA, winsB = winsB, draw = outcome == 2))
+    } else {
+        null
+    }
     val laterReset = match.stage == Stage.ELIMINATION &&
-        t.matches.any { it.stage == Stage.ELIMINATION && it.round > match.round && it.slot == match.slot shr (it.round - match.round) && (it.winsA + it.winsB > 0) }
+        t.matches.any {
+            it.stage == Stage.ELIMINATION && it.round > match.round &&
+                it.slot == match.slot shr (it.round - match.round) &&
+                (it.winsA + it.winsB > 0)
+        }
 
-    ModalBottomSheet(onDismissRequest = onDismiss, sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true), containerColor = Arena.Raised) {
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
+        containerColor = Arena.Raised
+    ) {
         Column(
-            TestTagsAsResourceIds.verticalScroll(rememberScrollState()).padding(horizontal = 20.dp).navigationBarsPadding(),
+            TestTagsAsResourceIds.verticalScroll(
+                rememberScrollState()
+            ).padding(horizontal = 20.dp).navigationBarsPadding(),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Text(res.roundName(t, match), color = Arena.Gold, fontWeight = FontWeight.Bold)
@@ -212,7 +270,23 @@ fun ResultSheet(
             }
             if (allowDraw) {
                 OutlinedButton(onClick = { outcome = 2 }, modifier = Modifier.fillMaxWidth().testTag("draw")) {
-                    Text(stringResource(R.string.result_draw), color = if (outcome == 2) Arena.Gold else Arena.Cream, fontWeight = if (outcome == 2) FontWeight.Bold else FontWeight.Normal)
+                    Text(
+                        stringResource(R.string.result_draw),
+                        color = if (outcome ==
+                            2
+                        ) {
+                            Arena.Gold
+                        } else {
+                            Arena.Cream
+                        },
+                        fontWeight = if (outcome ==
+                            2
+                        ) {
+                            FontWeight.Bold
+                        } else {
+                            FontWeight.Normal
+                        }
+                    )
                 }
             }
             val scores = when (outcome) {
@@ -228,7 +302,10 @@ fun ResultSheet(
                             selected = loserGames == k,
                             onClick = { loserGames = k },
                             label = { Text(label, fontSize = 18.sp, fontWeight = FontWeight.Bold) },
-                            colors = FilterChipDefaults.filterChipColors(selectedContainerColor = Arena.Gold, selectedLabelColor = Arena.Ink),
+                            colors = FilterChipDefaults.filterChipColors(
+                                selectedContainerColor = Arena.Gold,
+                                selectedLabelColor = Arena.Ink
+                            ),
                             modifier = Modifier.testTag("score_$k")
                         )
                     }
@@ -244,12 +321,29 @@ fun ResultSheet(
                 modifier = Modifier.fillMaxWidth().testTag("comment")
             )
             preview?.let {
-                Text(it, fontSize = 18.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth().testTag("preview"))
+                Text(
+                    it,
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth().testTag("preview")
+                )
             }
             if (laterReset) Text(stringResource(R.string.result_resets_later), color = Arena.Coral, fontSize = 13.sp)
-            BigButton(stringResource(R.string.result_save), { onSave(winsA, winsB, outcome == 2, comment) }, "save", enabled = outcome >= 0)
+            BigButton(
+                stringResource(R.string.result_save),
+                {
+                    onSave(winsA, winsB, outcome == 2, comment)
+                },
+                "save",
+                enabled =
+                    outcome >= 0
+            )
             if (match.isDone(t.bestOf)) {
-                TextButton(onClick = onClear, modifier = Modifier.align(Alignment.CenterHorizontally).testTag("clear")) {
+                TextButton(
+                    onClick = onClear,
+                    modifier = Modifier.align(Alignment.CenterHorizontally).testTag("clear")
+                ) {
                     Text(stringResource(R.string.result_clear), color = Arena.Muted)
                 }
             }
@@ -259,7 +353,13 @@ fun ResultSheet(
 }
 
 @Composable
-private fun WinnerButton(name: String, selected: Boolean, onClick: () -> Unit, tag: String, modifier: Modifier) {
+private fun WinnerButton(
+    name: String,
+    selected: Boolean,
+    onClick: () -> Unit,
+    tag: String,
+    modifier: Modifier = Modifier
+) {
     Box(
         modifier
             .heightIn(min = 72.dp)

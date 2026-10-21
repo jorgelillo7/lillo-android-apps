@@ -43,7 +43,7 @@ private data object Create
 private data object Settings
 
 @Composable
-fun GroupPollsApp(vm: PollsViewModel) {
+internal fun GroupPollsApp(vm: PollsViewModel) {
     val local by vm.local.collectAsStateWithLifecycle()
     val state = local ?: return // first disk read in progress (a few ms)
     val nav = rememberNavController()
@@ -108,7 +108,7 @@ fun GroupPollsApp(vm: PollsViewModel) {
                     acceptedTerms = state.acceptedTerms,
                     onAcceptTerms = vm::acceptTerms,
                     onCreate = vm::create,
-                    onCreated = { code -> nav.navigate(PollRoute(code, share = true)) { popUpTo<Home>() } },
+                    onOpenPoll = { code -> nav.navigate(PollRoute(code, share = true)) { popUpTo<Home>() } },
                     onBack = { nav.back() }
                 )
             }

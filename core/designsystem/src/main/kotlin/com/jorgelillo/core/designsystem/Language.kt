@@ -30,7 +30,9 @@ val canPickAppLanguage: Boolean get() = Build.VERSION.SDK_INT >= Build.VERSION_C
 
 /** The language the app shows now, in that language ("Español", "English"). */
 @Composable
-fun currentAppLanguageName(): String = ConfigurationCompat.getLocales(LocalConfiguration.current)[0]?.let { it.getDisplayLanguage(it) }.orEmpty().replaceFirstChar { it.uppercase() }
+fun currentAppLanguageName(): String = ConfigurationCompat.getLocales(LocalConfiguration.current)[0]?.let {
+    it.getDisplayLanguage(it)
+}.orEmpty().replaceFirstChar { it.uppercase() }
 
 /**
  * Picks the app's language (or back to the system's) without leaving it; Android restarts the
@@ -51,7 +53,9 @@ fun LilloLanguageDialog(onDismiss: () -> Unit, languages: List<Pair<String, Stri
         text = {
             Column {
                 (listOf("" to stringResource(R.string.lillo_language_system)) + languages).forEach { (tag, label) ->
-                    TextButton(onClick = { choose(tag) }, modifier = Modifier.fillMaxWidth().testTag("language_${tag.ifEmpty { "system" }}")) {
+                    TextButton(onClick = {
+                        choose(tag)
+                    }, modifier = Modifier.fillMaxWidth().testTag("language_${tag.ifEmpty { "system" }}")) {
                         Text(label, modifier = Modifier.fillMaxWidth())
                     }
                 }

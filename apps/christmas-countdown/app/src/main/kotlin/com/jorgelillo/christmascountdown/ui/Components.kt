@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 
 /** Translucent "frosted glass" surface for content placed over rich backgrounds. */
 @Composable
-fun GlassCard(
+internal fun GlassCard(
     modifier: Modifier = Modifier,
     shape: Shape = MaterialTheme.shapes.medium,
     tint: Color = Color.White,
@@ -36,7 +36,7 @@ fun GlassCard(
 
 /** Full-screen vertical gradient used as the app background. */
 @Composable
-fun GradientBackground(
+internal fun GradientBackground(
     colors: List<Color>,
     modifier: Modifier = Modifier,
     content: @Composable BoxScope.() -> Unit

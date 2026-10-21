@@ -5,8 +5,9 @@ import org.gradle.kotlin.dsl.dependencies
 
 /**
  * Screenshot tests of Compose UI on the JVM (Roborazzi on Robolectric), written with
- * `captureScreenshot` from :core:screenshot-testing. Images live under `src/test/screenshots/` (committed); `./gradlew recordRoborazziDebug` rewrites them after
- * a deliberate change, `verifyRoborazziDebug` (CI) fails when a screen changed by accident.
+ * `captureScreenshot` from :core:screenshot-testing. Images live under `src/test/screenshots/`
+ * (committed); `./gradlew recordRoborazziDebug` rewrites them after a deliberate change,
+ * `verifyRoborazziDebug` (CI) fails when a screen changed by accident.
  */
 class AndroidScreenshotsConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) = with(target) {

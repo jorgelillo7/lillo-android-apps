@@ -36,7 +36,7 @@ Module paths follow the folders: `:apps:<app>:app`, `:apps:<app>:domain`, `:core
 ./gradlew test                                            # every unit test in the repo
 ./gradlew :apps:<app>:domain:test --tests '*SomeTest.someMethod*'   # single test
 ./gradlew :apps:<app>:app:lintDebug                       # lint (kept at 0 warnings)
-./gradlew spotlessApply                                   # format Kotlin (ktlint, .editorconfig); CI runs spotlessCheck
+./gradlew spotlessApply                                   # format Kotlin (ktlint + Compose rules, 120 cols); CI runs spotlessCheck
 ./gradlew recordRoborazziDebug                            # re-record screenshot tests after a deliberate UI change; CI runs verifyRoborazziDebug
 ./gradlew :apps:<app>:app:installDebug                    # run on emulator/phone
 ./gradlew :apps:<app>:app:bundleRelease                   # Play bundle (signed if apps/<app>/keystore.properties exists)
@@ -80,7 +80,7 @@ Project skills in `.claude/skills/`: `new-android-app` (competitor study → des
 - `:apps:<app>:domain` is **pure Kotlin, no `android.*`**: all business rules live here, unit
   tested with `kotlin.test`. This keeps them portable (a later move into the `lillorepo` Bazel
   monorepo starts with these modules).
-- `:apps:<app>:app`: Compose + Material 3, MVVM (`ViewModel` + `StateFlow`, collected with
+- `:apps:<app>:app`: Compose + Material 3 (its composables are `internal`; public API lives in core), MVVM (`ViewModel` + `StateFlow`, collected with
   `collectAsStateWithLifecycle`; domain state immutable, replaced on change — never a mutable object
   Compose can't observe). Navigation uses type-safe `@Serializable` routes (`composable<Route>`,
   `toRoute()`), never route strings. No DI framework: app-wide singletons live on the app's

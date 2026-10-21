@@ -25,7 +25,12 @@ object WordPacks {
         .filter { it.first().isNotEmpty() }
         .map { parts ->
             val word = parts.first()
-            Entry(word, parts.drop(1).filter { it.isNotEmpty() && !it.equals(word, ignoreCase = true) }.distinctBy { it.lowercase() })
+            Entry(
+                word,
+                parts.drop(1).filter {
+                    it.isNotEmpty() && !it.equals(word, ignoreCase = true)
+                }.distinctBy { it.lowercase() }
+            )
         }
         .distinctBy { it.word.lowercase() }
 

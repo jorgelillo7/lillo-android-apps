@@ -47,14 +47,18 @@ import com.jorgelillo.grouppolls.ui.theme.Polls
 
 /** First launch: pick the name your friends will see. */
 @Composable
-fun WelcomeScreen(onDone: (String) -> Unit) {
+internal fun WelcomeScreen(onDone: (String) -> Unit) {
     var name by rememberSaveable { mutableStateOf("") }
     val clean = Drafts.cleanName(name)
     Page(
         title = null,
         onBack = null,
         modifier = Modifier.imePadding(),
-        bottom = { BigButton(stringResource(R.string.welcome_start), { onDone(clean) }, enabled = clean.isNotEmpty(), modifier = Modifier.testTag("start")) }
+        bottom = {
+            BigButton(stringResource(R.string.welcome_start), {
+                onDone(clean)
+            }, enabled = clean.isNotEmpty(), modifier = Modifier.testTag("start"))
+        }
     ) {
         Spacer(Modifier.weight(1f))
         Row(Modifier.align(Alignment.CenterHorizontally)) {
@@ -68,23 +72,41 @@ fun WelcomeScreen(onDone: (String) -> Unit) {
             textAlign = TextAlign.Center,
             modifier = Modifier.fillMaxWidth().padding(top = 12.dp)
         )
-        Text(stringResource(R.string.welcome_desc), color = Polls.Muted, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth().padding(top = 8.dp, bottom = 32.dp))
+        Text(
+            stringResource(R.string.welcome_desc),
+            color = Polls.Muted,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth().padding(top = 8.dp, bottom = 32.dp)
+        )
         OutlinedTextField(
             value = name,
             onValueChange = { name = it.take(Limits.NAME_MAX) },
             label = { Text(stringResource(R.string.welcome_name)) },
             singleLine = true,
-            keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Words, imeAction = ImeAction.Done),
+            keyboardOptions = KeyboardOptions(
+                capitalization = KeyboardCapitalization.Words,
+                imeAction = ImeAction.Done
+            ),
             keyboardActions = KeyboardActions(onDone = { if (clean.isNotEmpty()) onDone(clean) }),
             modifier = Modifier.fillMaxWidth().testTag("name_input")
         )
-        Text(stringResource(R.string.welcome_name_desc), style = MaterialTheme.typography.bodySmall, color = Polls.Muted, modifier = Modifier.padding(top = 6.dp))
+        Text(
+            stringResource(R.string.welcome_name_desc),
+            style = MaterialTheme.typography.bodySmall,
+            color = Polls.Muted,
+            modifier = Modifier.padding(top = 6.dp)
+        )
         Spacer(Modifier.weight(1.4f))
     }
 }
 
 @Composable
-fun SettingsScreen(local: LocalState, onRename: (String) -> Unit, onDeleteData: () -> Unit, onBack: () -> Unit) {
+internal fun SettingsScreen(
+    local: LocalState,
+    onRename: (String) -> Unit,
+    onDeleteData: () -> Unit,
+    onBack: () -> Unit
+) {
     val uriHandler = LocalUriHandler.current
     var renaming by rememberSaveable { mutableStateOf(false) }
     var confirmDelete by rememberSaveable { mutableStateOf(false) }
@@ -105,12 +127,24 @@ fun SettingsScreen(local: LocalState, onRename: (String) -> Unit, onDeleteData: 
                 onClick = null
             )
             if (canPickAppLanguage) {
-                SettingRow(stringResource(CoreR.string.lillo_language), currentAppLanguageName(), "language") { pickLanguage = true }
+                SettingRow(stringResource(CoreR.string.lillo_language), currentAppLanguageName(), "language") {
+                    pickLanguage =
+                        true
+                }
             }
             SettingRow(stringResource(R.string.terms_title), null, "terms") { showTerms = true }
-            SettingRow(stringResource(R.string.settings_privacy), null, "privacy") { uriHandler.openUri(PRIVACY_POLICY_URL) }
+            SettingRow(stringResource(R.string.settings_privacy), null, "privacy") {
+                uriHandler.openUri(PRIVACY_POLICY_URL)
+            }
             SettingRow(stringResource(R.string.settings_rate), null, "rate") { uriHandler.openUri(PLAY_STORE_URL) }
-            SettingRow(stringResource(R.string.settings_delete), stringResource(R.string.settings_delete_desc), "delete_data") { confirmDelete = true }
+            SettingRow(
+                stringResource(R.string.settings_delete),
+                stringResource(R.string.settings_delete_desc),
+                "delete_data"
+            ) {
+                confirmDelete =
+                    true
+            }
             Text(
                 stringResource(R.string.settings_about, BuildConfig.VERSION_NAME),
                 style = MaterialTheme.typography.bodySmall,
@@ -131,8 +165,15 @@ fun SettingsScreen(local: LocalState, onRename: (String) -> Unit, onDeleteData: 
             title = { Text(stringResource(R.string.settings_name)) },
             text = {
                 Column {
-                    OutlinedTextField(value = name, onValueChange = { name = it.take(Limits.NAME_MAX) }, singleLine = true, modifier = Modifier.testTag("rename_input"))
-                    Text(stringResource(R.string.settings_name_desc), style = MaterialTheme.typography.bodySmall, color = Polls.Muted, modifier = Modifier.padding(top = 8.dp))
+                    OutlinedTextField(value = name, onValueChange = {
+                        name = it.take(Limits.NAME_MAX)
+                    }, singleLine = true, modifier = Modifier.testTag("rename_input"))
+                    Text(
+                        stringResource(R.string.settings_name_desc),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = Polls.Muted,
+                        modifier = Modifier.padding(top = 8.dp)
+                    )
                 }
             },
             confirmButton = {
@@ -157,10 +198,16 @@ fun SettingsScreen(local: LocalState, onRename: (String) -> Unit, onDeleteData: 
                     confirmDelete = false
                     onDeleteData()
                 }, modifier = Modifier.testTag("confirm_delete")) {
-                    Text(stringResource(R.string.delete_confirm_button), color = Polls.Red, fontWeight = FontWeight.Bold)
+                    Text(
+                        stringResource(R.string.delete_confirm_button),
+                        color = Polls.Red,
+                        fontWeight = FontWeight.Bold
+                    )
                 }
             },
-            dismissButton = { TextButton(onClick = { confirmDelete = false }) { Text(stringResource(R.string.cancel)) } }
+            dismissButton = {
+                TextButton(onClick = { confirmDelete = false }) { Text(stringResource(R.string.cancel)) }
+            }
         )
     }
     if (showTerms) {

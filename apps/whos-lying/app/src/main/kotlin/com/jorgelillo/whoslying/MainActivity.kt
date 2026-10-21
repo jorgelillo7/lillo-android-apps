@@ -21,7 +21,7 @@ class MainActivity : ComponentActivity() {
         if (savedInstanceState == null) handleLink(intent)
         val app = application as WhosLyingApplication
         setLilloContent(NeonColorScheme) {
-            WhosLyingApp(app, incomingText = incoming.value, onIncomingHandled = { incoming.value = null })
+            WhosLyingApp(app, incomingText = incoming.value, onConsumeIncoming = { incoming.value = null })
         }
     }
 

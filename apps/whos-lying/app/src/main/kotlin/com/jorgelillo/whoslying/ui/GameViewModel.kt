@@ -75,7 +75,10 @@ class GameViewModel(private val repository: StateRepository, language: String) :
     fun allPacks(state: SavedState): List<WordPack> = builtInPacks + state.customPacks
 
     /** Packs the next game draws from: the selected ones, or all of them. */
-    fun selectedPacks(state: SavedState): List<WordPack> = allPacks(state).filter { state.settings.packIds.isEmpty() || it.id in state.settings.packIds }.ifEmpty { builtInPacks }
+    fun selectedPacks(state: SavedState): List<WordPack> = allPacks(state).filter {
+        state.settings.packIds.isEmpty() ||
+            it.id in state.settings.packIds
+    }.ifEmpty { builtInPacks }
 
     fun unplayed(state: SavedState): Pair<Int, Int> = WordPicker.unplayed(selectedPacks(state), state.recentWords)
 
@@ -83,7 +86,9 @@ class GameViewModel(private val repository: StateRepository, language: String) :
 
     fun addPlayer(name: String) = update { s ->
         val clean = name.trim()
-        if (clean.isEmpty() || s.players.any { it.equals(clean, ignoreCase = true) } || s.players.size >= Rules.MAX_PLAYERS) {
+        if (clean.isEmpty() || s.players.any { it.equals(clean, ignoreCase = true) } ||
+            s.players.size >= Rules.MAX_PLAYERS
+        ) {
             s
         } else {
             s.copy(players = s.players + clean)
@@ -135,7 +140,13 @@ class GameViewModel(private val repository: StateRepository, language: String) :
     }
 
     fun deletePack(id: String) = update { s ->
-        s.copy(customPacks = s.customPacks.filterNot { it.id == id }, settings = s.settings.copy(packIds = s.settings.packIds - id))
+        s.copy(
+            customPacks = s.customPacks.filterNot { it.id == id },
+            settings = s.settings.copy(
+                packIds =
+                    s.settings.packIds - id
+            )
+        )
     }
 
     // --- Game -----------------------------------------------------------------------------------
@@ -150,7 +161,9 @@ class GameViewModel(private val repository: StateRepository, language: String) :
         _lastPoints.value = emptyMap()
         _voteForced.value = false
         strokes.clear()
-        update { it.copy(recentWords = (listOf(entry.word) + (it.recentWords - entry.word)).take(WordPicker.RECENT_MEMORY)) }
+        update {
+            it.copy(recentWords = (listOf(entry.word) + (it.recentWords - entry.word)).take(WordPicker.RECENT_MEMORY))
+        }
         return true
     }
 

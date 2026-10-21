@@ -63,6 +63,7 @@ object Bracket {
                 }
             }
         }
-        return matches.filter { it.stage != Stage.ELIMINATION } + byKey.values.sortedWith(compareBy({ it.round }, { it.slot }))
+        return matches.filter { it.stage != Stage.ELIMINATION } +
+            byKey.values.sortedWith(compareBy({ it.round }, { it.slot }))
     }
 }

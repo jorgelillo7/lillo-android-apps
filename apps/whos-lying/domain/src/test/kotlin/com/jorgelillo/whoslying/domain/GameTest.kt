@@ -12,9 +12,11 @@ import kotlin.test.assertTrue
 class GameTest {
 
     private val players = listOf("Ana", "Bea", "Carlos", "Dani", "Eva")
-    private val pack = WordPack("p", "Lugares", "🗺️", listOf(Entry("Playa", listOf("Piscina")), Entry("Cine", listOf("Teatro"))))
+    private val pack =
+        WordPack("p", "Lugares", "🗺️", listOf(Entry("Playa", listOf("Piscina")), Entry("Cine", listOf("Teatro"))))
 
-    private fun deal(settings: GameSettings, seed: Int = 1, who: List<String> = players) = Game.deal(who, settings, pack, pack.entries.first(), Random(seed))
+    private fun deal(settings: GameSettings, seed: Int = 1, who: List<String> = players) =
+        Game.deal(who, settings, pack, pack.entries.first(), Random(seed))
 
     @Test
     fun classicImpostorGetsTheDecoyAndDoesNotKnow() {
@@ -31,7 +33,11 @@ class GameTest {
         val impostors = game.cards.filter { it.role == Role.IMPOSTOR }
         assertEquals(2, impostors.size)
         assertTrue(impostors.all { it.word == null && it.hint == "Lugares" && it.knowsRole })
-        assertNull(deal(GameSettings(GameMode.BLIND, categoryHint = false)).cards.first { it.role == Role.IMPOSTOR }.hint)
+        assertNull(
+            deal(GameSettings(GameMode.BLIND, categoryHint = false)).cards.first {
+                it.role == Role.IMPOSTOR
+            }.hint
+        )
     }
 
     @Test
@@ -132,7 +138,13 @@ class GameTest {
         val impostor = impostorsWin.cards.single { it.role == Role.IMPOSTOR }.player
         assertEquals(mapOf(impostor to Scoring.INFILTRATOR_WIN), Scoring.points(impostorsWin))
 
-        val drifterGame = Game.deal(players, GameSettings(GameMode.DRIFTER), pack, Entry("Café", listOf("Té")), Random(3))
+        val drifterGame = Game.deal(
+            players,
+            GameSettings(GameMode.DRIFTER),
+            pack,
+            Entry("Café", listOf("Té")),
+            Random(3)
+        )
         val drifter = drifterGame.cards.single { it.role == Role.DRIFTER }.player
         val guessed = drifterGame.eliminate(drifter).guess("café")
         assertEquals(mapOf(drifter to Scoring.INFILTRATOR_WIN), Scoring.points(guessed))
@@ -187,7 +199,10 @@ class GameTest {
     fun impostorGetsOneOfSeveralSimilarWords() {
         val entry = Entry("Playa", listOf("Piscina", "Lago", "Río"))
         val decoys = (0 until 60).map { seed ->
-            Game.deal(players, GameSettings(GameMode.CLASSIC), pack, entry, Random(seed)).cards.single { it.role == Role.IMPOSTOR }.word
+            Game.deal(players, GameSettings(GameMode.CLASSIC), pack, entry, Random(seed)).cards.single {
+                it.role ==
+                    Role.IMPOSTOR
+            }.word
         }.toSet()
         assertEquals(setOf("Piscina", "Lago", "Río"), decoys)
     }
@@ -214,7 +229,13 @@ class GameTest {
             }
             // A word is played once per language, whatever pack it comes from.
             val words = packs.flatMap { p -> p.entries.map { Rules.normalize(it.word) } }
-            assertEquals(words.groupingBy { it }.eachCount().filterValues { it > 1 }, emptyMap(), "repeated words in $language")
+            assertEquals(
+                words.groupingBy {
+                    it
+                }.eachCount().filterValues { it > 1 },
+                emptyMap(),
+                "repeated words in $language"
+            )
         }
         // Both languages offer the same packs, in the same order.
         assertEquals(WordPacks.builtIn("es").map { it.id }, WordPacks.builtIn("en").map { it.id })

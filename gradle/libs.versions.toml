@@ -20,6 +20,8 @@ zxing = "3.5.4"
 # Gradle Play Publisher: 4.x is the line for AGP 9.
 playPublisher = "4.1.1"
 spotless = "8.10.4"
+# Compose lint rules for ktlint (Spotless custom rule set).
+composeRules = "0.6.8"
 
 # Tests on the JVM with Android classes (Robolectric) and screenshot tests (Roborazzi).
 robolectric = "4.17"
@@ -76,6 +78,7 @@ kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test-junit", vers
 android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "androidGradlePlugin" }
 kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 compose-gradlePlugin = { group = "org.jetbrains.kotlin", name = "compose-compiler-gradle-plugin", version.ref = "kotlin" }
+composeRules-ktlint = { group = "io.nlopez.compose.rules", name = "ktlint", version.ref = "composeRules" }
 playPublisher-gradlePlugin = { group = "com.github.triplet.gradle", name = "play-publisher", version.ref = "playPublisher" }
 
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }

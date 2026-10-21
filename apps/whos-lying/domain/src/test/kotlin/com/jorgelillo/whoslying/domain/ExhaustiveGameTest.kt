@@ -33,11 +33,17 @@ class ExhaustiveGameTest {
                     for (chaos in listOf(false, true)) {
                         for (n in playerCounts) {
                             if (n < Rules.minPlayers(mode)) {
-                                assertFalse(Rules.canStart(n, GameSettings(mode)), "$mode should not start with $n players")
+                                assertFalse(
+                                    Rules.canStart(n, GameSettings(mode)),
+                                    "$mode should not start with $n players"
+                                )
                                 continue
                             }
                             val max = Rules.maxImpostors(n, mode)
-                            assertFalse(Rules.canStart(n, GameSettings(mode, impostors = max + 1)), "$mode $n players: ${max + 1} impostors")
+                            assertFalse(
+                                Rules.canStart(n, GameSettings(mode, impostors = max + 1)),
+                                "$mode $n players: ${max + 1} impostors"
+                            )
                             for (impostors in 1..max) {
                                 val settings = GameSettings(mode, impostors, hint, chaos, drawing = drawing)
                                 repeat(SEEDS) { seed ->
@@ -56,7 +62,15 @@ class ExhaustiveGameTest {
         }
         println("exhaustive: $games games, outcomes $outcomesSeen")
         // Every kind of ending showed up somewhere in the matrix.
-        for (kind in listOf("CiviliansWin", "Impostors", "Drifter", "ImpostorsAndDrifter", "DrifterGuessed", "NoCivilians", "EndedEarly")) {
+        for (kind in listOf(
+            "CiviliansWin",
+            "Impostors",
+            "Drifter",
+            "ImpostorsAndDrifter",
+            "DrifterGuessed",
+            "NoCivilians",
+            "EndedEarly"
+        )) {
             assertTrue((outcomesSeen[kind] ?: 0) > 0, "never saw $kind")
         }
     }
@@ -68,12 +82,22 @@ class ExhaustiveGameTest {
         val drifters = game.cards.count { it.role == Role.DRIFTER }
         val allImpostors = impostors == n
         if (settings.chaos) {
-            assertTrue(impostors in 1..Rules.maxImpostors(n, settings.mode) || allImpostors, "$ctx: chaos gave $impostors")
+            assertTrue(
+                impostors in 1..Rules.maxImpostors(n, settings.mode) || allImpostors,
+                "$ctx: chaos gave $impostors"
+            )
         } else {
             assertEquals(settings.impostors, impostors, ctx)
         }
         assertEquals(if (settings.mode == GameMode.DRIFTER && !allImpostors) 1 else 0, drifters, ctx)
-        if (!allImpostors) assertTrue(game.cards.count { it.role == Role.CIVILIAN } > impostors, "$ctx: civilians must outnumber impostors")
+        if (!allImpostors) {
+            assertTrue(
+                game.cards.count {
+                    it.role == Role.CIVILIAN
+                } > impostors,
+                "$ctx: civilians must outnumber impostors"
+            )
+        }
 
         for (card in game.cards) {
             when (card.role) {
@@ -89,7 +113,17 @@ class ExhaustiveGameTest {
                     assertTrue(card.word in entry.decoys || pack.entries.any { it.word == card.word }, ctx)
                 }
             }
-            assertEquals(if (card.word == null && settings.categoryHint) pack.name else null, card.hint, "$ctx: hint for ${card.role}")
+            assertEquals(
+                if (card.word == null &&
+                    settings.categoryHint
+                ) {
+                    pack.name
+                } else {
+                    null
+                },
+                card.hint,
+                "$ctx: hint for ${card.role}"
+            )
             assertEquals(card.role != Role.CIVILIAN && card.word == null, card.knowsRole, ctx)
         }
         assertNotEquals(Role.DRIFTER, game.cardOf(game.starter).role, "$ctx: the drifter never starts")
@@ -107,7 +141,11 @@ class ExhaustiveGameTest {
                 game = game.reveal()
                 break
             }
-            if (votes > game.cards.size || game.alive.isEmpty()) fail("game never ended: ${game.cards.map { it.role }}, alive ${game.alive.size}")
+            if (votes > game.cards.size ||
+                game.alive.isEmpty()
+            ) {
+                fail("game never ended: ${game.cards.map { it.role }}, alive ${game.alive.size}")
+            }
             val out = game.alive.random(random).player
             val before = game
             game = game.eliminate(out)
@@ -137,7 +175,10 @@ class ExhaustiveGameTest {
         val noCivilians = game.cards.none { it.role == Role.CIVILIAN }
         when (val outcome = game.outcome) {
             null -> {
-                assertTrue((infiltrators.isNotEmpty() && civilians > 1) || (noCivilians && game.alive.size > 1), "unfinished game should be over: ${game.alive}")
+                assertTrue(
+                    (infiltrators.isNotEmpty() && civilians > 1) || (noCivilians && game.alive.size > 1),
+                    "unfinished game should be over: ${game.alive}"
+                )
             }
 
             Outcome.CiviliansWin -> assertTrue(infiltrators.isEmpty())
@@ -169,9 +210,21 @@ class ExhaustiveGameTest {
     private fun checkPoints(game: Game) {
         val points = Scoring.points(game)
         val expected = when (val outcome = game.outcome) {
-            Outcome.CiviliansWin -> game.cards.filter { it.role == Role.CIVILIAN }.associate { it.player to Scoring.CIVILIAN_WIN }
-            is Outcome.InfiltratorsWin -> game.cards.filter { it.role in outcome.roles }.associate { it.player to Scoring.INFILTRATOR_WIN }
-            Outcome.DrifterGuessed -> game.cards.filter { it.role == Role.DRIFTER }.associate { it.player to Scoring.INFILTRATOR_WIN }
+            Outcome.CiviliansWin -> game.cards.filter { it.role == Role.CIVILIAN }.associate {
+                it.player to
+                    Scoring.CIVILIAN_WIN
+            }
+
+            is Outcome.InfiltratorsWin -> game.cards.filter { it.role in outcome.roles }.associate {
+                it.player to
+                    Scoring.INFILTRATOR_WIN
+            }
+
+            Outcome.DrifterGuessed -> game.cards.filter { it.role == Role.DRIFTER }.associate {
+                it.player to
+                    Scoring.INFILTRATOR_WIN
+            }
+
             else -> emptyMap()
         }
         assertEquals(expected, points, "points for ${game.outcome}")
@@ -181,7 +234,9 @@ class ExhaustiveGameTest {
     fun impostorAndDrifterWinTogetherWhenOneCivilianIsLeft() {
         // 5 players in DRIFTER mode: 1 impostor, 1 drifter, 3 civilians. Vote two civilians out.
         val dealt = dealUntil(GameMode.DRIFTER, 5) { true }
-        val game = dealt.cards.filter { it.role == Role.CIVILIAN }.take(2).fold(dealt) { g, card -> g.eliminate(card.player) }
+        val game = dealt.cards.filter {
+            it.role == Role.CIVILIAN
+        }.take(2).fold(dealt) { g, card -> g.eliminate(card.player) }
         assertEquals(Outcome.InfiltratorsWin(setOf(Role.IMPOSTOR, Role.DRIFTER)), game.outcome)
         assertEquals(setOf(Scoring.INFILTRATOR_WIN), Scoring.points(game).values.toSet())
         assertEquals(2, Scoring.points(game).size)
@@ -192,9 +247,18 @@ class ExhaustiveGameTest {
         val dealt = dealUntil(GameMode.DRIFTER, 5) { true }
         val impostorOut = dealt.eliminate(dealt.cards.single { it.role == Role.IMPOSTOR }.player)
         assertNull(impostorOut.outcome, "the drifter is still in")
-        val game = dealt.cards.filter { it.role == Role.CIVILIAN }.take(2).fold(impostorOut) { g, card -> g.eliminate(card.player) }
+        val game = dealt.cards.filter {
+            it.role == Role.CIVILIAN
+        }.take(2).fold(impostorOut) { g, card -> g.eliminate(card.player) }
         assertEquals(Outcome.InfiltratorsWin(setOf(Role.DRIFTER)), game.outcome)
-        assertEquals(mapOf(game.cards.single { it.role == Role.DRIFTER }.player to Scoring.INFILTRATOR_WIN), Scoring.points(game))
+        assertEquals(
+            mapOf(
+                game.cards.single {
+                    it.role == Role.DRIFTER
+                }.player to Scoring.INFILTRATOR_WIN
+            ),
+            Scoring.points(game)
+        )
     }
 
     @Test
@@ -212,7 +276,9 @@ class ExhaustiveGameTest {
         val random = Random(3)
         val (pack, entry) = WordPicker.pick(packs, emptyList(), random)
         // Chaos picks "everyone" now and then: find such a deal.
-        var game = generateSequence { Game.deal(names(4), GameSettings(GameMode.CLASSIC, chaos = true), pack, entry, random) }
+        var game = generateSequence {
+            Game.deal(names(4), GameSettings(GameMode.CLASSIC, chaos = true), pack, entry, random)
+        }
             .first { g -> g.cards.all { it.role == Role.IMPOSTOR } }
         repeat(2) {
             game = game.eliminate(game.alive.first().player)

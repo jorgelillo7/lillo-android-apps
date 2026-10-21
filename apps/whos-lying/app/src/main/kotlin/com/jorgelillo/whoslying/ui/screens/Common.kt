@@ -44,7 +44,7 @@ import com.jorgelillo.whoslying.ui.theme.Neon
 
 /** Full-screen page with the neon backdrop, an optional back button and a bottom action area. */
 @Composable
-fun Page(
+internal fun Page(
     title: String?,
     onBack: (() -> Unit)?,
     modifier: Modifier = Modifier,
@@ -54,24 +54,39 @@ fun Page(
     sideActionsWhenShort: Boolean = false,
     bottom: @Composable ColumnScope.() -> Unit = {},
     content: @Composable ColumnScope.() -> Unit
-) = LilloPage(title, onBack, background, modifier = modifier, actions = actions, sideActionsWhenShort = sideActionsWhenShort, bottom = bottom, content = content)
+) = LilloPage(
+    title,
+    onBack,
+    background,
+    modifier = modifier,
+    actions = actions,
+    sideActionsWhenShort = sideActionsWhenShort,
+    bottom = bottom,
+    content = content
+)
 
 @Composable
-fun BigButton(
+internal fun BigButton(
     text: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     color: Color = MaterialTheme.colorScheme.primary,
     contentColor: Color = MaterialTheme.colorScheme.onPrimary
-) = LilloBigButton(text, onClick, color, contentColor, modifier, enabled)
+) = LilloBigButton(text, onClick, modifier, color = color, contentColor = contentColor, enabled = enabled)
 
 /** Player colors for avatars, by position in the group. */
 val avatarColors = listOf(Neon.Pink, Neon.Turquoise, Neon.VioletLight, Neon.Amber)
 
 /** A player's avatar in their group colour (by position in [players]). */
 @Composable
-fun Avatar(player: String, players: List<String>, size: Dp, modifier: Modifier = Modifier, ring: Color? = null) = LilloAvatar(
+internal fun Avatar(
+    player: String,
+    players: List<String>,
+    size: Dp,
+    modifier: Modifier = Modifier,
+    ring: Color? = null
+) = LilloAvatar(
     player,
     avatarColors[players.indexOf(player).coerceAtLeast(0) % avatarColors.size],
     size,
@@ -82,6 +97,6 @@ fun Avatar(player: String, players: List<String>, size: Dp, modifier: Modifier =
 
 /** Big emoji used as illustration (no image assets needed). */
 @Composable
-fun Emoji(value: String, modifier: Modifier = Modifier, size: Int = 72) {
+internal fun Emoji(value: String, modifier: Modifier = Modifier, size: Int = 72) {
     Box(modifier, contentAlignment = Alignment.Center) { Text(value, fontSize = size.sp) }
 }

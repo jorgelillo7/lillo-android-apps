@@ -38,7 +38,14 @@ class RoundScreensScreenshotTest {
 
     private fun deal(mode: GameMode) = Game.deal(players, GameSettings(mode), pack, pack.entries.first(), Random(3))
 
-    private fun shot(name: String, beforeCapture: () -> Unit = {}, content: @Composable () -> Unit) = compose.captureScreenshot(name, { beforeCapture() }) { LilloTheme(NeonColorScheme) { content() } }
+    private fun shot(
+        name: String,
+        beforeCapture: () -> Unit = {
+        },
+        content: @Composable () -> Unit
+    ) = compose.captureScreenshot(name, {
+        beforeCapture()
+    }) { LilloTheme(NeonColorScheme) { content() } }
 
     private fun voting(name: String) = shot(name) {
         val game = deal(GameMode.CLASSIC)
@@ -46,7 +53,9 @@ class RoundScreensScreenshotTest {
     }
 
     private fun lastChance(name: String) {
-        val game = deal(GameMode.DRIFTER).let { it.eliminate(it.cards.single { card -> card.role == Role.DRIFTER }.player) }
+        val game = deal(GameMode.DRIFTER).let {
+            it.eliminate(it.cards.single { card -> card.role == Role.DRIFTER }.player)
+        }
         // Past the "exposed in 3, 2, 1…" countdown.
         shot(name, { compose.mainClock.advanceTimeBy(3_000) }) {
             ExposeScreen(game, game.lastElimination!!, onGuess = { false }, onContinue = {}, onGameOver = {})
@@ -54,12 +63,29 @@ class RoundScreensScreenshotTest {
     }
 
     private fun result(name: String) = shot(name) {
-        val game = deal(GameMode.CLASSIC).let { it.eliminate(it.cards.single { card -> card.role == Role.IMPOSTOR }.player) }
-        ResultScreen(game, game.lastElimination, emptyList(), {}, roundsLeft = 2, {}, onReport = {}, onContinue = {}, onHome = {})
+        val game = deal(GameMode.CLASSIC).let {
+            it.eliminate(it.cards.single { card -> card.role == Role.IMPOSTOR }.player)
+        }
+        ResultScreen(game, game.lastElimination, emptyList(), {
+        }, roundsLeft = 2, {}, onReport = {}, onContinue = {}, onHome = {})
     }
 
     private fun ranking(name: String) = shot(name) {
-        RankingScreen(players, mapOf("Ana" to 15, "Bea" to 10, "Carlos" to 5), mapOf("Ana" to 5), roundsLeft = 1, roundsPlayed = 2, {}, {}, {})
+        RankingScreen(
+            players,
+            mapOf(
+                "Ana" to 15,
+                "Bea" to 10,
+                "Carlos" to 5
+            ),
+            mapOf("Ana" to 5),
+            roundsLeft = 1,
+            roundsPlayed = 2,
+            {
+            },
+            {},
+            {}
+        )
     }
 
     private fun podium(name: String) = shot(name) {

@@ -15,7 +15,9 @@ spotless {
     kotlin {
         target("**/*.kt")
         targetExclude("**/build/**")
-        ktlint()
+        // Plus the community's Compose rules (modifier order, naming, state hoisting…).
+        val composeRules = libs.composeRules.ktlint.get()
+        ktlint().customRuleSets(listOf("${composeRules.module}:${composeRules.version}"))
     }
     kotlinGradle {
         target("**/*.gradle.kts")

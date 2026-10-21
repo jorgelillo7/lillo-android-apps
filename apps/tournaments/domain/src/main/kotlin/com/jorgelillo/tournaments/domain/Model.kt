@@ -5,10 +5,7 @@ import kotlinx.serialization.Serializable
 
 /** Short field names keep a shared tournament link small (it travels as a URL / QR code). */
 @Serializable
-data class Player(
-    @SerialName("i") val id: Int,
-    @SerialName("n") val name: String
-)
+data class Player(@SerialName("i") val id: Int, @SerialName("n") val name: String)
 
 @Serializable
 enum class Format {
@@ -98,7 +95,9 @@ data class Tournament(
 ) {
     fun player(id: Int?): Player? = players.firstOrNull { it.id == id }
 
-    fun round(stage: Stage, round: Int): List<Match> = matches.filter { it.stage == stage && it.round == round }.sortedBy { it.slot }
+    fun round(stage: Stage, round: Int): List<Match> = matches.filter {
+        it.stage == stage && it.round == round
+    }.sortedBy { it.slot }
 
     val eliminationRounds: Int get() = matches.filter { it.stage == Stage.ELIMINATION }.maxOfOrNull { it.round } ?: 0
 
@@ -106,12 +105,25 @@ data class Tournament(
     val champion: Int?
         get() {
             val last = eliminationRounds
-            if (last == 0) return if (format == Format.SWISS && topCut == 0 && isSwissOver) Standings.of(this).firstOrNull()?.player else null
+            if (last ==
+                0
+            ) {
+                return if (format == Format.SWISS && topCut == 0 &&
+                    isSwissOver
+                ) {
+                    Standings.of(this).firstOrNull()?.player
+                } else {
+                    null
+                }
+            }
             return round(Stage.ELIMINATION, last).singleOrNull()?.winner(bestOf)
         }
 
     val isSwissOver: Boolean
-        get() = format == Format.SWISS && (1..swissRounds).all { r -> round(Stage.SWISS, r).let { it.isNotEmpty() && it.all { m -> m.isDone(bestOf) } } }
+        get() = format == Format.SWISS &&
+            (1..swissRounds).all { r ->
+                round(Stage.SWISS, r).let { it.isNotEmpty() && it.all { m -> m.isDone(bestOf) } }
+            }
 
     val isOver: Boolean get() = champion != null
 }

@@ -73,7 +73,6 @@ Lines are pruned as items ship. What has **shipped** lives in `apps/<app>/releas
 | ⏳ | Move into `lillorepo` (Bazel) | Gradle builds or the Play publishing loop slowing you down · domain modules are pure Kotlin to make it easy |
 | 👤 | Publishing from the terminal is ready (Gradle Play Publisher): create the Google Cloud service account and give it access in Play Console, once (docs/publishing-on-google-play.md §6) | You |
 | 🔨 | Release smoke tests in CI on an emulator (`reactivecircus/android-emulator-runner`): the release build in CI catches R8 build errors, but only running the app catches a stripped class like WorkManager's | `scripts/env.sh` to work on Linux runners |
-| 🔨 | Line length under ktlint (`max_line_length` is off: ~100 Kotlin lines over 150 to wrap by hand) and Compose rules (`io.nlopez.compose.rules` for ktlint) | — |
 | 👤 | Renovate is configured (`renovate.json`): install the Renovate GitHub app on the repo so the weekly PRs start | You · one click |
 | ⏳ | `minSdk` 23 → 24 (blocks WorkManager 2.12; check the Play Console share of API 23 first) | Christmas's install stats |
 | ⏳ | Baseline profiles for startup | An app where startup feels slow |

@@ -66,7 +66,15 @@ fun ConfettiBurst(key: Any?, colors: List<Color>, modifier: Modifier = Modifier)
     }
 }
 
-private class RainPiece(val x: Float, val speed: Float, val drift: Float, val spin: Float, val color: Color, val width: Float, val delay: Float)
+private class RainPiece(
+    val x: Float,
+    val speed: Float,
+    val drift: Float,
+    val spin: Float,
+    val color: Color,
+    val width: Float,
+    val delay: Float
+)
 
 /** A few seconds of confetti falling over [modifier]'s area (a win that fills the screen). */
 @Composable

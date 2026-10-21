@@ -31,13 +31,18 @@ import kotlin.math.roundToInt
 
 /** Swiss table: points, W-D-L and the first two tie-breakers; a gold line marks the top cut. */
 @Composable
-fun StandingsView(t: Tournament) {
+internal fun StandingsView(t: Tournament) {
     val rows = Standings.of(t)
     LazyColumn(Modifier.testTag("standings"), verticalArrangement = Arrangement.spacedBy(4.dp)) {
         item {
             Row(Modifier.fillMaxWidth().padding(horizontal = 10.dp, vertical = 4.dp)) {
                 Header("#", 28)
-                Text(stringResource(R.string.standings_player), color = Arena.Muted, fontSize = 12.sp, modifier = Modifier.weight(1f))
+                Text(
+                    stringResource(R.string.standings_player),
+                    color = Arena.Muted,
+                    fontSize = 12.sp,
+                    modifier = Modifier.weight(1f)
+                )
                 Header(stringResource(R.string.standings_points), 40)
                 Header(stringResource(R.string.standings_record), 64)
                 Header("OMW", 44)
@@ -48,16 +53,29 @@ fun StandingsView(t: Tournament) {
             if (t.topCut > 0 && i == t.topCut) {
                 Row(Modifier.fillMaxWidth().padding(vertical = 4.dp), verticalAlignment = Alignment.CenterVertically) {
                     Box(Modifier.weight(1f).height(2.dp).background(Arena.Gold))
-                    Text(stringResource(R.string.setup_top_cut_n, t.topCut), color = Arena.Gold, fontSize = 11.sp, modifier = Modifier.padding(horizontal = 8.dp))
+                    Text(
+                        stringResource(R.string.setup_top_cut_n, t.topCut),
+                        color = Arena.Gold,
+                        fontSize = 11.sp,
+                        modifier = Modifier.padding(horizontal = 8.dp)
+                    )
                     Box(Modifier.weight(1f).height(2.dp).background(Arena.Gold))
                 }
             }
             val leader = i == 0 && s.points > 0
             Row(
-                Modifier.fillMaxWidth().background(Arena.Raised, RoundedCornerShape(10.dp)).padding(horizontal = 10.dp, vertical = 10.dp),
+                Modifier.fillMaxWidth().background(
+                    Arena.Raised,
+                    RoundedCornerShape(10.dp)
+                ).padding(horizontal = 10.dp, vertical = 10.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text("${i + 1}", color = if (leader) Arena.Gold else Arena.Muted, fontWeight = FontWeight.Bold, modifier = Modifier.width(28.dp))
+                Text(
+                    "${i + 1}",
+                    color = if (leader) Arena.Gold else Arena.Muted,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.width(28.dp)
+                )
                 Text(
                     t.player(s.player)?.name.orEmpty(),
                     fontWeight = FontWeight.Bold,
@@ -79,7 +97,14 @@ fun StandingsView(t: Tournament) {
 private fun percent(v: Double) = "${(v * 100).roundToInt()}%"
 
 @Composable
-private fun Header(text: String, width: Int) = Text(text, color = Arena.Muted, fontSize = 12.sp, textAlign = TextAlign.Center, modifier = Modifier.width(width.dp))
+private fun Header(text: String, width: Int) =
+    Text(text, color = Arena.Muted, fontSize = 12.sp, textAlign = TextAlign.Center, modifier = Modifier.width(width.dp))
 
 @Composable
-private fun Cell(text: String, width: Int, bold: Boolean = false) = Text(text, fontSize = 13.sp, fontWeight = if (bold) FontWeight.Black else FontWeight.Normal, textAlign = TextAlign.Center, modifier = Modifier.width(width.dp))
+private fun Cell(text: String, width: Int, bold: Boolean = false) = Text(
+    text,
+    fontSize = 13.sp,
+    fontWeight = if (bold) FontWeight.Black else FontWeight.Normal,
+    textAlign = TextAlign.Center,
+    modifier = Modifier.width(width.dp)
+)

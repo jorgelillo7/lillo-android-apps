@@ -14,7 +14,14 @@ object Limits {
 }
 
 /** What is wrong with a poll draft; empty when it can be created. */
-enum class DraftProblem { QUESTION_TOO_SHORT, QUESTION_TOO_LONG, ANSWER_EMPTY, ANSWER_TOO_LONG, SAME_ANSWERS, BLOCKED_WORDS }
+enum class DraftProblem {
+    QUESTION_TOO_SHORT,
+    QUESTION_TOO_LONG,
+    ANSWER_EMPTY,
+    ANSWER_TOO_LONG,
+    SAME_ANSWERS,
+    BLOCKED_WORDS
+}
 
 object Drafts {
     fun problems(question: String, red: String, blue: String, visibility: Visibility): Set<DraftProblem> = buildSet {
@@ -24,9 +31,13 @@ object Drafts {
         val answers = listOf(red.trim(), blue.trim())
         if (answers.any { it.isEmpty() }) add(DraftProblem.ANSWER_EMPTY)
         if (answers.any { it.length > Limits.ANSWER_MAX }) add(DraftProblem.ANSWER_TOO_LONG)
-        if (answers.all { it.isNotEmpty() } && Text.normalize(answers[0]) == Text.normalize(answers[1])) add(DraftProblem.SAME_ANSWERS)
+        if (answers.all { it.isNotEmpty() } && Text.normalize(answers[0]) == Text.normalize(answers[1])) {
+            add(DraftProblem.SAME_ANSWERS)
+        }
         // Private polls are between friends who chose to share a link; only public ones are filtered.
-        if (visibility == Visibility.PUBLIC && (listOf(q) + answers).any(Moderation::isBlocked)) add(DraftProblem.BLOCKED_WORDS)
+        if (visibility == Visibility.PUBLIC && (listOf(q) + answers).any(Moderation::isBlocked)) {
+            add(DraftProblem.BLOCKED_WORDS)
+        }
     }
 
     fun cleanName(name: String): String = name.trim().replace(Regex("\\s+"), " ").take(Limits.NAME_MAX)

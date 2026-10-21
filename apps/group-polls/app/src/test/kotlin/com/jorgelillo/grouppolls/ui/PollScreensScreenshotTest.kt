@@ -34,19 +34,27 @@ class PollScreensScreenshotTest {
 
     private val now = 1_760_000_000_000L
     private val repository = FakePollRepository { now }
-    private val feed = runBlocking { repository.feed().first() }.groupBy { it.language }.toList().sortedBy { it.first != "en" }
+    private val feed = runBlocking { repository.feed().first() }.groupBy { it.language }.toList().sortedBy {
+        it.first !=
+            "en"
+    }
     private val private = runBlocking { repository.poll(FakePollRepository.SAMPLE_PRIVATE).first()!! }
     private val votes = runBlocking { repository.votes(FakePollRepository.SAMPLE_PRIVATE).first() }
     private val local = LocalState(name = "Alex", acceptedTerms = true)
 
-    private fun shot(name: String, content: @Composable () -> Unit) = compose.captureScreenshot(name) { LilloTheme(PollsColorScheme) { content() } }
+    private fun shot(name: String, content: @Composable () -> Unit) = compose.captureScreenshot(name) {
+        LilloTheme(PollsColorScheme) { content() }
+    }
 
     private fun home(name: String) = shot(name) {
-        HomeScreen(feed, local, pollFlow = { code -> flowOf(feed.flatMap { it.second }.firstOrNull { it.code == code }) }, {}, {}, {}, clock = { now })
+        HomeScreen(feed, local, pollFlow = { code ->
+            flowOf(feed.flatMap { it.second }.firstOrNull { it.code == code })
+        }, {}, {}, {}, clock = { now })
     }
 
     private fun poll(name: String) = shot(name) {
-        PollScreen(private, votes, local, "local-user", shareOnOpen = false, { _, _, _ -> }, {}, { _, _ -> }, {}, {}, clock = { now })
+        PollScreen(private, votes, local, "local-user", shareOnOpen = false, { _, _, _ ->
+        }, {}, { _, _ -> }, {}, {}, clock = { now })
     }
 
     @Test fun welcomePortrait() = shot("welcome") { WelcomeScreen {} }

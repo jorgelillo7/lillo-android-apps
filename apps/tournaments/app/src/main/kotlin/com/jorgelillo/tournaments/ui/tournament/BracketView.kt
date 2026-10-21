@@ -96,7 +96,7 @@ data class BracketGeometry(val cardW: Float, val cardH: Float, val pitch: Float,
  * line (the victory line) towards the winner's next match; the champion's path is thicker.
  */
 @Composable
-fun BracketView(t: Tournament, onEdit: (Match) -> Unit) {
+internal fun BracketView(t: Tournament, onEdit: (Match) -> Unit) {
     val rounds = t.eliminationRounds
     val grid = remember(rounds) { BracketLayout.of(rounds) }
     val geometry = BracketGeometry(CARD_W.value, CARD_H.value, PITCH.value, GAP.value, HEADER.value)
@@ -115,7 +115,12 @@ fun BracketView(t: Tournament, onEdit: (Match) -> Unit) {
         Box(
             Modifier
                 .fillMaxSize()
-                .pointerInput(Unit) { detectPinch { factor -> userZoom = ((userZoom ?: fit) * factor).coerceIn(MIN_ZOOM, MAX_ZOOM) } }
+                .pointerInput(Unit) {
+                    detectPinch { factor ->
+                        userZoom =
+                            ((userZoom ?: fit) * factor).coerceIn(MIN_ZOOM, MAX_ZOOM)
+                    }
+                }
                 .horizontalScroll(rememberScrollState())
                 .verticalScroll(rememberScrollState())
                 .testTag("bracket")
@@ -125,7 +130,12 @@ fun BracketView(t: Tournament, onEdit: (Match) -> Unit) {
                 // A visual overview, small at the fitted zoom: screen readers get one description and
                 // the Matches tab, which lists every match with its own (large) touch target.
                 val overview = stringResource(R.string.bracket_a11y)
-                Box(Modifier.scaled(zoom).size(contentWidth.dp, contentHeight.dp).clearAndSetSemantics { contentDescription = overview }) {
+                Box(
+                    Modifier.scaled(zoom).size(contentWidth.dp, contentHeight.dp).clearAndSetSemantics {
+                        contentDescription =
+                            overview
+                    }
+                ) {
                     Connectors(t, grid, geometry, championPath)
                     // Round names over each column.
                     grid.cells.distinctBy { it.column }.forEach { cell ->
@@ -165,7 +175,12 @@ fun BracketView(t: Tournament, onEdit: (Match) -> Unit) {
 }
 
 @Composable
-private fun BoxScope.Connectors(t: Tournament, grid: BracketLayout.Grid, geometry: BracketGeometry, championPath: Set<Pair<Int, Int>>) {
+private fun BoxScope.Connectors(
+    t: Tournament,
+    grid: BracketLayout.Grid,
+    geometry: BracketGeometry,
+    championPath: Set<Pair<Int, Int>>
+) {
     Canvas(Modifier.matchParentSize()) {
         grid.cells.forEach { cell ->
             val points = geometry.connector(grid, cell) ?: return@forEach
@@ -180,7 +195,11 @@ private fun BoxScope.Connectors(t: Tournament, grid: BracketLayout.Grid, geometr
                 won -> 3.dp
                 else -> 1.5.dp
             }
-            drawPath(path, if (won) Arena.Gold else Arena.Faint, style = Stroke(width.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round))
+            drawPath(
+                path,
+                if (won) Arena.Gold else Arena.Faint,
+                style = Stroke(width.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round)
+            )
         }
     }
 }
@@ -217,16 +236,28 @@ private suspend fun PointerInputScope.detectPinch(onZoom: (Float) -> Unit) = awa
 }
 
 @Composable
-private fun ZoomButtons(onOut: () -> Unit, onIn: () -> Unit, onFit: () -> Unit, modifier: Modifier) {
+private fun ZoomButtons(onOut: () -> Unit, onIn: () -> Unit, onFit: () -> Unit, modifier: Modifier = Modifier) {
     Row(modifier.background(Arena.High, RoundedCornerShape(20.dp)), verticalAlignment = Alignment.CenterVertically) {
-        TextButton(onClick = onOut, modifier = Modifier.testTag("zoom_out")) { Text("−", fontSize = 20.sp, color = Arena.Cream) }
-        TextButton(onClick = onFit, modifier = Modifier.testTag("zoom_fit")) { Text(stringResource(R.string.bracket_fit), color = Arena.Cream) }
-        TextButton(onClick = onIn, modifier = Modifier.testTag("zoom_in")) { Text("+", fontSize = 20.sp, color = Arena.Cream) }
+        TextButton(onClick = onOut, modifier = Modifier.testTag("zoom_out")) {
+            Text("−", fontSize = 20.sp, color = Arena.Cream)
+        }
+        TextButton(onClick = onFit, modifier = Modifier.testTag("zoom_fit")) {
+            Text(stringResource(R.string.bracket_fit), color = Arena.Cream)
+        }
+        TextButton(onClick = onIn, modifier = Modifier.testTag("zoom_in")) {
+            Text("+", fontSize = 20.sp, color = Arena.Cream)
+        }
     }
 }
 
 @Composable
-private fun BracketCard(t: Tournament, m: Match, isFinal: Boolean, onEdit: (Match) -> Unit, modifier: Modifier) {
+private fun BracketCard(
+    t: Tournament,
+    m: Match,
+    isFinal: Boolean,
+    onEdit: (Match) -> Unit,
+    modifier: Modifier = Modifier
+) {
     val winner = m.winner(t.bestOf)
     val done = winner != null && !m.isBye
     val playable = m.a != null && m.b != null
@@ -234,7 +265,19 @@ private fun BracketCard(t: Tournament, m: Match, isFinal: Boolean, onEdit: (Matc
         modifier
             .size(CARD_W, CARD_H)
             .background(Arena.Raised, RoundedCornerShape(10.dp))
-            .border(BorderStroke(if (isFinal && done) 2.dp else 1.dp, if (isFinal && done) Arena.Gold else Arena.Faint), RoundedCornerShape(10.dp))
+            .border(
+                BorderStroke(
+                    if (isFinal &&
+                        done
+                    ) {
+                        2.dp
+                    } else {
+                        1.dp
+                    },
+                    if (isFinal && done) Arena.Gold else Arena.Faint
+                ),
+                RoundedCornerShape(10.dp)
+            )
             .clickable(enabled = playable) { onEdit(m) }
             .testTag("card_${m.round}_${m.slot}")
     ) {
@@ -251,7 +294,10 @@ private fun BracketCard(t: Tournament, m: Match, isFinal: Boolean, onEdit: (Matc
 
 @Composable
 private fun Slot(name: String?, score: Int?, won: Boolean, done: Boolean, height: Dp) {
-    Row(Modifier.fillMaxWidth().height(height).padding(horizontal = 8.dp), verticalAlignment = Alignment.CenterVertically) {
+    Row(
+        Modifier.fillMaxWidth().height(height).padding(horizontal = 8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         Text(
             name ?: "—",
             color = when {
@@ -267,7 +313,12 @@ private fun Slot(name: String?, score: Int?, won: Boolean, done: Boolean, height
         )
         if (score != null) {
             Spacer(Modifier.width(4.dp))
-            Text("$score", color = if (won) Arena.Gold else Arena.Muted, fontWeight = FontWeight.Black, fontSize = 14.sp)
+            Text(
+                "$score",
+                color = if (won) Arena.Gold else Arena.Muted,
+                fontWeight = FontWeight.Black,
+                fontSize = 14.sp
+            )
         }
     }
 }

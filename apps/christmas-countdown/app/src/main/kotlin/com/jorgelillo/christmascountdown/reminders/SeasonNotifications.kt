@@ -35,7 +35,13 @@ object SeasonNotifications {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return
         val manager = context.getSystemService(NotificationManager::class.java)
         Channel.entries.forEach { channel ->
-            val importance = if (channel == Channel.CHRISTMAS) NotificationManager.IMPORTANCE_HIGH else NotificationManager.IMPORTANCE_DEFAULT
+            val importance = if (channel ==
+                Channel.CHRISTMAS
+            ) {
+                NotificationManager.IMPORTANCE_HIGH
+            } else {
+                NotificationManager.IMPORTANCE_DEFAULT
+            }
             manager.createNotificationChannel(
                 NotificationChannel(channel.id, context.getString(channel.title), importance).apply {
                     description = context.getString(channel.description)
@@ -45,16 +51,29 @@ object SeasonNotifications {
     }
 
     fun canNotify(context: Context): Boolean = Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU ||
-        ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED
+        ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) ==
+        PackageManager.PERMISSION_GRANTED
 
     fun show(context: Context, reminder: Reminder, date: LocalDate) {
         if (!canNotify(context)) return
         val (channel, title, text) = when (reminder) {
-            Reminder.ONE_MONTH_LEFT -> Triple(Channel.COUNTDOWN, context.getString(R.string.reminder_month_title), context.getString(R.string.reminder_month_text))
+            Reminder.ONE_MONTH_LEFT -> Triple(
+                Channel.COUNTDOWN,
+                context.getString(R.string.reminder_month_title),
+                context.getString(R.string.reminder_month_text)
+            )
 
-            Reminder.ONE_WEEK_LEFT -> Triple(Channel.COUNTDOWN, context.getString(R.string.reminder_week_title), context.getString(R.string.reminder_week_text))
+            Reminder.ONE_WEEK_LEFT -> Triple(
+                Channel.COUNTDOWN,
+                context.getString(R.string.reminder_week_title),
+                context.getString(R.string.reminder_week_text)
+            )
 
-            Reminder.ADVENT_STARTS -> Triple(Channel.ADVENT, context.getString(R.string.reminder_advent_title), context.getString(R.string.reminder_advent_text))
+            Reminder.ADVENT_STARTS -> Triple(
+                Channel.ADVENT,
+                context.getString(R.string.reminder_advent_title),
+                context.getString(R.string.reminder_advent_text)
+            )
 
             Reminder.DOOR_WAITING -> {
                 val music = AdventPlan.forYear(date.year)[date.dayOfMonth] is AdventDoor.Song
@@ -65,13 +84,22 @@ object SeasonNotifications {
                 )
             }
 
-            Reminder.CHRISTMAS_DAY -> Triple(Channel.CHRISTMAS, context.getString(R.string.reminder_christmas_title), context.getString(R.string.reminder_christmas_text))
+            Reminder.CHRISTMAS_DAY -> Triple(
+                Channel.CHRISTMAS,
+                context.getString(R.string.reminder_christmas_title),
+                context.getString(R.string.reminder_christmas_text)
+            )
         }
         val opensAdvent = reminder == Reminder.ADVENT_STARTS || reminder == Reminder.DOOR_WAITING
         val intent = Intent(context, MainActivity::class.java)
             .putExtra(EXTRA_OPEN_ADVENT, opensAdvent)
             .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        val pending = PendingIntent.getActivity(context, reminder.ordinal, intent, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
+        val pending = PendingIntent.getActivity(
+            context,
+            reminder.ordinal,
+            intent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        )
         val notification = NotificationCompat.Builder(context, channel.id)
             .setSmallIcon(R.drawable.ic_notification)
             .setColor(ContextCompat.getColor(context, R.color.notification_accent))

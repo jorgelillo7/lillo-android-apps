@@ -23,7 +23,17 @@ object Stats {
     /** Best first: titles, then finals, then match win rate. [game] null = every game. */
     fun of(tournaments: List<Tournament>, game: String? = null): List<PlayerStats> {
         val chosen = tournaments.filter { game == null || it.game.equals(game, ignoreCase = true) }
-        data class Acc(var name: String, var tournaments: Int = 0, var titles: Int = 0, var finals: Int = 0, var w: Int = 0, var d: Int = 0, var l: Int = 0, var gw: Int = 0, var gl: Int = 0)
+        data class Acc(
+            var name: String,
+            var tournaments: Int = 0,
+            var titles: Int = 0,
+            var finals: Int = 0,
+            var w: Int = 0,
+            var d: Int = 0,
+            var l: Int = 0,
+            var gw: Int = 0,
+            var gl: Int = 0
+        )
         val byName = LinkedHashMap<String, Acc>()
         for (t in chosen) {
             val champion = t.champion
@@ -47,7 +57,11 @@ object Stats {
         }
         return byName.values
             .map { PlayerStats(it.name, it.tournaments, it.titles, it.finals, it.w, it.d, it.l, it.gw, it.gl) }
-            .sortedWith(compareByDescending<PlayerStats> { it.titles }.thenByDescending { it.finals }.thenByDescending { it.winRate }.thenByDescending { it.matches })
+            .sortedWith(
+                compareByDescending<PlayerStats> {
+                    it.titles
+                }.thenByDescending { it.finals }.thenByDescending { it.winRate }.thenByDescending { it.matches }
+            )
     }
 
     /** Every match as CSV (one row per match), for a spreadsheet. */
@@ -59,7 +73,9 @@ object Stats {
                 t.name, t.game, t.epochDay.toString(), roundName(m), m.round.toString(),
                 t.player(m.a)?.name.orEmpty(), t.player(m.b)?.name.orEmpty(),
                 m.winsA.toString(), m.winsB.toString(), winner, m.comment
-            ).joinTo(this, ",") { field -> if (field.any { it in ",\"\n" }) "\"" + field.replace("\"", "\"\"") + "\"" else field }
+            ).joinTo(this, ",") { field ->
+                if (field.any { it in ",\"\n" }) "\"" + field.replace("\"", "\"\"") + "\"" else field
+            }
             appendLine()
         }
     }

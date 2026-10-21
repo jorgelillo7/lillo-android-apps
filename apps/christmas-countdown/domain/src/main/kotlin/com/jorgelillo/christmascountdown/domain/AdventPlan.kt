@@ -107,12 +107,17 @@ object AdventPlan {
         return plan
     }
 
-    private fun plan(year: Int, activityUses: Map<AdventActivity, Int>, songUses: Map<AdventSong, Int>): Map<Int, AdventDoor> {
+    private fun plan(
+        year: Int,
+        activityUses: Map<AdventActivity, Int>,
+        songUses: Map<AdventSong, Int>
+    ): Map<Int, AdventDoor> {
         val random = SplitMix(year.toLong() * 31 + 7)
         val musicCount = 2 + (random.next(2))
         val musicDays = MUSIC_DAYS.toList().shuffled(random).take(musicCount).toSet()
         val songs = leastUsed(AdventSong.entries, songUses, musicCount, random)
-        val plan = mutableMapOf<Int, AdventDoor>(AdventCalendar.DOORS to AdventDoor.Activity(AdventActivity.CHRISTMAS_EVE))
+        val plan =
+            mutableMapOf<Int, AdventDoor>(AdventCalendar.DOORS to AdventDoor.Activity(AdventActivity.CHRISTMAS_EVE))
         musicDays.sorted().zip(songs.shuffled(random)).forEach { (day, song) -> plan[day] = AdventDoor.Song(song) }
         for (block in AdventBlock.entries) {
             val days = block.days.filterNot { it in musicDays }
@@ -124,7 +129,8 @@ object AdventPlan {
     }
 
     /** The [count] items used least so far; ties in a shuffled order. */
-    private fun <T> leastUsed(items: List<T>, uses: Map<T, Int>, count: Int, random: SplitMix): List<T> = items.shuffled(random).sortedBy { uses.getValue(it) }.take(count)
+    private fun <T> leastUsed(items: List<T>, uses: Map<T, Int>, count: Int, random: SplitMix): List<T> =
+        items.shuffled(random).sortedBy { uses.getValue(it) }.take(count)
 
     private fun <T> List<T>.shuffled(random: SplitMix): List<T> {
         val list = toMutableList()

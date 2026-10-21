@@ -44,7 +44,8 @@ class JsonStore<T>(
         return result!!.getOrThrow()
     }
 
-    private fun decode(raw: String?): T = raw?.let { runCatching { json.decodeFromString(serializer, it) }.getOrNull() } ?: default()
+    private fun decode(raw: String?): T =
+        raw?.let { runCatching { json.decodeFromString(serializer, it) }.getOrNull() } ?: default()
 
     private companion object {
         val json = Json { ignoreUnknownKeys = true }

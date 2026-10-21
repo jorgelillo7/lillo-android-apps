@@ -42,7 +42,7 @@ val DialogTags = TestTagsAsResourceIds
 
 /** Full-screen page with a back button and an optional bottom action area. */
 @Composable
-fun Page(
+internal fun Page(
     title: String?,
     onBack: (() -> Unit)?,
     modifier: Modifier = Modifier,
@@ -50,20 +50,38 @@ fun Page(
     actions: @Composable RowScope.() -> Unit = {},
     bottom: @Composable ColumnScope.() -> Unit = {},
     content: @Composable ColumnScope.() -> Unit
-) = LilloPage(title, onBack, background, modifier = modifier, titleWeight = FontWeight.Black, actions = actions, bottom = bottom, content = content)
+) = LilloPage(
+    title,
+    onBack,
+    background,
+    modifier = modifier,
+    titleWeight = FontWeight.Black,
+    actions = actions,
+    bottom = bottom,
+    content = content
+)
 
 @Composable
-fun BigButton(
+internal fun BigButton(
     text: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     color: Color = Polls.Blue
-) = LilloBigButton(text, onClick, color, modifier = modifier, enabled = enabled, height = 56.dp, fontSize = 18.sp, shape = CircleShape)
+) = LilloBigButton(
+    text,
+    onClick,
+    modifier = modifier,
+    color = color,
+    enabled = enabled,
+    height = 56.dp,
+    fontSize = 18.sp,
+    shape = CircleShape
+)
 
 /** The red/blue bar: proportional to the votes, half and half while nobody has voted. */
 @Composable
-fun SplitBar(poll: Poll, modifier: Modifier = Modifier, height: Int = 14) {
+internal fun SplitBar(poll: Poll, modifier: Modifier = Modifier, height: Int = 14) {
     val split = Split.of(poll.redVotes, poll.blueVotes)
     val red = if (poll.totalVotes == 0) 0.5f else split.red / 100f
     Row(modifier.fillMaxWidth().height(height.dp).clip(CircleShape)) {
@@ -87,9 +105,14 @@ fun age(createdAt: Long, now: Long): String {
 }
 
 @Composable
-fun SectionTitle(text: String, modifier: Modifier = Modifier) = LilloSectionTitle(text, modifier = modifier.padding(top = 16.dp, bottom = 8.dp), uppercase = true, fontWeight = FontWeight.Bold)
+internal fun SectionTitle(text: String, modifier: Modifier = Modifier) = LilloSectionTitle(
+    text,
+    modifier = modifier.padding(top = 16.dp, bottom = 8.dp),
+    uppercase = true,
+    fontWeight = FontWeight.Bold
+)
 
 @Composable
-fun Dot(color: Color, size: Int = 10) {
+internal fun Dot(color: Color, size: Int = 10) {
     Box(Modifier.width(size.dp).height(size.dp).clip(CircleShape).background(color))
 }

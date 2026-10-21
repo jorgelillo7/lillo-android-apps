@@ -10,8 +10,16 @@ object Scoring {
 
     fun points(game: Game): Map<String, Int> = when (val outcome = game.outcome) {
         Outcome.CiviliansWin -> game.cards.filter { it.role == Role.CIVILIAN }.associate { it.player to CIVILIAN_WIN }
-        is Outcome.InfiltratorsWin -> game.cards.filter { it.role in outcome.roles }.associate { it.player to INFILTRATOR_WIN }
-        Outcome.DrifterGuessed -> game.cards.filter { it.role == Role.DRIFTER }.associate { it.player to INFILTRATOR_WIN }
+
+        is Outcome.InfiltratorsWin -> game.cards.filter { it.role in outcome.roles }.associate {
+            it.player to
+                INFILTRATOR_WIN
+        }
+
+        Outcome.DrifterGuessed -> game.cards.filter {
+            it.role == Role.DRIFTER
+        }.associate { it.player to INFILTRATOR_WIN }
+
         Outcome.NoCivilians, Outcome.EndedEarly, null -> emptyMap()
     }
 }

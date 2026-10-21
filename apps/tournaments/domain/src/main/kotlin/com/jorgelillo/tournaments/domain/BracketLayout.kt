@@ -27,7 +27,13 @@ object BracketLayout {
         for (r in 1..rounds) {
             val count = firstRoundMatches shr (r - 1)
             for (s in 0 until count) {
-                val value = if (r == 1) (s % half).toFloat() else (y.getValue(r - 1 to 2 * s) + y.getValue(r - 1 to 2 * s + 1)) / 2
+                val value = if (r ==
+                    1
+                ) {
+                    (s % half).toFloat()
+                } else {
+                    (y.getValue(r - 1 to 2 * s) + y.getValue(r - 1 to 2 * s + 1)) / 2
+                }
                 y[r to s] = value
                 val (column, side) = when {
                     r == rounds -> rounds - 1 to Side.CENTER
@@ -41,5 +47,8 @@ object BracketLayout {
     }
 
     /** The matches a player won on the way, for the champion's highlighted path. */
-    fun pathOf(t: Tournament, player: Int): List<Match> = t.matches.filter { it.stage == Stage.ELIMINATION && it.winner(t.bestOf) == player }
+    fun pathOf(t: Tournament, player: Int): List<Match> = t.matches.filter {
+        it.stage == Stage.ELIMINATION &&
+            it.winner(t.bestOf) == player
+    }
 }

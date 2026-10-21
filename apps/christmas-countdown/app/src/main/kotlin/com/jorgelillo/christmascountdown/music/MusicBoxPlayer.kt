@@ -62,7 +62,11 @@ class MusicBoxPlayer(private val scope: CoroutineScope) {
     }
 
     private fun createTrack(): AudioTrack {
-        val minBuffer = AudioTrack.getMinBufferSize(sampleRate, AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT)
+        val minBuffer = AudioTrack.getMinBufferSize(
+            sampleRate,
+            AudioFormat.CHANNEL_OUT_MONO,
+            AudioFormat.ENCODING_PCM_16BIT
+        )
         return AudioTrack.Builder()
             .setAudioAttributes(
                 AudioAttributes.Builder()

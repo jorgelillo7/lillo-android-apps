@@ -14,7 +14,7 @@ val PRIVACY_POLICY_URL = LilloLinks.privacyPolicy("decision-wheel")
 val PLAY_STORE_URL = LilloLinks.playStore(BuildConfig.APPLICATION_ID)
 
 @Composable
-fun AboutSheet(onDismiss: () -> Unit) = LilloAboutSheet(
+internal fun AboutSheet(onDismiss: () -> Unit) = LilloAboutSheet(
     icon = painterResource(R.drawable.ic_launcher_foreground),
     iconBackground = WheelColors.Night,
     containerColor = WheelColors.NightRaised,

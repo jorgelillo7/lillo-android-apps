@@ -50,9 +50,18 @@ object Tournaments {
      * Later elimination rounds are refilled; if a changed result knocks a player out, the matches
      * they had already played further on are cleared.
      */
-    fun record(t: Tournament, match: Match, winsA: Int, winsB: Int, comment: String = "", draw: Boolean = false): Tournament {
+    fun record(
+        t: Tournament,
+        match: Match,
+        winsA: Int,
+        winsB: Int,
+        comment: String = "",
+        draw: Boolean = false
+    ): Tournament {
         val needed = Match.needed(t.bestOf)
-        require(winsA in 0..needed && winsB in 0..needed && !(winsA == needed && winsB == needed)) { "score $winsA-$winsB" }
+        require(winsA in 0..needed && winsB in 0..needed && !(winsA == needed && winsB == needed)) {
+            "score $winsA-$winsB"
+        }
         require(!draw || match.stage == Stage.SWISS) { "no draws in elimination" }
         val updated = match.copy(winsA = winsA, winsB = winsB, draw = draw && winsA == winsB, comment = comment.trim())
         val matches = t.matches.map { if (it.sameAs(match)) updated else it }
@@ -69,7 +78,8 @@ object Tournaments {
         return current < t.swissRounds && t.round(Stage.SWISS, current).all { it.isDone(t.bestOf) }
     }
 
-    fun currentSwissRound(t: Tournament): Int = t.matches.filter { it.stage == Stage.SWISS }.maxOfOrNull { it.round } ?: 0
+    fun currentSwissRound(t: Tournament): Int =
+        t.matches.filter { it.stage == Stage.SWISS }.maxOfOrNull { it.round } ?: 0
 
     fun pairNextRound(t: Tournament, random: Random = Random.Default): Tournament {
         check(canPairNextRound(t)) { "round not finished" }
@@ -87,7 +97,11 @@ object Tournaments {
     fun unpairLastRound(t: Tournament): Tournament {
         check(canUnpairLastRound(t))
         val current = currentSwissRound(t)
-        return t.copy(matches = t.matches.filterNot { it.stage == Stage.SWISS && it.round == current }, revision = t.revision + 1)
+        return t.copy(
+            matches = t.matches.filterNot { it.stage == Stage.SWISS && it.round == current },
+            revision =
+                t.revision + 1
+        )
     }
 
     fun canStartTopCut(t: Tournament): Boolean = t.topCut > 0 && t.isSwissOver && t.eliminationRounds == 0

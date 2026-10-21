@@ -32,15 +32,22 @@ class LeagueScreensScreenshotTest {
     private val season = Game.newSeason(league, seed = 7)
 
     /** Swipes right until the first matchday report shows up. */
-    private val firstReport: Season = generateSequence(season) { Game.choose(league, it, right = true) }.first { it.reportPending }
+    private val firstReport: Season = generateSequence(season) {
+        Game.choose(league, it, right = true)
+    }.first { it.reportPending }
 
-    private fun shot(name: String, content: @Composable () -> Unit) = compose.captureScreenshot(name) { LilloTheme(ChatColorScheme) { content() } }
+    private fun shot(name: String, content: @Composable () -> Unit) = compose.captureScreenshot(name) {
+        LilloTheme(ChatColorScheme) { content() }
+    }
 
     private fun play(name: String) = shot(name) { PlayScreen(league, season, {}, {}, {}, {}) }
 
     // The chat messages come in one by one (700 ms apart): capture once they are all there.
     private fun report(name: String) = compose.captureScreenshot(name, { mainClock.advanceTimeBy(15_000) }) {
-        LilloTheme(ChatColorScheme) { ReportScreen(league, firstReport.report!!, unlocked = emptyList(), seasonOver = false, onNext = {}, onTable = {}, onBack = {}) }
+        LilloTheme(ChatColorScheme) {
+            ReportScreen(league, firstReport.report!!, unlocked = emptyList(), seasonOver = false, onNext = {
+            }, onTable = {}, onBack = {})
+        }
     }
 
     @Test fun playPortrait() = play("play")

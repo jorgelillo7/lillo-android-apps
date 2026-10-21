@@ -58,7 +58,7 @@ import com.jorgelillo.core.platform.shareText
 private enum class DoorState { Locked, Openable, Opened }
 
 @Composable
-fun AdventScreen(
+internal fun AdventScreen(
     state: AdventUiState,
     canOpen: (Int) -> Boolean,
     onOpen: (Int) -> Unit,
@@ -99,7 +99,11 @@ fun AdventScreen(
             }
             Door(door, doorState) {
                 if (doorState == DoorState.Locked) {
-                    Toast.makeText(context, resources.getString(R.string.advent_door_locked, door), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        context,
+                        resources.getString(R.string.advent_door_locked, door),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 } else {
                     onOpen(door)
                     shownDoor = door
@@ -122,7 +126,14 @@ fun AdventScreen(
             dismissButton = {
                 TextButton(
                     onClick = {
-                        context.shareText(resources.getString(R.string.advent_share_text, door, resources.doorText(content), PLAY_STORE_URL))
+                        context.shareText(
+                            resources.getString(
+                                R.string.advent_share_text,
+                                door,
+                                resources.doorText(content),
+                                PLAY_STORE_URL
+                            )
+                        )
                     },
                     modifier = Modifier.testTag("advent_share")
                 ) { Text(stringResource(R.string.advent_share)) }
@@ -131,7 +142,10 @@ fun AdventScreen(
             title = { Text(stringResource(R.string.advent_door, door)) },
             text = {
                 when (content) {
-                    is AdventDoor.Activity -> Text(stringResource(content.activity.text()), textAlign = TextAlign.Center)
+                    is AdventDoor.Activity -> Text(
+                        stringResource(content.activity.text()),
+                        textAlign = TextAlign.Center
+                    )
 
                     is AdventDoor.Song -> Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(stringResource(R.string.advent_song_title), style = MaterialTheme.typography.titleMedium)

@@ -34,6 +34,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -72,7 +73,7 @@ internal val DialogTags = TestTagsAsResourceIds
  * only shows up once the curtain has been lifted.
  */
 @Composable
-fun RevealScreen(game: Game, onDone: () -> Unit, onQuit: () -> Unit) {
+internal fun RevealScreen(game: Game, onDone: () -> Unit, onQuit: () -> Unit) {
     var index by rememberSaveable(game) { mutableIntStateOf(0) }
     var peeked by rememberSaveable(game) { mutableStateOf(false) }
     val card = game.cards[index]
@@ -99,7 +100,9 @@ fun RevealScreen(game: Game, onDone: () -> Unit, onQuit: () -> Unit) {
             val height = constraints.maxHeight.toFloat()
             // Short screens (landscape phones, handhelds like the AYN Thor): smaller curtain content so it all fits.
             val compact = maxHeight < 440.dp
-            Box(Modifier.fillMaxSize().padding(bottom = 8.dp), contentAlignment = Alignment.BottomCenter) { SecretCard(card, compact) }
+            Box(Modifier.fillMaxSize().padding(bottom = 8.dp), contentAlignment = Alignment.BottomCenter) {
+                SecretCard(card, compact)
+            }
             Column(
                 Modifier
                     .fillMaxSize()
@@ -108,7 +111,9 @@ fun RevealScreen(game: Game, onDone: () -> Unit, onQuit: () -> Unit) {
                     .background(Curtain)
                     .border(2.dp, Color.White.copy(alpha = 0.25f), MaterialTheme.shapes.extraLarge)
                     .pointerInput(index) {
-                        val drop: () -> Unit = { scope.launch { lift.animateTo(0f, spring(dampingRatio = Spring.DampingRatioMediumBouncy)) } }
+                        val drop: () -> Unit = {
+                            scope.launch { lift.animateTo(0f, spring(dampingRatio = Spring.DampingRatioMediumBouncy)) }
+                        }
                         detectVerticalDragGestures(onDragEnd = drop, onDragCancel = drop) { change, dy ->
                             change.consume()
                             scope.launch {
@@ -123,19 +128,45 @@ fun RevealScreen(game: Game, onDone: () -> Unit, onQuit: () -> Unit) {
             ) {
                 if (compact) {
                     // Short screens: side by side, so the whole instruction fits.
-                    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(horizontal = 24.dp)) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.padding(horizontal = 24.dp)
+                    ) {
                         Emoji("🤫", size = 56)
                         Spacer(Modifier.width(24.dp))
                         Column {
-                            Text(stringResource(R.string.reveal_pass_to), color = Color.White.copy(alpha = 0.8f), style = MaterialTheme.typography.titleMedium)
-                            Text(card.player, style = MaterialTheme.typography.headlineLarge, fontWeight = FontWeight.Black, color = Color.White)
+                            Text(
+                                stringResource(R.string.reveal_pass_to),
+                                color = Color.White.copy(alpha = 0.8f),
+                                style = MaterialTheme.typography.titleMedium
+                            )
+                            Text(
+                                card.player,
+                                style = MaterialTheme.typography.headlineLarge,
+                                fontWeight = FontWeight.Black,
+                                color = Color.White
+                            )
                             Spacer(Modifier.height(6.dp))
-                            Text("⬆  " + stringResource(R.string.reveal_tap), color = Color.White, style = MaterialTheme.typography.bodyMedium)
+                            Text(
+                                "⬆  " + stringResource(R.string.reveal_tap),
+                                color = Color.White,
+                                style = MaterialTheme.typography.bodyMedium
+                            )
                         }
                     }
                 } else {
-                    Text(stringResource(R.string.reveal_pass_to), color = Color.White.copy(alpha = 0.8f), style = MaterialTheme.typography.titleMedium)
-                    Text(card.player, style = MaterialTheme.typography.displayMedium, fontWeight = FontWeight.Black, color = Color.White, textAlign = TextAlign.Center)
+                    Text(
+                        stringResource(R.string.reveal_pass_to),
+                        color = Color.White.copy(alpha = 0.8f),
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                    Text(
+                        card.player,
+                        style = MaterialTheme.typography.displayMedium,
+                        fontWeight = FontWeight.Black,
+                        color = Color.White,
+                        textAlign = TextAlign.Center
+                    )
                     Spacer(Modifier.height(32.dp))
                     Emoji("🤫", size = 84)
                     Spacer(Modifier.height(24.dp))
@@ -178,14 +209,30 @@ private fun SecretCard(card: Card, compact: Boolean) {
         if (card.knowsRole) {
             Emoji(if (card.role == Role.DRIFTER) "🤷" else "🕵️", size = if (compact) 36 else 64)
             Text(
-                stringResource(if (card.role == Role.DRIFTER) R.string.reveal_you_are_drifter else R.string.reveal_you_are_impostor),
+                stringResource(
+                    if (card.role ==
+                        Role.DRIFTER
+                    ) {
+                        R.string.reveal_you_are_drifter
+                    } else {
+                        R.string.reveal_you_are_impostor
+                    }
+                ),
                 color = accent,
                 style = if (compact) MaterialTheme.typography.titleLarge else MaterialTheme.typography.headlineMedium,
                 fontWeight = FontWeight.Black,
                 textAlign = TextAlign.Center
             )
             Text(
-                stringResource(if (card.role == Role.DRIFTER) R.string.reveal_drifter_desc else R.string.reveal_impostor_desc),
+                stringResource(
+                    if (card.role ==
+                        Role.DRIFTER
+                    ) {
+                        R.string.reveal_drifter_desc
+                    } else {
+                        R.string.reveal_impostor_desc
+                    }
+                ),
                 color = Neon.Muted,
                 style = if (compact) MaterialTheme.typography.bodySmall else MaterialTheme.typography.bodyLarge,
                 textAlign = TextAlign.Center,
@@ -205,21 +252,26 @@ private fun SecretCard(card: Card, compact: Boolean) {
             )
         }
         card.hint?.let { hint ->
-            Text(stringResource(R.string.reveal_hint, hint), color = Neon.Amber, modifier = Modifier.padding(top = if (compact) 4.dp else 14.dp))
+            Text(
+                stringResource(R.string.reveal_hint, hint),
+                color = Neon.Amber,
+                modifier = Modifier.padding(top = if (compact) 4.dp else 14.dp)
+            )
         }
     }
 }
 
 /** "X starts. Get ready! 3, 2, 1" before the clue round. */
 @Composable
-fun CountdownScreen(starter: String, onDone: () -> Unit) {
+internal fun CountdownScreen(starter: String, onDone: () -> Unit) {
     var count by rememberSaveable { mutableIntStateOf(3) }
+    val done by rememberUpdatedState(onDone)
     LaunchedEffect(Unit) {
         while (count > 0) {
             delay(1000)
             count--
         }
-        onDone()
+        done()
     }
     Page(title = null, onBack = null, background = Neon.RevealBackdrop) {
         Spacer(Modifier.weight(1f))
@@ -239,8 +291,17 @@ fun CountdownScreen(starter: String, onDone: () -> Unit) {
             textAlign = TextAlign.Center,
             modifier = Modifier.fillMaxWidth()
         )
-        AnimatedContent(count, transitionSpec = { scaleIn(initialScale = 1.6f) + fadeIn() togetherWith fadeOut() }, modifier = Modifier.fillMaxWidth(), label = "count") {
-            Text("${it.coerceAtLeast(1)}", color = Color.White, fontSize = 180.sp, fontWeight = FontWeight.Black, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
+        AnimatedContent(count, transitionSpec = {
+            scaleIn(initialScale = 1.6f) + fadeIn() togetherWith fadeOut()
+        }, modifier = Modifier.fillMaxWidth(), label = "count") {
+            Text(
+                "${it.coerceAtLeast(1)}",
+                color = Color.White,
+                fontSize = 180.sp,
+                fontWeight = FontWeight.Black,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
+            )
         }
         Spacer(Modifier.weight(1.4f))
     }

@@ -21,7 +21,10 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 private fun CatalogueTheme(content: @Composable () -> Unit) = LilloTheme {
-    Column(Modifier.background(MaterialTheme.colorScheme.background).padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+    Column(
+        Modifier.background(MaterialTheme.colorScheme.background).padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
         content()
     }
 }
@@ -49,7 +52,9 @@ private fun AvatarsPreview() = CatalogueTheme {
 private fun RowsPreview() = CatalogueTheme {
     LilloSectionTitle("Game", uppercase = true)
     LilloSettingRow("Language", subtitle = "English", leading = "🌐", onClick = {}) { Text("›") }
-    LilloSettingRow("Chaos", subtitle = "Some games get a random number of impostors") { Switch(checked = true, onCheckedChange = {}) }
+    LilloSettingRow("Chaos", subtitle = "Some games get a random number of impostors") {
+        Switch(checked = true, onCheckedChange = {})
+    }
 }
 
 @Composable

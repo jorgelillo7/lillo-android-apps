@@ -14,7 +14,15 @@ class ShareTest {
     )
 
     private fun played(): Tournament {
-        var t = Tournaments.create("abc123", "Viernes de Magic", 20_371, names, Format.ELIMINATION, game = "Magic", random = Random(4))
+        var t = Tournaments.create(
+            "abc123",
+            "Viernes de Magic",
+            20_371,
+            names,
+            Format.ELIMINATION,
+            game = "Magic",
+            random = Random(4)
+        )
         while (Tournaments.pending(t).isNotEmpty()) {
             t = Tournaments.record(t, Tournaments.pending(t).first(), 2, 1, "20 vidas a 0, mazo rojo")
         }
@@ -36,7 +44,16 @@ class ShareTest {
 
     @Test
     fun sixtyFourPlayersStillFitAQrCode() {
-        var t = Tournaments.create("abc123", "Liga de verano", 20_371, (1..64).map { "Jugador número $it" }, Format.ELIMINATION, random = Random(1))
+        var t = Tournaments.create(
+            "abc123",
+            "Liga de verano",
+            20_371,
+            (1..64).map {
+                "Jugador número $it"
+            },
+            Format.ELIMINATION,
+            random = Random(1)
+        )
         while (Tournaments.pending(t).isNotEmpty()) {
             t = Tournaments.record(t, Tournaments.pending(t).first(), 2, 1, "20 vidas a 0")
         }

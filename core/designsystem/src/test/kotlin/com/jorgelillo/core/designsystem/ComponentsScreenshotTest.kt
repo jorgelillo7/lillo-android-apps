@@ -38,7 +38,8 @@ class ComponentsScreenshotTest {
     private val card = Color(0xFF2A2350)
     private val muted = Color(0xFFB7B0D9)
 
-    private fun shot(name: String, content: @Composable () -> Unit) = compose.captureScreenshot(name) { LilloTheme { content() } }
+    private fun shot(name: String, content: @Composable () -> Unit) =
+        compose.captureScreenshot(name) { LilloTheme { content() } }
 
     @Test
     fun avatars() = shot("avatars") {
@@ -60,14 +61,35 @@ class ComponentsScreenshotTest {
     @Composable
     private fun SettingRows() {
         Column(Modifier.background(night).padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            LilloSectionTitle("Game", muted, uppercase = true)
-            LilloSettingRow("Language", card, subtitle = "English", subtitleColor = muted, leading = "🌐", onClick = {}) {
+            LilloSectionTitle("Game", color = muted, uppercase = true)
+            LilloSettingRow(
+                "Language",
+                containerColor = card,
+                subtitle = "English",
+                subtitleColor = muted,
+                leading = "🌐",
+                onClick = {
+                }
+            ) {
                 Text("›", color = muted)
             }
-            LilloSettingRow("Chaos", card, subtitle = "Some games get a random number of impostors", subtitleColor = muted) {
+            LilloSettingRow(
+                "Chaos",
+                containerColor = card,
+                subtitle = "Some games get a random number of impostors",
+                subtitleColor = muted
+            ) {
                 Switch(checked = true, onCheckedChange = {})
             }
-            LilloSettingRow("Rename", card, subtitle = "Ana", subtitleColor = muted, borderColor = muted.copy(alpha = 0.3f), onClick = {})
+            LilloSettingRow(
+                "Rename",
+                containerColor = card,
+                subtitle = "Ana",
+                subtitleColor = muted,
+                borderColor = muted.copy(alpha = 0.3f),
+                onClick = {
+                }
+            )
         }
     }
 
@@ -78,7 +100,7 @@ class ComponentsScreenshotTest {
         background = Brush.verticalGradient(listOf(Color(0xFF0A72D6), Color(0xFF2448E0))),
         contentColor = Color.White,
         sideActionsWhenShort = sideActions,
-        bottom = { LilloBigButton("Continue", {}, Color(0xFF00D26A), Color.Black) }
+        bottom = { LilloBigButton("Continue", {}, color = Color(0xFF00D26A), contentColor = Color.Black) }
     ) {
         Text("You caught the impostor!", color = Color.White)
         repeat(6) { Text("Content line ${it + 1}", color = Color.White, modifier = Modifier.padding(top = 8.dp)) }

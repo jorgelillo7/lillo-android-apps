@@ -31,7 +31,9 @@ class SettingsRepository(private val context: Context) {
         context.dataStore.edit { it[reminderPromptDismissedKey] = true }
     }
 
-    fun openedDoors(year: Int): Flow<Set<Int>> = context.dataStore.data.map { prefs -> prefs[openedDoorsKey(year)].orEmpty().mapNotNull { it.toIntOrNull() }.toSet() }
+    fun openedDoors(year: Int): Flow<Set<Int>> = context.dataStore.data.map { prefs ->
+        prefs[openedDoorsKey(year)].orEmpty().mapNotNull { it.toIntOrNull() }.toSet()
+    }
 
     suspend fun setSleepsMode(enabled: Boolean) {
         context.dataStore.edit { it[sleepsModeKey] = enabled }

@@ -17,10 +17,7 @@ import androidx.compose.ui.unit.sp
  * stay consistent across the portfolio.
  */
 @Composable
-fun LilloTheme(
-    colorScheme: ColorScheme = darkColorScheme(),
-    content: @Composable () -> Unit
-) {
+fun LilloTheme(colorScheme: ColorScheme = darkColorScheme(), content: @Composable () -> Unit) {
     MaterialTheme(
         colorScheme = colorScheme,
         typography = LilloTypography,

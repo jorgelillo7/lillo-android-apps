@@ -10,7 +10,13 @@ class DomainTest {
 
     private fun poll(red: Int = 0, blue: Int = 0, closesAt: Long? = null) = Poll(
         code = "abcdefghijkm", visibility = Visibility.PUBLIC, question = "¿Tortilla con cebolla?",
-        red = "Con", blue = "Sin", creatorId = "u1", creatorName = "Jorge", language = "es", createdAt = 0, closesAt = closesAt,
+        red = "Con",
+        blue = "Sin",
+        creatorId = "u1",
+        creatorName = "Jorge",
+        language = "es",
+        createdAt = 0,
+        closesAt = closesAt,
         redVotes = red, blueVotes = blue
     )
 
@@ -36,14 +42,35 @@ class DomainTest {
     fun draftsAreValidated() {
         assertTrue(Drafts.problems("¿Playa o montaña?", "Playa", "Montaña", Visibility.PUBLIC).isEmpty())
         assertEquals(setOf(DraftProblem.QUESTION_TOO_SHORT), Drafts.problems("¿Sí?", "Sí", "No", Visibility.PUBLIC))
-        assertTrue(DraftProblem.SAME_ANSWERS in Drafts.problems("¿Playa o playa?", "Playa", " PLAYÁ ", Visibility.PRIVATE))
+        assertTrue(
+            DraftProblem.SAME_ANSWERS in Drafts.problems(
+                "¿Playa o playa?",
+                "Playa",
+                " PLAYÁ ",
+                Visibility.PRIVATE
+            )
+        )
         assertTrue(DraftProblem.ANSWER_EMPTY in Drafts.problems("¿Playa o montaña?", "Playa", " ", Visibility.PRIVATE))
-        assertTrue(DraftProblem.ANSWER_TOO_LONG in Drafts.problems("¿Playa o montaña?", "x".repeat(31), "No", Visibility.PRIVATE))
+        assertTrue(
+            DraftProblem.ANSWER_TOO_LONG in Drafts.problems(
+                "¿Playa o montaña?",
+                "x".repeat(31),
+                "No",
+                Visibility.PRIVATE
+            )
+        )
     }
 
     @Test
     fun onlyPublicPollsAreFiltered() {
-        assertTrue(DraftProblem.BLOCKED_WORDS in Drafts.problems("¿Quién es más gilipollas?", "Tú", "Yo", Visibility.PUBLIC))
+        assertTrue(
+            DraftProblem.BLOCKED_WORDS in Drafts.problems(
+                "¿Quién es más gilipollas?",
+                "Tú",
+                "Yo",
+                Visibility.PUBLIC
+            )
+        )
         assertTrue(Drafts.problems("¿Quién es más gilipollas?", "Tú", "Yo", Visibility.PRIVATE).isEmpty())
     }
 
@@ -67,7 +94,10 @@ class DomainTest {
     fun predictionsResolveOnlyOnClosedPollsWithAWinner() {
         val record = PredictionRecord()
         assertEquals(record, record.add(Side.RED, poll(red = 3, blue = 1, closesAt = 100), now = 50)) // still open
-        assertEquals(record, record.add(Side.RED, poll(red = 3, blue = 1, closesAt = null), now = 1_000)) // never closes
+        assertEquals(
+            record,
+            record.add(Side.RED, poll(red = 3, blue = 1, closesAt = null), now = 1_000)
+        ) // never closes
         assertEquals(record, record.add(Side.RED, poll(red = 2, blue = 2, closesAt = 10), now = 50)) // tie
         val after = record.add(Side.RED, poll(red = 3, blue = 1, closesAt = 10), now = 50)
             .add(Side.RED, poll(red = 1, blue = 3, closesAt = 10), now = 50)

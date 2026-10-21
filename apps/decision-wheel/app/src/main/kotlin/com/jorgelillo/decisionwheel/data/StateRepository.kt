@@ -9,4 +9,5 @@ import com.jorgelillo.decisionwheel.domain.Wheel
 typealias StateRepository = JsonStore<AppState>
 
 /** The app's single store: DataStore file "decision_wheel", as it has always been (users keep their data). */
-fun stateRepository(context: Context, seed: () -> List<Wheel>): StateRepository = JsonStore(context, "decision_wheel", AppState.serializer()) { AppState(wheels = seed()) }
+fun stateRepository(context: Context, seed: () -> List<Wheel>): StateRepository =
+    JsonStore(context, "decision_wheel", AppState.serializer()) { AppState(wheels = seed()) }

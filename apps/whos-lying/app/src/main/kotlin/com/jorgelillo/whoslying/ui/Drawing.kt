@@ -79,7 +79,15 @@ fun shareDrawing(context: Context, strokes: List<DrawStroke>, caption: String) {
             canvas.drawPoint(points[0].x * width, points[0].y * height, paint)
         } else {
             val path = android.graphics.Path()
-            points.forEachIndexed { i, p -> if (i == 0) path.moveTo(p.x * width, p.y * height) else path.lineTo(p.x * width, p.y * height) }
+            points.forEachIndexed { i, p ->
+                if (i ==
+                    0
+                ) {
+                    path.moveTo(p.x * width, p.y * height)
+                } else {
+                    path.lineTo(p.x * width, p.y * height)
+                }
+            }
             canvas.drawPath(path, paint)
         }
     }
