@@ -29,10 +29,10 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun LilloSettingRow(
     title: String,
-    containerColor: Color,
+    containerColor: Color = MaterialTheme.colorScheme.surfaceContainer,
     modifier: Modifier = Modifier,
     subtitle: String? = null,
-    subtitleColor: Color = LocalContentColor.current.copy(alpha = 0.7f),
+    subtitleColor: Color = MaterialTheme.colorScheme.onSurfaceVariant,
     leading: String? = null,
     borderColor: Color? = null,
     tag: String? = null,
@@ -65,7 +65,7 @@ fun LilloSettingRow(
 @Composable
 fun LilloSectionTitle(
     text: String,
-    color: Color,
+    color: Color = MaterialTheme.colorScheme.onSurfaceVariant,
     modifier: Modifier = Modifier,
     uppercase: Boolean = false,
     style: TextStyle = MaterialTheme.typography.labelLarge,

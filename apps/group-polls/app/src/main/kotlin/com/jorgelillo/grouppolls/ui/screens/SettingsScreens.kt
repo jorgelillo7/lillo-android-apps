@@ -177,11 +177,9 @@ fun SettingsScreen(local: LocalState, onRename: (String) -> Unit, onDeleteData: 
 @Composable
 private fun SettingRow(title: String, value: String?, tag: String, onClick: (() -> Unit)?) = LilloSettingRow(
     title,
-    Polls.Card,
-    Modifier.padding(bottom = 8.dp),
+    modifier = Modifier.padding(bottom = 8.dp),
     subtitle = value,
-    subtitleColor = Polls.Muted,
-    borderColor = Polls.Line,
+    borderColor = MaterialTheme.colorScheme.outline,
     tag = tag,
     onClick = onClick
 )

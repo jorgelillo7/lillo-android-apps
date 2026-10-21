@@ -350,10 +350,8 @@ fun SetupScreen(
 @Composable
 private fun SettingRow(title: String, subtitle: String?, control: @Composable () -> Unit) = LilloSettingRow(
     title,
-    Neon.Card,
-    Modifier.padding(vertical = 6.dp),
+    modifier = Modifier.padding(vertical = 6.dp),
     subtitle = subtitle,
-    subtitleColor = Neon.Muted,
     contentPadding = PaddingValues(horizontal = 16.dp, vertical = 10.dp)
 ) { control() }
 

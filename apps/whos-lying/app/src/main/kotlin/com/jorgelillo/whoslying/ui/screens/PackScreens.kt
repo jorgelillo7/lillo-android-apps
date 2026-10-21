@@ -211,7 +211,7 @@ fun PacksScreen(
 }
 
 @Composable
-private fun SectionTitle(text: String) = LilloSectionTitle(text, Neon.Muted, Modifier.padding(top = 12.dp, bottom = 4.dp))
+private fun SectionTitle(text: String) = LilloSectionTitle(text, modifier = Modifier.padding(top = 12.dp, bottom = 4.dp))
 
 @Composable
 private fun PackRow(pack: WordPack, onClick: (() -> Unit)?, onShare: (() -> Unit)? = null) {

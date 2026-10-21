@@ -28,10 +28,10 @@ fun Page(
     actions: @Composable RowScope.() -> Unit = {},
     bottom: @Composable ColumnScope.() -> Unit = {},
     content: @Composable ColumnScope.() -> Unit
-) = LilloPage(title, onBack, Arena.Background, Arena.Cream, modifier, actions = actions, bottom = bottom, content = content)
+) = LilloPage(title, onBack, Arena.Background, modifier = modifier, actions = actions, bottom = bottom, content = content)
 
 @Composable
-fun BigButton(text: String, onClick: () -> Unit, tag: String, modifier: Modifier = Modifier, enabled: Boolean = true) = LilloBigButton(text, onClick, Arena.Gold, Arena.Ink, modifier.testTag(tag), enabled = enabled)
+fun BigButton(text: String, onClick: () -> Unit, tag: String, modifier: Modifier = Modifier, enabled: Boolean = true) = LilloBigButton(text, onClick, modifier = modifier.testTag(tag), enabled = enabled)
 
 fun formatDay(epochDay: Long): String = LocalDate.ofEpochDay(epochDay).format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM))
 
