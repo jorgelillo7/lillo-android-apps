@@ -89,7 +89,7 @@ internal fun RevealScreen(game: Game, onDone: () -> Unit, onQuit: () -> Unit) {
                 BigButton(stringResource(R.string.reveal_hide), {
                     peeked = false
                     if (index == game.cards.lastIndex) onDone() else index++
-                }, color = Color(0xFF00D26A), contentColor = Neon.Night, modifier = Modifier.testTag("hide"))
+                }, color = Neon.Go, contentColor = Neon.Night, modifier = Modifier.testTag("hide"))
             } else {
                 Spacer(Modifier.height(60.dp))
             }
