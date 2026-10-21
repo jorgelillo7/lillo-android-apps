@@ -14,5 +14,6 @@ dependencies {
     api(libs.androidx.compose.ui.test.junit4)
     api(libs.roborazzi)
     api(libs.roborazzi.compose)
+    api(libs.roborazzi.accessibilityCheck)
     api(libs.robolectric)
 }

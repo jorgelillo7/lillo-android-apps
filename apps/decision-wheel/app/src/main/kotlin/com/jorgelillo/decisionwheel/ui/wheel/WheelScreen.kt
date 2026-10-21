@@ -56,6 +56,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -374,6 +375,7 @@ private fun ResultCard(winner: String, onAccept: () -> Unit, onAgain: () -> Unit
 private fun OptionChip(label: String, color: Color, vetoed: Boolean, recent: Boolean, enabled: Boolean, onClick: () -> Unit) {
     Row(
         modifier = Modifier
+            .minimumInteractiveComponentSize() // 48 dp to tap, whatever the chip's drawn height
             .clip(CircleShape)
             .background(if (vetoed) Color.Transparent else color.copy(alpha = 0.18f))
             .border(1.dp, if (vetoed) WheelColors.Muted.copy(alpha = 0.4f) else color.copy(alpha = 0.7f), CircleShape)

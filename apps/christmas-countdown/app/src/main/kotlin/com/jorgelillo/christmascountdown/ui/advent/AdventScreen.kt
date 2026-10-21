@@ -40,6 +40,9 @@ import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -150,6 +153,15 @@ fun AdventScreen(
 
 @Composable
 private fun Door(number: Int, state: DoorState, onClick: () -> Unit) {
+    // Every opened door shows the same 🎁: say which door it is, and what tapping it does.
+    val description = stringResource(
+        when (state) {
+            DoorState.Opened -> R.string.advent_door_opened
+            DoorState.Openable -> R.string.advent_door_openable
+            DoorState.Locked -> R.string.advent_door_locked
+        },
+        number
+    )
     val shape = MaterialTheme.shapes.small
     val background = when (state) {
         DoorState.Openable -> Brush.linearGradient(listOf(ChristmasColors.Berry, Color(0xFF9B1B30)))
@@ -167,11 +179,12 @@ private fun Door(number: Int, state: DoorState, onClick: () -> Unit) {
             .clip(shape)
             .background(background)
             .border(1.dp, borderColor, shape)
-            .clickable(onClick = onClick),
+            .clickable(onClick = onClick)
+            .semantics { contentDescription = description },
         contentAlignment = Alignment.Center
     ) {
         when (state) {
-            DoorState.Opened -> Text("🎁", fontSize = 26.sp)
+            DoorState.Opened -> Text("🎁", fontSize = 26.sp, modifier = Modifier.clearAndSetSemantics { })
 
             else -> Text(
                 text = number.toString(),

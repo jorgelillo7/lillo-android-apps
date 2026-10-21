@@ -50,6 +50,8 @@
     <string name="advent_subtitle_locked">The calendar opens on 1 December. Come back then!</string>
     <string name="advent_door">Day %1$d</string>
     <string name="advent_door_locked">Door %1$d is still locked</string>
+    <string name="advent_door_opened">Door %1$d, opened: see its plan again</string>
+    <string name="advent_door_openable">Door %1$d, ready: open it</string>
     <string name="advent_close">Close</string>
 
     <!-- About -->

@@ -50,6 +50,8 @@
     <string name="advent_subtitle_locked">El calendario se abre el 1 de diciembre. ¡Vuelve entonces!</string>
     <string name="advent_door">Día %1$d</string>
     <string name="advent_door_locked">La puerta %1$d aún está cerrada</string>
+    <string name="advent_door_opened">Puerta %1$d, abierta: ver su plan otra vez</string>
+    <string name="advent_door_openable">Puerta %1$d, lista: ábrela</string>
     <string name="advent_close">Cerrar</string>
 
     <string name="about_title">¿Ya es Navidad? Cuenta atrás</string>

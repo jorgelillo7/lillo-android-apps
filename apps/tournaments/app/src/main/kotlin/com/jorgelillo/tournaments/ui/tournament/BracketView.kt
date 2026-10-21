@@ -47,6 +47,8 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -120,7 +122,10 @@ fun BracketView(t: Tournament, onEdit: (Match) -> Unit) {
         ) {
             // Centred when it is narrower than the screen.
             Box(Modifier.widthIn(min = screenWidth), contentAlignment = Alignment.TopCenter) {
-                Box(Modifier.scaled(zoom).size(contentWidth.dp, contentHeight.dp)) {
+                // A visual overview, small at the fitted zoom: screen readers get one description and
+                // the Matches tab, which lists every match with its own (large) touch target.
+                val overview = stringResource(R.string.bracket_a11y)
+                Box(Modifier.scaled(zoom).size(contentWidth.dp, contentHeight.dp).clearAndSetSemantics { contentDescription = overview }) {
                     Connectors(t, grid, geometry, championPath)
                     // Round names over each column.
                     grid.cells.distinctBy { it.column }.forEach { cell ->
