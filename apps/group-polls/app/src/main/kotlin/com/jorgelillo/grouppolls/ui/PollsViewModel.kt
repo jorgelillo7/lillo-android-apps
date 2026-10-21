@@ -76,8 +76,34 @@ class PollsViewModel(
 
     fun acceptTerms() = update { it.copy(acceptedTerms = true) }
 
+    private val _creating = MutableStateFlow(false)
+
+    /** A poll is being created: the create button waits. */
+    val creating: StateFlow<Boolean> = _creating.asStateFlow()
+
+    private val _created = MutableStateFlow<String?>(null)
+
+    /**
+     * The code of the poll just created, waiting for the UI to open it. Kept here, not in the
+     * screen's scope: leaving the screen or turning the phone mid-request must not lose the poll.
+     */
+    val created: StateFlow<String?> = _created.asStateFlow()
+
+    fun consumeCreated() {
+        _created.value = null
+    }
+
+    fun create(question: String, red: String, blue: String, visibility: Visibility, duration: Duration) {
+        if (_creating.value) return
+        _creating.value = true
+        viewModelScope.launch {
+            createPoll(question, red, blue, visibility, duration)?.let { _created.value = it }
+            _creating.value = false
+        }
+    }
+
     /** Creates a poll and returns its code (null on failure). */
-    suspend fun create(
+    private suspend fun createPoll(
         question: String,
         red: String,
         blue: String,

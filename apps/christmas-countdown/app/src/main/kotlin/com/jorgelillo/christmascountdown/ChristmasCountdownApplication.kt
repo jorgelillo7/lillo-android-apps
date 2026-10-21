@@ -8,8 +8,11 @@ import com.jorgelillo.christmascountdown.reminders.SeasonNotifications
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 
-/** Holds the app-wide singletons (manual DI: the app is small enough not to need Hilt). */
-class ChristmasCountdownApplication : Application() {
+/**
+ * Holds the app-wide singletons (manual DI: the app is small enough not to need Hilt). Open for the
+ * JVM tests' subclass, which starts a test WorkManager first.
+ */
+open class ChristmasCountdownApplication : Application() {
     val appScope = CoroutineScope(SupervisorJob())
     val settings by lazy { SettingsRepository(this) }
     val musicPlayer by lazy { MusicBoxPlayer(appScope) }

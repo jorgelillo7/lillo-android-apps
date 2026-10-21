@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
@@ -78,13 +79,17 @@ internal fun TournamentsApp(vm: TournamentsViewModel) {
             )
         }
         composable<NewTournament> {
+            var saving by remember { mutableStateOf(false) }
             NewTournamentScreen(
                 library = current,
                 newId = vm::newId,
                 onCreate = { t ->
-                    vm.save(t)
-                    nav.popBackStack()
-                    nav.navigate(TournamentRoute(t.id))
+                    if (saving) return@NewTournamentScreen // a second tap while the first save lands
+                    saving = true
+                    vm.save(t) {
+                        nav.popBackStack()
+                        nav.navigate(TournamentRoute(t.id))
+                    }
                 },
                 onBack = { nav.popBackStack() }
             )
@@ -92,7 +97,7 @@ internal fun TournamentsApp(vm: TournamentsViewModel) {
         composable<TournamentRoute> { entry ->
             val t = current.tournament(entry.toRoute<TournamentRoute>().id)
             if (t == null) {
-                // Either just created (the save is still landing) or deleted: wait briefly, then leave.
+                // Deleted (or a link to one that is gone): wait briefly, then leave.
                 LaunchedEffect(Unit) {
                     delay(MISSING_GRACE_MILLIS)
                     nav.popBackStack()

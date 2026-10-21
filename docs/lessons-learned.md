@@ -59,3 +59,7 @@ Short, one line each. Add to it whenever something bites.
   Google's Automated Test Device image (`google_atd`) passed every run. Six apps in a row on one
   emulator also took an hour, so each app runs in its own job. ATD shows no on-screen keyboard:
   close it with `hide_keyboard`, never a bare BACK, which leaves the screen.
+- **Flow tests and DataStore.** Compose's test clock waits for recomposition and animations, not for
+  DataStore writes on its IO thread. After a tap that saves, wait on the store (`waitUntil` on the
+  saved state), not on the screen, or the next tap hits a button that is about to go. The same gap
+  hid a real race twice: decision-wheel and tournaments opened a new item before its save landed.

@@ -118,7 +118,8 @@ Project skills in `.claude/skills/`: `new-android-app` (competitor study → des
   Core components take their colours from the app's Material 3 colour roles (`surfaceContainer`,
   `onSurfaceVariant`, `primary`…): set them in the app's `ColorScheme`, not per call. Unit tests that need Android
   classes use `jorgelillo.android.robolectric`, which also brings `:core:testing` (`MainDispatcherRule`,
-  Turbine's `awaitMatching`) for ViewModel tests.
+  Turbine's `awaitMatching`) for ViewModel tests. Every app has a ViewModel test and a whole-flow test
+  through the real `MainActivity` (`*FlowTest`); a new journey or ViewModel action gets one too.
 - Snapshot tests pin anything users already see that is derived algorithmically (e.g. Christmas
   Countdown's yearly advent door order and `AdventPlan` contents); don't change those algorithms. Add
   advent activities or songs only outside December: later years are recomputed from the pool.

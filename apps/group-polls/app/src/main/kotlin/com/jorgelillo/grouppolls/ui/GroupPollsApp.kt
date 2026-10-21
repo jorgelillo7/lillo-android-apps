@@ -49,6 +49,8 @@ internal fun GroupPollsApp(vm: PollsViewModel) {
     val state = local ?: return // first disk read in progress (a few ms)
     val nav = rememberNavController()
     val openCode by vm.openCode.collectAsStateWithLifecycle()
+    val created by vm.created.collectAsStateWithLifecycle()
+    val creating by vm.creating.collectAsStateWithLifecycle()
     val error by vm.error.collectAsStateWithLifecycle()
     val snackbar = remember { SnackbarHostState() }
     val errorText = stringResource(R.string.error_generic)
@@ -67,6 +69,13 @@ internal fun GroupPollsApp(vm: PollsViewModel) {
     }
 
     // A link opened the app: show that poll on top of whatever is open.
+    // A poll just created: open it with the share sheet, in place of the create screen.
+    LaunchedEffect(created) {
+        created?.let {
+            nav.navigate(PollRoute(it, share = true)) { popUpTo<Home>() }
+            vm.consumeCreated()
+        }
+    }
     LaunchedEffect(openCode) {
         openCode?.let {
             nav.navigate(PollRoute(it))
@@ -108,8 +117,8 @@ internal fun GroupPollsApp(vm: PollsViewModel) {
                 CreateScreen(
                     acceptedTerms = state.acceptedTerms,
                     onAcceptTerms = vm::acceptTerms,
+                    creating = creating,
                     onCreate = vm::create,
-                    onOpenPoll = { code -> nav.navigate(PollRoute(code, share = true)) { popUpTo<Home>() } },
                     onBack = { nav.back() }
                 )
             }
