@@ -1,5 +1,6 @@
 package com.jorgelillo.core.designsystem
 
+import android.app.Application
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -27,7 +28,8 @@ import org.robolectric.annotation.GraphicsMode
 /** What the core components look like; `./gradlew recordRoborazziDebug` after a deliberate change. */
 @RunWith(AndroidJUnit4::class)
 @GraphicsMode(GraphicsMode.Mode.NATIVE)
-@Config(sdk = [36], qualifiers = RobolectricDeviceQualifiers.Pixel7)
+// A bare Application: the app's own onCreate (WorkManager, Firebase…) has no place in a screenshot.
+@Config(sdk = [36], qualifiers = RobolectricDeviceQualifiers.Pixel7, application = Application::class)
 class ComponentsScreenshotTest {
     @get:Rule
     val compose = createComposeRule()

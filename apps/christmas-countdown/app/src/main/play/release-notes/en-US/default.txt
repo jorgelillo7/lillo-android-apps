@@ -3,4 +3,5 @@ New name! 🎄 It's now "Is it Christmas yet?"
 - Music days with Christmas songs to play on YouTube 🎶
 - Share each day's surprise with your friends
 - Reminders 🔔: one month and one week before, Advent, your daily door and Christmas Day
-- Refreshed About screen
+- Refreshed About screen: pick the app's language
+- Better in landscape and on handheld consoles

@@ -1,5 +1,6 @@
 package com.jorgelillo.whoslying.ui.screens
 
+import android.app.Application
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -26,7 +27,8 @@ import org.robolectric.annotation.GraphicsMode
  */
 @RunWith(AndroidJUnit4::class)
 @GraphicsMode(GraphicsMode.Mode.NATIVE)
-@Config(sdk = [36], qualifiers = RobolectricDeviceQualifiers.Pixel7)
+// A bare Application: the app's own onCreate (WorkManager, Firebase…) has no place in a screenshot.
+@Config(sdk = [36], qualifiers = RobolectricDeviceQualifiers.Pixel7, application = Application::class)
 class RoundScreensScreenshotTest {
     @get:Rule
     val compose = createComposeRule()
