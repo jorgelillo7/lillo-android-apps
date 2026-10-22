@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">¿Te pilla la chancla?</string>
+    <string name="home_tagline">Huye de la abuela. Salta sus chanclas. Róbale las croquetas.</string>
+    <string name="play">Jugar</string>
+    <string name="about">Acerca de</string>
+    <string name="best_score">Récord: %1$s</string>
+    <string name="challenge_banner">Reto: supera %1$s</string>
+    <string name="tap_to_jump">Toca para saltar · mantén para saltar más</string>
+    <string name="score">%1$s</string>
+    <string name="caught">¡Te pilló!</string>
+    <string name="your_score">%1$s puntos</string>
+    <string name="new_record">¡Nuevo récord! 🏆</string>
+    <string name="challenge_won">¡Has superado el reto! 🎉</string>
+    <string name="challenge_lost">El reto era %1$s. ¿Otra?</string>
+    <string name="retry">Otra vez</string>
+    <string name="challenge_friend">Retar a alguien</string>
+    <string name="home">Inicio</string>
+    <string name="share_challenge">Me ha pillado la chancla de la abuela con %1$s puntos. ¿Me ganas? Misma partida, mismas chanclas 🩴 %2$s</string>
+    <string name="dismiss_challenge">Olvidar el reto</string>
+    <string name="challenge_invalid">Ese enlace no tiene ningún reto</string>
+    <string name="about_body">Un juego de un dedo: huye de la abuela, salta sus chanclas y róbale las croquetas. Sin cuenta, sin anuncios y sin que nada salga de tu móvil; los retos viajan dentro del enlace que compartes.</string>
+    <string name="about_version">Versión %s</string>
+    <string name="about_open_privacy">Política de privacidad</string>
+    <plurals name="croquetas_count">
+        <item quantity="one">%1$d croqueta</item>
+        <item quantity="many">%1$d croquetas</item>
+        <item quantity="other">%1$d croquetas</item>
+    </plurals>
+</resources>

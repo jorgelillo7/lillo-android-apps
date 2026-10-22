@@ -24,10 +24,10 @@ class AndroidScreenshotsConventionPlugin : Plugin<Project> {
         // (a changed image alone must re-run the tests), and a re-recording run is never cached.
         val recording = gradle.startParameter.taskNames.any { "recordRoborazzi" in it }
         tasks.withType(Test::class.java).configureEach {
-            inputs.dir(layout.projectDirectory.dir("src/test/screenshots"))
+            // A file tree, not a directory: a new app has no images until its first recording.
+            inputs.files(fileTree("src/test/screenshots"))
                 .withPropertyName("screenshotReferences")
                 .withPathSensitivity(PathSensitivity.RELATIVE)
-                .optional()
             outputs.doNotCacheIf("re-recording screenshots") { recording }
         }
     }

@@ -49,3 +49,7 @@ include(":apps:tournaments:domain")
 // ¿Quién llora esta jornada? (fantasy-league card game)
 include(":apps:league-cards:app")
 include(":apps:league-cards:domain")
+
+// ¿Te pilla la chancla? (slipper runner)
+include(":apps:slipper:app")
+include(":apps:slipper:domain")

@@ -32,7 +32,7 @@ Lines are pruned as items ship. What has **shipped** lives in `apps/<app>/releas
 | ⏳ | 1.1 in production since 2026-10-22 (and internal testing): first public release; gather feedback from the friends who tested it | Google's review |
 | ⏳ | A tester got "Item not found" on the opt-in link: likely the first review still pending or the wrong Google account in Play | Their next try |
 
-## group-polls (new app)
+## group-polls (new app, parked until 2026-10-23)
 
 | | What is missing | Waiting on |
 |---|---|---|
@@ -55,11 +55,13 @@ Lines are pruned as items ship. What has **shipped** lives in `apps/<app>/releas
 | 👤 | Each league member's OK to appear in the private deck | You |
 | ⏳ | More cards and chat lines from the group | Ideas from the league · private deck, never in this repo |
 
-## next game (idea)
+## slipper game (¿Te pilla la chancla?, in development)
 
 | | What is missing | Waiting on |
 |---|---|---|
-| ⏳ | An action game: the slipper runner or a tilt-and-roll puzzle like Kula World | Every current app on the store · ideas in [docs/plans/game-ideas.md](docs/plans/game-ideas.md) |
+| 🔨 | **Next:** finish v1 from the prepared prototype: play feel (jump, hit pause, shake, haptics, sounds), pixel-art polish, then upload key and Play app | Planned for 2026-10-23 · [docs/plans/slipper.md](docs/plans/slipper.md) |
+| 👤 | Confirm the package id `com.jorgelillo.slipper` (permanent once uploaded), then upload key and Play app | You |
+| 🔨 | Website: `/c/` challenge page, privacy page (draft in the website repo) and the card in "Juegos" | The first internal test |
 
 ## repo
 
@@ -69,4 +71,5 @@ Lines are pruned as items ship. What has **shipped** lives in `apps/<app>/releas
 | 👤 | Publishing from CI is ready (Release workflow): create the Google Cloud service account and give it access in Play Console, then `scripts/set-release-secrets.sh --play` and `scripts/set-release-secrets.sh <app>` per app, in your terminal (docs/publishing-on-google-play.md §6) | You |
 | ⏳ | Release workflow without a stored key: Workload Identity Federation (GitHub OIDC → the `play-publisher` service account), then delete its JSON key | The first CI releases working with the key |
 | ⏳ | Christmas Countdown's `minSdk` 23 → 24, the only app still on 23 (blocks WorkManager 2.12 repo-wide; check the Play Console share of API 23 first) | Christmas's install stats |
-| ⏳ | Baseline profiles for startup | An app where startup feels slow |
+| 🔨 | **Next (from 9 to 9.5 as an Android reference):** baseline profiles + Macrobenchmark (startup and the main journeys, a `:baselineprofile` module per app or shared, Play ships the profile) | Planned for 2026-10-23 |
+| 🔨 | **Next:** audit edge-to-edge (mandatory with targetSdk 35+: insets on every screen, landscape, gesture bar), predictive back (`enableOnBackInvokedCallback`, back animations in navigation) and large screens (tablets, foldables: window size classes beyond `isShortScreen`) | Planned for 2026-10-23 |
