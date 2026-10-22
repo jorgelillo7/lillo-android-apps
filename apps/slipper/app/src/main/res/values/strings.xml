@@ -1,0 +1,28 @@
+<resources>
+    <string name="app_name">Will the slipper get you?</string>
+    <string name="home_tagline">Run from grandma. Jump her slippers. Steal her croquetas.</string>
+    <string name="play">Play</string>
+    <string name="about">About</string>
+    <string name="best_score">Best: %1$s</string>
+    <string name="challenge_banner">Challenge: beat %1$s</string>
+    <string name="tap_to_jump">Tap to jump · hold to jump higher</string>
+    <string name="score">%1$s</string>
+    <string name="caught">She got you!</string>
+    <string name="your_score">%1$s points</string>
+    <string name="new_record">New record! 🏆</string>
+    <string name="challenge_won">You beat the challenge! 🎉</string>
+    <string name="challenge_lost">The challenge was %1$s. Again?</string>
+    <string name="retry">Run again</string>
+    <string name="challenge_friend">Challenge a friend</string>
+    <string name="home">Home</string>
+    <string name="share_challenge">Grandma\'s slipper got me with %1$s points. Can you beat me? Same run, same slippers 🩴 %2$s</string>
+    <string name="dismiss_challenge">Forget the challenge</string>
+    <string name="challenge_invalid">That link has no challenge</string>
+    <string name="about_body">A one-finger game: run from grandma, jump her slippers, steal her croquetas. No account, no ads, nothing leaves your phone; challenges travel inside the link you share.</string>
+    <string name="about_version">Version %s</string>
+    <string name="about_open_privacy">Privacy policy</string>
+    <plurals name="croquetas_count">
+        <item quantity="one">%1$d croqueta</item>
+        <item quantity="other">%1$d croquetas</item>
+    </plurals>
+</resources>

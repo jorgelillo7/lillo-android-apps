@@ -14,7 +14,8 @@ Apps today: `christmas-countdown` ("¿Ya es Navidad?", `com.jorgelillo.christmas
 `com.jorgelillo.whoslying`, internal testing), `group-polls` ("¿Qué votáis?",
 `com.jorgelillo.grouppolls`, not released) and `tournaments` ("¿Solo quedará uno?",
 `com.jorgelillo.tournaments`, in development) and `league-cards` ("¿Quién llora esta jornada?",
-`com.jorgelillo.leaguecards`, a card game; its league deck is private and lives outside this public repo). `group-polls` is the only one with a backend
+`com.jorgelillo.leaguecards`, a card game; its league deck is private and lives outside this public repo) and `slipper` ("¿Te pilla la chancla?",
+`com.jorgelillo.slipper`, a pixel-art runner, prototype; plan in `docs/plans/slipper.md`). `group-polls` is the only one with a backend
 (Firestore; its rules, tests and infra live in lillorepo `packages/group_polls`). Write code,
 docs and scripts so they work for any app.
 
