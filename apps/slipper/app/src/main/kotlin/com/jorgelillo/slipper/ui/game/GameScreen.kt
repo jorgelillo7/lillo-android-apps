@@ -101,12 +101,12 @@ internal fun GameScreen(seed: Long, target: Int?, onCatch: (World) -> Unit) {
             }
     ) {
         GameScene(world, sprites, Modifier.fillMaxSize())
-        Hud(world, target)
+        Hud(world, target, sprites)
     }
 }
 
 @Composable
-private fun Hud(world: World, target: Int?) {
+private fun Hud(world: World, target: Int?, sprites: GameSprites) {
     Column(Modifier.fillMaxSize().statusBarsPadding().padding(20.dp)) {
         Row(
             Modifier.fillMaxWidth().panel(),
@@ -126,6 +126,12 @@ private fun Hud(world: World, target: Int?) {
                 color = Kitchen.Muted
             )
         }
+        ChaseMeter(
+            world.gap,
+            sprites,
+            stringResource(R.string.chase_description),
+            Modifier.padding(top = 8.dp).panel()
+        )
         if (target != null) {
             Text(
                 stringResource(R.string.challenge_banner, formatScore(target)),

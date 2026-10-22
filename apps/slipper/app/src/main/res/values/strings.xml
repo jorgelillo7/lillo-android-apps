@@ -17,6 +17,7 @@
     <string name="home">Home</string>
     <string name="share_challenge">Grandma\'s slipper got me with %1$s points. Can you beat me? Same run, same slippers 🩴 %2$s</string>
     <string name="dismiss_challenge">Forget the challenge</string>
+    <string name="chase_description">How close grandma is</string>
     <string name="challenge_invalid">That link has no challenge</string>
     <string name="about_body">A one-finger game: run from grandma, jump her slippers, steal her croquetas. No account, no ads, nothing leaves your phone; challenges travel inside the link you share.</string>
     <string name="about_version">Version %s</string>

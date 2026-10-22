@@ -20,7 +20,7 @@ English and Spanish.
 | Tune the game | `domain/.../GameConfig.kt` (every number in one place) |
 | Edit the pixel art | `app/src/main/assets/sprites.txt` |
 
-UI test tags: `play`, `about`, `best`, `challenge_banner`, `dismiss_challenge`, `game`, `score`,
+UI test tags: `play`, `about`, `best`, `challenge_banner`, `dismiss_challenge`, `game`, `score`, `chase`,
 `final_score`, `verdict`, `retry`, `challenge_friend`, `home`.
 
 ## Release

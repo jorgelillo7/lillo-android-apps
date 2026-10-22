@@ -1,7 +1,7 @@
 """Generates every launcher/store icon asset of ¿Te pilla la chancla? from the game's own sprites.
 
-The red slipper flying over the kitchen's tile blue, with speed lines and a croqueta: pixel art from
-app/src/main/assets/sprites.txt (the same drawing the game uses). Outputs: see scripts/icon_lib.py.
+The grandma, shouting, her red slipper raised, over the kitchen's tile blue: the `icon_grandma`
+pixel art in app/src/main/assets/sprites.txt. Outputs: see scripts/icon_lib.py.
 
 Usage (repo root): .venv/bin/python apps/slipper/tools/generate_icon.py
 """
@@ -15,7 +15,6 @@ from icon_lib import fill, poly_path, write_icon  # noqa: E402
 from sprites import load  # noqa: E402
 
 BG_TOP, BG_BOTTOM = "#4F94D0", "#2E6AA6"   # the kitchen's tile blue
-WHITE = "#F4EFE6"
 
 SPRITES = load(ROOT / "app/src/main/assets/sprites.txt")
 
@@ -39,13 +38,8 @@ def pixel_rects(name, left, top, size):
 
 
 def shapes():
-    """(polygon, colour) in drawing order: speed lines, the slipper, a croqueta."""
-    lines = []
-    for i, (x0, x1, y) in enumerate([(22, 30, 42), (20, 30, 48), (23, 30, 54)]):
-        lines.append(([(x0, y), (x1, y), (x1, y + 2.6), (x0, y + 2.6)], WHITE))
-    slipper = pixel_rects("slipper", left=31, top=37, size=4.2)          # 12x5 px -> 50x21
-    croqueta = pixel_rects("croqueta", left=57, top=63, size=2.6)        # 8x5 px
-    return lines + slipper + croqueta
+    """(polygon, colour) in drawing order: the grandma, sized so the round masks only trim the slipper's tip."""
+    return pixel_rects("icon_grandma", left=26, top=28, size=1.85)
 
 
 def foreground():
