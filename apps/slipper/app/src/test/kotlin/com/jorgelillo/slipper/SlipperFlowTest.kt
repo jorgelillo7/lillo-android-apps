@@ -17,8 +17,8 @@ import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
 
 /**
- * A whole run through the real MainActivity on the JVM: play, get caught (no taps: the first low
- * slipper gets the kid), the result, and the next run. The game asks for a frame every frame, so
+ * A whole run through the real MainActivity on the JVM: play, get caught (no taps: the kid runs
+ * into furniture and slippers until the grandma closes the gap), the result, and the next run. The game asks for a frame every frame, so
  * the test moves Compose's clock itself. One test per class: the DataStore file opens once per process.
  */
 @OptIn(ExperimentalTestApi::class)
@@ -73,7 +73,7 @@ class SlipperFlowTest {
     }
 
     private companion object {
-        const val TIMEOUT = 15_000L
+        const val TIMEOUT = 40_000L
         const val FRAME_STEP_MILLIS = 100L
     }
 }

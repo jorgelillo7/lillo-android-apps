@@ -21,6 +21,14 @@ object Kitchen {
     val Slipper = Color(0xFFE5465A)
     val Shout = Color(0xFFB0263A) // red text on cream: 5.6:1
     val Raised = Color(0xFFFFF6E6)
+    val Beam = Color(0xFF7A4F28)
+    val HallPaper = Color(0xFFE6EED8)
+    val HallStripe = Color(0xFFCFDDBE)
+    val HallFloor = Color(0xFF9C6B3E)
+    val LivingPaper = Color(0xFFF3DCD0)
+    val LivingFloor = Color(0xFFA8463E)
+    val Wainscot = Color(0xFFB07A45)
+    val WainscotEdge = Color(0xFF7A4F28)
 
     val Background = Brush.verticalGradient(listOf(Cream, CreamDeep))
 }

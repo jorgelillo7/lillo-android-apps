@@ -28,9 +28,13 @@ import com.jorgelillo.core.designsystem.LilloAboutSheet
 import com.jorgelillo.core.platform.LilloLinks
 import com.jorgelillo.slipper.BuildConfig
 import com.jorgelillo.slipper.R
+import com.jorgelillo.slipper.domain.Chunk
 import com.jorgelillo.slipper.domain.Croqueta
+import com.jorgelillo.slipper.domain.Furniture
+import com.jorgelillo.slipper.domain.FurnitureKind
 import com.jorgelillo.slipper.domain.GameConfig
 import com.jorgelillo.slipper.domain.Kid
+import com.jorgelillo.slipper.domain.Room
 import com.jorgelillo.slipper.domain.Slipper
 import com.jorgelillo.slipper.domain.SlipperKind
 import com.jorgelillo.slipper.domain.World
@@ -41,14 +45,17 @@ import com.jorgelillo.slipper.ui.game.GameScene
 import com.jorgelillo.slipper.ui.game.rememberGameSprites
 import com.jorgelillo.slipper.ui.theme.Kitchen
 
-/** A still of a run for the home screen: the kid mid-jump over a slipper, croquetas ahead. */
+/** A still of a run for the home screen: the kid leaping onto the table, grandma close behind. */
 internal val PosterWorld = World(
     seed = 0,
     time = 9.0,
-    kid = Kid(y = 9.0, vy = 10.0),
-    slippers = listOf(Slipper(50.0, SlipperKind.LOW, GameConfig.SLIPPER_SPEED, spin = 0.0)),
-    croquetas = listOf(Croqueta(78.0, 18.0), Croqueta(86.0, 20.0), Croqueta(94.0, GameConfig.LOW_Y)),
-    scrolled = 3.0
+    distance = 40.0,
+    kid = Kid(y = 13.0, vy = 10.0, airTime = 0.2),
+    gap = 11.0,
+    chunks = listOf(Chunk(0, -100.0, 300.0, Room.KITCHEN)),
+    furniture = listOf(Furniture(FurnitureKind.TABLE, 50.0), Furniture(FurnitureKind.CHAIR, 75.0)),
+    slippers = listOf(Slipper(33.0, SlipperKind.LOW, GameConfig.SLIPPER_SPEED)),
+    croquetas = listOf(Croqueta(54.0, 10.5), Croqueta(60.0, 10.5), Croqueta(66.0, 10.5), Croqueta(77.0, 14.0))
 )
 
 @Composable
@@ -82,7 +89,7 @@ internal fun HomeScreen(
             textAlign = TextAlign.Center,
             modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
         )
-        GameScene(remember { PosterWorld }, sprites, Modifier.fillMaxWidth().aspectRatio(1.6f).padding(vertical = 8.dp))
+        GameScene(remember { PosterWorld }, sprites, Modifier.fillMaxWidth().aspectRatio(1.3f).padding(vertical = 8.dp))
         if (best > 0) {
             Text(
                 stringResource(R.string.best_score, formatScore(best)),

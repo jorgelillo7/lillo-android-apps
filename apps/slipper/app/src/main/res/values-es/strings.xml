@@ -17,6 +17,7 @@
     <string name="home">Inicio</string>
     <string name="share_challenge">Me ha pillado la chancla de la abuela con %1$s puntos. ¿Me ganas? Misma partida, mismas chanclas 🩴 %2$s</string>
     <string name="dismiss_challenge">Olvidar el reto</string>
+    <string name="chase_description">A qué distancia está la abuela</string>
     <string name="challenge_invalid">Ese enlace no tiene ningún reto</string>
     <string name="about_body">Un juego de un dedo: huye de la abuela, salta sus chanclas y róbale las croquetas. Sin cuenta, sin anuncios y sin que nada salga de tu móvil; los retos viajan dentro del enlace que compartes.</string>
     <string name="about_version">Versión %s</string>

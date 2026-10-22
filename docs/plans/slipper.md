@@ -16,6 +16,8 @@ is instant, and the end screen challenges a friend by link to the very same run.
 | Control | Side view, portrait, tap to jump, hold for a higher jump | Simplest to make feel good and to understand in a second |
 | Look | Pixel art, "grandma's kitchen" palette (blue and white tiles, terracotta floor, red slipper) | Light and warm, unlike the other (dark) apps; sprites drawn as character grids, no AI |
 | v1 scope | The run, best score, **challenge by link** | Small v1; shouts, achievements and unlockables later |
+| Camera and chase (2026-10-22, after playing the first prototype) | **Mario Run style**: the camera follows the kid through the house (kitchen, hall, living room) and the furniture changes all the time; **the grandma chases in sight, Temple Run style**: she closes in when you stumble or a slipper hits you, falls back when you run clean, and catches you when the gap closes | The first prototype (fixed camera, scrolling tiles) read as static; the user pictured Mario Run, Sonic Dash, Temple Run. Lanes and a 3D view (Temple Run, Sonic Dash) would need another engine |
+| Icon | Recognisable at a glance: the grandma with her slipper raised | The first one (a slipper on blue) was too abstract |
 | Store category | Game · Arcade (Casual) | |
 | Website | "Juegos / Games" block, with Who's lying? and the league game | |
 
@@ -41,7 +43,8 @@ Latin America. Our difference: the joke, no ads, short runs, the challenge link.
 
 ## Prepared on 2026-10-22
 
-- `:apps:slipper:domain`: the engine (`Engine.step`), sprites parser, challenge link, unit tests.
+- `:apps:slipper:domain`: the engine (`Engine.step`), the house in chunks (`House`), the chase,
+  sprites parser, challenge link, unit tests (21).
 - `:apps:slipper:app`: Compose `Canvas` loop with fixed steps, pixel-art sprites from
   `assets/sprites.txt`, home / game / game over, challenge links in and out, best score in a
   `JsonStore`; ViewModel, flow and screenshot tests.
@@ -49,10 +52,10 @@ Latin America. Our difference: the joke, no ads, short runs, the challenge link.
 
 ## To do (2026-10-23 on)
 
-1. **Portrait composition** (first thing): the scene is a thin band with empty sky and floor and
-   small characters. Options: a closer camera (fewer world units across, shorter reaction times:
-   retune), the upper wall filled with kitchen pixel art (window, shelf with jars, hanging pans,
-   grandma's clock), a lower horizon. Decide by playing on a phone.
+1. **Play the chase version on a phone** (2026-10-22 night: camera following the kid, rooms,
+   furniture, the grandma chasing with a meter, the new icon). Then: fill the upper wall more
+   (upper cabinets, more frames) or bring the camera closer; tune speed, gap losses, croqueta
+   density (`GameConfig`, `House`).
 2. Play it on a phone: tune jump, gravity, speeds and spawn gaps (`GameConfig`).
 3. Feel: hit pause, shake, haptics, sounds.
 4. Sprites polish (run cycle, grandma throw, slipper spin) and the icon (`tools/generate_icon.py`
