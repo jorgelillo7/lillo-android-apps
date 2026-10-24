@@ -63,3 +63,7 @@ Short, one line each. Add to it whenever something bites.
   DataStore writes on its IO thread. After a tap that saves, wait on the store (`waitUntil` on the
   saved state), not on the screen, or the next tap hits a button that is about to go. The same gap
   hid a real race twice: decision-wheel and tournaments opened a new item before its save landed.
+- **An app's first production release is a draft.** Until an app has been published once (internal
+  testing doesn't count), the Play API refuses any production release that isn't a draft ("Only
+  releases with status draft may be created on draft app"). Run the Release workflow with
+  `draft=true`, then send it for review in Play Console. Later releases go out from CI as usual.

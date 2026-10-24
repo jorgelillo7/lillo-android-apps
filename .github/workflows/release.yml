@@ -6,6 +6,8 @@
 #   upload  + internal     the usual first step: test it from the opt-in link
 #   promote + production   then move that same bundle on, without building again
 #   upload  + production   straight to production, when no testing round is needed
+#   + draft                the app's first production release: Google only accepts a draft on an
+#                          app never published; send it for review in Play Console (Publishing overview)
 #
 # Production waits for an approval (the "production" environment). Each app's upload key lives in
 # its own environment (named like the app folder), the Play service account in a repository secret;
@@ -33,6 +35,10 @@ on:
         default: internal
       listing:
         description: Also publish the store listing (texts and graphics)
+        type: boolean
+        default: false
+      draft:
+        description: "Draft release (an app's first production release): send it for review in Play Console"
         type: boolean
         default: false
       dry_run:
@@ -162,6 +168,7 @@ jobs:
           else
             tasks+=(":apps:$APP:app:promoteArtifact" --from-track internal --promote-track "$TRACK")
           fi
+          if [ "${{ inputs.draft }}" = true ]; then tasks+=(--release-status draft); fi
           ./gradlew "${tasks[@]}" $GRADLE_EXTRA -Dorg.gradle.jvmargs="-Xmx4g -Dfile.encoding=UTF-8"
           if [ "${{ inputs.listing }}" = true ]; then ./gradlew ":apps:$APP:app:publishListing"; fi
 
