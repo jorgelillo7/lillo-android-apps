@@ -1,8 +1,5 @@
-Lo que nos habéis pedido 🕵️
-- Edita los paquetes incluidos: toca uno y haz tu copia
-- Comparte tus paquetes con un enlace o un QR, sin cuentas
-- Nuevo icono, nota de bienvenida y textos más claros
-- Más legible: más contraste y botones más grandes
-- Mejor en horizontal y en consolas portátiles
-- Arreglo: el caos en que todos son impostores ya termina solo
-- Arreglo: si el Despistado falla la palabra, la partida sigue
+Gracias por vuestras ideas 🕵️
+- Modo dibujo: elige cualquier color en la rueda de colores
+- A ciegas es a ciegas: el impostor ya no recibe la pista de categoría
+- Resultados: los nombres y palabras largos se ven enteros
+- Con 24 jugadores, un aviso claro en vez de un botón de añadir que no hacía nada

@@ -1,8 +1,5 @@
-What you asked for 🕵️
-- Edit the included packs: tap one and make your own copy
-- Share your word packs with a link or a QR code, no accounts
-- New icon, a welcome note and clearer round texts
-- Easier to read: stronger text contrast and bigger buttons
-- Better in landscape and on handheld consoles
-- Fix: a chaos game where everyone is an impostor now ends by itself
-- Fix: a wrong Drifter guess no longer leaves the game stuck
+Thanks for your feedback 🕵️
+- Drawing mode: pick any colour on the colour wheel
+- Blind really is blind: impostors get no category hint
+- Results: long names and words show in full
+- With 24 players, a clear note instead of an add button that did nothing
