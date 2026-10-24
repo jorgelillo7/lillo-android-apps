@@ -55,7 +55,7 @@ Lines are pruned as items ship. What has **shipped** lives in `apps/<app>/releas
 | 👤 | v1 in internal testing (2026-10-22, listing with the sample deck published): add the league's Gmail addresses as testers and send the opt-in link | You |
 | 👤 | Each league member's OK to appear in the private deck | You |
 | ⏳ | More cards and chat lines from the group | Ideas from the league · private deck, never in this repo |
-| ⏳ | Tester feedback of 2026-10-22 fixed (clipped buttons and cards on handhelds, readable meters, short season, no repeated chat, release-clause story): next release, then re-upload the deck secret | You · `scripts/set-release-secrets.sh league-cards` |
+| ⏳ | Tester feedback of 2026-10-22 fixed (clipped buttons and cards on handhelds, readable meters, short season, no repeated chat, release-clause story; deck secret re-uploaded 2026-10-24): ship it in the next release and ask the league to check | Next release |
 
 ## slipper game (¿Te pilla la chancla?, in development)
 
