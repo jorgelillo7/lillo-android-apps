@@ -15,6 +15,13 @@
     <string name="players_subtitle">3 to 24 players, sitting together with one phone</string>
     <string name="players_add_hint">Player name</string>
     <string name="players_add">Add</string>
+    <string name="drawing_ink">Colour %1$d</string>
+    <string name="drawing_pick_color">Pick a colour</string>
+    <string name="drawing_use_color">Use</string>
+    <plurals name="players_full">
+        <item quantity="one">%1$d player at most: remove someone to add another</item>
+        <item quantity="other">%1$d players at most: remove someone to add another</item>
+    </plurals>
     <string name="players_remove">Remove %1$s</string>
     <plurals name="players_need_more">
         <item quantity="one">Add at least %1$d players</item>
@@ -150,7 +157,7 @@
     <string name="modes_classic_who">Civilians get the word. The impostor gets a similar one (Beach vs. Pool) and isn\'t told they\'re the impostor: everyone sees the same screen.</string>
     <string name="modes_classic_win">Civilians: vote out every impostor. Impostors: last until only one civilian is left, without realising it at first.</string>
     <string name="modes_classic_tip">If the others\' clues don\'t quite fit your word… maybe you\'re the impostor. The best mode once the group knows the game. From 3 players.</string>
-    <string name="modes_blind_who">Civilians get the word. Impostors get nothing and know they\'re impostors. With the category hint they at least see the pack name.</string>
+    <string name="modes_blind_who">Civilians get the word. Impostors get nothing, not even the category, and know they\'re impostors.</string>
     <string name="modes_blind_win">The same: civilians vote them all out, impostors survive until one civilian is left.</string>
     <string name="modes_blind_tip">Impostor: listen before you speak and give vague clues. Civilians: not too obvious or they\'ll catch on. Great for first games and kids. From 3 players.</string>
     <string name="modes_drifter_who">Like Classic, plus one Drifter with no word who knows it. The Drifter never starts the round.</string>
@@ -159,7 +166,7 @@
     <string name="modes_chaos_title">Chaos (any mode)</string>
     <string name="modes_chaos">About one game in three ignores the impostor count: there can be one, several… or everyone. Nobody knows how many there are, so trust no one.</string>
     <string name="modes_hint_title">Category hint</string>
-    <string name="modes_hint">In Blind, The Drifter and drawing mode, players without a word see which pack it comes from. Turn it off for a harder game.</string>
+    <string name="modes_hint">In The Drifter and drawing mode, players without a word see which pack it comes from (never in Blind: there impostors get nothing). Turn it off for a harder game.</string>
     <string name="modes_timer_title">Discussion time</string>
     <string name="modes_timer">An optional countdown before each vote, so nobody drags it out. When time\'s up it beeps and you go straight to the vote.</string>
 
@@ -220,7 +227,7 @@
     <string name="result_share">Share</string>
     <string name="drawing_share_caption">Our drawing of "%1$s" in Who\'s lying? %2$s</string>
     <string name="modes_drawing_title">Drawing mode (any mode)</string>
-    <string name="modes_drawing">Instead of saying clues, you draw the word together on one canvas: pass the phone and each adds a stroke or a detail. Impostors get no word (just the category, if the hint is on) and have to bluff. Then vote as usual, and share the masterpiece at the end.</string>
+    <string name="modes_drawing">Instead of saying clues, you draw the word together on one canvas: pass the phone and each adds a stroke or a detail. Impostors get no word (just the category, if the hint is on and the mode isn\'t Blind) and have to bluff. Then vote as usual, and share the masterpiece at the end.</string>
     <string name="modes_scores_title">Scores</string>
     <string name="modes_scores">Every player on the winning side scores, even if voted out: civilians 5 points, impostors and the Drifter 15. Points add up over the match (10 rounds by default, change it in setup); the ranking shows after every round, and after the last one the winner is crowned.</string>
     <string name="scores_title">Ranking</string>

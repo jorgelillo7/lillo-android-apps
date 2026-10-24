@@ -19,6 +19,17 @@
     <string name="see_ending">Ver cómo acaba</string>
     <string name="new_season">Nueva temporada</string>
     <string name="continue_season">Seguir (jornada %d)</string>
+    <plurals name="new_season_length">
+        <item quantity="one">Nueva temporada · %d jornada</item>
+        <item quantity="many">Nueva temporada · %d jornadas</item>
+        <item quantity="other">Nueva temporada · %d jornadas</item>
+    </plurals>
+    <plurals name="short_season">
+        <item quantity="one">Temporada corta · %d jornada</item>
+        <item quantity="many">Temporada corta · %d jornadas</item>
+        <item quantity="other">Temporada corta · %d jornadas</item>
+    </plurals>
+    <string name="autosave">Se guarda sola: sal cuando quieras y sigue luego por la misma jornada.</string>
     <string name="how_to_play">Cada jornada te escriben los de la liga. Desliza la carta a la izquierda o a la derecha para decidir.\n\nVigila las cuatro barras: 💰 dinero, 💪 plantilla, 🙄 paciencia de la liga y 😭 lloros. Si una se vacía o se llena del todo, se acabó tu temporada.\n\nAguanta la vuelta entera y gana la liga. Colecciona los logros y todos los finales.</string>
     <string name="stat_seasons">temporadas</string>
     <string name="stat_titles">ligas</string>

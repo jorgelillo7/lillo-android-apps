@@ -9,6 +9,7 @@ import com.jorgelillo.core.designsystem.LilloTheme
 import com.jorgelillo.core.screenshottesting.captureScreenshot
 import com.jorgelillo.leaguecards.domain.Game
 import com.jorgelillo.leaguecards.domain.League
+import com.jorgelillo.leaguecards.domain.Meters
 import com.jorgelillo.leaguecards.domain.Saved
 import com.jorgelillo.leaguecards.domain.Season
 import com.jorgelillo.leaguecards.ui.theme.ChatColorScheme
@@ -50,7 +51,37 @@ class LeagueScreensScreenshotTest {
         }
     }
 
+    /**
+     * The longest card on a handheld with a large font (a tester's AYN-style console): the answers
+     * and the whole text must still show, not be clipped.
+     */
+    private fun playLongCardLargeFont(name: String) = shot(name) {
+        val longest = league.cards.filterNot { it.followUpOnly }.maxBy { it.text.length + it.left.label.length }
+        // Meters at different levels, one in danger: each level must read at a glance.
+        val meters = Meters(money = 80, squad = 30, patience = 10, tears = 60)
+        PlayScreen(league, season.copy(hand = listOf(longest.id), handIndex = 0, meters = meters), {}, {}, {}, {})
+    }
+
+    /** Home with a season in progress: continue, the autosave note, a full or a short season. */
+    private fun home(name: String) = shot(name) {
+        HomeScreen(league, Saved().with(league, season, today = 0), onContinue = {}, onNew = {}, onTrophies = {})
+    }
+
+    @Test fun homePortrait() = home("home")
+
+    @Test
+    @Config(qualifiers = "+land")
+    fun homeLandscape() = home("home_landscape")
+
     @Test fun playPortrait() = play("play")
+
+    @Test
+    @Config(qualifiers = "+land", fontScale = 1.3f)
+    fun playLandscapeLargeFont() = playLongCardLargeFont("play_landscape_large_font")
+
+    @Test
+    @Config(fontScale = 1.3f)
+    fun playPortraitLargeFont() = playLongCardLargeFont("play_large_font")
 
     @Test
     @Config(qualifiers = "+land")

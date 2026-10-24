@@ -18,6 +18,13 @@ object Rules {
     /** About a minute of discussion per player. */
     fun recommendedTimer(players: Int): Int = players.coerceIn(1, 24) * 60
 
+    /**
+     * Whether the category hint can apply: someone plays without a word (the drifter, drawing
+     * impostors) and the mode isn't Blind, whose point is that impostors get nothing at all.
+     */
+    fun hintAvailable(settings: GameSettings): Boolean =
+        settings.mode != GameMode.BLIND && (settings.mode == GameMode.DRIFTER || settings.drawing)
+
     fun minPlayers(mode: GameMode): Int = if (mode == GameMode.DRIFTER) 4 else MIN_PLAYERS
 
     fun canStart(players: Int, settings: GameSettings): Boolean = players in minPlayers(settings.mode)..MAX_PLAYERS &&
@@ -142,7 +149,13 @@ class Game private constructor(
 
                     else -> null
                 }
-                val hint = if (word == null && settings.categoryHint) pack.name else null
+                val hint = if (word == null && settings.categoryHint &&
+                    Rules.hintAvailable(settings)
+                ) {
+                    pack.name
+                } else {
+                    null
+                }
                 Card(name, role, word, hint)
             }
             val starter = cards.filter { it.role != Role.DRIFTER }.random(random).player

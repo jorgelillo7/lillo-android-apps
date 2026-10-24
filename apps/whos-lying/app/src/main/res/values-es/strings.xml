@@ -13,6 +13,14 @@
     <string name="players_subtitle">De 3 a 24 jugadores, juntos y con un solo móvil</string>
     <string name="players_add_hint">Nombre del jugador</string>
     <string name="players_add">Añadir</string>
+    <string name="drawing_ink">Color %1$d</string>
+    <string name="drawing_pick_color">Elige un color</string>
+    <string name="drawing_use_color">Usar</string>
+    <plurals name="players_full">
+        <item quantity="one">Máximo %1$d jugador: quita a alguien para añadir otro</item>
+        <item quantity="many">Máximo %1$d jugadores: quita a alguien para añadir otro</item>
+        <item quantity="other">Máximo %1$d jugadores: quita a alguien para añadir otro</item>
+    </plurals>
     <string name="players_remove">Quitar a %1$s</string>
     <plurals name="players_need_more">
         <item quantity="one">Añade al menos %1$d jugadores</item>
@@ -141,7 +149,7 @@
     <string name="modes_classic_who">Los civiles reciben la palabra. El impostor recibe una parecida (Playa frente a Piscina) y no se le dice que es el impostor: todos ven la misma pantalla.</string>
     <string name="modes_classic_win">Civiles: eliminar a todos los impostores. Impostores: aguantar hasta que solo quede un civil, sin saberlo al principio.</string>
     <string name="modes_classic_tip">Si las pistas de los demás no encajan del todo con tu palabra… quizá el impostor eres tú. El mejor modo cuando el grupo ya conoce el juego. Desde 3 jugadores.</string>
-    <string name="modes_blind_who">Los civiles reciben la palabra. Los impostores no reciben nada y saben que lo son. Con la pista de categoría, al menos ven el nombre del paquete.</string>
+    <string name="modes_blind_who">Los civiles reciben la palabra. Los impostores no reciben nada, ni siquiera la categoría, y saben que lo son.</string>
     <string name="modes_blind_win">Igual: los civiles ganan si los eliminan a todos; los impostores, si aguantan hasta que quede un civil.</string>
     <string name="modes_blind_tip">Impostor: escucha antes de hablar y da pistas vagas. Civiles: no seáis demasiado obvios o se enterará. Ideal para las primeras partidas y con peques. Desde 3 jugadores.</string>
     <string name="modes_drifter_who">Como el Clásico, más un Despistado sin palabra que sabe que lo es. El Despistado nunca empieza la ronda.</string>
@@ -150,7 +158,7 @@
     <string name="modes_chaos_title">Caos (en cualquier modo)</string>
     <string name="modes_chaos">Más o menos una de cada tres partidas ignora el número de impostores: puede haber uno, varios… o todos. Nadie sabe cuántos hay, así que no te fíes de nadie.</string>
     <string name="modes_hint_title">Pista de categoría</string>
-    <string name="modes_hint">En A ciegas, El Despistado y el modo dibujo, quien no tiene palabra ve de qué paquete sale. Quítala para una partida más difícil.</string>
+    <string name="modes_hint">En El Despistado y el modo dibujo, quien no tiene palabra ve de qué paquete sale (nunca en A ciegas: ahí el impostor no recibe nada). Quítala para una partida más difícil.</string>
     <string name="modes_timer_title">Tiempo para debatir</string>
     <string name="modes_timer">Una cuenta atrás opcional antes de cada votación, para que nadie se eternice. Al acabar, pita y se pasa directamente a votar.</string>
 
@@ -214,7 +222,7 @@
     <string name="result_share">Compartir</string>
     <string name="drawing_share_caption">Nuestro dibujo de «%1$s» en ¿Quién miente? %2$s</string>
     <string name="modes_drawing_title">Modo dibujo (en cualquier modo)</string>
-    <string name="modes_drawing">En vez de decir pistas, dibujáis la palabra entre todos en el mismo lienzo: pasaos el móvil y cada uno añade un trazo o un detalle. Los impostores no reciben palabra (solo la categoría, si la pista está activada) y tienen que tirarse el farol. Luego se vota igual, y al final podéis compartir la obra de arte.</string>
+    <string name="modes_drawing">En vez de decir pistas, dibujáis la palabra entre todos en el mismo lienzo: pasaos el móvil y cada uno añade un trazo o un detalle. Los impostores no reciben palabra (solo la categoría, si la pista está activada y el modo no es A ciegas) y tienen que tirarse el farol. Luego se vota igual, y al final podéis compartir la obra de arte.</string>
     <string name="modes_scores_title">Puntos</string>
     <string name="modes_scores">Puntúan todos los del bando ganador, aunque los hayan eliminado: civiles 5 puntos, impostores y Despistado 15. Los puntos se suman durante la partida (10 rondas por defecto, cámbialo en la configuración); tras cada ronda veis la clasificación y, al acabar la última, se corona al ganador.</string>
     <string name="scores_title">Clasificación</string>

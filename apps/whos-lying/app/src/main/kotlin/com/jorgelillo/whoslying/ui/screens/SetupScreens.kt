@@ -133,24 +133,33 @@ internal fun PlayersScreen(
         onBack = onBack,
         modifier = Modifier.imePadding(),
         bottom = {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                OutlinedTextField(
-                    value = draft,
-                    onValueChange = { draft = it },
-                    placeholder = { Text(stringResource(R.string.players_add_hint)) },
-                    singleLine = true,
-                    keyboardOptions = KeyboardOptions(
-                        capitalization = KeyboardCapitalization.Words,
-                        imeAction = ImeAction.Done
-                    ),
-                    keyboardActions = KeyboardActions(onDone = { add() }),
-                    modifier = Modifier.weight(1f).testTag("player_name")
+            if (players.size >= Rules.MAX_PLAYERS) {
+                Text(
+                    pluralStringResource(R.plurals.players_full, Rules.MAX_PLAYERS, Rules.MAX_PLAYERS),
+                    color = Neon.Amber,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth().testTag("players_full")
                 )
-                Spacer(Modifier.width(10.dp))
-                FilledIconButton(onClick = {
-                    add()
-                }, enabled = draft.isNotBlank(), modifier = Modifier.size(52.dp).testTag("add_player")) {
-                    Icon(Icons.Filled.Add, contentDescription = stringResource(R.string.players_add))
+            } else {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    OutlinedTextField(
+                        value = draft,
+                        onValueChange = { draft = it },
+                        placeholder = { Text(stringResource(R.string.players_add_hint)) },
+                        singleLine = true,
+                        keyboardOptions = KeyboardOptions(
+                            capitalization = KeyboardCapitalization.Words,
+                            imeAction = ImeAction.Done
+                        ),
+                        keyboardActions = KeyboardActions(onDone = { add() }),
+                        modifier = Modifier.weight(1f).testTag("player_name")
+                    )
+                    Spacer(Modifier.width(10.dp))
+                    FilledIconButton(onClick = {
+                        add()
+                    }, enabled = draft.isNotBlank(), modifier = Modifier.size(52.dp).testTag("add_player")) {
+                        Icon(Icons.Filled.Add, contentDescription = stringResource(R.string.players_add))
+                    }
                 }
             }
             Spacer(Modifier.height(12.dp))
@@ -288,7 +297,7 @@ internal fun SetupScreen(
                     Text("+", style = MaterialTheme.typography.headlineSmall)
                 }
             }
-            if (settings.mode != GameMode.CLASSIC || settings.drawing) {
+            if (Rules.hintAvailable(settings)) {
                 SettingRow(stringResource(R.string.setup_hint), stringResource(R.string.setup_hint_desc)) {
                     NeonSwitch(settings.categoryHint, "hint") { v -> onChange { it.copy(categoryHint = v) } }
                 }

@@ -28,6 +28,7 @@ import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jorgelillo.core.designsystem.ConfettiRain
@@ -217,6 +218,8 @@ internal fun ResultScreen(
                         color = Color.White.copy(alpha = 0.7f),
                         style = MaterialTheme.typography.labelLarge
                     )
+                    // Name and role on one line, the word under the name: a long word never squeezes
+                    // the name into pieces ("Fr / an / co").
                     game.cards.forEach { card ->
                         Row(
                             Modifier.fillMaxWidth().padding(top = 8.dp),
@@ -224,13 +227,20 @@ internal fun ResultScreen(
                         ) {
                             Box(Modifier.size(10.dp).clip(CircleShape).background(roleColor(card.role)))
                             Spacer(Modifier.width(10.dp))
-                            Text(
-                                card.player,
-                                Modifier.weight(1f),
-                                color = Color.White,
-                                fontWeight = FontWeight.SemiBold
-                            )
-                            Text(card.word ?: "—", color = Color.White.copy(alpha = 0.7f))
+                            Column(Modifier.weight(1f)) {
+                                Text(
+                                    card.player,
+                                    color = Color.White,
+                                    fontWeight = FontWeight.SemiBold,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                                Text(
+                                    card.word ?: "—",
+                                    color = Color.White.copy(alpha = 0.7f),
+                                    style = MaterialTheme.typography.bodySmall
+                                )
+                            }
                             Spacer(Modifier.width(10.dp))
                             Text(roleLabel(card.role), color = roleColor(card.role), fontWeight = FontWeight.Bold)
                         }

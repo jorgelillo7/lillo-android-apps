@@ -23,7 +23,10 @@ class LeagueViewModel(val league: League, private val store: JsonStore<Saved>) :
     /** Null until the first read from disk, so screens don't flash empty. */
     val saved: StateFlow<Saved?> = store.state.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
-    fun newSeason() = update { Game.newSeason(league, Random.nextLong()) }
+    /** A new season, the league's full length or a [short] one (half the matchdays). */
+    fun newSeason(short: Boolean = false) = update {
+        Game.newSeason(league, Random.nextLong(), if (short) Game.shortLength(league) else league.matchdays)
+    }
 
     fun choose(right: Boolean) = updateSeason { Game.choose(league, it, right) }
 

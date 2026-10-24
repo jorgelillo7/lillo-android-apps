@@ -8,7 +8,7 @@ enum class GameMode {
     /** The impostor gets a similar but different word and doesn't know they are the impostor. */
     CLASSIC,
 
-    /** The impostor gets no word (optionally the category as a hint) and knows it. */
+    /** The impostor gets no word, not even the category, and knows it. */
     BLIND,
 
     /** Like CLASSIC, plus one "drifter" with no word who wins by guessing the civilians' word. */
@@ -35,7 +35,7 @@ data class WordPack(
 data class GameSettings(
     val mode: GameMode = GameMode.CLASSIC,
     val impostors: Int = 1,
-    /** Show the pack name to impostors (BLIND) and the drifter. */
+    /** Show the pack name to drawing impostors and the drifter (never in BLIND, see [Rules.hintAvailable]). */
     val categoryHint: Boolean = true,
     /** Some games get a random number of impostors, sometimes everyone. */
     val chaos: Boolean = false,
@@ -45,7 +45,7 @@ data class GameSettings(
     val discussionSeconds: Int = 0,
     /**
      * Clues are drawn together on one canvas instead of said out loud. Works with every mode;
-     * impostors get no word (like BLIND), only the category hint if enabled.
+     * impostors get no word (like BLIND), only the category hint if enabled and not BLIND.
      */
     val drawing: Boolean = false,
     /** Games in a match; scores decide a winner after the last one. 0 means no limit. */

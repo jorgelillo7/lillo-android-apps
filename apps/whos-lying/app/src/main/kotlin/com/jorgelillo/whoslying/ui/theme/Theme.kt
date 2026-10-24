@@ -11,7 +11,7 @@ object Neon {
     val CardHigh = Color(0xFF2A2550)
     val Ink = Color(0xFFF0EEFF)
     val Muted = Color(0xFF9692BE)
-    val Violet = Color(0xFF7C5CFF)
+    val Violet = Color(0xFF7756FA)
     val Turquoise = Color(0xFF00E0B8)
     val Pink = Color(0xFFFF4D94)
     val Amber = Color(0xFFFFC94D)
