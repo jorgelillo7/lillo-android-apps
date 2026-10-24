@@ -26,7 +26,8 @@ class GameTest {
         cards: List<Card>,
         events: List<MatchdayEvent> = emptyList(),
         joker: Joker? = null,
-        achievements: List<Achievement> = emptyList()
+        achievements: List<Achievement> = emptyList(),
+        chat: List<ChatLine> = emptyList()
     ) = League(
         name = "test",
         matchdays = 3,
@@ -37,7 +38,8 @@ class GameTest {
         events = events,
         joker = joker,
         endings = Endings("ml", "mh", "sl", "sh", "pl", "ph", "tl", "th", "champion", "{position}"),
-        achievements = achievements
+        achievements = achievements,
+        chat = chat
     )
 
     /** Plays until the season ends, choosing with [pick]. */
@@ -64,6 +66,60 @@ class GameTest {
         val random = finished(deck) { seed -> Random(seed).let { r -> { r.nextBoolean() } } }
         println("private deck: careful $careful / 200, random $random / 200 reach the last matchday")
         assertTrue(careful >= 120, "careful play finished only $careful of 200 seasons")
+    }
+
+    @Test
+    fun `a short season ends after half the matchdays and still reaches the late cards`() {
+        // Three matchdays, so a short season has two; the late card is only for the third.
+        val l = league(listOf(card("early"), card("late").copy(fromMatchday = 3)))
+        val short = Game.newSeason(l, seed = 1, length = Game.shortLength(l))
+        assertEquals(2, short.matchdays(l))
+        assertEquals(listOf(2, 3), listOf(short, short.copy(matchday = 2)).map { it.calendarMatchday(l) })
+
+        var s = short
+        val dealt = mutableSetOf<String>()
+        while (!s.over) {
+            dealt += s.hand
+            s = if (s.reportPending) Game.dismissReport(s) else Game.choose(l, s, true)
+        }
+        assertEquals(2, s.matchday - 1, "matchdays played")
+        assertNotNull(s.ending!!.position, "it ended at the last matchday, not on a meter")
+        assertTrue("late" in dealt, "the short season's last matchday is the deck's last")
+    }
+
+    @Test
+    fun `a full season is the league's length, also for seasons saved before short ones`() {
+        val l = league(listOf(card("x")))
+        assertEquals(3, Game.newSeason(l, seed = 1).matchdays(l))
+        assertEquals(3, Season(seed = 1).matchdays(l))
+        assertEquals(2, Season(seed = 1, matchday = 2).calendarMatchday(l))
+    }
+
+    @Test
+    fun `chat lines don't repeat until they run out, and placeholders are filled`() {
+        val chat = listOf(
+            ChatLine("a", "a1"),
+            ChatLine("a", "a2"),
+            ChatLine("b", "b1"),
+            ChatLine("b", "b2 {leader} {position} {last}")
+        )
+        val l = league(listOf(card("x"), card("y")), chat = chat)
+        for (seed in 1L..20L) {
+            var s = Game.newSeason(l, seed)
+            val reports = mutableListOf<Report>()
+            while (!s.over && reports.size < 2) {
+                if (s.reportPending) {
+                    reports += s.report!!
+                    s = Game.dismissReport(s)
+                } else {
+                    s = Game.choose(l, s, true)
+                }
+            }
+            val texts = reports.flatMap { r -> r.chat.map { it.text } }
+            assertEquals(4, texts.toSet().size, "seed $seed: $texts")
+            assertTrue(texts.none { "{" in it }, "seed $seed: $texts")
+            assertTrue(texts.any { it.startsWith("b2 B ") }, "seed $seed: the only rival leads and is last: $texts")
+        }
     }
 
     @Test

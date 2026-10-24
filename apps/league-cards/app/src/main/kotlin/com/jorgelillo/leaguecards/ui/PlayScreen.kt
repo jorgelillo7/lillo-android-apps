@@ -8,18 +8,21 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -31,6 +34,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
@@ -42,6 +46,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.jorgelillo.core.designsystem.AvatarStyle
 import com.jorgelillo.core.designsystem.LilloAvatar
 import com.jorgelillo.core.designsystem.isShortScreen
@@ -90,7 +95,7 @@ internal fun PlayScreen(
         season.lastOutcome?.let { ChatBubble(league, it.character, it.text, Modifier.testTag("outcome")) }
     }
     Page(
-        title = stringResource(R.string.matchday_of, season.matchday, league.matchdays),
+        title = stringResource(R.string.matchday_of, season.matchday, season.matchdays(league)),
         onBack = onBack,
         actions = {
             TextButton(onClick = onTable, modifier = Modifier.testTag("table")) {
@@ -103,19 +108,23 @@ internal fun PlayScreen(
         },
         sideActionsWhenShort = true,
         bottom = {
-            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                ChoiceButton(
-                    "← " + card.left.label,
-                    "choose_left",
-                    onClick = { onChoose(false) },
-                    modifier = Modifier.weight(1f)
-                )
-                ChoiceButton(
-                    card.right.label + " →",
-                    "choose_right",
-                    onClick = { onChoose(true) },
-                    modifier = Modifier.weight(1f)
-                )
+            val left = @Composable { m: Modifier ->
+                ChoiceButton("← " + card.left.label, "choose_left", onClick = { onChoose(false) }, modifier = m)
+            }
+            val right = @Composable { m: Modifier ->
+                ChoiceButton(card.right.label + " →", "choose_right", onClick = { onChoose(true) }, modifier = m)
+            }
+            if (short) {
+                // The side column is narrow: one answer per row, so long labels (and large fonts) fit.
+                Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                    right(Modifier.fillMaxWidth())
+                    left(Modifier.fillMaxWidth())
+                }
+            } else {
+                Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                    left(Modifier.weight(1f))
+                    right(Modifier.weight(1f))
+                }
             }
             if (Game.canUseJoker(league, season)) {
                 val joker = league.joker!!
@@ -149,8 +158,13 @@ internal fun PlayScreen(
 
 @Composable
 private fun ChoiceButton(text: String, tag: String, onClick: () -> Unit, modifier: Modifier = Modifier) {
-    OutlinedButton(onClick = onClick, modifier = modifier.height(56.dp).testTag(tag)) {
-        Text(text, color = Chat.Text, maxLines = 2, overflow = TextOverflow.Ellipsis, textAlign = TextAlign.Center)
+    // Grows with the label instead of clipping it (large font sizes on handhelds).
+    OutlinedButton(
+        onClick = onClick,
+        modifier = modifier.heightIn(min = 56.dp).testTag(tag),
+        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp)
+    ) {
+        Text(text, color = Chat.Text, textAlign = TextAlign.Center)
     }
 }
 
@@ -190,17 +204,28 @@ private fun MetersRow(season: Season, preview: Effects?) {
                             .background(Chat.Text, CircleShape)
                     )
                 }
-                MeterTile(MeterIcons.getValue(meter), season.meters[meter], MeterColors.getValue(meter))
+                val value = season.meters[meter]
+                MeterTile(MeterIcons.getValue(meter), value, MeterColors.getValue(meter))
+                Text(
+                    value.toString(),
+                    color = if (value.inDanger()) Chat.Red else Chat.Text,
+                    fontWeight = FontWeight.Black,
+                    style = MaterialTheme.typography.titleSmall,
+                    modifier = Modifier.padding(top = 4.dp)
+                )
                 Text(
                     stringResource(MeterLabels.getValue(meter)),
-                    color = Chat.Muted,
+                    color = Chat.Text,
                     style = MaterialTheme.typography.labelSmall,
-                    modifier = Modifier.padding(top = 4.dp)
+                    maxLines = 1,
+                    autoSize = TextAutoSize.StepBased(minFontSize = 8.sp, maxFontSize = 11.sp)
                 )
             }
         }
     }
 }
+
+private fun Int.inDanger() = this <= 15 || this >= 85
 
 private val MeterLabels = mapOf(
     Meter.MONEY to R.string.meter_money,
@@ -209,25 +234,32 @@ private val MeterLabels = mapOf(
     Meter.TEARS to R.string.meter_tears
 )
 
+/**
+ * A tile that fills up from the bottom on a dark background, with a bright edge on top of the fill,
+ * so the level reads at a glance even behind the emoji (the number goes under it). Red near either end.
+ */
 @Composable
 private fun MeterTile(icon: String, value: Int, color: Color) {
-    val danger = value <= 15 || value >= 85
-    val shape = RoundedCornerShape(16.dp)
+    val fill = if (value.inDanger()) Chat.Red else color
+    val shape = RoundedCornerShape(14.dp)
     Box(
         Modifier
             .fillMaxWidth()
             .height(64.dp)
-            .background(Chat.Bubble, shape)
-            .border(1.5.dp, if (danger) Chat.Red else color.copy(alpha = 0.35f), shape),
+            .clip(shape)
+            .background(Chat.Ink)
+            .border(2.dp, fill, shape),
         contentAlignment = Alignment.BottomCenter
     ) {
-        Box(
-            Modifier.fillMaxWidth().fillMaxHeight(value / 100f).background(
-                (if (danger) Chat.Red else color).copy(alpha = 0.55f),
-                shape
-            )
+        Column(Modifier.fillMaxWidth().fillMaxHeight(value / 100f)) {
+            Box(Modifier.fillMaxWidth().height(3.dp).background(fill))
+            Box(Modifier.fillMaxSize().background(fill.copy(alpha = 0.6f)))
+        }
+        Text(
+            icon,
+            style = MaterialTheme.typography.titleLarge,
+            modifier = Modifier.align(Alignment.Center)
         )
-        Text(icon, style = MaterialTheme.typography.headlineSmall, modifier = Modifier.align(Alignment.Center))
     }
 }
 
@@ -302,18 +334,18 @@ private fun SwipeCard(
             character?.tagline?.takeIf { it.isNotBlank() }?.let {
                 Text(it, color = Chat.Muted, style = MaterialTheme.typography.bodyMedium, textAlign = TextAlign.Center)
             }
-            Spacer(Modifier.weight(1f))
-            Text(
-                card.text,
-                style = if (isShortScreen()) {
-                    MaterialTheme.typography.titleLarge
-                } else {
-                    MaterialTheme.typography.headlineSmall
-                },
-                textAlign = TextAlign.Center,
-                color = Chat.Text
-            )
-            Spacer(Modifier.weight(1f))
+            // The card's text shrinks to fit the room left, so a long card is always read whole.
+            val style = MaterialTheme.typography.run { if (isShortScreen()) titleLarge else headlineSmall }
+            Box(Modifier.weight(1f).fillMaxWidth().padding(top = 8.dp), contentAlignment = Alignment.Center) {
+                Text(
+                    card.text,
+                    style = style,
+                    textAlign = TextAlign.Center,
+                    color = Chat.Text,
+                    autoSize = TextAutoSize.StepBased(minFontSize = 12.sp, maxFontSize = style.fontSize),
+                    modifier = Modifier.testTag("card_text")
+                )
+            }
         }
     }
 }

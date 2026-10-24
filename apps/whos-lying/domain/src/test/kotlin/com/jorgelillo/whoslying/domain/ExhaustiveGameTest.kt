@@ -115,7 +115,8 @@ class ExhaustiveGameTest {
             }
             assertEquals(
                 if (card.word == null &&
-                    settings.categoryHint
+                    settings.categoryHint &&
+                    settings.mode != GameMode.BLIND
                 ) {
                     pack.name
                 } else {

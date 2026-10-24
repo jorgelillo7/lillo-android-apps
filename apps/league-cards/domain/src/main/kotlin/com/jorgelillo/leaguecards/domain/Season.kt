@@ -37,6 +37,8 @@ data class Ending(val text: String, val meter: Meter? = null, val high: Boolean 
 @Serializable
 data class Season(
     val seed: Long,
+    /** Matchdays this season; 0 (seasons saved before short seasons existed) means the league's. */
+    val length: Int = 0,
     val matchday: Int = 1,
     val meters: Meters = Meters(),
     /** Card ids dealt this matchday and how many are already answered. */
@@ -59,21 +61,46 @@ data class Season(
     /** Achievements unlocked this season, in order. */
     val unlocked: List<String> = emptyList(),
     /** Unlocked by the last move: shown once. */
-    val justUnlocked: List<String> = emptyList()
+    val justUnlocked: List<String> = emptyList(),
+    /** Group-chat lines already sent this season (indexes in [League.chat]): no repeats until they run out. */
+    val chatUsed: Set<Int> = emptySet()
 ) {
     val currentCard: String? get() = if (ending == null && !reportPending) hand.getOrNull(handIndex) else null
     val over: Boolean get() = ending != null
+
+    fun matchdays(league: League): Int = if (length > 0) length else league.matchdays
+
+    /**
+     * Where this matchday falls in the deck's own calendar: a short season runs through the whole
+     * year (winter cards, the draft…) faster, so no part of the deck is left out.
+     */
+    fun calendarMatchday(league: League): Int {
+        val total = matchdays(league)
+        return if (total == league.matchdays) {
+            matchday
+        } else {
+            ((matchday * league.matchdays + total - 1) / total).coerceAtMost(league.matchdays)
+        }
+    }
 }
 
 object Game {
 
-    fun newSeason(league: League, seed: Long): Season {
+    /** A short season: half the league's matchdays, rounded up. */
+    fun shortLength(league: League): Int = (league.matchdays + 1) / 2
+
+    fun newSeason(league: League, seed: Long, length: Int = league.matchdays): Season {
         val rng = rng(seed, 0, 0)
         val form = league.rivals.associate { r ->
             r.character to if (r.allOrNothing) (if (rng.nextBoolean()) 15 else -30) else 0
         }
         val table = (listOf(YOU) + league.rivals.map { it.character }).associateWith { 0 }
-        val season = Season(seed = seed, table = table, form = form)
+        val season = Season(
+            seed = seed,
+            length = length.coerceIn(1, league.matchdays),
+            table = table,
+            form = form
+        )
         return season.copy(hand = deal(league, season))
     }
 
@@ -197,12 +224,13 @@ object Game {
         // And the league forgets: every meter drifts back towards the middle a little.
         meters = meters.settle()
 
-        val chat = league.chat
-            .filter { it.mood == Mood.ANY || it.mood == (if (good) Mood.GOOD else Mood.BAD) }
-            .shuffled(rng)
-            .distinctBy { it.character }
-            .take(3)
-            .map { Outcome(it.character, it.text.replace("{points}", yours.toString())) }
+        val table = s.table.mapValues { (id, total) -> total + (scores[id] ?: 0) }
+        val (chatPicked, chatUsed) = pickChat(league, s.chatUsed, good, rng)
+        val placeholders = placeholders(league, s.copy(table = table), yours)
+        val chat = chatPicked.map { i ->
+            val line = league.chat[i]
+            Outcome(line.character, placeholders.entries.fold(line.text) { t, (k, v) -> t.replace(k, v) })
+        }
 
         val report = Report(
             matchday = s.matchday,
@@ -211,8 +239,8 @@ object Game {
             events = events.map { Outcome(it.character ?: "", it.text) },
             chat = chat
         )
-        val table = s.table.mapValues { (id, total) -> total + (scores[id] ?: 0) }
         var next = s.copy(
+            chatUsed = chatUsed,
             meters = meters,
             table = table,
             report = report,
@@ -225,7 +253,7 @@ object Game {
         meters.broken()?.let { (meter, high) ->
             return next.copy(ending = Ending(league.endings.of(meter, high), meter, high))
         }
-        if (next.matchday > league.matchdays) {
+        if (next.matchday > s.matchdays(league)) {
             val position = position(next)
             val text = if (position == 1) league.endings.champion else league.endings.notChampion
             return next.copy(
@@ -237,6 +265,38 @@ object Game {
     }
 
     /**
+     * Up to three chat lines for the mood, one per character, preferring lines not sent yet this
+     * season; once the mood's lines are all used they become available again. Returns the picked
+     * indexes in [League.chat] and the updated used set.
+     */
+    private fun pickChat(league: League, used: Set<Int>, good: Boolean, rng: Random): Pair<List<Int>, Set<Int>> {
+        val fits = league.chat.indices.filter {
+            league.chat[it].mood == Mood.ANY || league.chat[it].mood == (if (good) Mood.GOOD else Mood.BAD)
+        }
+        val fresh = fits.filter { it !in used }.shuffled(rng)
+        // Fresh lines first; old ones only fill the gaps, so a small deck still gets three messages.
+        val picked = (fresh + (fits - fresh.toSet()).shuffled(rng))
+            .distinctBy { league.chat[it].character }
+            .take(CHAT_PER_MATCHDAY)
+        val nowUsed = used + picked
+        return picked to if (fits.all { it in nowUsed }) nowUsed - fits.toSet() + picked else nowUsed
+    }
+
+    /** What chat lines can mention: `{points}`, `{position}`, `{leader}` (the best rival) and `{last}`. */
+    private fun placeholders(league: League, s: Season, points: Int): Map<String, String> {
+        val rivals = standings(s).map { it.first }.filter { it != YOU }
+        fun name(id: String?) = id?.let { league.character(it)?.name ?: it }.orEmpty()
+        return mapOf(
+            "{points}" to points.toString(),
+            "{position}" to position(s).toString(),
+            "{leader}" to name(rivals.firstOrNull()),
+            "{last}" to name(rivals.lastOrNull())
+        )
+    }
+
+    private const val CHAT_PER_MATCHDAY = 3
+
+    /**
      * This matchday's cards: pending follow-ups first, then a weighted draw that prefers cards seen
      * less often, never the same card twice in a hand, never a once-a-season card again.
      */
@@ -244,7 +304,8 @@ object Game {
         val rng = rng(s.seed, s.matchday, 2)
         val hand = s.followUps.filter { league.card(it) != null }.toMutableList()
         val pool = league.cards.filter { c ->
-            !c.followUpOnly && s.matchday in c.fromMatchday..c.toMatchday && !(c.once && (s.seen[c.id] ?: 0) > 0)
+            !c.followUpOnly && s.calendarMatchday(league) in c.fromMatchday..c.toMatchday &&
+                !(c.once && (s.seen[c.id] ?: 0) > 0)
         }.toMutableList()
         pool.removeAll { it.id in hand }
         while (hand.size < league.cardsPerMatchday && pool.isNotEmpty()) {

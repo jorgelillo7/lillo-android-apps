@@ -1,8 +1,17 @@
 package com.jorgelillo.whoslying.ui.screens
 
 import android.app.Application
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.unit.dp
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.takahirom.roborazzi.RobolectricDeviceQualifiers
 import com.jorgelillo.core.designsystem.LilloTheme
@@ -13,6 +22,9 @@ import com.jorgelillo.whoslying.domain.GameMode
 import com.jorgelillo.whoslying.domain.GameSettings
 import com.jorgelillo.whoslying.domain.Role
 import com.jorgelillo.whoslying.domain.WordPack
+import com.jorgelillo.whoslying.ui.DrawStroke
+import com.jorgelillo.whoslying.ui.InkColors
+import com.jorgelillo.whoslying.ui.theme.Neon
 import com.jorgelillo.whoslying.ui.theme.NeonColorScheme
 import kotlin.random.Random
 import org.junit.Rule
@@ -63,7 +75,10 @@ class RoundScreensScreenshotTest {
     }
 
     private fun result(name: String) = shot(name) {
-        val game = deal(GameMode.CLASSIC).let {
+        // A long decoy next to a long name: the name must stay whole (a tester saw "Fr / an / co").
+        val longPack = WordPack("games", "Games", "🎮", listOf(Entry("Illidan", listOf("Demon hunter of Outland"))))
+        val names = listOf("Francisco Javier", "Bea", "Carlos", "Dani", "Eva")
+        val game = Game.deal(names, GameSettings(), longPack, longPack.entries.first(), Random(3)).let {
             it.eliminate(it.cards.single { card -> card.role == Role.IMPOSTOR }.player)
         }
         ResultScreen(game, game.lastElimination, emptyList(), {
@@ -91,6 +106,47 @@ class RoundScreensScreenshotTest {
     private fun podium(name: String) = shot(name) {
         PodiumScreen(players, mapOf("Ana" to 25, "Bea" to 15, "Carlos" to 10, "Dani" to 5), {}, {})
     }
+
+    /** A full list: no name field, just the "remove someone" notice. */
+    private fun playersFull(name: String) = shot(name) {
+        PlayersScreen((1..24).map { "Player $it" }, onAdd = {}, onRemove = {}, onContinue = {}, onBack = {})
+    }
+
+    private fun drawing(name: String) = shot(name) {
+        val game = Game.deal(players, GameSettings(drawing = true), pack, pack.entries.first(), Random(3))
+        val strokes = remember {
+            mutableStateListOf(
+                DrawStroke(InkColors[4]).apply {
+                    points +=
+                        listOf(Offset(0.2f, 0.7f), Offset(0.5f, 0.3f), Offset(0.8f, 0.7f))
+                }
+            )
+        }
+        DrawingScreen(game, game.alive.map { it.player }.toSet(), strokes, 0, {}, {}, {}, {})
+    }
+
+    private fun colorWheel(name: String) = shot(name) {
+        // The dialog's content (a dialog is a second window, out of reach of a root capture).
+        Box(Modifier.background(Neon.Card).padding(24.dp)) { ColorWheel(Color(0xFF2F6BFF), onChange = {}) }
+    }
+
+    @Test fun playersFullPortrait() = playersFull("players_full")
+
+    @Test
+    @Config(qualifiers = "+land")
+    fun playersFullLandscape() = playersFull("players_full_landscape")
+
+    @Test fun drawingPortrait() = drawing("drawing")
+
+    @Test
+    @Config(qualifiers = "+land")
+    fun drawingLandscape() = drawing("drawing_landscape")
+
+    @Test fun colorWheelPortrait() = colorWheel("color_wheel")
+
+    @Test
+    @Config(qualifiers = "+land")
+    fun colorWheelLandscape() = colorWheel("color_wheel_landscape")
 
     @Test fun votingPortrait() = voting("voting")
 

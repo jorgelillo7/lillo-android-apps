@@ -17,7 +17,7 @@ Package: `com.jorgelillo.leaguecards`. Spanish only.
 | Regenerate icons | `.venv/bin/python apps/league-cards/tools/generate_icon.py` |
 | Check which deck a build carries | `unzip -l apps/league-cards/app/build/outputs/apk/release/app-release.apk \| grep assets/league` |
 
-UI test tags: `new_season`, `continue`, `about`, `card`, `choose_left|right`, `joker`, `outcome`,
+UI test tags: `new_season`, `new_short_season`, `continue`, `autosave`, `about`, `card_text`, `card`, `choose_left|right`, `joker`, `outcome`,
 `meter_money|squad|patience|tears`, `table`, `standings`, `chat`, `next`, `ending`, `share`,
 `trophies`, `ending_<key>`, `achievement_<id>`, `achievement_unlocked`, `back`.
 
@@ -29,6 +29,11 @@ that should never come up on their own are `followUpOnly`. After editing, run th
 they fail on broken references (unknown character, missing follow-up) and print how often a
 careful and a random player reach the last matchday. A season that is too hard or too easy shows
 there first. A season saved on a phone keeps working while the deck's `name` stays the same.
+
+Group-chat lines can say `{points}` (your matchday), `{position}` (yours in the table), `{leader}`
+(the best rival) and `{last}` (the worst). A season sends each line once before repeating any.
+A short season (half the matchdays) runs through the deck's whole calendar, so cards with a
+`fromMatchday`/`toMatchday` window still come up, earlier.
 
 Achievements are part of the deck (`achievements`, and `achievement` on a choice or a gamble);
 the ids `survivor`, `podium`, `champion` and `champion_no_joker` are unlocked by how the season

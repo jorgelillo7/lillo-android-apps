@@ -28,16 +28,13 @@ class GameTest {
     }
 
     @Test
-    fun blindImpostorGetsNoWordButTheHint() {
-        val game = deal(GameSettings(GameMode.BLIND, impostors = 2))
-        val impostors = game.cards.filter { it.role == Role.IMPOSTOR }
-        assertEquals(2, impostors.size)
-        assertTrue(impostors.all { it.word == null && it.hint == "Lugares" && it.knowsRole })
-        assertNull(
-            deal(GameSettings(GameMode.BLIND, categoryHint = false)).cards.first {
-                it.role == Role.IMPOSTOR
-            }.hint
-        )
+    fun blindImpostorGetsNoWordAndNoHintEvenWithTheHintOn() {
+        for (drawing in listOf(false, true)) {
+            val game = deal(GameSettings(GameMode.BLIND, impostors = 2, categoryHint = true, drawing = drawing))
+            val impostors = game.cards.filter { it.role == Role.IMPOSTOR }
+            assertEquals(2, impostors.size)
+            assertTrue(impostors.all { it.word == null && it.hint == null && it.knowsRole }, "drawing=$drawing")
+        }
     }
 
     @Test
@@ -47,7 +44,7 @@ class GameTest {
             val impostor = game.cards.first { it.role == Role.IMPOSTOR }
             assertNull(impostor.word, "$mode")
             assertTrue(impostor.knowsRole)
-            assertEquals("Lugares", impostor.hint)
+            assertEquals(if (mode == GameMode.BLIND) null else "Lugares", impostor.hint, "$mode")
         }
     }
 

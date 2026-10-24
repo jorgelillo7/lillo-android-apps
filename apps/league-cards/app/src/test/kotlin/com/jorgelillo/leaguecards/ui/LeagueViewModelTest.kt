@@ -84,6 +84,16 @@ class LeagueViewModelTest {
     }
 
     @Test
+    fun aShortSeasonHasHalfTheMatchdays() = runTest {
+        val vm = viewModel()
+        vm.saved.filterNotNull().test {
+            vm.newSeason(short = true)
+            val season = awaitMatching { it.season != null }.season!!
+            assertEquals((league.matchdays + 1) / 2, season.matchdays(league))
+        }
+    }
+
+    @Test
     fun theJokerIsUsedOnce() = runTest {
         val vm = viewModel()
         vm.saved.filterNotNull().test {

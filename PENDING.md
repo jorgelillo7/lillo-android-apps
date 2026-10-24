@@ -31,6 +31,7 @@ Lines are pruned as items ship. What has **shipped** lives in `apps/<app>/releas
 |---|---|---|
 | ⏳ | 1.1 in production since 2026-10-22 (and internal testing): first public release; gather feedback from the friends who tested it | Google's review |
 | ⏳ | A tester got "Item not found" on the opt-in link: likely the first review still pending or the wrong Google account in Play | Their next try |
+| ⏳ | Tester feedback of 2026-10-23 fixed (names on the result, 24-player cap, colour wheel, no hint in Blind): ship it in the next release and ask the tester to check | Next release |
 
 ## group-polls (new app, parked until 2026-10-23)
 
@@ -54,6 +55,7 @@ Lines are pruned as items ship. What has **shipped** lives in `apps/<app>/releas
 | 👤 | v1 in internal testing (2026-10-22, listing with the sample deck published): add the league's Gmail addresses as testers and send the opt-in link | You |
 | 👤 | Each league member's OK to appear in the private deck | You |
 | ⏳ | More cards and chat lines from the group | Ideas from the league · private deck, never in this repo |
+| ⏳ | Tester feedback of 2026-10-22 fixed (clipped buttons and cards on handhelds, readable meters, short season, no repeated chat, release-clause story): next release, then re-upload the deck secret | You · `scripts/set-release-secrets.sh league-cards` |
 
 ## slipper game (¿Te pilla la chancla?, in development)
 

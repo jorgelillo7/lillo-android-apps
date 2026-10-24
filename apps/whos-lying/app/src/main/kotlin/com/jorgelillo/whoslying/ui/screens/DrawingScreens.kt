@@ -45,11 +45,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -77,7 +82,9 @@ internal fun DrawingScreen(
     onRevealAll: () -> Unit,
     onQuit: () -> Unit
 ) {
-    var ink by rememberSaveable { mutableIntStateOf(0) }
+    // Saved as ARGB so a colour picked on the wheel survives rotation like a fixed one.
+    var inkArgb by rememberSaveable { mutableIntStateOf(InkColors[0].toArgb()) }
+    val ink = Color(inkArgb)
     val starter =
         game.starter.takeIf { it in alive } ?: game.cards.first { it.player in alive && it.role != Role.DRIFTER }.player
     val voteButtons: @Composable ColumnScope.() -> Unit = {
@@ -115,7 +122,7 @@ internal fun DrawingScreen(
                     Box(Modifier.weight(1f).fillMaxHeight(), contentAlignment = Alignment.Center) {
                         DrawingCanvas(
                             strokes,
-                            InkColors[ink],
+                            ink,
                             Modifier.fillMaxHeight().aspectRatio(4f / 5f, matchHeightConstraintsFirst = true)
                         )
                     }
@@ -125,7 +132,7 @@ internal fun DrawingScreen(
                     ) {
                         turns()
                         if (discussionSeconds > 0) key(alive.size) { TimerBar(discussionSeconds, onTimeUp) }
-                        Tools(ink, strokes, columns = 5) { ink = it }
+                        Tools(ink, strokes, columns = 5) { inkArgb = it.toArgb() }
                         Spacer(Modifier.height(4.dp))
                         voteButtons()
                     }
@@ -140,19 +147,27 @@ internal fun DrawingScreen(
                 }
                 Spacer(Modifier.height(10.dp))
                 Box(Modifier.weight(1f).fillMaxWidth(), contentAlignment = Alignment.Center) {
-                    DrawingCanvas(strokes, InkColors[ink], Modifier.aspectRatio(4f / 5f))
+                    DrawingCanvas(strokes, ink, Modifier.aspectRatio(4f / 5f))
                 }
                 Spacer(Modifier.height(10.dp))
-                Tools(ink, strokes, columns = InkColors.size + 2) { ink = it }
+                Tools(ink, strokes, columns = 5) { inkArgb = it.toArgb() }
             }
         }
     }
 }
 
-/** Inks, undo and clear, in rows of [columns]. */
+/** Inks, the colour wheel, undo and clear, in rows of [columns]. */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun Tools(ink: Int, strokes: SnapshotStateList<DrawStroke>, columns: Int, onInk: (Int) -> Unit) {
+private fun Tools(ink: Color, strokes: SnapshotStateList<DrawStroke>, columns: Int, onInk: (Color) -> Unit) {
+    var wheel by rememberSaveable { mutableStateOf(false) }
+    if (wheel) {
+        ColorWheelDialog(ink, onPick = {
+            onInk(it)
+            wheel = false
+        }, onDismiss = { wheel = false })
+    }
+    val custom = ink !in InkColors
     FlowRow(
         Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -160,20 +175,35 @@ private fun Tools(ink: Int, strokes: SnapshotStateList<DrawStroke>, columns: Int
         maxItemsInEachRow = columns
     ) {
         InkColors.forEachIndexed { i, color ->
-            Box(Modifier.size(40.dp), contentAlignment = Alignment.Center) {
-                Box(
-                    Modifier
-                        .size(if (i == ink) 34.dp else 28.dp)
-                        .clip(CircleShape)
-                        .background(color)
-                        .border(3.dp, if (i == ink) Color.White else Color.White.copy(alpha = 0.15f), CircleShape)
-                        .clickable { onInk(i) }
-                        .testTag("ink_$i")
-                )
-            }
+            val label = stringResource(R.string.drawing_ink, i + 1)
+            Swatch(color == ink, SolidColor(color), {
+                onInk(color)
+            }, Modifier.semantics { contentDescription = label }.testTag("ink_$i"))
         }
+        // Any other colour: the rainbow opens the colour wheel.
+        val wheelLabel = stringResource(R.string.drawing_pick_color)
+        Swatch(custom, RainbowBrush, {
+            wheel = true
+        }, Modifier.semantics { contentDescription = wheelLabel }.testTag("ink_wheel"))
         ToolButton("↶", "undo", enabled = strokes.isNotEmpty()) { strokes.removeAt(strokes.lastIndex) }
         ToolButton("🗑", "clear", enabled = strokes.isNotEmpty()) { strokes.clear() }
+    }
+}
+
+/** One colour choice: a 48dp touch target around a dot that grows and gets a white ring when [selected]. */
+@Composable
+private fun Swatch(selected: Boolean, fill: Brush, onClick: () -> Unit, modifier: Modifier = Modifier) {
+    Box(
+        modifier.size(48.dp).clip(CircleShape).clickable(onClick = onClick),
+        contentAlignment = Alignment.Center
+    ) {
+        Box(
+            Modifier
+                .size(if (selected) 36.dp else 30.dp)
+                .clip(CircleShape)
+                .background(fill)
+                .border(3.dp, if (selected) Color.White else Color.White.copy(alpha = 0.15f), CircleShape)
+        )
     }
 }
 
@@ -181,7 +211,7 @@ private fun Tools(ink: Int, strokes: SnapshotStateList<DrawStroke>, columns: Int
 private fun ToolButton(symbol: String, tag: String, enabled: Boolean, onClick: () -> Unit) {
     Box(
         Modifier
-            .size(40.dp)
+            .size(48.dp)
             .clip(CircleShape)
             .background(Neon.CardHigh)
             .clickable(enabled = enabled, onClick = onClick)

@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
@@ -32,6 +33,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -42,6 +44,7 @@ import com.jorgelillo.core.designsystem.AboutTexts
 import com.jorgelillo.core.designsystem.ConfettiBurst
 import com.jorgelillo.core.designsystem.LilloAboutSheet
 import com.jorgelillo.core.designsystem.TestTagsAsResourceIds
+import com.jorgelillo.core.designsystem.isShortScreen
 import com.jorgelillo.core.platform.LilloLinks
 import com.jorgelillo.core.platform.shareText
 import com.jorgelillo.leaguecards.BuildConfig
@@ -72,8 +75,8 @@ internal fun LeagueApp(vm: LeagueViewModel) {
                 league,
                 saved,
                 onContinue = { playing = true },
-                onNew = {
-                    vm.newSeason()
+                onNew = { short ->
+                    vm.newSeason(short)
                     playing = true
                 },
                 onTrophies = { trophies = true }
@@ -114,11 +117,28 @@ internal fun LeagueApp(vm: LeagueViewModel) {
 }
 
 @Composable
-private fun HomeScreen(
+private fun AboutButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
+    TextButton(onClick = onClick, modifier = modifier.testTag("about")) {
+        Text("ⓘ", fontSize = 22.sp, color = Chat.Muted)
+    }
+}
+
+@Composable
+private fun SecondaryButton(text: String, tag: String, onClick: () -> Unit) {
+    OutlinedButton(
+        onClick = onClick,
+        modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp).padding(bottom = 8.dp).testTag(tag)
+    ) {
+        Text(text, color = Chat.Text, textAlign = TextAlign.Center)
+    }
+}
+
+@Composable
+internal fun HomeScreen(
     league: League,
     saved: Saved,
     onContinue: () -> Unit,
-    onNew: () -> Unit,
+    onNew: (short: Boolean) -> Unit,
     onTrophies: () -> Unit
 ) {
     var about by rememberSaveable { mutableStateOf(false) }
@@ -126,24 +146,28 @@ private fun HomeScreen(
     Page(
         title = null,
         onBack = null,
-        actions = {
-            TextButton(onClick = {
-                about = true
-            }, modifier = Modifier.testTag("about")) { Text("ⓘ", fontSize = 22.sp, color = Chat.Muted) }
-        },
+        sideActionsWhenShort = true,
+        actions = { AboutButton({ about = true }) },
         bottom = {
+            // On short screens the header (and its ⓘ) gives way to the side column: it goes here.
+            if (isShortScreen()) AboutButton({ about = true }, Modifier.align(Alignment.End))
+            val full = pluralStringResource(R.plurals.new_season_length, league.matchdays, league.matchdays)
+            val short = Game.shortLength(league).let { pluralStringResource(R.plurals.short_season, it, it) }
             if (inProgress != null) {
                 BigButton(stringResource(R.string.continue_season, inProgress.matchday), onContinue, "continue")
-                Spacer(Modifier.height(12.dp))
-                OutlinedButton(
-                    onClick = onNew,
-                    modifier = Modifier.fillMaxWidth().height(52.dp).testTag("new_season")
-                ) {
-                    Text(stringResource(R.string.new_season), color = Chat.Text)
-                }
+                Text(
+                    stringResource(R.string.autosave),
+                    color = Chat.Muted,
+                    style = MaterialTheme.typography.bodySmall,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp).testTag("autosave")
+                )
+                SecondaryButton(full, "new_season") { onNew(false) }
             } else {
-                BigButton(stringResource(R.string.new_season), onNew, "new_season")
+                BigButton(full, { onNew(false) }, "new_season")
+                Spacer(Modifier.height(12.dp))
             }
+            SecondaryButton(short, "new_short_season") { onNew(true) }
         }
     ) {
         Column(
