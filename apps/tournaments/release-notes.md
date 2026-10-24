@@ -5,4 +5,4 @@ Newest first. User-facing notes per language are in
 
 | versionCode | Version | Date | Notes |
 |---|---|---|---|
-| 1 | 1.0 | — (not released) | First version: knockout and Swiss, two-sided bracket, results with comments, share by link / QR, image and CSV export, hall of fame |
+| 1 | 1.0 | 2026-10-21 (internal testing), 2026-10-24 (promoted to production) | First version: knockout and Swiss, two-sided bracket, results with comments, share by link / QR, image and CSV export, hall of fame |

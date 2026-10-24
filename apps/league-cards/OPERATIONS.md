@@ -54,8 +54,8 @@ Upload key (created 21 Oct 2026 with `scripts/new-upload-key.sh`, see [docs/sign
 App created in Play Console on 21 Oct 2026. The first bundle (versionCode 1, with the private deck)
 goes to internal testing by hand; later ones from the Release workflow.
 
-Internal testing only, for the league: the bundle carries the private deck, so it is never
-published openly while it does. CI's Release workflow takes the deck from a GitHub secret
+Published to production with the private deck since versionCode 2 (2026-10-24): every league
+member gave their OK to appear in it. Anyone new in the deck needs the same OK first. CI's Release workflow takes the deck from a GitHub secret
 (`scripts/set-release-secrets.sh league-cards`, again after each deck change) and refuses to
 publish a bundle without it.
 

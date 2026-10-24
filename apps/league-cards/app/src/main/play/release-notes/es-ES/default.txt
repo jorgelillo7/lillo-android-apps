@@ -1,1 +1,7 @@
-Primera versión de prueba: cartas, cuatro barras, el chat de la liga tras cada jornada, clasificación, comodín, logros, colección de finales e historial.
+¡Ya para toda la liga! 😭⚽
+- Temporada corta de 10 jornadas, si 19 se te hacen largas
+- La temporada se guarda sola: sal y sigue luego por la misma jornada
+- Barras más claras, con su número
+- Más variedad en el chat del grupo: sin mensajes repetidos
+- Cartas y botones que se leen enteros en consolas y con letra grande
+- Nueva historia: el clausulazo que no se podía hacer
