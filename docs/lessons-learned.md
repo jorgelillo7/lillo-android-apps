@@ -67,3 +67,11 @@ Short, one line each. Add to it whenever something bites.
   testing doesn't count), the Play API refuses any production release that isn't a draft ("Only
   releases with status draft may be created on draft app"). Run the Release workflow with
   `draft=true`, then send it for review in Play Console. Later releases go out from CI as usual.
+- **Play Console's edge-to-edge "recommended actions" are expected.** Every app shows "edge-to-edge
+  may not work for all users" and "deprecated APIs: Window.setStatusBarColor /
+  setNavigationBarColor". The obfuscated places (e.g. `d30.b`) map to
+  `androidx.activity.EdgeToEdgeApi23/26/29/35` (check `build/outputs/mapping/release/mapping.txt`):
+  the library behind `enableEdgeToEdge()`, which we call in `installLilloWindow`, still paints the
+  bars transparent that way on Android < 15. Nothing to change; the screens already handle insets.
+  "Bitmap without downsampling" in decision-wheel is `ShortcutInfoCompat` (launcher shortcuts'
+  icons), and the picture-in-picture suggestion only fits video apps.
