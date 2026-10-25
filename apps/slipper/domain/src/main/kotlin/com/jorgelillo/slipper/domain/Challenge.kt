@@ -1,6 +1,8 @@
 package com.jorgelillo.slipper.domain
 
 import com.jorgelillo.core.sharelink.ShareLink
+import kotlinx.serialization.EncodeDefault
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -12,7 +14,11 @@ import kotlinx.serialization.Serializable
 data class Challenge(
     @SerialName("s") val seed: Long,
     @SerialName("p") val score: Int,
-    @SerialName("v") val version: Int = GameConfig.VERSION
+    // Always written (share links leave defaults out): a link without it reads as this phone's version.
+    @OptIn(ExperimentalSerializationApi::class)
+    @EncodeDefault
+    @SerialName("v")
+    val version: Int = GameConfig.VERSION
 ) {
     /** Made with this version of the game: the friend's run is the very same one. */
     val sameRun: Boolean get() = version == GameConfig.VERSION

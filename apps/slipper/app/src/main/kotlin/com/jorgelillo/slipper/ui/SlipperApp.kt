@@ -18,6 +18,7 @@ import com.jorgelillo.core.platform.shareText
 import com.jorgelillo.slipper.R
 import com.jorgelillo.slipper.domain.SlipperSkin
 import com.jorgelillo.slipper.ui.game.GameScreen
+import com.jorgelillo.slipper.ui.game.rememberSounds
 import com.jorgelillo.slipper.ui.home.AboutSheet
 import com.jorgelillo.slipper.ui.home.HomeScreen
 import com.jorgelillo.slipper.ui.over.GameOverScreen
@@ -51,6 +52,7 @@ internal fun SlipperApp(vm: SlipperViewModel) {
     val invalidLink by vm.invalidLink.collectAsStateWithLifecycle()
     val state = saved ?: return // first disk read in progress (a few ms)
     val nav = rememberNavController()
+    val sounds = rememberSounds()
     var showAbout by rememberSaveable { mutableStateOf(false) }
     val context = LocalContext.current
     val resources = LocalResources.current
@@ -70,6 +72,7 @@ internal fun SlipperApp(vm: SlipperViewModel) {
                 saved = state,
                 today = vm.today(),
                 challenge = challenge?.score,
+                challengeSameRun = challenge?.sameRun ?: true,
                 onPlay = { nav.navigate(Run(vm.nextSeed())) },
                 onDaily = { nav.navigate(Run(vm.dailySeed(), daily = true)) },
                 onDismissChallenge = vm::dismissChallenge,
@@ -86,7 +89,8 @@ internal fun SlipperApp(vm: SlipperViewModel) {
                 target = target,
                 daily = run.daily,
                 skin = state.skin,
-                muted = state.muted
+                muted = state.muted,
+                sounds = sounds
             ) { world ->
                 val previousBest = if (run.daily) state.dailyBest(vm.today()) else state.best
                 val unlocked = vm.finish(world.score, world.eaten, run.daily)

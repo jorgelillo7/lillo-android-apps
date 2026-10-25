@@ -194,6 +194,29 @@ class EngineTest {
     }
 
     @Test
+    fun aChallengeLinkCarriesTheGameVersion() {
+        // Made with another version: it must arrive as that version, not this phone's.
+        val old = Challenges.fromText(Challenges.link(Challenge(seed = 1, score = 900, version = 1)))!!
+        assertEquals(1, old.version)
+        assertFalse(old.sameRun)
+        assertTrue(Challenges.fromText(Challenges.link(Challenge(seed = 1, score = 900)))!!.sameRun)
+    }
+
+    @Test
+    fun aLinkMadeNowWritesItsVersionToo() {
+        // Defaults are left out of share links: the version must be written anyway, or a later
+        // version of the game would read today's links as its own.
+        val code = Challenges.link(Challenge(seed = 1, score = 900)).substringAfter('#')
+        val bytes = java.util.Base64.getUrlDecoder().decode(code.drop(1))
+        val json = java.util.zip.Inflater(true).run {
+            setInput(bytes)
+            val out = ByteArray(1024)
+            String(out, 0, inflate(out))
+        }
+        assertTrue("\"v\":${C.VERSION}" in json, json)
+    }
+
+    @Test
     fun aChallengeTravelsInALink() {
         val c = Challenge(seed = 123456789L, score = 1240)
         val link = Challenges.link(c)

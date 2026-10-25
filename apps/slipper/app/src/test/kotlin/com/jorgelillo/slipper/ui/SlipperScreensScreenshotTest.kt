@@ -58,12 +58,12 @@ class SlipperScreensScreenshotTest {
         Saved(best = 1240, croquetas = 210, dailyDay = 20_000, dailyBest = 860, skin = SlipperSkin.CHECKED)
 
     private fun home(name: String) = shot(name) {
-        HomeScreen(saved, today = 20_000, challenge = 980, {}, {}, {}, {}, {}, {})
+        HomeScreen(saved, today = 20_000, challenge = 980, {}, {}, {}, {}, {}, {}, challengeSameRun = false)
     }
 
     /** The first frame of a run: the kitchen, the HUD and the tap hint. */
     private fun run(name: String) = shot(name) {
-        GameScreen(seed = 1, target = null, daily = false, skin = SlipperSkin.CLASSIC, muted = true) {}
+        GameScreen(seed = 1, target = null, daily = false, skin = SlipperSkin.CLASSIC, muted = true, sounds = null) {}
     }
 
     /**

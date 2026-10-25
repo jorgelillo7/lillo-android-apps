@@ -87,10 +87,11 @@ internal fun GameScreen(
     daily: Boolean,
     skin: SlipperSkin,
     muted: Boolean,
+    /** Loaded once for the whole app ([rememberSounds]): a pool made per run would miss its first sounds. */
+    sounds: Sounds?,
     onCatch: (World) -> Unit
 ) {
     val sprites = rememberGameSprites()
-    val sounds = rememberSounds()
     val haptics = LocalHapticFeedback.current
     val finger = remember { Finger() }
     var world by remember(seed) { mutableStateOf(Engine.start(seed)) }
@@ -109,7 +110,7 @@ internal fun GameScreen(
                 while (pending >= GameConfig.STEP && !w.over) {
                     val next = Engine.step(w, finger.take())
                     for (e in next.eventsSince(w.time)) {
-                        if (!quiet) sounds.play(e.kind, next.combo)
+                        if (!quiet) sounds?.play(e.kind, next.combo)
                         when (e.kind) {
                             EventKind.HIT, EventKind.STUMBLE, EventKind.CAUGHT -> {
                                 haptics.performHapticFeedback(HapticFeedbackType.LongPress)

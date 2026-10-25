@@ -15,6 +15,7 @@
     <string name="challenge_friend">Challenge a friend</string>
     <string name="home">Home</string>
     <string name="share_challenge">Grandma\'s slipper got me with %1$s points. Can you beat me? Same run, same slippers 🩴 %2$s</string>
+    <string name="challenge_other_version">Made with another version of the game: same goal, a slightly different run.</string>
     <string name="dismiss_challenge">Forget the challenge</string>
     <string name="chase_description">How close grandma is</string>
     <string name="challenge_invalid">That link has no challenge</string>

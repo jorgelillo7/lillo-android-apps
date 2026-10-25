@@ -95,7 +95,9 @@ internal fun HomeScreen(
     onDismissChallenge: () -> Unit,
     onSkin: (SlipperSkin) -> Unit,
     onToggleSound: () -> Unit,
-    onAbout: () -> Unit
+    onAbout: () -> Unit,
+    /** False when the challenge was made with another version of the game: the run won't be identical. */
+    challengeSameRun: Boolean = true
 ) {
     val sprites = rememberGameSprites()
     Page(
@@ -174,6 +176,15 @@ internal fun HomeScreen(
                             tint = Kitchen.Muted
                         )
                     }
+                }
+                if (!challengeSameRun) {
+                    Text(
+                        stringResource(R.string.challenge_other_version),
+                        color = Kitchen.Muted,
+                        style = MaterialTheme.typography.bodySmall,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth()
+                    )
                 }
             }
             SkinPicker(saved, sprites, onSkin)

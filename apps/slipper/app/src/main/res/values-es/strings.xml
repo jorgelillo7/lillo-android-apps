@@ -15,6 +15,7 @@
     <string name="challenge_friend">Retar a alguien</string>
     <string name="home">Inicio</string>
     <string name="share_challenge">Me ha pillado la chancla de la abuela con %1$s puntos. ¿Me ganas? Misma partida, mismas chanclas 🩴 %2$s</string>
+    <string name="challenge_other_version">Hecho con otra versión del juego: mismo objetivo, partida algo distinta.</string>
     <string name="dismiss_challenge">Olvidar el reto</string>
     <string name="chase_description">A qué distancia está la abuela</string>
     <string name="challenge_invalid">Ese enlace no tiene ningún reto</string>
