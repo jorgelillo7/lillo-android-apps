@@ -61,7 +61,8 @@ Lines are pruned as items ship. What has **shipped** lives in `apps/<app>/releas
 |---|---|---|
 | 👤 | Play v1 on a phone and say how it feels (jump, speed, how much a hit costs) | You · [docs/plans/slipper.md](docs/plans/slipper.md) |
 | 👤 | First release straight to production: upload key, Play app, first bundle by hand | You · checklist in `apps/slipper/OPERATIONS.md` → Release |
-| 🔨 | Website: `/c/` challenge page, privacy page (draft in the website repo) and the card in "Juegos" | The first internal test |
+| 👤 | Website PR (games tab, privacy page, `/c/` page): merge it before the Play submission | You · jorgelillo7.github.io PR #1 |
+| ⏳ | `assetlinks.json` entry for `/c/` with the Play app-signing SHA-256 | The app created in Play Console |
 
 ## repo
 

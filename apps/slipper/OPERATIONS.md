@@ -32,12 +32,49 @@ UI test tags: `play`, `daily`, `sound`, `about`, `best`, `skin_<classic|checked|
 Changing anything that alters runs (GameConfig, House, Engine) bumps `GameConfig.VERSION`: challenge
 links carry it, and a seed only replays the same run on the same version.
 
+## Play Console answers
+
+| Section | Answer |
+|---|---|
+| App or game | Game · category **Arcade** (tags: casual, runner) |
+| Ads | No |
+| Content rating | Cartoon or fantasy violence: **yes**, mild (a grandma throws slippers at a cartoon kid, nobody gets hurt); no sex, language, drugs, gambling, purchases; users can't interact or share content (a challenge link only carries a score) |
+| Target audience | 13+ (13–15, 16–17, 18+). Recommended: the theme suits all ages, but including under-13s brings in the Families policy (teacher-approved rules, more review). Revisit later if wanted |
+| Data safety | **No data collected, no data shared.** No permissions; vibration and sound need none |
+| Privacy policy | `https://jorgelillo7.github.io/privacy/slipper/` (live once the website PR is merged) |
+| Countries | All (178), like the other apps |
+
 ## Release
 
-Not published. First release: upload key (`scripts/new-upload-key.sh slipper`, then
-`scripts/set-release-secrets.sh slipper`), create the app in Play Console (Game · Arcade), App
-content forms, the first bundle by hand; later ones with the Release workflow. The `/c/` challenge
-page and `assetlinks.json` entry go on the website with the Play signing SHA-256.
+Not published. Releases follow the `release-android-app` skill. **First release, straight to
+production** (an app's first production release goes up as a draft and is sent for review by hand):
+
+1. Merge the website PR (privacy page, `/c/` page, games card): the policy must be live first.
+2. Upload key, in your own terminal: `scripts/new-upload-key.sh slipper` (asks for a password), then
+   copy serial / SHA-1 / SHA-256 into the table below and back the `.jks` up off the Mac.
+3. Signed bundle and its check: `./gradlew :apps:slipper:app:bundleRelease`, then
+   `scripts/verify-bundle.sh apps/slipper/app/build/outputs/bundle/release/app-release.aab`
+   (versionCode 1, the upload key's serial, no permissions).
+4. Play Console → Create app: "¿Te pilla la chancla?", Spanish (Spain), Game, Free. Answer the App
+   content forms (table above), store listing from `app/src/main/play/listings/` (texts and
+   `graphics/`), production countries.
+5. Production → Create release → upload the `.aab`, release notes from
+   `app/src/main/play/release-notes/`, → Send for review.
+6. `scripts/set-release-secrets.sh slipper`: later releases go out with the Release workflow.
+7. After the first release: Play Console → App integrity → App signing → SHA-256 of the **app
+   signing** key into `/.well-known/assetlinks.json` on the website (challenge links then open the
+   app directly; until then they open the `/c/` page, which still opens the app on Android).
+
+Upload key: _to be created (step 2)_.
+
+| | |
+|---|---|
+| File | `~/Projects/documentation/keys/slipper/upload-slipper.jks` (+ off-Mac backup) |
+| Alias | `upload` |
+| Serial | |
+| SHA-1 | |
+| SHA-256 | |
 
 | versionCode | Version | Date | Track | Notes |
 |---|---|---|---|---|
+| 1 | 1.0 | — | production (first) | The run, warnings, near misses, combos, power-ups, the cat, run of the day, skins, challenges by link |

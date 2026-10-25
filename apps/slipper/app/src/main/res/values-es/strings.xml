@@ -20,6 +20,7 @@
     <string name="challenge_invalid">Ese enlace no tiene ningún reto</string>
     <string name="about_body">Un juego de un dedo: huye de la abuela, salta sus chanclas y róbale las croquetas. Sin cuenta, sin anuncios y sin que nada salga de tu móvil; los retos viajan dentro del enlace que compartes.</string>
     <string name="about_version">Versión %s</string>
+    <string name="about_rate">Valorar en Google Play</string>
     <string name="about_open_privacy">Política de privacidad</string>
     <string name="pop_near_miss">¡Por los pelos!</string>
     <string name="pop_ouch">¡Ay!</string>

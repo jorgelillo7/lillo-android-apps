@@ -246,10 +246,10 @@ internal fun AboutSheet(onDismiss: () -> Unit) = LilloAboutSheet(
         title = stringResource(R.string.app_name),
         version = stringResource(R.string.about_version, BuildConfig.VERSION_NAME),
         body = stringResource(R.string.about_body),
-        rate = null,
+        rate = stringResource(R.string.about_rate),
         privacy = stringResource(R.string.about_open_privacy)
     ),
     privacyUrl = LilloLinks.privacyPolicy("slipper"),
-    playStoreUrl = null, // not on Google Play yet
+    playStoreUrl = LilloLinks.playStore(BuildConfig.APPLICATION_ID),
     onDismiss = onDismiss
 )

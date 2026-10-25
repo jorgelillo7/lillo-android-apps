@@ -20,6 +20,7 @@
     <string name="challenge_invalid">That link has no challenge</string>
     <string name="about_body">A one-finger game: run from grandma, jump her slippers, steal her croquetas. No account, no ads, nothing leaves your phone; challenges travel inside the link you share.</string>
     <string name="about_version">Version %s</string>
+    <string name="about_rate">Rate on Google Play</string>
     <string name="about_open_privacy">Privacy policy</string>
     <string name="pop_near_miss">Close one!</string>
     <string name="pop_ouch">Ouch!</string>
