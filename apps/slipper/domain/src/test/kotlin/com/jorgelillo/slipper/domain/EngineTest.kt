@@ -67,9 +67,9 @@ class EngineTest {
 
     @Test
     fun runningIntoAChairStumblesOnceAndSheClosesIn() {
-        val w = run(bare(Furniture(FurnitureKind.CHAIR, 20.0)), 1.5)
+        val w = run(bare(Furniture(FurnitureKind.CHAIR, 20.0)), 0.9)
         assertTrue(w.furniture.single().bumped)
-        assertTrue(w.gap < C.START_GAP - 5, "gap ${w.gap}")
+        assertTrue(w.gap < C.START_GAP - 1.5, "gap ${w.gap}")
         // Past the chair: no second stumble from the same chair.
         val later = run(w, 1.0)
         assertTrue(later.gap > w.gap)
@@ -119,7 +119,7 @@ class EngineTest {
 
     @Test
     fun sheCatchesYouWhenTheGapCloses() {
-        val w = run(bare(Furniture(FurnitureKind.CHAIR, 10.0), gap = 6.0), 1.5)
+        val w = run(bare(Furniture(FurnitureKind.CHAIR, 10.0), gap = 4.0), 1.5)
         assertTrue(w.caught)
         assertTrue(w.over)
         assertEquals(w, Engine.step(w, Input(tapped = true)), "an over run stays over")

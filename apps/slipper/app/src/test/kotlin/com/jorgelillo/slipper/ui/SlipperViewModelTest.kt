@@ -10,6 +10,7 @@ import com.jorgelillo.core.testing.awaitMatching
 import com.jorgelillo.slipper.data.Saved
 import com.jorgelillo.slipper.domain.Challenge
 import com.jorgelillo.slipper.domain.Challenges
+import com.jorgelillo.slipper.domain.SlipperSkin
 import java.util.UUID
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -28,21 +29,65 @@ class SlipperViewModelTest {
     val main = MainDispatcherRule()
 
     // One DataStore per file and process: every test gets its own file.
+    private var day = 20_000L
+
     private fun viewModel(seed: Long = 7) = SlipperViewModel(
         JsonStore(ApplicationProvider.getApplicationContext(), "test-${UUID.randomUUID()}", Saved.serializer()) {
             Saved()
         },
-        newRandomSeed = { seed }
+        newRandomSeed = { seed },
+        clock = { day }
     ).also { main.cancelAtEnd(it.viewModelScope) }
 
     @Test
     fun aRunKeepsTheBestScoreAndAddsUpTotals() = runTest {
         val vm = viewModel()
         vm.saved.filterNotNull().test {
-            vm.finish(score = 500, croquetas = 3)
+            vm.finish(score = 500, croquetas = 3, daily = false)
             awaitMatching { it.runs == 1 }
-            vm.finish(score = 200, croquetas = 2)
+            vm.finish(score = 200, croquetas = 2, daily = false)
             assertEquals(Saved(best = 500, runs = 2, croquetas = 5), awaitMatching { it.runs == 2 })
+        }
+    }
+
+    @Test
+    fun theRunOfTheDayIsTheSameAllDayAndKeepsTodaysBest() = runTest {
+        val vm = viewModel()
+        assertEquals(vm.dailySeed(), vm.dailySeed())
+        vm.saved.filterNotNull().test {
+            vm.finish(score = 300, croquetas = 1, daily = true)
+            vm.finish(score = 200, croquetas = 1, daily = true)
+            val saved = awaitMatching { it.runs == 2 }
+            assertEquals(300, saved.dailyBest(day))
+            day++
+            assertEquals(0, saved.dailyBest(day), "a new day starts at zero")
+        }
+        val tomorrow = vm.dailySeed()
+        day--
+        assertTrue(vm.dailySeed() != tomorrow)
+    }
+
+    @Test
+    fun croquetasUnlockSkinsAndOnlyUnlockedOnesCanBeChosen() = runTest {
+        val vm = viewModel()
+        vm.saved.filterNotNull().test {
+            vm.chooseSkin(SlipperSkin.CHECKED) // locked: ignored
+            assertEquals(
+                SlipperSkin.CHECKED,
+                vm.finish(score = 100, croquetas = SlipperSkin.CHECKED.unlockAt, daily = false)
+            )
+            awaitMatching { it.croquetas == SlipperSkin.CHECKED.unlockAt }
+            vm.chooseSkin(SlipperSkin.CHECKED)
+            assertEquals(SlipperSkin.CHECKED, awaitMatching { it.skin == SlipperSkin.CHECKED }.skin)
+        }
+    }
+
+    @Test
+    fun theSoundToggles() = runTest {
+        val vm = viewModel()
+        vm.saved.filterNotNull().test {
+            vm.toggleSound()
+            assertTrue(awaitMatching { it.muted }.muted)
         }
     }
 

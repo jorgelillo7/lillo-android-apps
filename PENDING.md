@@ -44,23 +44,23 @@ Lines are pruned as items ship. What has **shipped** lives in `apps/<app>/releas
 
 | | What is missing | Waiting on |
 |---|---|---|
-| ⏳ | v1 promoted from internal testing to production on 2026-10-24: check it on a real phone after Google's review | Google's review |
+| 👤 | v1 is a **draft** in production since 2026-10-24 (an app's first production release must be): Play Console → Publishing overview → Send changes for review; then check it on a real phone | You, then Google's review |
 | ⏳ | Double elimination and round robin | Feedback after real use |
 
 ## league-cards (new game, live with the private deck)
 
 | | What is missing | Waiting on |
 |---|---|---|
-| ⏳ | v2 (1.0) sent to production on 2026-10-24 with the private deck (every member's OK given): send the league the Play link after Google's review | Google's review |
+| 👤 | v2 (1.0) is a **draft** in production since 2026-10-24, with the private deck (every member's OK given): Play Console → Publishing overview → Send changes for review; after Google's review, send the league the Play link | You, then Google's review |
 | 🔨 | The store screenshots show the sample deck; retake them with the league's deck if wanted | You |
 | ⏳ | More cards and chat lines from the group | Ideas from the league · private deck, never in this repo |
 
-## slipper game (¿Te pilla la chancla?, in development)
+## slipper game (¿Te pilla la chancla?, v1 ready, not on Play)
 
 | | What is missing | Waiting on |
 |---|---|---|
-| 🔨 | **Next:** finish v1 from the prepared prototype: play feel (jump, hit pause, shake, haptics, sounds), pixel-art polish, then upload key and Play app | Planned for 2026-10-23 · [docs/plans/slipper.md](docs/plans/slipper.md) |
-| 👤 | Confirm the package id `com.jorgelillo.slipper` (permanent once uploaded), then upload key and Play app | You |
+| 👤 | Play v1 on a phone and say how it feels (jump, speed, how much a hit costs) | You · [docs/plans/slipper.md](docs/plans/slipper.md) |
+| 👤 | First release straight to production: upload key, Play app, first bundle by hand | You · checklist in `apps/slipper/OPERATIONS.md` → Release |
 | 🔨 | Website: `/c/` challenge page, privacy page (draft in the website repo) and the card in "Juegos" | The first internal test |
 
 ## repo

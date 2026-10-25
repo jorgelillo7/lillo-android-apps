@@ -16,10 +16,12 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.jorgelillo.core.platform.shareText
 import com.jorgelillo.slipper.R
+import com.jorgelillo.slipper.domain.SlipperSkin
 import com.jorgelillo.slipper.ui.game.GameScreen
 import com.jorgelillo.slipper.ui.home.AboutSheet
 import com.jorgelillo.slipper.ui.home.HomeScreen
 import com.jorgelillo.slipper.ui.over.GameOverScreen
+import com.jorgelillo.slipper.ui.over.RunResult
 import kotlinx.serialization.Serializable
 
 // Destinations, as type-safe routes (Navigation Compose + kotlinx.serialization). Internal, not
@@ -28,10 +30,19 @@ import kotlinx.serialization.Serializable
 internal data object Home
 
 @Serializable
-internal data class Run(val seed: Long)
+internal data class Run(val seed: Long, val daily: Boolean = false)
 
 @Serializable
-internal data class Result(val seed: Long, val score: Int, val previousBest: Int)
+internal data class Result(
+    val seed: Long,
+    val score: Int,
+    val previousBest: Int,
+    val daily: Boolean = false,
+    val croquetas: Int = 0,
+    val nearMisses: Int = 0,
+    /** The skin this run unlocked, by name. */
+    val unlocked: String? = null
+)
 
 @Composable
 internal fun SlipperApp(vm: SlipperViewModel) {
@@ -56,28 +67,60 @@ internal fun SlipperApp(vm: SlipperViewModel) {
     NavHost(nav, startDestination = Home) {
         composable<Home> {
             HomeScreen(
-                best = state.best,
+                saved = state,
+                today = vm.today(),
                 challenge = challenge?.score,
                 onPlay = { nav.navigate(Run(vm.nextSeed())) },
+                onDaily = { nav.navigate(Run(vm.dailySeed(), daily = true)) },
                 onDismissChallenge = vm::dismissChallenge,
+                onSkin = vm::chooseSkin,
+                onToggleSound = vm::toggleSound,
                 onAbout = { showAbout = true }
             )
         }
         composable<Run> { entry ->
             val run = entry.toRoute<Run>()
-            GameScreen(seed = run.seed, target = challenge?.score) { world ->
-                val previousBest = state.best
-                vm.finish(world.score, world.eaten)
-                nav.navigate(Result(run.seed, world.score, previousBest)) { popUpTo<Home>() }
+            val target = if (run.daily) null else challenge?.score
+            GameScreen(
+                seed = run.seed,
+                target = target,
+                daily = run.daily,
+                skin = state.skin,
+                muted = state.muted
+            ) { world ->
+                val previousBest = if (run.daily) state.dailyBest(vm.today()) else state.best
+                val unlocked = vm.finish(world.score, world.eaten, run.daily)
+                nav.navigate(
+                    Result(
+                        run.seed,
+                        world.score,
+                        previousBest,
+                        run.daily,
+                        world.eaten,
+                        world.nearMisses,
+                        unlocked?.name
+                    )
+                ) { popUpTo<Home>() }
             }
         }
         composable<Result> { entry ->
             val result = entry.toRoute<Result>()
             GameOverScreen(
-                score = result.score,
-                previousBest = result.previousBest,
-                challenge = challenge?.score,
-                onRetry = { nav.navigate(Run(vm.nextSeed())) { popUpTo<Home>() } },
+                result = RunResult(
+                    score = result.score,
+                    previousBest = result.previousBest,
+                    croquetas = result.croquetas,
+                    nearMisses = result.nearMisses,
+                    daily = result.daily,
+                    unlocked = result.unlocked?.let(SlipperSkin::valueOf),
+                    croquetasToNext = SlipperSkin.next(state.croquetas)?.let { it.unlockAt - state.croquetas }
+                ),
+                skin = state.skin,
+                challenge = if (result.daily) null else challenge?.score,
+                onRetry = {
+                    val seed = if (result.daily) vm.dailySeed() else vm.nextSeed()
+                    nav.navigate(Run(seed, result.daily)) { popUpTo<Home>() }
+                },
                 onChallengeFriend = {
                     val link = vm.challengeLink(result.seed, result.score)
                     context.shareText(resources.getString(R.string.share_challenge, formatScore(result.score), link))

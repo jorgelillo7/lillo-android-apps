@@ -4,7 +4,7 @@ Run from the **repo root** after `source scripts/env.sh`. Repo-wide commands and
 [docs/operations.md](../../docs/operations.md).
 
 Module paths: app `:apps:slipper:app`, logic `:apps:slipper:domain`.
-Package: `com.jorgelillo.slipper` (**confirm before the first bundle**: it never changes after).
+Package: `com.jorgelillo.slipper` (confirmed 2026-10-25; it never changes).
 English and Spanish.
 
 ## Develop
@@ -20,8 +20,17 @@ English and Spanish.
 | Tune the game | `domain/.../GameConfig.kt` (every number in one place) |
 | Edit the pixel art | `app/src/main/assets/sprites.txt` |
 
-UI test tags: `play`, `about`, `best`, `challenge_banner`, `dismiss_challenge`, `game`, `score`, `chase`,
-`final_score`, `verdict`, `retry`, `challenge_friend`, `home`.
+UI test tags: `play`, `daily`, `sound`, `about`, `best`, `skin_<classic|checked|flip_flop|bunny>`,
+`challenge_banner`, `dismiss_challenge`, `game`, `score`, `combo`, `power`, `chase`, `final_score`,
+`run_stats`, `verdict`, `unlocked`, `retry`, `challenge_friend`, `home`.
+
+| Also | Command |
+|---|---|
+| Balance report (bots over 200 seeds) | `./gradlew :apps:slipper:domain:test -i \| grep balance:` |
+| Regenerate the sounds | `python3 apps/slipper/tools/generate_sounds.py` |
+
+Changing anything that alters runs (GameConfig, House, Engine) bumps `GameConfig.VERSION`: challenge
+links carry it, and a seed only replays the same run on the same version.
 
 ## Release
 

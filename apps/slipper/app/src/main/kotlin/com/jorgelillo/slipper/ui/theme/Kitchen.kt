@@ -29,6 +29,9 @@ object Kitchen {
     val LivingFloor = Color(0xFFA8463E)
     val Wainscot = Color(0xFFB07A45)
     val WainscotEdge = Color(0xFF7A4F28)
+    val Upstairs = Color(0xFFE9CFA8)
+    val UpstairsLine = Color(0xFFD2B48C)
+    val Croqueta = Color(0xFFD68C32)
 
     val Background = Brush.verticalGradient(listOf(Cream, CreamDeep))
 }
