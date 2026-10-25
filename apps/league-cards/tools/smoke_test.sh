@@ -10,12 +10,6 @@
 set -euo pipefail
 source "$(dirname "$0")/../../../scripts/smoke_lib.sh"
 smoke_start league-cards com.jorgelillo.leaguecards
-on_screen() {
-  "$ADB" shell uiautomator dump /sdcard/ui.xml >/dev/null 2>&1 || true
-  local ui
-  ui="$("$ADB" shell cat /sdcard/ui.xml)"
-  [[ "$ui" == *"resource-id=\"$1\""* ]]
-}
 
 shot home
 tap new_season 3

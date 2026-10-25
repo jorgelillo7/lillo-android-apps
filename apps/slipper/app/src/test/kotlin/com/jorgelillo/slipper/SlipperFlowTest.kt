@@ -70,10 +70,21 @@ class SlipperFlowTest {
             compose.mainClock.advanceTimeBy(FRAME_STEP_MILLIS)
             saved().runs == 2
         }
+
+        // The run of the day, from home: its best is kept for today.
+        tap("home")
+        // Let the result fade out first: a tap during the transition goes nowhere.
+        compose.mainClock.advanceTimeBy(1_000)
+        tap("daily")
+        compose.waitUntil(TIMEOUT) {
+            compose.mainClock.advanceTimeBy(FRAME_STEP_MILLIS)
+            saved().runs == 3
+        }
+        assertTrue(saved().dailyBest(java.time.LocalDate.now().toEpochDay()) > 0)
     }
 
     private companion object {
-        const val TIMEOUT = 40_000L
+        const val TIMEOUT = 60_000L
         const val FRAME_STEP_MILLIS = 100L
     }
 }

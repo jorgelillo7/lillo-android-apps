@@ -27,6 +27,15 @@ f 4E7A4C   # sofa shadow
 O F4EFE6   # window frame
 U 9FD3F0   # sky
 P C94B5E   # curtain
+T E89A3C   # cat
+t B86E22   # cat stripes
+E 4FA35A   # cat eyes, toy green
+Q EBC685   # bread
+q C99A4E   # crust
+M F09A9A   # ham
+V 4F8FD8   # skates
+v 2F6BB0   # skates shadow
+X 8C8C99   # wheels, metal
 end
 
 sprite kid_run_1
@@ -356,3 +365,92 @@ sprite icon_grandma
 .KDDDDdAAAAAAAAAdDDDDK........
 KDDDDDdAAAAAAAAAdDDDDDK.......
 end
+
+# The cat walks towards the kid (jump it); it runs off once bumped.
+sprite cat_walk_1
+.K..........
+KTK.........
+KTTK.......K
+TKTK......KT
+KETTKKKK.KT.
+KTTtTTtTTK..
+.KTTtTTtTK..
+.KTTTTTTTK..
+...KTK.KTK..
+....KK..KK..
+end
+
+sprite cat_walk_2
+.K..........
+KTK.........
+KTTK......K.
+TKTK......TK
+KETTKKKK.KT.
+KTTtTTtTTK..
+.KTTtTTtTK..
+.KTTTTTTTK..
+...KTKKTK...
+....KK.KK...
+end
+
+# A toy brick on the floor.
+sprite toy
+.KK..KK.
+KRRKKRRK
+KRRRRRRK
+KRRRRRRK
+KrrrrrrK
+KKKKKKKK
+end
+
+# Power-ups: the sandwich (one hit blocked) and the roller skates (fast, crash through).
+sprite sandwich
+..KKKKKK..
+.KQQQQQQK.
+KQqQQQQqQK
+KGGGGGGGGK
+KMMMMMMMMK
+KQQQQQQQQK
+.KqqqqqqK.
+..KKKKKK..
+end
+
+sprite skates
+.KKKK.....
+.KVVK.....
+.KVVK.....
+.KVVKKKKK.
+KVVVVVVVVK
+KvvvvvvvvK
+.KKKKKKKK.
+.KXK..KXK.
+..K....K..
+end
+
+# Wall decor up high: kitchen cabinets and a hanging lamp, so the wall is never bare.
+sprite cabinet
+KKKKKKKKKKKKKKKKKKKKKKKK
+KWWWWWWWWWKKWWWWWWWWWWWK
+KWwwwwwwwWKKWwwwwwwwwWWK
+KWwWWWWWwWKKWwWWWWWWwWWK
+KWwWWWWWwWKKWwWWWWWWwWWK
+KWwWWWWWwWKKWwWWWWWWwWWK
+KWwWWWYYwWKKWYYwWWWWwWWK
+KWwWWWWWwWKKWwWWWWWWwWWK
+KWwwwwwwwWKKWwwwwwwwwWWK
+KWWWWWWWWWKKWWWWWWWWWWWK
+KKKKKKKKKKKKKKKKKKKKKKKK
+end
+
+sprite lamp
+...KK...
+...KK...
+...KK...
+...KK...
+..KKKK..
+.KYYYYK.
+KYYYYYYK
+KKKKKKKK
+..LLLL..
+end
+

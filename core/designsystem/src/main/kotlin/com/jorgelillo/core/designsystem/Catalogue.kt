@@ -50,6 +50,7 @@ private fun CatalogueTheme(content: @Composable () -> Unit) = LilloTheme(Catalog
 private fun ButtonsPreview() = CatalogueTheme {
     LilloBigButton("Continue", {})
     LilloBigButton("Disabled", {}, enabled = false)
+    LilloSecondaryButton("Short season · 10 matchdays", {})
 }
 
 @Preview(name = "Avatars")

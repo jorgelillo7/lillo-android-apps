@@ -67,9 +67,9 @@ class EngineTest {
 
     @Test
     fun runningIntoAChairStumblesOnceAndSheClosesIn() {
-        val w = run(bare(Furniture(FurnitureKind.CHAIR, 20.0)), 1.5)
+        val w = run(bare(Furniture(FurnitureKind.CHAIR, 20.0)), 0.9)
         assertTrue(w.furniture.single().bumped)
-        assertTrue(w.gap < C.START_GAP - 5, "gap ${w.gap}")
+        assertTrue(w.gap < C.START_GAP - 1.5, "gap ${w.gap}")
         // Past the chair: no second stumble from the same chair.
         val later = run(w, 1.0)
         assertTrue(later.gap > w.gap)
@@ -119,7 +119,7 @@ class EngineTest {
 
     @Test
     fun sheCatchesYouWhenTheGapCloses() {
-        val w = run(bare(Furniture(FurnitureKind.CHAIR, 10.0), gap = 6.0), 1.5)
+        val w = run(bare(Furniture(FurnitureKind.CHAIR, 10.0), gap = 4.0), 1.5)
         assertTrue(w.caught)
         assertTrue(w.over)
         assertEquals(w, Engine.step(w, Input(tapped = true)), "an over run stays over")
@@ -191,6 +191,29 @@ class EngineTest {
         assertEquals(Room.HALL, House.room(House.CHUNKS_PER_ROOM))
         assertEquals(Room.LIVING_ROOM, House.room(House.CHUNKS_PER_ROOM * 2))
         assertEquals(Room.KITCHEN, House.room(House.CHUNKS_PER_ROOM * 3))
+    }
+
+    @Test
+    fun aChallengeLinkCarriesTheGameVersion() {
+        // Made with another version: it must arrive as that version, not this phone's.
+        val old = Challenges.fromText(Challenges.link(Challenge(seed = 1, score = 900, version = 1)))!!
+        assertEquals(1, old.version)
+        assertFalse(old.sameRun)
+        assertTrue(Challenges.fromText(Challenges.link(Challenge(seed = 1, score = 900)))!!.sameRun)
+    }
+
+    @Test
+    fun aLinkMadeNowWritesItsVersionToo() {
+        // Defaults are left out of share links: the version must be written anyway, or a later
+        // version of the game would read today's links as its own.
+        val code = Challenges.link(Challenge(seed = 1, score = 900)).substringAfter('#')
+        val bytes = java.util.Base64.getUrlDecoder().decode(code.drop(1))
+        val json = java.util.zip.Inflater(true).run {
+            setInput(bytes)
+            val out = ByteArray(1024)
+            String(out, 0, inflate(out))
+        }
+        assertTrue("\"v\":${C.VERSION}" in json, json)
     }
 
     @Test

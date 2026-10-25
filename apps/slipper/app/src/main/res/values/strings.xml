@@ -6,7 +6,6 @@
     <string name="best_score">Best: %1$s</string>
     <string name="challenge_banner">Challenge: beat %1$s</string>
     <string name="tap_to_jump">Tap to jump · hold to jump higher</string>
-    <string name="score">%1$s</string>
     <string name="caught">She got you!</string>
     <string name="your_score">%1$s points</string>
     <string name="new_record">New record! 🏆</string>
@@ -16,12 +15,44 @@
     <string name="challenge_friend">Challenge a friend</string>
     <string name="home">Home</string>
     <string name="share_challenge">Grandma\'s slipper got me with %1$s points. Can you beat me? Same run, same slippers 🩴 %2$s</string>
+    <string name="challenge_other_version">Made with another version of the game: same goal, a slightly different run.</string>
     <string name="dismiss_challenge">Forget the challenge</string>
     <string name="chase_description">How close grandma is</string>
     <string name="challenge_invalid">That link has no challenge</string>
     <string name="about_body">A one-finger game: run from grandma, jump her slippers, steal her croquetas. No account, no ads, nothing leaves your phone; challenges travel inside the link you share.</string>
     <string name="about_version">Version %s</string>
+    <string name="about_rate">Rate on Google Play</string>
     <string name="about_open_privacy">Privacy policy</string>
+    <string name="pop_near_miss">Close one!</string>
+    <string name="pop_ouch">Ouch!</string>
+    <string name="pop_blocked">Saved by the sandwich!</string>
+    <string name="pop_sandwich">Sandwich!</string>
+    <string name="pop_skates">Skates!</string>
+    <string name="pop_crash">Crash!</string>
+    <string name="daily">Run of the day</string>
+    <string name="daily_banner">Run of the day: the same for everyone today</string>
+    <string name="daily_best">Today: %1$s</string>
+    <string name="sound_on">Sound on</string>
+    <string name="sound_off">Sound off</string>
+    <string name="skins_title">Grandma\'s slipper</string>
+    <plurals name="skin_locked">
+        <item quantity="one">%1$d croqueta</item>
+        <item quantity="other">%1$d croquetas</item>
+    </plurals>
+    <string name="skin_classic">Classic</string>
+    <string name="skin_checked">Checked</string>
+    <string name="skin_flip_flop">Flip-flop</string>
+    <string name="skin_bunny">Bunny</string>
+    <string name="skin_unlocked">New slipper unlocked: %1$s!</string>
+    <plurals name="skin_next">
+        <item quantity="one">%1$d more croqueta for the next slipper</item>
+        <item quantity="other">%1$d more croquetas for the next slipper</item>
+    </plurals>
+    <string name="run_stats">%1$s · %2$s</string>
+    <plurals name="near_misses">
+        <item quantity="one">%1$d close one</item>
+        <item quantity="other">%1$d close ones</item>
+    </plurals>
     <plurals name="croquetas_count">
         <item quantity="one">%1$d croqueta</item>
         <item quantity="other">%1$d croquetas</item>

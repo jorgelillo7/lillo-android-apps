@@ -5,4 +5,4 @@ Newest first. User-facing notes per language are in
 
 | versionCode | Version | Date | Notes |
 |---|---|---|---|
-| 1 | 0.1 | — (prototype, not uploaded) | The run (jump, hold, slippers low and high, croquetas, anger), best score, challenge by link, pixel art |
+| 1 | 1.0 | — (first release, straight to production: see OPERATIONS) | The run (jump, hold, slippers low and high, croquetas, anger), warnings before each throw, near misses, croqueta combos, sandwich and skates, the cat and toy bricks, run of the day, slipper skins, sounds and haptics, challenge by link, pixel art |

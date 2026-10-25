@@ -6,7 +6,6 @@
     <string name="best_score">Récord: %1$s</string>
     <string name="challenge_banner">Reto: supera %1$s</string>
     <string name="tap_to_jump">Toca para saltar · mantén para saltar más</string>
-    <string name="score">%1$s</string>
     <string name="caught">¡Te pilló!</string>
     <string name="your_score">%1$s puntos</string>
     <string name="new_record">¡Nuevo récord! 🏆</string>
@@ -16,12 +15,47 @@
     <string name="challenge_friend">Retar a alguien</string>
     <string name="home">Inicio</string>
     <string name="share_challenge">Me ha pillado la chancla de la abuela con %1$s puntos. ¿Me ganas? Misma partida, mismas chanclas 🩴 %2$s</string>
+    <string name="challenge_other_version">Hecho con otra versión del juego: mismo objetivo, partida algo distinta.</string>
     <string name="dismiss_challenge">Olvidar el reto</string>
     <string name="chase_description">A qué distancia está la abuela</string>
     <string name="challenge_invalid">Ese enlace no tiene ningún reto</string>
     <string name="about_body">Un juego de un dedo: huye de la abuela, salta sus chanclas y róbale las croquetas. Sin cuenta, sin anuncios y sin que nada salga de tu móvil; los retos viajan dentro del enlace que compartes.</string>
     <string name="about_version">Versión %s</string>
+    <string name="about_rate">Valorar en Google Play</string>
     <string name="about_open_privacy">Política de privacidad</string>
+    <string name="pop_near_miss">¡Por los pelos!</string>
+    <string name="pop_ouch">¡Ay!</string>
+    <string name="pop_blocked">¡Te salvó el bocata!</string>
+    <string name="pop_sandwich">¡Bocata!</string>
+    <string name="pop_skates">¡Patines!</string>
+    <string name="pop_crash">¡Crash!</string>
+    <string name="daily">Reto del día</string>
+    <string name="daily_banner">Reto del día: hoy es igual para todos</string>
+    <string name="daily_best">Hoy: %1$s</string>
+    <string name="sound_on">Sonido activado</string>
+    <string name="sound_off">Sonido desactivado</string>
+    <string name="skins_title">La chancla de la abuela</string>
+    <plurals name="skin_locked">
+        <item quantity="one">%1$d croqueta</item>
+        <item quantity="many">%1$d croquetas</item>
+        <item quantity="other">%1$d croquetas</item>
+    </plurals>
+    <string name="skin_classic">Clásica</string>
+    <string name="skin_checked">De cuadros</string>
+    <string name="skin_flip_flop">Playera</string>
+    <string name="skin_bunny">De conejito</string>
+    <string name="skin_unlocked">¡Nueva chancla desbloqueada: %1$s!</string>
+    <plurals name="skin_next">
+        <item quantity="one">Te falta %1$d croqueta para la siguiente chancla</item>
+        <item quantity="many">Te faltan %1$d croquetas para la siguiente chancla</item>
+        <item quantity="other">Te faltan %1$d croquetas para la siguiente chancla</item>
+    </plurals>
+    <string name="run_stats">%1$s · %2$s</string>
+    <plurals name="near_misses">
+        <item quantity="one">%1$d por los pelos</item>
+        <item quantity="many">%1$d por los pelos</item>
+        <item quantity="other">%1$d por los pelos</item>
+    </plurals>
     <plurals name="croquetas_count">
         <item quantity="one">%1$d croqueta</item>
         <item quantity="many">%1$d croquetas</item>

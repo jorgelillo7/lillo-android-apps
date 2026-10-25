@@ -5,4 +5,4 @@ Newest first. User-facing notes per language are in
 
 | versionCode | Version | Date | Notes |
 |---|---|---|---|
-| 1 | 1.0 | 2026-10-21 (internal testing), 2026-10-24 (promoted to production) | First version: knockout and Swiss, two-sided bracket, results with comments, share by link / QR, image and CSV export, hall of fame |
+| 1 | 1.0 | 2026-10-21 (internal testing), 2026-10-24 (production draft, sent for review by hand: an app's first production release) | First version: knockout and Swiss, two-sided bracket, results with comments, share by link / QR, image and CSV export, hall of fame |
