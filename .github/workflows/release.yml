@@ -15,6 +15,8 @@
 # its environment too, and a release without it fails: league-cards' private league deck (else
 # the public sample) and group-polls' Firebase config (else the in-memory sample backend).
 name: Release
+# What each run ships, in the list of runs and in the approval: "league-cards · upload → production (draft)".
+run-name: "${{ inputs.app }} · ${{ inputs.action }} → ${{ inputs.track }}${{ inputs.draft && ' (draft)' || '' }}${{ inputs.listing && ' + listing' || '' }}${{ inputs.dry_run && ' (dry run)' || '' }}"
 
 on:
   workflow_dispatch:
