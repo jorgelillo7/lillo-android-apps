@@ -170,6 +170,10 @@
         <item quantity="many">%d paquetes elegidos</item>
         <item quantity="other">%d paquetes elegidos</item>
     </plurals>
+    <string name="pick_packs_clear">Quitar todos</string>
+    <string name="pick_packs_none">Ninguno elegido: marca al menos uno</string>
+    <string name="pick_packs_hint">Mantén pulsado un paquete para jugar solo con ese</string>
+    <string name="pick_packs_only">Solo este paquete</string>
     <string name="pick_packs_select_all">Elegir todos</string>
 
     <!-- Ajustes -->

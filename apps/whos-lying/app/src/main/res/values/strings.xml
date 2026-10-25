@@ -177,6 +177,10 @@
         <item quantity="one">%d pack selected</item>
         <item quantity="other">%d packs selected</item>
     </plurals>
+    <string name="pick_packs_clear">Clear all</string>
+    <string name="pick_packs_none">None chosen: tick at least one</string>
+    <string name="pick_packs_hint">Long-press a pack to play only that one</string>
+    <string name="pick_packs_only">Only this pack</string>
     <string name="pick_packs_select_all">Select all</string>
 
     <!-- Settings -->
