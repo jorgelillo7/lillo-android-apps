@@ -103,25 +103,17 @@ class GameViewModel(private val repository: StateRepository, language: String) :
         s.copy(settings = next.copy(impostors = next.impostors.coerceIn(1, max)))
     }
 
-    /** Adds or removes a pack from the selection; never leaves it empty-by-accident. */
-    fun togglePack(id: String) = update { s ->
+    /**
+     * The packs for the next games: empty, or every pack, means all of them (packs made later
+     * included); unknown ids are dropped.
+     */
+    fun choosePacks(ids: Set<String>) = update { s ->
         val all = allPacks(s).map { it.id }.toSet()
-        val current = s.settings.packIds.ifEmpty { all }
-        val next = if (id in current) current - id else current + id
-        val ids = when {
-            next.isEmpty() -> current
-
-            // keep at least one pack
-            next.containsAll(all) -> emptySet()
-
-            else -> next
-        }
-        s.copy(settings = s.settings.copy(packIds = ids))
+        val chosen = ids intersect all
+        s.copy(settings = s.settings.copy(packIds = if (chosen.isEmpty() || chosen == all) emptySet() else chosen))
     }
 
     fun markWelcomeSeen() = update { it.copy(welcomeSeen = true) }
-
-    fun selectAllPacks() = update { it.copy(settings = it.settings.copy(packIds = emptySet())) }
 
     // --- Custom packs ---------------------------------------------------------------------------
 

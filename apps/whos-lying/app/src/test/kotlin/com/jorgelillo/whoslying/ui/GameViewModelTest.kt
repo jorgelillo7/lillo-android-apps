@@ -65,22 +65,13 @@ class GameViewModelTest {
     }
 
     @Test
-    fun togglePackNeverLeavesTheSelectionEmpty() = runTest {
+    fun choosingPacksKeepsASubsetAndEveryPackMeansAll() = runTest {
         val vm = viewModel()
         val only = vm.builtInPacks.first().id
         vm.saved.filterNotNull().test {
-            vm.builtInPacks.drop(1).forEach { vm.togglePack(it.id) }
+            vm.choosePacks(setOf(only, "gone"))
             assertEquals(setOf(only), awaitMatching { it.settings.packIds == setOf(only) }.settings.packIds)
-            vm.togglePack(only)
-            vm.togglePack(vm.builtInPacks[1].id)
-            // Taking out the last pack was refused, so adding another one is what changed.
-            assertEquals(
-                setOf(only, vm.builtInPacks[1].id),
-                awaitMatching {
-                    it.settings.packIds.size == 2
-                }.settings.packIds
-            )
-            vm.selectAllPacks()
+            vm.choosePacks(vm.builtInPacks.map { it.id }.toSet())
             assertTrue(awaitMatching { it.settings.packIds.isEmpty() }.settings.packIds.isEmpty())
         }
     }

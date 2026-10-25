@@ -22,6 +22,7 @@ import com.jorgelillo.whoslying.domain.GameMode
 import com.jorgelillo.whoslying.domain.GameSettings
 import com.jorgelillo.whoslying.domain.Role
 import com.jorgelillo.whoslying.domain.WordPack
+import com.jorgelillo.whoslying.domain.WordPacks
 import com.jorgelillo.whoslying.ui.DrawStroke
 import com.jorgelillo.whoslying.ui.InkColors
 import com.jorgelillo.whoslying.ui.theme.Neon
@@ -129,6 +130,17 @@ class RoundScreensScreenshotTest {
         // The dialog's content (a dialog is a second window, out of reach of a root capture).
         Box(Modifier.background(Neon.Card).padding(24.dp)) { ColorWheel(Color(0xFF2F6BFF), onChange = {}) }
     }
+
+    /** Choosing packs: every pack ticked, with "clear all" and the long-press hint. */
+    private fun packPicker(name: String) = shot(name) {
+        PackPickerScreen(WordPacks.builtIn("en"), selected = emptySet(), onNewPack = {}, onDone = {})
+    }
+
+    @Test fun packPickerPortrait() = packPicker("pack_picker")
+
+    @Test
+    @Config(qualifiers = "+land")
+    fun packPickerLandscape() = packPicker("pack_picker_landscape")
 
     @Test fun playersFullPortrait() = playersFull("players_full")
 

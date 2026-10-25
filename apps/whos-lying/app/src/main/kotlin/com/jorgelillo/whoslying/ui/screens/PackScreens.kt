@@ -1,8 +1,11 @@
 package com.jorgelillo.whoslying.ui.screens
 
+import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -63,40 +66,70 @@ import com.jorgelillo.whoslying.domain.WordPack
 import com.jorgelillo.whoslying.domain.WordPacks
 import com.jorgelillo.whoslying.ui.theme.Neon
 
-/** Multi-select grid of packs for the next game. An empty [selected] set means every pack. */
+/**
+ * Multi-select grid of packs for the next game. [selected] empty means every pack. The choice is
+ * kept here and handed to [onDone] when leaving (null: nothing chosen, keep the previous choice), so
+ * "clear all" can leave nothing ticked while you pick. A long press picks only that pack.
+ */
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 internal fun PackPickerScreen(
     packs: List<WordPack>,
     selected: Set<String>,
-    onToggle: (String) -> Unit,
-    onSelectAll: () -> Unit,
-    onNewPack: () -> Unit,
-    onDone: () -> Unit
+    onNewPack: (Set<String>?) -> Unit,
+    onDone: (Set<String>?) -> Unit
 ) {
-    val all = selected.isEmpty()
+    val ids = packs.map { it.id }
+    var chosen by rememberSaveable { mutableStateOf(selected.ifEmpty { ids.toSet() }.toList()) }
+    val all = chosen.containsAll(ids)
+    // Every pack is the empty set (it also takes in packs made later); none keeps what there was.
+    val result = {
+        if (chosen.isEmpty()) {
+            null
+        } else if (all) {
+            emptySet()
+        } else {
+            chosen.toSet()
+        }
+    }
+    BackHandler { onDone(result()) }
     Page(
         title = stringResource(R.string.pick_packs_title),
-        onBack = onDone,
-        bottom = { BigButton(stringResource(R.string.continue_), onDone, Modifier.testTag("packs_done")) }
+        onBack = { onDone(result()) },
+        bottom = {
+            BigButton(
+                stringResource(R.string.continue_),
+                { onDone(result()) },
+                Modifier.testTag("packs_done"),
+                enabled = chosen.isNotEmpty()
+            )
+        }
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
-                if (all) {
-                    stringResource(
-                        R.string.pick_packs_all
-                    )
-                } else {
-                    pluralStringResource(R.plurals.pick_packs_some, selected.size, selected.size)
+                when {
+                    all -> stringResource(R.string.pick_packs_all)
+                    chosen.isEmpty() -> stringResource(R.string.pick_packs_none)
+                    else -> pluralStringResource(R.plurals.pick_packs_some, chosen.size, chosen.size)
                 },
-                color = Neon.Muted,
+                color = if (chosen.isEmpty()) Neon.Amber else Neon.Muted,
                 modifier = Modifier.weight(1f)
             )
-            if (!all) {
-                TextButton(onClick = onSelectAll, modifier = Modifier.testTag("select_all_packs")) {
+            if (all) {
+                TextButton(onClick = { chosen = emptyList() }, modifier = Modifier.testTag("clear_packs")) {
+                    Text(stringResource(R.string.pick_packs_clear), color = Neon.Turquoise)
+                }
+            } else {
+                TextButton(onClick = { chosen = ids }, modifier = Modifier.testTag("select_all_packs")) {
                     Text(stringResource(R.string.pick_packs_select_all), color = Neon.Turquoise)
                 }
             }
         }
+        Text(
+            stringResource(R.string.pick_packs_hint),
+            style = MaterialTheme.typography.bodySmall,
+            color = Neon.Muted
+        )
         LazyVerticalGrid(
             columns = GridCells.Adaptive(150.dp),
             horizontalArrangement = Arrangement.spacedBy(10.dp),
@@ -104,14 +137,21 @@ internal fun PackPickerScreen(
             modifier = Modifier.padding(top = 8.dp)
         ) {
             items(packs, key = { it.id }) { pack ->
-                PackTile(pack, checked = all || pack.id in selected, onClick = { onToggle(pack.id) })
+                PackTile(
+                    pack,
+                    checked = pack.id in chosen,
+                    onClick = {
+                        chosen = if (pack.id in chosen) chosen - pack.id else chosen + pack.id
+                    },
+                    onLongClick = { chosen = listOf(pack.id) }
+                )
             }
             item(key = "new") {
                 Column(
                     Modifier
                         .clip(MaterialTheme.shapes.large)
                         .border(2.dp, Neon.Card, MaterialTheme.shapes.large)
-                        .clickable(onClick = onNewPack)
+                        .clickable { onNewPack(result()) }
                         .padding(vertical = 22.dp)
                         .testTag("picker_new_pack"),
                     horizontalAlignment = Alignment.CenterHorizontally
@@ -128,14 +168,19 @@ internal fun PackPickerScreen(
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun PackTile(pack: WordPack, checked: Boolean, onClick: () -> Unit) {
+private fun PackTile(pack: WordPack, checked: Boolean, onClick: () -> Unit, onLongClick: () -> Unit) {
     Box(
         Modifier
             .clip(MaterialTheme.shapes.large)
             .background(if (checked) Neon.Violet.copy(alpha = 0.25f) else Neon.Card)
             .border(2.dp, if (checked) Neon.Violet else Color.Transparent, MaterialTheme.shapes.large)
-            .clickable(onClick = onClick)
+            .combinedClickable(
+                onLongClickLabel = stringResource(R.string.pick_packs_only),
+                onLongClick = onLongClick,
+                onClick = onClick
+            )
             .testTag("pack_${pack.id}")
     ) {
         Column(
@@ -153,7 +198,8 @@ private fun PackTile(pack: WordPack, checked: Boolean, onClick: () -> Unit) {
             Text(
                 pluralStringResource(R.plurals.pack_words, pack.entries.size, pack.entries.size),
                 style = MaterialTheme.typography.bodySmall,
-                color = Neon.Muted
+                // On a ticked (violet) tile the muted grey falls short of 4.5:1.
+                color = if (checked) Neon.Ink.copy(alpha = 0.85f) else Neon.Muted
             )
         }
         Box(

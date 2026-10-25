@@ -285,10 +285,14 @@ internal fun WhosLyingApp(app: WhosLyingApplication, incomingText: String? = nul
             PackPickerScreen(
                 packs = vm.allPacks(state),
                 selected = state.settings.packIds,
-                onToggle = vm::togglePack,
-                onSelectAll = vm::selectAllPacks,
-                onNewPack = { nav.navigate(PackEdit()) },
-                onDone = { nav.popBackStack() }
+                onNewPack = { ids ->
+                    ids?.let(vm::choosePacks)
+                    nav.navigate(PackEdit())
+                },
+                onDone = { ids ->
+                    ids?.let(vm::choosePacks)
+                    nav.popBackStack()
+                }
             )
         }
         composable<Packs> {
