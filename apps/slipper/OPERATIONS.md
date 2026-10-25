@@ -65,15 +65,15 @@ production** (an app's first production release goes up as a draft and is sent f
    signing** key into `/.well-known/assetlinks.json` on the website (challenge links then open the
    app directly; until then they open the `/c/` page, which still opens the app on Android).
 
-Upload key: _to be created (step 2)_.
+Upload key (created 25 Oct 2026 with `scripts/new-upload-key.sh`, see [docs/signing.md](../../docs/signing.md)):
 
 | | |
 |---|---|
 | File | `~/Projects/documentation/keys/slipper/upload-slipper.jks` (+ off-Mac backup) |
 | Alias | `upload` |
-| Serial | |
-| SHA-1 | |
-| SHA-256 | |
+| Serial | `44628c9d022825cd` (valid until Mar 2054) |
+| SHA-1 | `D5:D7:7E:8B:9B:EE:D4:48:17:B7:71:71:86:40:0D:86:99:80:3E:E3` |
+| SHA-256 | `C5:A5:4E:F1:9D:BE:B1:EC:B2:D2:E0:9A:FB:EC:D9:D2:0A:F8:0B:3C:86:CA:FA:89:6D:4C:94:AA:52:5F:9C:6F` |
 
 | versionCode | Version | Date | Track | Notes |
 |---|---|---|---|---|
