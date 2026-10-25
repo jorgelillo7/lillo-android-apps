@@ -4,6 +4,8 @@
 #   tap <text|tag> [wait]          type_in <tag> <text> [hide]   (%s for spaces in the text)
 #   hide_keyboard                  swipe_up [start end] / swipe_down [start end]  (fractions of the height)
 #   back [wait]
+#   on_screen <tag>                true if an element with that test tag is on screen now
+#   wait_for <tag> [seconds]       waits for it (default 90 s, once a second); false if it never comes
 
 # shellcheck disable=SC2034  # ROOT is used by the scripts that source this one
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -19,3 +21,12 @@ type_in() {
 swipe_up() { python3 "$ROOT/scripts/ui_lib.py" swipe-up "${1:-0.75}" "${2:-0.25}"; sleep 1; }
 swipe_down() { swipe_up "${1:-0.25}" "${2:-0.75}"; }
 back() { "$ADB" shell input keyevent KEYCODE_BACK; sleep "${1:-2}"; }
+on_screen() {
+  "$ADB" shell uiautomator dump /sdcard/ui.xml >/dev/null 2>&1 || true
+  [[ "$("$ADB" shell cat /sdcard/ui.xml)" == *"resource-id=\"$1\""* ]]
+}
+wait_for() {
+  local _
+  for _ in $(seq 1 "${2:-90}"); do on_screen "$1" && return 0; sleep 1; done
+  return 1
+}

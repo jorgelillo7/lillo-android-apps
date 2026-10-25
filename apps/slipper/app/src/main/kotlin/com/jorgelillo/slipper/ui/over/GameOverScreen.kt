@@ -23,6 +23,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.jorgelillo.core.designsystem.LilloSecondaryButton
 import com.jorgelillo.core.designsystem.isShortScreen
 import com.jorgelillo.slipper.R
 import com.jorgelillo.slipper.domain.Chunk
@@ -77,12 +78,12 @@ internal fun GameOverScreen(
     Page(
         bottom = {
             BigButton(stringResource(R.string.retry), onRetry, "retry")
-            OutlinedButton(
-                onClick = onChallengeFriend,
-                modifier = Modifier.fillMaxWidth().padding(top = 8.dp).testTag("challenge_friend")
-            ) {
-                Text(stringResource(R.string.challenge_friend), color = Kitchen.Ink)
-            }
+            LilloSecondaryButton(
+                stringResource(R.string.challenge_friend),
+                onChallengeFriend,
+                Modifier.padding(top = 8.dp).testTag("challenge_friend"),
+                contentColor = Kitchen.Ink
+            )
             TextButton(onClick = onHome, modifier = Modifier.align(Alignment.CenterHorizontally).testTag("home")) {
                 Text(stringResource(R.string.home), color = Kitchen.Muted)
             }

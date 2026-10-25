@@ -43,6 +43,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.jorgelillo.core.designsystem.AboutTexts
 import com.jorgelillo.core.designsystem.ConfettiBurst
 import com.jorgelillo.core.designsystem.LilloAboutSheet
+import com.jorgelillo.core.designsystem.LilloSecondaryButton
 import com.jorgelillo.core.designsystem.TestTagsAsResourceIds
 import com.jorgelillo.core.designsystem.isShortScreen
 import com.jorgelillo.core.platform.LilloLinks
@@ -124,14 +125,8 @@ private fun AboutButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun SecondaryButton(text: String, tag: String, onClick: () -> Unit) {
-    OutlinedButton(
-        onClick = onClick,
-        modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp).padding(bottom = 8.dp).testTag(tag)
-    ) {
-        Text(text, color = Chat.Text, textAlign = TextAlign.Center)
-    }
-}
+private fun SecondaryButton(text: String, tag: String, onClick: () -> Unit) =
+    LilloSecondaryButton(text, onClick, Modifier.padding(bottom = 8.dp).testTag(tag), contentColor = Chat.Text)
 
 @Composable
 internal fun HomeScreen(

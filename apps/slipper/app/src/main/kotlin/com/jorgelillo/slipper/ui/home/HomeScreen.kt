@@ -43,6 +43,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.jorgelillo.core.designsystem.AboutTexts
 import com.jorgelillo.core.designsystem.LilloAboutSheet
+import com.jorgelillo.core.designsystem.LilloSecondaryButton
 import com.jorgelillo.core.platform.LilloLinks
 import com.jorgelillo.slipper.BuildConfig
 import com.jorgelillo.slipper.R
@@ -112,19 +113,14 @@ internal fun HomeScreen(
         },
         bottom = {
             BigButton(stringResource(R.string.play), onPlay, "play")
-            OutlinedButton(
-                onClick = onDaily,
-                modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp).padding(top = 8.dp).testTag("daily")
-            ) {
-                val best = saved.dailyBest(today)
-                Text(
-                    "📅 " + stringResource(R.string.daily) +
-                        if (best > 0) " · " + stringResource(R.string.daily_best, formatScore(best)) else "",
-                    color = Kitchen.Ink,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
-                )
-            }
+            val best = saved.dailyBest(today)
+            LilloSecondaryButton(
+                "📅 " + stringResource(R.string.daily) +
+                    if (best > 0) " · " + stringResource(R.string.daily_best, formatScore(best)) else "",
+                onDaily,
+                Modifier.padding(top = 8.dp).testTag("daily"),
+                contentColor = Kitchen.Ink
+            )
         }
     ) {
         Column(Modifier.fillMaxWidth().verticalScroll(rememberScrollState())) {
@@ -218,7 +214,12 @@ private fun SkinPicker(saved: Saved, sprites: GameSprites, onSkin: (SlipperSkin)
                     slipper.draw(this, 0f, size.height / 2 + slipper.height * pixel / 2, pixel)
                 }
                 Text(
-                    if (unlocked) name else "🔒 " + pluralStringResource(R.plurals.skin_locked, skin.unlockAt, skin.unlockAt),
+                    if (unlocked) {
+                        name
+                    } else {
+                        "🔒 " +
+                            pluralStringResource(R.plurals.skin_locked, skin.unlockAt, skin.unlockAt)
+                    },
                     style = MaterialTheme.typography.labelMedium,
                     color = Kitchen.Ink,
                     textAlign = TextAlign.Center,

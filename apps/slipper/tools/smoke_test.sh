@@ -13,21 +13,14 @@ tap play 1
 # A few jumps by tapping the middle of the screen; the run ends by itself sooner or later.
 for _ in 1 2 3; do "$ADB" shell input tap 540 1500; sleep 0.6; done
 shot run
-wait_result() {
-  for _ in $(seq 1 90); do
-    "$ADB" shell uiautomator dump /sdcard/ui.xml >/dev/null 2>&1 || true
-    "$ADB" shell cat /sdcard/ui.xml | grep -q 'resource-id="final_score"' && return 0
-    sleep 1
-  done
-}
-wait_result
+wait_for final_score
 shot result
 tap retry 1
-wait_result
+wait_for final_score
 shot result_2
 tap home 2
 tap daily 1
-wait_result
+wait_for final_score
 shot result_daily
 tap home 2
 shot home_best

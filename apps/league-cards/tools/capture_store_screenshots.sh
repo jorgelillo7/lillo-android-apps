@@ -10,11 +10,6 @@ export LOCALES="${LOCALES:-es-ES}"                                  # the game i
 export CAPTURE_GRADLE_ARGS="-PleagueCards.privateDir=/nonexistent"  # the sample deck, always
 source "$(dirname "$0")/../../../scripts/capture_lib.sh"
 
-on_screen() {
-  "$ADB" shell uiautomator dump /sdcard/ui.xml >/dev/null 2>&1 || true
-  [[ "$("$ADB" shell cat /sdcard/ui.xml)" == *"resource-id=\"$1\""* ]]
-}
-
 capture_start league-cards com.jorgelillo.leaguecards
 for locale in $CAPTURE_LOCALES; do
   capture_open "$locale" 4

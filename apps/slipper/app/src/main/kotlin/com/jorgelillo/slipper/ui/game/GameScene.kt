@@ -322,10 +322,13 @@ private fun DrawScope.drawSlippers(w: World, cam: Camera, sprites: GameSprites, 
 
 /** Crumbs, stars and the words that pop up where something happened. */
 private fun DrawScope.drawEffects(w: World, cam: Camera, text: TextMeasurer, labels: SceneLabels?) {
+    // Words that pop up close together stack instead of overlapping.
+    var stacked = 0
     for (e in w.events) {
         val age = (w.time - e.at).toFloat()
         val fade = (1 - age / C.EVENT_LIFE.toFloat()).coerceIn(0f, 1f)
-        val at = Offset(cam.x(e.x + 2), cam.y(e.y + 2))
+        val worded = e.kind != EventKind.JUMP && e.kind != EventKind.STUMBLE && e.kind != EventKind.CAUGHT
+        val at = Offset(cam.x(e.x + 2), cam.y(e.y + 2 + if (worded) 4.5 * stacked++ else 0.0))
         when (e.kind) {
             EventKind.CROQUETA -> {
                 burst(at, age, cam.unit, Kitchen.Croqueta, count = 6, fade = fade)
@@ -440,7 +443,8 @@ private fun DrawScope.drawRoom(chunk: Chunk, cam: Camera, sprites: GameSprites) 
     val right = cam.x(chunk.end)
     if (right < 0 || left > size.width) return
     val ceiling = cam.y(ROOM_H)
-    val width = right - left
+    // A pixel wider than the chunk: no hairline where two chunks meet.
+    val width = right - left + 1f
     val wall = when (chunk.room) {
         Room.KITCHEN -> Kitchen.Cream
         Room.HALL -> Kitchen.HallPaper
@@ -523,13 +527,17 @@ private fun DrawScope.drawTiles(chunk: Chunk, cam: Camera) {
         var row = 0
         while (row * TILE < TILE_BAND) {
             val color: Color = if ((row + col) % 2 == 0) Kitchen.Tile else Kitchen.TileWhite
-            val x0 = max(cam.x(col * TILE), cam.x(chunk.start))
-            val x1 = min(cam.x((col + 1) * TILE), cam.x(chunk.end))
+            // Clipped to the chunk, but the grout only on the tile's own edges: two chunks meeting
+            // mid-tile draw one tile, not two halves with a seam.
+            val tileLeft = cam.x(col * TILE)
+            val tileRight = cam.x((col + 1) * TILE)
+            val x0 = max(tileLeft + gap, cam.x(chunk.start))
+            val x1 = min(tileRight - gap, cam.x(chunk.end))
             if (x1 > x0) {
                 drawRect(
                     color,
-                    Offset(x0 + gap, cam.y((row + 1) * TILE) + gap),
-                    Size(x1 - x0 - 2 * gap, cam.unit * TILE.toFloat() - 2 * gap)
+                    Offset(x0, cam.y((row + 1) * TILE) + gap),
+                    Size(x1 - x0, cam.unit * TILE.toFloat() - 2 * gap)
                 )
             }
             row++
