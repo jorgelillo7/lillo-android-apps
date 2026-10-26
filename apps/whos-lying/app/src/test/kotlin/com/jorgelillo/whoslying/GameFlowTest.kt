@@ -76,6 +76,7 @@ class GameFlowTest {
     }
 
     private companion object {
-        const val TIMEOUT = 10_000L
+        // Generous: on a busy CI runner the first DataStore read and screen can take over 10 s.
+        const val TIMEOUT = 30_000L
     }
 }
