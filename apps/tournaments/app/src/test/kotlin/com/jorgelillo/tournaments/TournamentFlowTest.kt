@@ -41,10 +41,18 @@ class TournamentFlowTest {
 
     /** Seed order for 4 players: slot 0 = seeds 1-4, slot 1 = seeds 2-3. */
     private fun result(match: String, winner: String) {
+        val played = saved().tournaments.sumOf { t -> t.matches.count { it.winsA + it.winsB > 0 } }
         tap(match)
         tap(winner)
         tap("score_1")
         tap("save")
+        // The sheet animates away and the result is saved to disk off the UI thread: tapping the next
+        // match before both land can hit the closing sheet (a flaky timeout on CI).
+        compose.waitUntilDoesNotExist(hasTestTag("save"), TIMEOUT)
+        compose.waitUntil(TIMEOUT) {
+            saved().tournaments.sumOf { t -> t.matches.count { it.winsA + it.winsB > 0 } } >
+                played
+        }
     }
 
     @Test

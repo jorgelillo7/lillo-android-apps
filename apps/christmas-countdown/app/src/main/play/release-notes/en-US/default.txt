@@ -1,7 +1,4 @@
-New name! 🎄 It's now "Is it Christmas yet?"
-- New Advent calendar: 35 family activities that change every year
-- Music days with Christmas songs to play on YouTube 🎶
-- Share each day's surprise with your friends
-- Reminders 🔔: one month and one week before, Advent, your daily door and Christmas Day
-- Refreshed About screen: pick the app's language
-- Better in landscape, on handheld consoles and with a screen reader
+Under-the-hood improvements 🎄
+- Smoother back gesture on Android 13 and later
+- Better in landscape on phones with a notch
+- More reliable reminders and up-to-date libraries

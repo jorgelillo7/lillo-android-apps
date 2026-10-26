@@ -9,8 +9,8 @@ android {
 
     defaultConfig {
         applicationId = "com.jorgelillo.christmascountdown"
-        versionCode = 5
-        versionName = "4.1"
+        versionCode = 6
+        versionName = "4.2"
     }
 
     // Release signing and R8: the jorgelillo.android.application convention plugin.
