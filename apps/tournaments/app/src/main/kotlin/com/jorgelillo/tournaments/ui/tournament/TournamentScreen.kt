@@ -84,6 +84,7 @@ internal fun TournamentScreen(
 
     Box(Modifier.fillMaxSize()) {
         Page(
+            readable = false, // the bracket uses all the width it gets
             title = t.name,
             onBack = onBack,
             actions = {

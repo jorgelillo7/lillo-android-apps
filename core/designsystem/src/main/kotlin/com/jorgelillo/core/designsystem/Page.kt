@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.union
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -60,6 +61,10 @@ import androidx.compose.ui.unit.sp
  * [sideActionsWhenShort]: on short screens (landscape, handhelds) the actions go in a column beside
  * the content instead of below it, and a page with no title or back button drops its header, so
  * the content keeps the screen's full height. Off by default: only for screens checked that way.
+ *
+ * [readable]: lists, forms and text keep [LilloReadableWidth] at most, centred, on tablets and
+ * unfolded foldables (full width on phones, upright or turned). Off for brackets, canvases and grids, which use every
+ * bit of width they get.
  */
 @Composable
 fun LilloPage(
@@ -71,6 +76,7 @@ fun LilloPage(
     titleWeight: FontWeight = FontWeight.Bold,
     actions: @Composable RowScope.() -> Unit = {},
     sideActionsWhenShort: Boolean = false,
+    readable: Boolean = false,
     bottom: @Composable ColumnScope.() -> Unit = {},
     content: @Composable ColumnScope.() -> Unit
 ) = CompositionLocalProvider(LocalContentColor provides contentColor) {
@@ -118,13 +124,22 @@ fun LilloPage(
                 )
             }
         } else {
-            Column(Modifier.weight(1f).fillMaxWidth().padding(horizontal = 20.dp), content = content)
-            Column(Modifier.fillMaxWidth().padding(20.dp), content = bottom)
+            // Not on short screens (phones in landscape): there the width is what they have to spare.
+            val width = if (readable && !isShortScreen()) {
+                Modifier.align(Alignment.CenterHorizontally).widthIn(max = LilloReadableWidth).fillMaxWidth()
+            } else {
+                Modifier.fillMaxWidth()
+            }
+            Column(Modifier.weight(1f).then(width).padding(horizontal = 20.dp), content = content)
+            Column(width.padding(20.dp), content = bottom)
         }
     }
 }
 
 private val SIDE_ACTIONS_WIDTH = 300.dp
+
+/** The widest a [LilloPage] with `readable` gets: lists, forms and text on tablets. */
+val LilloReadableWidth = 640.dp
 
 /** What a page keeps clear of: the system bars and the display cutout (landscape notches). */
 private val PageInsets: WindowInsets

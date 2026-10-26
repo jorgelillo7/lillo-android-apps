@@ -48,6 +48,8 @@ internal fun Page(
     modifier: Modifier = Modifier,
     background: Brush = Polls.Header,
     actions: @Composable RowScope.() -> Unit = {},
+    /** Lists and text keep a readable width on tablets (see [LilloPage]); off for brackets and canvases. */
+    readable: Boolean = true,
     bottom: @Composable ColumnScope.() -> Unit = {},
     content: @Composable ColumnScope.() -> Unit
 ) = LilloPage(
@@ -57,6 +59,7 @@ internal fun Page(
     modifier = modifier,
     titleWeight = FontWeight.Black,
     actions = actions,
+    readable = readable,
     bottom = bottom,
     content = content
 )

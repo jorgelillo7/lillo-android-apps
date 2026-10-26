@@ -38,6 +38,8 @@ internal fun Page(
     actions: @Composable RowScope.() -> Unit = {},
     /** Short screens: actions beside the content (see LilloPage). */
     sideActionsWhenShort: Boolean = false,
+    /** Lists and text keep a readable width on tablets (see [LilloPage]); off for brackets and canvases. */
+    readable: Boolean = true,
     bottom: @Composable ColumnScope.() -> Unit = {},
     content: @Composable ColumnScope.() -> Unit
 ) = LilloPage(
@@ -47,6 +49,7 @@ internal fun Page(
     modifier = modifier,
     actions = actions,
     sideActionsWhenShort = sideActionsWhenShort,
+    readable = readable,
     bottom = bottom,
     content = content
 )
