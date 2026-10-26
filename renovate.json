@@ -35,13 +35,6 @@
       ]
     },
     {
-      "description": "WorkManager 2.12 needs minSdk 24; Christmas Countdown is live on minSdk 23 (see PENDING.md)",
-      "matchPackageNames": [
-        "androidx.work:**"
-      ],
-      "allowedVersions": "<2.12"
-    },
-    {
       "description": "GitHub Actions: one weekly PR",
       "groupName": "GitHub Actions",
       "matchManagers": [

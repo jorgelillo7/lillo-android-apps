@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Predictive back on Android 13-15 too (Android 16 turns it on for targetSdk 36): the back
+         gesture previews the screen behind. Every app's back handling goes through Compose's
+         BackHandler and Navigation, which support it. Merged into each app's manifest. -->
+    <application
+        android:enableOnBackInvokedCallback="true"
+        tools:targetApi="33" />
+
+</manifest>

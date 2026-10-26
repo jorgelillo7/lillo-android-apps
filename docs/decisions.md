@@ -48,3 +48,5 @@ lives in the PR. Add a line when a decision is taken; change it when it is rever
 | Backups copy only `files/datastore/` | Users' data travels to a new phone; WorkManager's database never does | #56 |
 | MIT licence for the code (names, icons, store graphics: all rights reserved) | Same as lillorepo, where this code may move; free to reuse, but no clones with the apps' own branding | #66 |
 | Share links and App Links on `jorgelillo7.github.io`, data in the fragment | Free static hosting, no server, nothing stored | 2026-10 |
+| Every app on minSdk 24 (Christmas Countdown left 23) | WorkManager 2.12, navigation-compose and Play's automatic protection need it; phones on API 23 keep the version they have | 2026-10 |
+| `LilloPage` pads for system bars and the display cutout; predictive back on from `:core:designsystem`'s manifest | One place for every app: landscape notches never cover content, the back gesture previews the screen behind on Android 13+ | 2026-10 |

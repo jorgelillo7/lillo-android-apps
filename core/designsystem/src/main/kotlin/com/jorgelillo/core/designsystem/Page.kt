@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,7 +17,10 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.union
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
@@ -70,7 +75,8 @@ fun LilloPage(
     content: @Composable ColumnScope.() -> Unit
 ) = CompositionLocalProvider(LocalContentColor provides contentColor) {
     val side = sideActionsWhenShort && isShortScreen()
-    Column(modifier.fillMaxSize().background(background).statusBarsPadding().navigationBarsPadding()) {
+    // System bars and, in landscape, the camera cutout; the background still draws behind them.
+    Column(modifier.fillMaxSize().background(background).windowInsetsPadding(PageInsets)) {
         if (!side || title != null || onBack != null) {
             Row(
                 Modifier.fillMaxWidth().height(56.dp).padding(horizontal = 4.dp),
@@ -119,6 +125,10 @@ fun LilloPage(
 }
 
 private val SIDE_ACTIONS_WIDTH = 300.dp
+
+/** What a page keeps clear of: the system bars and the display cutout (landscape notches). */
+private val PageInsets: WindowInsets
+    @Composable get() = WindowInsets.systemBars.union(WindowInsets.displayCutout)
 
 /** The main call to action: full width, tall, bold. */
 @Composable
