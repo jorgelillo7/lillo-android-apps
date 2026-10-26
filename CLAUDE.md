@@ -59,7 +59,8 @@ keyboard, rotation, screenshots: what the shell helpers, `tap-text.sh`, `screens
 such as `apps/whos-lying/tools/battery_test.py` run on); each app's `tools/` only holds its own part.
 
 Project skills in `.claude/skills/`: `new-android-app` (competitor study → design → scaffold),
-`upgrade-android-deps` (toolchain/dependency upgrades) and `release-android-app` (ship a version).
+`upgrade-android-deps` (toolchain/dependency upgrades), `release-android-app` (ship a version) and
+`play-status` (repo versions vs every Play track, as one table).
 
 ## Working on a change
 
