@@ -1,5 +1,4 @@
-Thanks for your feedback 🕵️
-- Drawing mode: pick any colour on the colour wheel
-- Blind really is blind: impostors get no category hint
-- Results: long names and words show in full
-- With 24 players, a clear note instead of an add button that did nothing
+Easier to pick packs 🕵️
+- "Clear all" to keep only the ones you want
+- Long-press a pack to play only that one
+- Smoother back gesture, better on phones with a notch

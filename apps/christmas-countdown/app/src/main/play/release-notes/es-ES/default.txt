@@ -1,7 +1,4 @@
-¡Nuevo nombre! 🎄 Ahora se llama «¿Ya es Navidad?»
-- Calendario de adviento renovado: 35 actividades para hacer en familia que cambian cada año
-- Días de música con villancicos para escuchar en YouTube 🎶
-- Comparte por WhatsApp lo que te ha tocado cada día
-- Avisos 🔔: un mes y una semana antes, el adviento, tu puerta del día y Navidad
-- «Acerca de» renovada: elige el idioma de la app
-- Mejor en horizontal, en consolas portátiles y con el lector de pantalla
+Mejoras por dentro 🎄
+- Gesto de volver más fluido en Android 13 o superior
+- Mejor en horizontal en móviles con muesca
+- Avisos más fiables y bibliotecas al día

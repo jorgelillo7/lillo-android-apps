@@ -1,5 +1,4 @@
-Gracias por vuestras ideas 🕵️
-- Modo dibujo: elige cualquier color en la rueda de colores
-- A ciegas es a ciegas: el impostor ya no recibe la pista de categoría
-- Resultados: los nombres y palabras largos se ven enteros
-- Con 24 jugadores, un aviso claro en vez de un botón de añadir que no hacía nada
+Más fácil elegir paquetes 🕵️
+- «Quitar todos» para quedarte solo con los que quieras
+- Mantén pulsado un paquete para jugar solo con ese
+- Gesto de volver más fluido y mejor en móviles con muesca
