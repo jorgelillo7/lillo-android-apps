@@ -119,6 +119,11 @@ Publisher and tags the commit `<app>/v<versionCode>`.
 
 Production waits for your approval in GitHub (*Review deployments* on the run).
 
+**Play status** (Actions → Play status, also from the GitHub app): a table of every app's version
+in this repo next to each Play track's releases and their status (`completed`, `draft`,
+`inProgress`), marking the apps whose repo version is ahead of production. Read only
+(`scripts/play_status.py`). "In review" isn't in Google's API: Play Console shows it.
+
 Once, in your own terminal (values go to GitHub through stdin, never through the chat):
 
 ```bash
