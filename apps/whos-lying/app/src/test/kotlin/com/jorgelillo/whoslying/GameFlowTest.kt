@@ -63,6 +63,9 @@ class GameFlowTest {
             compose.onNodeWithTag("player_name").performTextInput(name)
             compose.onNodeWithTag("player_name").performImeAction()
         }
+        // "Continue" turns on once the third player is saved, off the UI thread: tapping it before
+        // that lands taps a disabled button and the game never starts (the CI flake of 2026-10).
+        compose.waitUntil(TIMEOUT) { viewModel().saved.value?.players?.size == 3 }
         tap("continue")
         tap("start")
 
