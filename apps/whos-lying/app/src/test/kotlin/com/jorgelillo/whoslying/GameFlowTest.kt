@@ -1,13 +1,16 @@
 package com.jorgelillo.whoslying
 
+import androidx.compose.ui.test.ComposeTimeoutException
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.hasTestTag
+import androidx.compose.ui.test.isRoot
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performImeAction
 import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.test.performTouchInput
+import androidx.compose.ui.test.printToString
 import androidx.compose.ui.test.swipeUp
 import androidx.lifecycle.ViewModelProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -35,7 +38,13 @@ class GameFlowTest {
     val compose = createAndroidComposeRule<MainActivity>()
 
     private fun tap(tag: String) {
-        compose.waitUntilExactlyOneExists(hasTestTag(tag), TIMEOUT)
+        try {
+            compose.waitUntilExactlyOneExists(hasTestTag(tag), TIMEOUT)
+        } catch (e: ComposeTimeoutException) {
+            // Say which step and what was on screen instead: a bare timeout tells nothing on CI.
+            val screen = compose.onAllNodes(isRoot(), useUnmergedTree = true).printToString()
+            throw AssertionError("'$tag' never showed up. On screen:\n$screen", e)
+        }
         compose.onNodeWithTag(tag).performClick()
     }
 
