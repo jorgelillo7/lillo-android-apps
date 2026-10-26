@@ -28,8 +28,10 @@ gh run view "$id" --log | sed -n 's/^.*Z //p' | sed -n '/^| App |/,/In review/p'
 ```
 
 (`rtk proxy gh …` if the output comes back truncated.) Each row: the repo's
-`versionCode (versionName)`, then per track the releases as `versionCodes (name) · status`; ⬆️
-marks apps whose repo version is ahead of what production serves.
+`versionCode (versionName)`; per track the releases as `versionCodes · status [rollout %]`, plus
+Play's release name when it doesn't match (a leftover label, harmless); empty drafts are left out;
+the app's **last Release workflow run** (`dd/mm (days ago) action → track: result`). ⬆️ marks apps
+whose repo version is ahead of what production serves.
 
 ## 3. Answer the user
 
@@ -39,12 +41,15 @@ testing, and a short **"what it means"** column:
 | Status from the API | Say |
 |---|---|
 | `completed` on production, same versionCode as the repo | Live and up to date |
-| `completed` with a versionCode just uploaded | Live, or **in review** if sent recently: the API can't tell (Play Console → Publishing overview shows it) |
+| `completed`, last run sent it ≤ 7 days ago | **Probably in review** (usually hours to a few days; new apps longer): the API can't tell, Play Console → Publishing overview shows it |
+| `completed`, last run older | Live |
+| Repo ⬆️ and the last run failed or is waiting | The upload didn't go through: check the run (approval pending?) |
 | `draft` | Not sent yet: Play Console → Publishing overview → Send changes for review |
 | `inProgress` (with a fraction) | Staged rollout |
 | `halted` | Rollout stopped |
 | "not on Play" | The app doesn't exist in Play Console yet |
 | ⬆️ | The repo has a newer version than production: a release is pending |
 
-Cross-check recent uploads with `gh run list --workflow release.yml --limit 10` (run names say
-`<app> · <action> → <track>`) and `PENDING.md`, and say what the user should do next, if anything.
+Then say what the user should do next, if anything (approve a waiting run, send a draft for
+review, look at a failed run), cross-checking `PENDING.md`. Apps "not on Play" that PENDING lists
+as ready (the slipper) are a pending manual first upload.
