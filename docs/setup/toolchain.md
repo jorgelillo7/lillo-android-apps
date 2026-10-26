@@ -5,10 +5,10 @@
 | Tool | Version | Where it is set |
 |---|---|---|
 | Android Studio | 2026.2 "Rabbit" (bundled JBR = JDK 25) | installed app |
-| Gradle | 9.8.0 | `gradle/wrapper/gradle-wrapper.properties` |
+| Gradle | 9.8.2 | `gradle/wrapper/gradle-wrapper.properties` |
 | Android Gradle Plugin | 9.4.1 | `gradle/libs.versions.toml` |
-| Kotlin | 2.4.20 | `gradle/libs.versions.toml` |
-| compileSdk / targetSdk / minSdk | 37 / 36 / 23 | `gradle/libs.versions.toml` |
+| Kotlin | 2.4.21 | `gradle/libs.versions.toml` |
+| compileSdk / targetSdk / minSdk | 37 / 36 / 24 | `gradle/libs.versions.toml` |
 | Compose BOM | 2026.09.00 | `gradle/libs.versions.toml` |
 | Java bytecode target | 17 | `build-logic/.../KotlinAndroid.kt` |
 

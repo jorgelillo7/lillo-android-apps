@@ -1,19 +1,18 @@
 [versions]
 androidGradlePlugin = "9.4.1"
-kotlin = "2.4.20"
+kotlin = "2.4.21"
 desugarJdkLibs = "2.1.5"
-kotlinxSerialization = "1.11.0"
+kotlinxSerialization = "1.12.0"
 
 androidxActivity = "1.13.0"
 androidxComposeBom = "2026.09.00"
 androidxCore = "1.19.1"
 androidxCoreSplashscreen = "1.2.0"
-androidxDataStore = "1.2.1"
+androidxDataStore = "1.3.0"
 androidxGlance = "1.2.0"
 androidxLifecycle = "2.11.0"
 androidxNavigation = "2.10.2"
-# 2.12 needs minSdk 24; Christmas Countdown (live, minSdk 23) stays on 2.11.
-androidxWork = "2.11.2"
+androidxWork = "2.12.0"
 
 zxing = "3.5.4"
 
@@ -25,7 +24,7 @@ composeRules = "0.6.8"
 
 # Tests on the JVM with Android classes (Robolectric) and screenshot tests (Roborazzi).
 robolectric = "4.17"
-roborazzi = "1.76.0"
+roborazzi = "1.77.0"
 androidxTestExtJunit = "1.3.0"
 # Flow assertions in tests (ViewModel state).
 turbine = "1.2.1"
@@ -37,14 +36,13 @@ junit = "4.13.2"
 # Shared Android configuration, read by the convention plugins in build-logic.
 compileSdk = "37"
 targetSdk = "36"
-# minSdk: the floor of the shared libraries (core), low enough for every app.
-# appMinSdk: what an app gets unless it says otherwise. 24: Play's automatic protection requires it
-# and navigation-compose needs it. Christmas Countdown (live since 23) keeps 23 in its own build file
-# until its API 23 share is checked.
-minSdk = "23"
+# minSdk: the floor of the shared libraries (core). appMinSdk: every app's. 24: Play's automatic
+# protection, navigation-compose and WorkManager 2.12 require it (Christmas Countdown left 23 in
+# 2026-10: phones on API 23 keep the version they have).
+minSdk = "24"
 appMinSdk = "24"
 
-firebaseBom = "34.19.0"
+firebaseBom = "35.1.0"
 kotlinxCoroutines = "1.11.0"
 
 [libraries]

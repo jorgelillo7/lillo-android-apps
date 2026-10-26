@@ -75,8 +75,8 @@ Project skills in `.claude/skills/`: `new-android-app` (competitor study → des
 ## Build architecture
 
 - **Version catalog** `gradle/libs.versions.toml` is the single source of truth for every version,
-  including `compileSdk`/`targetSdk`/`minSdk` (the libraries' floor) and `appMinSdk` (24, every app's
-  default; Christmas overrides it with 23), which the convention plugins read from it.
+  including `compileSdk`/`targetSdk`/`minSdk` (the libraries' floor) and `appMinSdk` (24, every
+  app's), which the convention plugins read from it.
 - **Convention plugins** in `build-logic/convention` (included build): `jorgelillo.android.application`,
   `jorgelillo.android.library`, `jorgelillo.android.compose`, `jorgelillo.jvm.library`. They set
   SDK levels, Java 17 target and core library desugaring, so module build files only declare
