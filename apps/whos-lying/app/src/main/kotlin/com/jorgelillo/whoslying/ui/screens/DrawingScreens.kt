@@ -114,7 +114,7 @@ internal fun DrawingScreen(
     BoxWithConstraints(Modifier.fillMaxSize()) {
         if (maxWidth > maxHeight) {
             // Landscape (and wide handhelds): the canvas takes the full height, controls go to the side.
-            Page(title = null, onBack = onQuit, background = Neon.Backdrop) {
+            Page(title = null, onBack = onQuit, background = Neon.Backdrop, readable = false) {
                 Row(
                     Modifier.weight(1f).fillMaxWidth().padding(bottom = 12.dp),
                     horizontalArrangement = Arrangement.spacedBy(20.dp)

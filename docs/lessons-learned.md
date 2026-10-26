@@ -75,3 +75,10 @@ Short, one line each. Add to it whenever something bites.
   bars transparent that way on Android < 15. Nothing to change; the screens already handle insets.
   "Bitmap without downsampling" in decision-wheel is `ShortcutInfoCompat` (launcher shortcuts'
   icons), and the picture-in-picture suggestion only fits video apps.
+- **Flow tests and DataStore, again (2026-10).** After the dependency update, whos-lying's and
+  tournaments' flow tests failed now and then on CI only (2 in 4 full-suite runs), never alone or on
+  the Mac: a button enabled from saved state (whos-lying's Continue after adding players) or a sheet
+  still closing (tournaments' result) was tapped before the save landed. Fixed by waiting on the
+  store, as above. To hunt this kind of flake: a temporary workflow on a scratch branch that runs
+  the whole `./gradlew test --rerun` in parallel jobs (CI's cache hides reruns) and prints the
+  failures; a failing `tap` should name the tag and print the screen (`GameFlowTest.tap`).
