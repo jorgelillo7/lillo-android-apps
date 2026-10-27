@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Captures the raw Play Store screenshots (store/raw/<locale>/) for every locale.
-# Needs a running emulator; scripts/capture_lib.sh installs the app and does the rest. The
-# curtain and the drawing use fixed coordinates on purpose: store screenshots are always upright.
+# Needs a running emulator; scripts/capture_lib.sh installs the app and does the rest. The curtain
+# and the drawing are measured on their elements (bounds/in_box), so phones and tablets both work.
 # Then run: .venv/bin/python apps/whos-lying/tools/generate_store_assets.py
 #
 # Usage: apps/whos-lying/tools/capture_store_screenshots.sh   (LOCALES="es-ES" for one)
@@ -20,11 +20,17 @@ names() {
 
 # Holds the curtain up (the word only shows while the finger is down), runs "$@", then lets go.
 peek() {
-  "$ADB" shell input motionevent DOWN 540 1700
-  for y in 1550 1400 1250 1100 950; do "$ADB" shell input motionevent MOVE 540 "$y"; done
+  local box x y
+  box="$(bounds tap_to_reveal)"
+  read -r x y <<<"$(in_box "$box" 500 850)"
+  "$ADB" shell input motionevent DOWN "$x" "$y"
+  for f in 750 650 550 450 350; do
+    read -r x y <<<"$(in_box "$box" 500 "$f")"
+    "$ADB" shell input motionevent MOVE "$x" "$y"
+  done
   sleep 0.5
   "$@"
-  "$ADB" shell input motionevent UP 540 950
+  "$ADB" shell input motionevent UP "$x" "$y"
   sleep 1
 }
 
@@ -59,23 +65,30 @@ impostor() {
   echo "${PLAYERS[0]}"
 }
 
-# A little house with a sun, drawn on the shared canvas.
+# A little house with a sun, drawn on the shared canvas (thousandths of the canvas).
+stroke() {
+  local x1 y1 x2 y2
+  read -r x1 y1 <<<"$(in_box "$CANVAS" "$1" "$2")"
+  read -r x2 y2 <<<"$(in_box "$CANVAS" "$3" "$4")"
+  "$ADB" shell input swipe "$x1" "$y1" "$x2" "$y2" "$5"
+}
 draw_house() {
-  "$ADB" shell input swipe 330 1250 330 950 300     # walls
-  "$ADB" shell input swipe 330 950 750 950 300
-  "$ADB" shell input swipe 750 950 750 1250 300
-  "$ADB" shell input swipe 330 1250 750 1250 300
+  CANVAS="$(bounds canvas)"
+  stroke 285 705 285 457 300     # walls
+  stroke 285 457 716 457 300
+  stroke 716 457 716 705 300
+  stroke 285 705 716 705 300
   tap ink_6 1
-  "$ADB" shell input swipe 300 960 540 740 300      # roof
-  "$ADB" shell input swipe 540 740 780 960 300
+  stroke 254 465 501 284 300     # roof
+  stroke 501 284 747 465 300
   tap ink_4 1
-  "$ADB" shell input swipe 500 1250 500 1100 200    # door
-  "$ADB" shell input swipe 500 1100 580 1100 200
-  "$ADB" shell input swipe 580 1100 580 1250 200
+  stroke 459 705 459 581 200     # door
+  stroke 459 581 542 581 200
+  stroke 542 581 542 705 200
   tap ink_1 1
-  for d in "-70 0" "70 0" "0 -70" "0 70" "-50 -50" "50 50" "-50 50" "50 -50"; do   # sun
+  for d in "-72 0" "72 0" "0 -58" "0 58" "-51 -41" "51 41" "-51 41" "51 -41"; do   # sun
     set -- $d
-    "$ADB" shell input swipe 300 800 $((300 + $1)) $((800 + $2)) 150
+    stroke 254 333 $((254 + $1)) $((333 + $2)) 150
   done
 }
 

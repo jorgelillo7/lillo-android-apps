@@ -6,6 +6,9 @@
 #   back [wait]
 #   on_screen <tag>                true if an element with that test tag is on screen now
 #   wait_for <tag> [seconds]       waits for it (default 90 s, once a second); false if it never comes
+#   bounds <tag>                   its "left top right bottom" in screen pixels (empty if not there)
+#   in_box "<bounds>" <x‰> <y‰>    a point inside those bounds, in thousandths: "x y" pixels. Gestures
+#                                  measured on the element, not the screen, work on phones and tablets
 
 # shellcheck disable=SC2034  # ROOT is used by the scripts that source this one
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -29,4 +32,14 @@ wait_for() {
   local _
   for _ in $(seq 1 "${2:-90}"); do on_screen "$1" && return 0; sleep 1; done
   return 1
+}
+bounds() {
+  "$ADB" shell uiautomator dump /sdcard/ui.xml >/dev/null 2>&1 || true
+  "$ADB" shell cat /sdcard/ui.xml | grep -o "resource-id=\"$1\"[^>]*bounds=\"[^\"]*\"" | head -1 |
+    sed -E 's/.*bounds="\[([0-9]+),([0-9]+)\]\[([0-9]+),([0-9]+)\]".*/\1 \2 \3 \4/'
+}
+in_box() {
+  local l t r b
+  read -r l t r b <<<"$1"
+  echo "$((l + (r - l) * $2 / 1000)) $((t + (b - t) * $3 / 1000))"
 }

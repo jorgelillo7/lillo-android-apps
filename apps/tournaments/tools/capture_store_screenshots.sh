@@ -56,9 +56,13 @@ for locale in $CAPTURE_LOCALES; do
   tap save 4
   swipe_down 0.29 0.74
   shot "$locale" 01-champion
-  # Zoom in twice (semifinals, final and part of the quarters fill the width), centre on the final.
-  tap tab_bracket 2; tap zoom_in 1; tap zoom_in 1
-  "$ADB" shell input swipe 700 900 460 900 1500; sleep 1
+  # Phones: zoom in twice (semifinals, final and part of the quarters fill the width), centre on
+  # the final. Tablets show the whole bracket at full size: no zoom buttons, nothing to do.
+  tap tab_bracket 2
+  if on_screen zoom_in; then
+    tap zoom_in 1; tap zoom_in 1
+    "$ADB" shell input swipe 700 900 460 900 1500; sleep 1
+  fi
   shot "$locale" 03-bracket
   tap share 3
   shot "$locale" 05-share
