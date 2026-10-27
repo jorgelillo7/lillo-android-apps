@@ -10,6 +10,7 @@ import com.jorgelillo.core.screenshottesting.captureScreenshot
 import com.jorgelillo.leaguecards.domain.Game
 import com.jorgelillo.leaguecards.domain.League
 import com.jorgelillo.leaguecards.domain.Meters
+import com.jorgelillo.leaguecards.domain.Outcome
 import com.jorgelillo.leaguecards.domain.Saved
 import com.jorgelillo.leaguecards.domain.Season
 import com.jorgelillo.leaguecards.ui.theme.ChatColorScheme
@@ -61,6 +62,32 @@ class LeagueScreensScreenshotTest {
         val meters = Meters(money = 80, squad = 30, patience = 10, tears = 60)
         PlayScreen(league, season.copy(hand = listOf(longest.id), handIndex = 0, meters = meters), {}, {}, {}, {})
     }
+
+    /**
+     * A tester's phone mid-season: a card as long as the league's longest (~140 characters; the
+     * sample deck's are shorter) under a chat message. The card's text must show whole.
+     */
+    private fun playLongCardWithChat(name: String) = shot(name) {
+        val card = league.cards.first { !it.followUpOnly }.copy(
+            text = "Soy huevito, es mi primera temporada: no me líes. ¿Me vendes a tu portero titular por " +
+                "lo que vale en el mercado o me lo quitas de las manos?"
+        )
+        val withLong = league.copy(cards = listOf(card) + league.cards.filterNot { it.id == card.id })
+        val outcome = Outcome(league.characters.last().id, "«Por Gibraltar y las Malvinas». Te gana un amigo.")
+        PlayScreen(
+            withLong,
+            season.copy(hand = listOf(card.id), handIndex = 0, lastOutcome = outcome, matchdayPoints = 18),
+            {},
+            {},
+            {},
+            {}
+        )
+    }
+
+    // A smaller phone with a larger font, as the tester's.
+    @Test
+    @Config(qualifiers = "w360dp-h700dp-xxhdpi", fontScale = 1.3f)
+    fun playLongCardWithChat() = playLongCardWithChat("play_long_card_chat")
 
     /** Home with a season in progress: continue, the autosave note, a full or a short season. */
     private fun home(name: String) = shot(name) {

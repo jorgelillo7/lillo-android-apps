@@ -82,7 +82,9 @@ internal fun ChatBubble(
     from: String,
     text: String,
     modifier: Modifier = Modifier,
-    time: String? = null
+    time: String? = null,
+    /** Smaller text: over the card on low screens, where every line counts. */
+    small: Boolean = false
 ) {
     Column(
         modifier
@@ -101,7 +103,11 @@ internal fun ChatBubble(
                 style = MaterialTheme.typography.labelLarge
             )
         }
-        Text(text, style = MaterialTheme.typography.bodyLarge, color = Chat.Text)
+        Text(
+            text,
+            style = if (small) MaterialTheme.typography.bodyMedium else MaterialTheme.typography.bodyLarge,
+            color = Chat.Text
+        )
         if (time != null) {
             Text(
                 time,
