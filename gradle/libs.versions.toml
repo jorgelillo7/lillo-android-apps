@@ -33,6 +33,10 @@ composablePreviewScanner = "0.9.3"
 
 junit = "4.13.2"
 
+# Baseline profiles (startup and journeys compiled ahead of time) and Macrobenchmark.
+androidxBenchmark = "1.5.0"
+androidxProfileinstaller = "1.4.1"
+
 # Shared Android configuration, read by the convention plugins in build-logic.
 compileSdk = "37"
 targetSdk = "36"
@@ -82,6 +86,8 @@ androidx-compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinxCoroutines" }
 composablePreviewScanner-android = { group = "io.github.sergio-sastre.ComposablePreviewScanner", name = "android", version.ref = "composablePreviewScanner" }
 turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
+androidx-benchmark-macro-junit4 = { group = "androidx.benchmark", name = "benchmark-macro-junit4", version.ref = "androidxBenchmark" }
+androidx-profileinstaller = { group = "androidx.profileinstaller", name = "profileinstaller", version.ref = "androidxProfileinstaller" }
 kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test-junit", version.ref = "kotlin" }
 
 # Plugin artifacts, used only as compileOnly dependencies of build-logic.
@@ -89,6 +95,7 @@ android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", ver
 kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 compose-gradlePlugin = { group = "org.jetbrains.kotlin", name = "compose-compiler-gradle-plugin", version.ref = "kotlin" }
 composeRules-ktlint = { group = "io.nlopez.compose.rules", name = "ktlint", version.ref = "composeRules" }
+baselineprofile-gradlePlugin = { group = "androidx.benchmark", name = "benchmark-baseline-profile-gradle-plugin", version.ref = "androidxBenchmark" }
 playPublisher-gradlePlugin = { group = "com.github.triplet.gradle", name = "play-publisher", version.ref = "playPublisher" }
 
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
@@ -101,12 +108,14 @@ kotlinx-coroutines-play-services = { group = "org.jetbrains.kotlinx", name = "ko
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
 android-library = { id = "com.android.library", version.ref = "androidGradlePlugin" }
+android-test = { id = "com.android.test", version.ref = "androidGradlePlugin" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 play-publisher = { id = "com.github.triplet.play", version.ref = "playPublisher" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 roborazzi = { id = "io.github.takahirom.roborazzi", version.ref = "roborazzi" }
+baselineprofile = { id = "androidx.baselineprofile", version.ref = "androidxBenchmark" }
 
 # Convention plugins from build-logic.
 jorgelillo-android-application = { id = "jorgelillo.android.application" }
@@ -115,3 +124,4 @@ jorgelillo-android-compose = { id = "jorgelillo.android.compose" }
 jorgelillo-jvm-library = { id = "jorgelillo.jvm.library" }
 jorgelillo-android-robolectric = { id = "jorgelillo.android.robolectric" }
 jorgelillo-android-screenshots = { id = "jorgelillo.android.screenshots" }
+jorgelillo-android-baselineprofile = { id = "jorgelillo.android.baselineprofile" }

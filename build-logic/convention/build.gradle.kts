@@ -16,6 +16,7 @@ dependencies {
     compileOnly(libs.kotlin.gradlePlugin)
     compileOnly(libs.compose.gradlePlugin)
     compileOnly(libs.playPublisher.gradlePlugin)
+    compileOnly(libs.baselineprofile.gradlePlugin)
 }
 
 gradlePlugin {
@@ -39,6 +40,10 @@ gradlePlugin {
         register("androidScreenshots") {
             id = libs.plugins.jorgelillo.android.screenshots.get().pluginId
             implementationClass = "AndroidScreenshotsConventionPlugin"
+        }
+        register("androidBaselineProfile") {
+            id = libs.plugins.jorgelillo.android.baselineprofile.get().pluginId
+            implementationClass = "AndroidBaselineProfileConventionPlugin"
         }
         register("jvmLibrary") {
             id = libs.plugins.jorgelillo.jvm.library.get().pluginId

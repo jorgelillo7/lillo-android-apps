@@ -10,6 +10,7 @@
 | Kotlin | 2.4.21 | `gradle/libs.versions.toml` |
 | compileSdk / targetSdk / minSdk | 37 / 36 / 24 | `gradle/libs.versions.toml` |
 | Compose BOM | 2026.09.00 | `gradle/libs.versions.toml` |
+| Baseline profile plugin / Macrobenchmark | 1.5.0 | `gradle/libs.versions.toml` |
 | Java bytecode target | 17 | `build-logic/.../KotlinAndroid.kt` |
 
 All dependency versions live in **one file**, `gradle/libs.versions.toml`. Shared Android/Kotlin

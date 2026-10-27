@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# Checks a release bundle before uploading it to Play: signing certificate, version and permissions.
+# Checks a release bundle before uploading it to Play: signing certificate, version, permissions
+# and the baseline profile.
 # Usage: scripts/verify-bundle.sh <path/to/app-release.aab>
 set -euo pipefail
 source "$(dirname "$0")/env.sh"
@@ -28,3 +29,7 @@ echo "$manifest" | grep -A1 'E: uses-permission' | grep -oE '"[^"]+"' | tr -d '"
 
 echo "== Native libraries (Play warns about missing debug symbols if any)"
 unzip -l "$aab" | awk '/\.so$/ {print $4}' | sed 's#.*/##' | sort -u
+
+echo "== Baseline profile (precompiled startup; scripts/generate-baseline-profiles.sh)"
+unzip -l "$aab" | grep -q "BUNDLE-METADATA/com.android.tools.build.profiles/baseline.prof" && echo "included" ||
+  echo "none (apps with a baselineprofile module should have one)"

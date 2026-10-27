@@ -40,6 +40,10 @@ first"). Cheaper than a repo-wide clean-up later.
 
 ## 3. Build and verify
 
+If the app's code changed since its last baseline profile, regenerate it first (emulator running,
+Android 13+) and commit it with the release: `scripts/generate-baseline-profiles.sh <app>`. The
+bundle check below should list `BUNDLE-METADATA/com.android.tools.build.profiles/baseline.prof`.
+
 The release PR's CI already builds every release (R8), runs the tests and smoke-tests the touched
 app's release build on an emulator. Locally, before opening it:
 
