@@ -56,7 +56,7 @@ Asset generators (icons, store graphics, developer profile) are Python + Pillow:
 regenerate them instead of editing by hand. Shared pieces: `scripts/store_assets.py` (store
 graphics), `scripts/smoke_lib.sh` (smoke tests), `scripts/capture_lib.sh` (store screenshot captures:
 demo mode, locales, clean install, restore on exit; `CAPTURE_DEVICE=tablet` for the tablet ones), both on `scripts/ui_lib.sh` (tap, type_in,
-hide_keyboard, swipe_up/down, back, on_screen, wait_for), and `scripts/ui_lib.py` (drive any app by text or test tag,
+hide_keyboard, swipe_up/down, back, on_screen, wait_for, bounds/in_box/swipe_in for gestures inside one element), and `scripts/ui_lib.py` (drive any app by text or test tag,
 keyboard, rotation, screenshots: what the shell helpers, `tap-text.sh`, `screenshot.sh` and UI batteries
 such as `apps/whos-lying/tools/battery_test.py` run on); each app's `tools/` only holds its own part.
 
@@ -104,7 +104,7 @@ Project skills in `.claude/skills/`: `new-android-app` (competitor study → des
 - `:core:designsystem` holds `LilloTheme` (each app passes its own `ColorScheme`) and what two or
   more apps share: `LilloPage` (with `sideActionsWhenShort`) / `LilloBigButton` / `LilloSecondaryButton` (apps wrap them with
   their colours in `ui/…/Common.kt`), `LilloAboutSheet` (language, rate, privacy),
-  `LilloLanguageDialog`, `isShortScreen()` for landscape and handhelds, `TestTagsAsResourceIds`,
+  `LilloLanguageDialog`, `isShortScreen()` for landscape and handhelds, `isWideScreen()` for two panes (tablets in landscape), `TestTagsAsResourceIds`,
   `ConfettiBurst` / `ConfettiRain`, `LilloAvatar`, `LilloSettingRow`, `LilloSectionTitle`, `LilloQrCode`. Each core component has a
   `@Preview` in `core/designsystem/.../Catalogue.kt`; `CatalogueScreenshotTest` captures every preview there
   (with the accessibility checks), so a new component needs a preview, not a hand-written screenshot test. `:core:platform` has

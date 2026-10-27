@@ -13,7 +13,9 @@ import org.junit.Test
  * baselineprofile module subclasses it (`class StartupBenchmark : AppStartupBenchmark()`). Run with
  * `./gradlew :apps:<app>:baselineprofile:connectedBenchmarkReleaseAndroidTest`; results (median
  * time to initial display) in the console and `build/outputs/connected_android_test_additional_output`.
- * Emulator numbers are only good for comparing the two; a real phone gives the real ones.
+ * Emulator numbers are only good for comparing the two; a real phone gives the real ones, but the
+ * run installs the app signed with the upload key and removes it afterwards: that phone's copy and
+ * its data go.
  */
 abstract class AppStartupBenchmark {
     @get:Rule

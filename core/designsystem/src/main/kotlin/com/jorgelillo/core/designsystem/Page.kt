@@ -199,3 +199,15 @@ fun isShortScreen(): Boolean =
     with(LocalDensity.current) { LocalWindowInfo.current.containerSize.height.toDp() } < SHORT_SCREEN_DP.dp
 
 private const val SHORT_SCREEN_DP = 480
+
+/**
+ * Tablets in landscape and unfolded foldables: wide enough for two panes side by side (Material's
+ * "expanded" width class, 840dp). Never on a short screen: a phone turned sideways is wide too, but
+ * it keeps its own landscape layout. Measures the app's window, like [isShortScreen].
+ */
+@Composable
+fun isWideScreen(): Boolean = !isShortScreen() &&
+    with(LocalDensity.current) { LocalWindowInfo.current.containerSize.width.toDp() } >= LilloWideScreenWidth
+
+/** Where [isWideScreen] starts. */
+val LilloWideScreenWidth = 840.dp

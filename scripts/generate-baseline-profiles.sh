@@ -3,12 +3,18 @@
 # running emulator or connected phone (Android 13+). Uninstalls the app first: an installed debug or
 # smoke-test build has another signature, and Gradle then reports success with an empty profile.
 # Fails if the profile comes out empty. Commit apps/<app>/app/src/release/generated/baselineProfiles/.
+# Emulator only, unless --phone: on a phone, uninstalling deletes the app's data (and its Play copy).
 #
-# Usage: scripts/generate-baseline-profiles.sh <app|all>
+# Usage: scripts/generate-baseline-profiles.sh <app|all> [--phone]
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 source "$ROOT/scripts/env.sh" >/dev/null
 cd "$ROOT"
+
+if [ "$("$ADB" shell getprop ro.kernel.qemu 2>/dev/null | tr -d '\r')" != 1 ] && [ "${2:-}" != --phone ]; then
+  echo "Not an emulator: this uninstalls the app and deletes its data. Add --phone to go ahead." >&2
+  exit 1
+fi
 
 if [ "${1:-}" = all ]; then
   apps=$(for d in apps/*/baselineprofile; do basename "$(dirname "$d")"; done)
