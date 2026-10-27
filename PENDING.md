@@ -68,7 +68,6 @@ Lines are pruned as items ship. What has **shipped** lives in `apps/<app>/releas
 
 | | What is missing | Waiting on |
 |---|---|---|
-| ⏳ | Tablet screenshots are in every app's listing folder (2026-10): publish them with each app's next release (`listing=true`), the first that carries the tablet layouts (readable width, Christmas' 8-column advent, two panes in tournaments and league-cards) | Each app's next release |
 | ⏳ | Move into `lillorepo` (Bazel) | Gradle builds or the Play publishing loop slowing you down · domain modules are pure Kotlin to make it easy |
 | 👤 | Publishing from CI is ready (Release workflow): create the Google Cloud service account and give it access in Play Console, then `scripts/set-release-secrets.sh --play` and `scripts/set-release-secrets.sh <app>` per app, in your terminal (docs/publishing-on-google-play.md §6) | You |
 | ⏳ | Release workflow without a stored key: Workload Identity Federation (GitHub OIDC → the `play-publisher` service account), then delete its JSON key | The first CI releases working with the key |
