@@ -82,3 +82,10 @@ Short, one line each. Add to it whenever something bites.
   store, as above. To hunt this kind of flake: a temporary workflow on a scratch branch that runs
   the whole `./gradlew test --rerun` in parallel jobs (CI's cache hides reruns) and prints the
   failures; a failing `tap` should name the tag and print the screen (`GameFlowTest.tap`).
+- **A plugin that adds build types adds publish tasks too.** The baseline profile plugin's
+  `nonMinifiedRelease` and `benchmarkRelease` got Gradle Play Publisher tasks: `publishListing`
+  uploaded the screenshots three times ("more than 8 screenshots") and `publishBundle` would have
+  sent three bundles. Disabled per variant in the convention plugin; check `publishBundle --dry-run`.
+- **Test the content users actually get.** The sample deck's longest card is 89 characters, the
+  league's private one 140: a card that fit in every test vanished on a tester's phone with a large
+  font. Size tests on the longest real text, on a small screen with font scale 1.3.
