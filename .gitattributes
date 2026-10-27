@@ -1,0 +1,2 @@
+# Generated baseline profiles (scripts/generate-baseline-profiles.sh): collapsed in PR diffs.
+apps/*/app/src/release/generated/baselineProfiles/*.txt linguist-generated=true

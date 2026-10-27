@@ -1,4 +1,7 @@
+import androidx.baselineprofile.gradle.consumer.BaselineProfileConsumerExtension
 import com.android.build.api.dsl.ApplicationExtension
+import com.android.build.api.variant.ApplicationAndroidComponentsExtension
+import com.android.build.api.variant.HostTestBuilder
 import com.github.triplet.gradle.play.PlayPublisherExtension
 import com.jorgelillo.buildlogic.configureKotlinAndroid
 import com.jorgelillo.buildlogic.intVersion
@@ -8,6 +11,7 @@ import java.util.Properties
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
+import org.gradle.kotlin.dsl.dependencies
 
 /**
  * Every app: SDK levels, Kotlin, and a release build that is shrunk with R8 and signed with the
@@ -23,6 +27,10 @@ import org.gradle.kotlin.dsl.configure
  * `publishListing` updates the listing. One Google Cloud service account serves every app: its key
  * is read from the Gradle property `play.credentials`, else
  * `~/.config/lillo-android-apps/play-service-account.json`, else `ANDROID_PUBLISHER_CREDENTIALS`.
+ *
+ * An app with a sibling `baselineprofile` module (`jorgelillo.android.baselineprofile`) ships its
+ * baseline profile: generated into `app/src/release/generated/baselineProfiles/`, committed, and
+ * installed on the phone by ProfileInstaller (Play does it from the bundle too).
  */
 class AndroidApplicationConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) = with(target) {
@@ -48,6 +56,26 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
                 isShrinkResources = true
                 proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
                 signingConfig = signingConfigs.getByName(if (keystoreFile.exists()) "release" else "debug")
+            }
+        }
+        findProject(path.substringBeforeLast(':') + ":baselineprofile")?.let { profiles ->
+            pluginManager.apply("androidx.baselineprofile")
+            dependencies {
+                add("baselineProfile", profiles)
+                add("implementation", libs.findLibrary("androidx-profileinstaller").get())
+            }
+            // R8 also lays out the DEX files with the startup classes first (from startup-prof.txt).
+            extensions.configure<BaselineProfileConsumerExtension> {
+                dexLayoutOptimization = true
+            }
+            // The plugin's extra build types (nonMinifiedRelease, benchmarkRelease) are for the
+            // profile module's runs only: no unit tests of their own.
+            extensions.configure<ApplicationAndroidComponentsExtension> {
+                beforeVariants { variant ->
+                    if (variant.buildType != "debug" && variant.buildType != "release") {
+                        variant.hostTests[HostTestBuilder.UNIT_TEST_TYPE]?.enable = false
+                    }
+                }
             }
         }
         extensions.configure<PlayPublisherExtension> {

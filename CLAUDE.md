@@ -46,6 +46,8 @@ scripts/emulator.sh start|stop|date MMDDhhmmYYYY|date auto|demo on|off
 scripts/screenshot.sh <out.png>                           # dismisses "isn't responding" dialogs first
 scripts/tap-text.sh "<label|test tag>"                    # tap by on-screen text or Compose test tag (never coordinates)
 scripts/verify-bundle.sh <aab>                            # signature, versionCode, permissions, native libs
+scripts/generate-baseline-profiles.sh <app|all>           # regenerate baseline profiles on the emulator (before a release)
+./gradlew :apps:<app>:baselineprofile:connectedBenchmarkReleaseAndroidTest   # cold start without/with the profile
 apps/<app>/tools/smoke_test.sh                            # release APK on emulator (per app; CI's Smoke workflow runs the apps a PR touches, each in its own job on the ATD image)
 ```
 
@@ -149,6 +151,10 @@ Project skills in `.claude/skills/`: `new-android-app` (competitor study → des
   in with `scripts/set-release-secrets.sh`, run by the user. Details: docs/publishing-on-google-play.md §6.
   Publish the listing together with the release that adds what it describes. A new app goes into
   the workflow's `app` choices.
+- **Baseline profiles**: each app (but group-polls) has `apps/<app>/baselineprofile` (`jorgelillo.android.baselineprofile`,
+  on `:core:baselineprofile`: startup plus the app's main journeys by test tag). The generated
+  `app/src/release/generated/baselineProfiles/` is committed and ships in the bundle; regenerate it
+  with `scripts/generate-baseline-profiles.sh <app>` before a release whose code changed.
 - `targetSdk` must meet Google Play's current requirement (API 36 since Aug 2026).
 - Share links and App Links use `jorgelillo7.github.io` (`/q/`, `/t/`, `/p/` and
   `/.well-known/assetlinks.json` live in that repo): free static GitHub Pages, data in the link
