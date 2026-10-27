@@ -1,7 +1,7 @@
 # Shared frame of every app's tools/capture_store_screenshots.sh: raw Play Store screenshots,
 # upright, demo status bar (fixed clock, full battery). Source it, then:
 #
-#   capture_start <app-folder> <package>   clean install of the debug build (a release build from a
+#   capture_start <app-folder> <package>   (CAPTURE_DEVICE=tablet: as a 10" tablet) clean install of the debug build (a release build from a
 #                                          smoke test has another signature), demo mode on; on exit,
 #                                          even after a failed step: the
 #                                          app's language back to the phone's, demo off, clock back
@@ -18,6 +18,10 @@ source "$(dirname "${BASH_SOURCE[0]}")/ui_lib.sh"   # ROOT, tap, type_in, hide_k
 
 CAPTURE_LOCALES="${LOCALES:-en-US es-ES}"
 
+# CAPTURE_DEVICE=tablet: the emulator turned into a 10" landscape tablet (2560x1600, 320 dpi) for
+# the listing's tablet screenshots, into store/raw-tablet/ (put back on exit).
+CAPTURE_DEVICE="${CAPTURE_DEVICE:-phone}"
+
 # shot <locale> <name>: store/raw/<locale>/<name>.png
 shot() { "$ROOT/scripts/screenshot.sh" "$RAW/$1/$2.png" >/dev/null; echo "shot $1/$2"; }
 
@@ -25,6 +29,11 @@ capture_start() {
   APP="$1"
   PKG="$2"
   RAW="$ROOT/apps/$APP/store/raw"
+  if [ "$CAPTURE_DEVICE" = tablet ]; then
+    RAW="$ROOT/apps/$APP/store/raw-tablet"
+    "$ADB" shell wm size 2560x1600
+    "$ADB" shell wm density 320
+  fi
   "$ADB" uninstall "$PKG" >/dev/null 2>&1 || true
   # CAPTURE_GRADLE_ARGS: extra Gradle arguments for the build captured (league-cards: the sample deck).
   # shellcheck disable=SC2086
@@ -48,6 +57,7 @@ capture_open() {
 }
 
 capture_finish() {
+  if [ "$CAPTURE_DEVICE" = tablet ]; then "$ADB" shell wm size reset; "$ADB" shell wm density reset; fi
   "$ADB" shell cmd locale set-app-locales "$PKG" --locales ""
   "$ROOT/scripts/emulator.sh" demo off
   if [ -n "${CAPTURE_DATE_SET:-}" ]; then "$ROOT/scripts/emulator.sh" date auto; fi

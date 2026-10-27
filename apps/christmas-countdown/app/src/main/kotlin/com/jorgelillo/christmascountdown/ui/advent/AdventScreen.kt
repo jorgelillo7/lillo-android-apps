@@ -36,8 +36,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.clearAndSetSemantics
@@ -67,11 +69,17 @@ internal fun AdventScreen(
     val context = LocalContext.current
     val resources = LocalResources.current
     var shownDoor by rememberSaveable { mutableStateOf<Int?>(null) }
-    // Landscape and handhelds: twice the columns, so all 24 doors fit in three rows.
-    val short = isShortScreen()
+    // Phones upright: 4 columns. Landscape, handhelds and wide screens (tablets): 8, all 24 doors in
+    // three rows; medium widths (tablets upright, foldables): 6.
+    val width = with(LocalDensity.current) { LocalWindowInfo.current.containerSize.width.toDp() }
+    val columns = when {
+        isShortScreen() || width >= 840.dp -> 8
+        width >= 600.dp -> 6
+        else -> 4
+    }
 
     LazyVerticalGrid(
-        columns = GridCells.Fixed(if (short) 8 else 4),
+        columns = GridCells.Fixed(columns),
         modifier = modifier.fillMaxSize(),
         contentPadding = PaddingValues(16.dp),
         horizontalArrangement = Arrangement.spacedBy(10.dp),

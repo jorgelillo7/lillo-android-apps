@@ -23,7 +23,7 @@ for locale in $CAPTURE_LOCALES; do
   tap play 1
   play_for 4
   shot "$locale" 02-run
-  play_for 5
+  play_for 2   # soon after: a run can end within a few more seconds
   shot "$locale" 03-run
   wait_for final_score
   sleep 1

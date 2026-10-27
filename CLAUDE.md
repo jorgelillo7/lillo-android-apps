@@ -53,7 +53,7 @@ Asset generators (icons, store graphics, developer profile) are Python + Pillow:
 `scripts/setup-python.sh` once, then `.venv/bin/python <script>`. Generated images are committed;
 regenerate them instead of editing by hand. Shared pieces: `scripts/store_assets.py` (store
 graphics), `scripts/smoke_lib.sh` (smoke tests), `scripts/capture_lib.sh` (store screenshot captures:
-demo mode, locales, clean install, restore on exit), both on `scripts/ui_lib.sh` (tap, type_in,
+demo mode, locales, clean install, restore on exit; `CAPTURE_DEVICE=tablet` for the tablet ones), both on `scripts/ui_lib.sh` (tap, type_in,
 hide_keyboard, swipe_up/down, back, on_screen, wait_for), and `scripts/ui_lib.py` (drive any app by text or test tag,
 keyboard, rotation, screenshots: what the shell helpers, `tap-text.sh`, `screenshot.sh` and UI batteries
 such as `apps/whos-lying/tools/battery_test.py` run on); each app's `tools/` only holds its own part.
