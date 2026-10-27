@@ -8,8 +8,10 @@ import com.jorgelillo.buildlogic.intVersion
 import com.jorgelillo.buildlogic.libs
 import java.io.File
 import java.util.Properties
+import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.plugins.ExtensionAware
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
 
@@ -68,11 +70,20 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
             extensions.configure<BaselineProfileConsumerExtension> {
                 dexLayoutOptimization = true
             }
-            // The plugin's extra build types (nonMinifiedRelease, benchmarkRelease) are for the
-            // profile module's runs only: no unit tests of their own.
+            // Gradle Play Publisher would publish them too: publishListing uploaded the screenshots
+            // three times into one edit (Play: "more than 8 screenshots"), publishBundle three bundles.
+            @Suppress("UNCHECKED_CAST")
+            (
+                (extensions.getByName("android") as ExtensionAware).extensions.getByName("playConfigs")
+                    as NamedDomainObjectContainer<PlayPublisherExtension>
+                ).apply {
+                PROFILE_BUILD_TYPES.forEach { register(it) { enabled.set(false) } }
+            }
+            // The plugin's extra build types are for the profile module's runs only: no unit tests of
+            // their own.
             extensions.configure<ApplicationAndroidComponentsExtension> {
                 beforeVariants { variant ->
-                    if (variant.buildType != "debug" && variant.buildType != "release") {
+                    if (variant.buildType in PROFILE_BUILD_TYPES) {
                         variant.hostTests[HostTestBuilder.UNIT_TEST_TYPE]?.enable = false
                     }
                 }
@@ -87,3 +98,6 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
         }
     }
 }
+
+/** The build types the baseline profile plugin adds: for its own runs, never tested or published. */
+private val PROFILE_BUILD_TYPES = listOf("nonMinifiedRelease", "benchmarkRelease")

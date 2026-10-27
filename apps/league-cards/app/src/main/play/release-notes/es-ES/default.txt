@@ -1,7 +1,3 @@
-¡Ya para toda la liga! 😭⚽
-- Temporada corta de 10 jornadas, si 19 se te hacen largas
-- La temporada se guarda sola: sal y sigue luego por la misma jornada
-- Barras más claras, con su número
-- Más variedad en el chat del grupo: sin mensajes repetidos
-- Cartas y botones que se leen enteros en consolas y con letra grande
-- Nueva historia: el clausulazo que no se podía hacer
+- Las cartas largas se leen enteras en todos los móviles, también con letra grande: si no caben, se desliza el texto dentro de la carta
+- Marcadores y mensajes más compactos en pantallas pequeñas
+- En tablets en horizontal: la carta a un lado y los marcadores, el chat y la clasificación al otro
