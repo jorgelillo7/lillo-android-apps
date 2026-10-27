@@ -87,6 +87,18 @@ class LeagueScreensScreenshotTest {
     @Config(qualifiers = "+land")
     fun playLandscape() = play("play_landscape")
 
+    /** Tablet in landscape: meters and the chat beside the card, after one answer so the chat shows. */
+    @Test
+    @Config(qualifiers = RobolectricDeviceQualifiers.MediumTablet)
+    fun playTablet() = shot("play_tablet") {
+        PlayScreen(league, Game.choose(league, season, right = true), {}, {}, {}, {})
+    }
+
+    /** Tablet upright: the phone layout at reading width. */
+    @Test
+    @Config(qualifiers = "w800dp-h1280dp-xlarge-port-xhdpi")
+    fun playTabletUpright() = play("play_tablet_upright")
+
     @Test fun reportPortrait() = report("report")
 
     @Test

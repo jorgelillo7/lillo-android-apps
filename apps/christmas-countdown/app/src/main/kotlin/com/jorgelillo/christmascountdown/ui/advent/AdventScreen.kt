@@ -55,6 +55,7 @@ import com.jorgelillo.christmascountdown.ui.about.PLAY_STORE_URL
 import com.jorgelillo.christmascountdown.ui.theme.ChristmasColors
 import com.jorgelillo.core.designsystem.TestTagsAsResourceIds
 import com.jorgelillo.core.designsystem.isShortScreen
+import com.jorgelillo.core.designsystem.isWideScreen
 import com.jorgelillo.core.platform.shareText
 
 private enum class DoorState { Locked, Openable, Opened }
@@ -73,7 +74,7 @@ internal fun AdventScreen(
     // three rows; medium widths (tablets upright, foldables): 6.
     val width = with(LocalDensity.current) { LocalWindowInfo.current.containerSize.width.toDp() }
     val columns = when {
-        isShortScreen() || width >= 840.dp -> 8
+        isShortScreen() || isWideScreen() -> 8
         width >= 600.dp -> 6
         else -> 4
     }

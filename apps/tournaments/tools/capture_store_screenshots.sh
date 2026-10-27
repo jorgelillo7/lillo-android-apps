@@ -50,11 +50,11 @@ for locale in $CAPTURE_LOCALES; do
   result match_elimination_1_2 winner_a 0; result match_elimination_1_3 winner_b 1
   result match_elimination_2_0 winner_a 1; result match_elimination_2_1 winner_b 1
   # The final: capture the sheet with the sentence preview and the comment before saving.
-  swipe_up 0.74 0.29
+  swipe_in matches 900 150
   tap match_elimination_3_0 3; tap winner_a 1; tap score_1 1; type_in comment "$COMMENT" hide
   shot "$locale" 02-result
   tap save 4
-  swipe_down 0.29 0.74
+  swipe_in matches 150 900
   shot "$locale" 01-champion
   # Phones: zoom in twice (semifinals, final and part of the quarters fill the width), centre on
   # the final. Tablets show the whole bracket at full size: no zoom buttons, nothing to do.

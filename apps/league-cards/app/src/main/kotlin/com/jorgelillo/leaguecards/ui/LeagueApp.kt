@@ -372,11 +372,14 @@ private fun TableSheet(league: League, season: Season, onDismiss: () -> Unit) {
     }
 }
 
+/** The league table, the player's row highlighted: in the table sheet, and beside the card on tablets. */
 @Composable
-private fun Standings(league: League, season: Season) {
+internal fun Standings(league: League, season: Season) {
     Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(4.dp)) {
         Game.standings(season).forEachIndexed { i, (id, points) ->
             val mine = id == YOU
+            // Grey and the player's own green don't read on their green row.
+            val muted = if (mine) Chat.Text else Chat.Muted
             Row(
                 Modifier
                     .fillMaxWidth()
@@ -384,14 +387,20 @@ private fun Standings(league: League, season: Season) {
                     .padding(horizontal = 14.dp, vertical = 8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text("${i + 1}", modifier = Modifier.width(28.dp), color = Chat.Muted, fontWeight = FontWeight.Bold)
+                Text("${i + 1}", modifier = Modifier.width(28.dp), color = muted, fontWeight = FontWeight.Bold)
                 Column(Modifier.weight(1f)) {
                     val team = league.character(id)?.team.orEmpty()
-                    Text(team.ifBlank { league.nameOf(id) }, color = league.colorOf(id), fontWeight = FontWeight.Bold)
+                    Text(
+                        team.ifBlank {
+                            league.nameOf(id)
+                        },
+                        color = if (mine) Chat.Text else league.colorOf(id),
+                        fontWeight = FontWeight.Bold
+                    )
                     if (team.isNotBlank()) {
                         Text(
                             league.nameOf(id),
-                            color = Chat.Muted,
+                            color = muted,
                             style = MaterialTheme.typography.labelSmall
                         )
                     }
