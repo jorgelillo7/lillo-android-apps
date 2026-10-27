@@ -9,6 +9,8 @@
 #   bounds <tag>                   its "left top right bottom" in screen pixels (empty if not there)
 #   in_box "<bounds>" <x‰> <y‰>    a point inside those bounds, in thousandths: "x y" pixels. Gestures
 #                                  measured on the element, not the screen, work on phones and tablets
+#   swipe_in <tag> <from‰> <to‰>   drags vertically inside that element (thousandths of its height):
+#                                  scrolls one pane of a two-pane screen
 
 # shellcheck disable=SC2034  # ROOT is used by the scripts that source this one
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -37,6 +39,13 @@ bounds() {
   "$ADB" shell uiautomator dump /sdcard/ui.xml >/dev/null 2>&1 || true
   "$ADB" shell cat /sdcard/ui.xml | grep -o "resource-id=\"$1\"[^>]*bounds=\"[^\"]*\"" | head -1 |
     sed -E 's/.*bounds="\[([0-9]+),([0-9]+)\]\[([0-9]+),([0-9]+)\]".*/\1 \2 \3 \4/'
+}
+swipe_in() {
+  local box from to
+  box=$(bounds "$1")
+  read -r -a from <<<"$(in_box "$box" 500 "$2")"
+  read -r -a to <<<"$(in_box "$box" 500 "$3")"
+  "$ADB" shell input swipe "${from[0]}" "${from[1]}" "${to[0]}" "${to[1]}" 400; sleep 1
 }
 in_box() {
   local l t r b

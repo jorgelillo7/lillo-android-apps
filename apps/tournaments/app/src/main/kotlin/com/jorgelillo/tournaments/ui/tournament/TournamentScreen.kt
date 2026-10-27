@@ -1,10 +1,12 @@
 package com.jorgelillo.tournaments.ui.tournament
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -43,6 +45,7 @@ import androidx.compose.ui.unit.sp
 import com.jorgelillo.core.designsystem.ConfettiBurst
 import com.jorgelillo.core.designsystem.TestTagsAsResourceIds
 import com.jorgelillo.core.designsystem.isShortScreen
+import com.jorgelillo.core.designsystem.isWideScreen
 import com.jorgelillo.tournaments.R
 import com.jorgelillo.tournaments.domain.Format
 import com.jorgelillo.tournaments.domain.Match
@@ -77,6 +80,12 @@ internal fun TournamentScreen(
     var sharing by rememberSaveable { mutableStateOf(false) }
     var menu by remember { mutableStateOf(false) }
     var confirmDelete by rememberSaveable { mutableStateOf(false) }
+
+    // Wide screens show the matches and one other tab side by side; the tab picked on a phone is kept
+    // for when the window narrows again.
+    val sideTabs = tabs - Tab.MATCHES
+    val wide = isWideScreen() && sideTabs.isNotEmpty()
+    val sideTab = if (tab == Tab.MATCHES) sideTabs.firstOrNull() ?: Tab.MATCHES else tab
 
     // Confetti only when the champion is decided while watching, not every time the screen opens.
     val championAtOpen = rememberSaveable(t.id) { t.champion ?: -1 }
@@ -143,7 +152,7 @@ internal fun TournamentScreen(
                     }
                 }
             },
-            bottom = { NextStep(t, onChange) }
+            bottom = { if (!wide) NextStep(t, onChange) }
         ) {
             val champion = t.player(t.champion)
             // Landscape / handhelds: no room for the banner, the champion goes in the summary line.
@@ -162,39 +171,26 @@ internal fun TournamentScreen(
                 overflow = TextOverflow.Ellipsis
             )
             if (champion != null && !short) ChampionBanner(champion.name)
-            if (tabs.size > 1) {
-                PrimaryTabRow(
-                    selectedTabIndex = tabs.indexOf(tab),
-                    containerColor = androidx.compose.ui.graphics.Color.Transparent,
-                    contentColor = Arena.Cream
-                ) {
-                    tabs.forEach { option ->
-                        Tab(
-                            selected = option == tab,
-                            onClick = { tab = option },
-                            modifier = Modifier.testTag("tab_${option.name.lowercase()}"),
-                            text = {
-                                Text(
-                                    stringResource(
-                                        when (option) {
-                                            Tab.MATCHES -> R.string.tab_matches
-                                            Tab.BRACKET -> R.string.tab_bracket
-                                            Tab.STANDINGS -> R.string.tab_standings
-                                        }
-                                    )
-                                )
-                            }
-                        )
+            val onEdit = { m: Match -> editing = MatchKey.of(m) }
+            if (wide) {
+                // Tablets in landscape: the matches on the left, the bracket or standings beside them.
+                Row(Modifier.weight(1f).fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(24.dp)) {
+                    Column(Modifier.width(MATCHES_PANE_WIDTH).fillMaxHeight()) {
+                        Tabs(listOf(Tab.MATCHES), Tab.MATCHES) {}
+                        Spacer(Modifier.height(8.dp))
+                        Box(Modifier.weight(1f).fillMaxWidth()) { MatchList(t, onEdit) }
+                        Column(Modifier.padding(top = 12.dp)) { NextStep(t, onChange) }
+                    }
+                    Column(Modifier.weight(1f).fillMaxHeight()) {
+                        Tabs(sideTabs, sideTab) { tab = it }
+                        Spacer(Modifier.height(8.dp))
+                        Box(Modifier.weight(1f).fillMaxWidth()) { TabContent(t, sideTab, onEdit) }
                     }
                 }
-            }
-            Spacer(Modifier.height(8.dp))
-            Box(Modifier.weight(1f).fillMaxWidth()) {
-                when (tab) {
-                    Tab.MATCHES -> MatchList(t, onEdit = { editing = MatchKey.of(it) })
-                    Tab.BRACKET -> BracketView(t, onEdit = { editing = MatchKey.of(it) })
-                    Tab.STANDINGS -> StandingsView(t)
-                }
+            } else {
+                if (tabs.size > 1) Tabs(tabs, tab) { tab = it }
+                Spacer(Modifier.height(8.dp))
+                Box(Modifier.weight(1f).fillMaxWidth()) { TabContent(t, tab, onEdit) }
             }
         }
         ConfettiBurst(celebrate, Arena.Confetti, Modifier.fillMaxSize())
@@ -240,6 +236,43 @@ internal fun TournamentScreen(
             }
         )
     }
+}
+
+private val MATCHES_PANE_WIDTH = 400.dp
+
+@Composable
+private fun Tabs(tabs: List<Tab>, selected: Tab, onSelect: (Tab) -> Unit) {
+    PrimaryTabRow(
+        selectedTabIndex = tabs.indexOf(selected),
+        containerColor = androidx.compose.ui.graphics.Color.Transparent,
+        contentColor = Arena.Cream
+    ) {
+        tabs.forEach { option ->
+            Tab(
+                selected = option == selected,
+                onClick = { onSelect(option) },
+                modifier = Modifier.testTag("tab_${option.name.lowercase()}"),
+                text = {
+                    Text(
+                        stringResource(
+                            when (option) {
+                                Tab.MATCHES -> R.string.tab_matches
+                                Tab.BRACKET -> R.string.tab_bracket
+                                Tab.STANDINGS -> R.string.tab_standings
+                            }
+                        )
+                    )
+                }
+            )
+        }
+    }
+}
+
+@Composable
+private fun TabContent(t: Tournament, tab: Tab, onEdit: (Match) -> Unit) = when (tab) {
+    Tab.MATCHES -> MatchList(t, onEdit)
+    Tab.BRACKET -> BracketView(t, onEdit)
+    Tab.STANDINGS -> StandingsView(t)
 }
 
 /** The one thing to do next, as the big button: next Swiss round, top cut, or nothing. */

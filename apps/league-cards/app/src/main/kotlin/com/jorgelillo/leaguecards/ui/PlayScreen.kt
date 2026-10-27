@@ -50,6 +50,7 @@ import androidx.compose.ui.unit.sp
 import com.jorgelillo.core.designsystem.AvatarStyle
 import com.jorgelillo.core.designsystem.LilloAvatar
 import com.jorgelillo.core.designsystem.isShortScreen
+import com.jorgelillo.core.designsystem.isWideScreen
 import com.jorgelillo.leaguecards.R
 import com.jorgelillo.leaguecards.domain.Card
 import com.jorgelillo.leaguecards.domain.Effects
@@ -80,6 +81,7 @@ internal fun PlayScreen(
         else -> null
     }
     val short = isShortScreen()
+    val wide = isWideScreen()
     val points = @Composable {
         if (season.matchdayPoints != 0) {
             Text(
@@ -94,6 +96,33 @@ internal fun PlayScreen(
         season.justUnlocked.forEach { id -> league.achievement(id)?.let { AchievementBanner(it) } }
         season.lastOutcome?.let { ChatBubble(league, it.character, it.text, Modifier.testTag("outcome")) }
     }
+    // The two answers (and the joker): under the card, or beside it on short screens.
+    val answers = @Composable {
+        val left = @Composable { m: Modifier ->
+            ChoiceButton("← " + card.left.label, "choose_left", onClick = { onChoose(false) }, modifier = m)
+        }
+        val right = @Composable { m: Modifier ->
+            ChoiceButton(card.right.label + " →", "choose_right", onClick = { onChoose(true) }, modifier = m)
+        }
+        if (short) {
+            // The side column is narrow: one answer per row, so long labels (and large fonts) fit.
+            Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                right(Modifier.fillMaxWidth())
+                left(Modifier.fillMaxWidth())
+            }
+        } else {
+            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                left(Modifier.weight(1f))
+                right(Modifier.weight(1f))
+            }
+        }
+        if (Game.canUseJoker(league, season)) {
+            val joker = league.joker!!
+            TextButton(onClick = onJoker, modifier = Modifier.fillMaxWidth().testTag("joker")) {
+                Text("🃏 " + joker.label + " · " + stringResource(R.string.joker_once), color = Chat.Gold)
+            }
+        }
+    }
     Page(
         title = stringResource(R.string.matchday_of, season.matchday, season.matchdays(league)),
         onBack = onBack,
@@ -107,32 +136,9 @@ internal fun PlayScreen(
             }
         },
         sideActionsWhenShort = true,
-        bottom = {
-            val left = @Composable { m: Modifier ->
-                ChoiceButton("← " + card.left.label, "choose_left", onClick = { onChoose(false) }, modifier = m)
-            }
-            val right = @Composable { m: Modifier ->
-                ChoiceButton(card.right.label + " →", "choose_right", onClick = { onChoose(true) }, modifier = m)
-            }
-            if (short) {
-                // The side column is narrow: one answer per row, so long labels (and large fonts) fit.
-                Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                    right(Modifier.fillMaxWidth())
-                    left(Modifier.fillMaxWidth())
-                }
-            } else {
-                Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                    left(Modifier.weight(1f))
-                    right(Modifier.weight(1f))
-                }
-            }
-            if (Game.canUseJoker(league, season)) {
-                val joker = league.joker!!
-                TextButton(onClick = onJoker, modifier = Modifier.fillMaxWidth().testTag("joker")) {
-                    Text("🃏 " + joker.label + " · " + stringResource(R.string.joker_once), color = Chat.Gold)
-                }
-            }
-        }
+        // Wide screens: the answers go under the card, in its pane.
+        readable = !wide,
+        bottom = { if (!wide) answers() }
     ) {
         if (short) {
             // Landscape and handhelds: meters and news on the left, the card at full height beside them.
@@ -144,6 +150,29 @@ internal fun PlayScreen(
                     points()
                 }
                 SwipeCard(league, card, drag, leaning?.label, onChoose, Modifier.weight(1f).fillMaxHeight())
+            }
+        } else if (wide) {
+            // Tablets in landscape: meters, the chat and the table on the left; the card and its answers
+            // on the right.
+            Row(Modifier.weight(1f).padding(bottom = 20.dp), horizontalArrangement = Arrangement.spacedBy(32.dp)) {
+                Column(Modifier.weight(1f).verticalScroll(rememberScrollState())) {
+                    MetersRow(season, leaning?.effects)
+                    Spacer(Modifier.height(16.dp))
+                    news()
+                    points()
+                    Text(
+                        stringResource(R.string.table),
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = Chat.Text,
+                        modifier = Modifier.padding(top = 16.dp, bottom = 8.dp)
+                    )
+                    Standings(league, season)
+                }
+                Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    SwipeCard(league, card, drag, leaning?.label, onChoose, Modifier.weight(1f))
+                    answers()
+                }
             }
         } else {
             MetersRow(season, leaning?.effects)

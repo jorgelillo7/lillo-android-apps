@@ -82,7 +82,11 @@ internal fun MatchList(t: Tournament, onEdit: (Match) -> Unit) {
                     1
             }
         )
-    LazyColumn(state = listState, verticalArrangement = Arrangement.spacedBy(8.dp)) {
+    LazyColumn(
+        state = listState,
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        modifier = Modifier.testTag("matches")
+    ) {
         rounds.forEach { (key, matches) ->
             item(key = "${key.first}${key.second}") {
                 Text(

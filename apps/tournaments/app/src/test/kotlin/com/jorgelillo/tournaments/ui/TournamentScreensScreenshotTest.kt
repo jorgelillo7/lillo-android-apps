@@ -67,9 +67,22 @@ class TournamentScreensScreenshotTest {
     @Config(qualifiers = "+land")
     fun tournamentLandscape() = tournament("tournament_landscape")
 
+    /** Tablet in landscape: the matches and the bracket side by side. */
+    @Test
+    @Config(qualifiers = RobolectricDeviceQualifiers.MediumTablet)
+    fun tournamentTablet() = tournament("tournament_tablet")
+
+    /** Tablet upright: not wide enough for two panes, the phone layout. */
+    @Test
+    @Config(qualifiers = TABLET_UPRIGHT)
+    fun tournamentTabletUpright() = tournament("tournament_tablet_upright")
+
     @Test fun statsPortrait() = stats("stats")
 
     @Test
     @Config(qualifiers = "+land")
     fun statsLandscape() = stats("stats_landscape")
 }
+
+/** A 10-inch tablet held upright (800dp wide: below the two-pane width). */
+private const val TABLET_UPRIGHT = "w800dp-h1280dp-xlarge-port-xhdpi"
