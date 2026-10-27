@@ -9,13 +9,13 @@ self-contained folder under `apps/<app>/`; shared Compose code lives in `core/`;
 configuration lives in `build-logic/`. Human docs are in `docs/` (index `docs/README.md`, repo runbook `docs/operations.md`); open work in `PENDING.md`;
 each app has its own `apps/<app>/OPERATIONS.md` (exact commands) and `release-notes.md` (version history).
 
-Apps today: `christmas-countdown` ("¿Ya es Navidad?", `com.jorgelillo.christmascountdown`) and
-`decision-wheel` ("¿Qué hacemos?", `com.jorgelillo.decisionwheel`), both live on Play; `whos-lying` ("Who's lying?",
-`com.jorgelillo.whoslying`, internal testing), `group-polls` ("¿Qué votáis?",
-`com.jorgelillo.grouppolls`, not released) and `tournaments` ("¿Solo quedará uno?",
-`com.jorgelillo.tournaments`, in development) and `league-cards` ("¿Quién llora esta jornada?",
-`com.jorgelillo.leaguecards`, a card game; its league deck is private and lives outside this public repo) and `slipper` ("¿Te pilla la chancla?",
-`com.jorgelillo.slipper`, a pixel-art runner, prototype; plan in `docs/plans/slipper.md`). `group-polls` is the only one with a backend
+Apps today, live on Play: `christmas-countdown` ("¿Ya es Navidad?", `com.jorgelillo.christmascountdown`),
+`decision-wheel` ("¿Qué hacemos?", `com.jorgelillo.decisionwheel`), `whos-lying` ("¿Quién miente?",
+`com.jorgelillo.whoslying`), `tournaments` ("¿Solo quedará uno?", `com.jorgelillo.tournaments`) and
+`league-cards` ("¿Quién llora esta jornada?", `com.jorgelillo.leaguecards`, a card game; its league deck
+is private and lives outside this public repo). Not on Play yet: `slipper` ("¿Te pilla la chancla?",
+`com.jorgelillo.slipper`, a pixel-art runner; first upload by hand pending) and `group-polls`
+("¿Qué votáis?", `com.jorgelillo.grouppolls`, parked). `group-polls` is the only one with a backend
 (Firestore; its rules, tests and infra live in lillorepo `packages/group_polls`). Write code,
 docs and scripts so they work for any app.
 
