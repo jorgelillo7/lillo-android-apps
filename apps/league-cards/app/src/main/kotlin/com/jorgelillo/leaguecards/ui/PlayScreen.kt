@@ -35,15 +35,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -84,17 +89,22 @@ internal fun PlayScreen(
     val wide = isWideScreen()
     val points = @Composable {
         if (season.matchdayPoints != 0) {
+            // One line at most: on small phones every line taken here is one the card loses.
             Text(
                 stringResource(R.string.card_points, "%+d".format(season.matchdayPoints)),
                 color = if (season.matchdayPoints > 0) Chat.Green else Chat.Red,
                 modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                maxLines = 1,
+                autoSize = TextAutoSize.StepBased(minFontSize = 10.sp, maxFontSize = 16.sp)
             )
         }
     }
     val news = @Composable {
         season.justUnlocked.forEach { id -> league.achievement(id)?.let { AchievementBanner(it) } }
-        season.lastOutcome?.let { ChatBubble(league, it.character, it.text, Modifier.testTag("outcome")) }
+        season.lastOutcome?.let {
+            ChatBubble(league, it.character, it.text, Modifier.testTag("outcome"), small = lowScreen())
+        }
     }
     // The two answers (and the joker): under the card, or beside it on short screens.
     val answers = @Composable {
@@ -254,6 +264,20 @@ private fun MetersRow(season: Season, preview: Effects?) {
     }
 }
 
+/** Phones under 760dp tall (or with a large font, which eats the same room): smaller meters. */
+@Composable
+private fun lowScreen(): Boolean =
+    with(LocalDensity.current) { LocalWindowInfo.current.containerSize.height.toDp() * (1f / fontScale) } <
+        LOW_SCREEN_DP.dp
+
+private const val LOW_SCREEN_DP = 760
+
+/** Under this height the card drops its tagline and puts the avatar beside the name. */
+private val COMPACT_CARD = 420.dp
+
+/** The card's text never gets smaller than this; past it, it scrolls inside the card. */
+private val MIN_CARD_TEXT = 14.sp
+
 private fun Int.inDanger() = this <= 15 || this >= 85
 
 private val MeterLabels = mapOf(
@@ -274,7 +298,7 @@ private fun MeterTile(icon: String, value: Int, color: Color) {
     Box(
         Modifier
             .fillMaxWidth()
-            .height(64.dp)
+            .height(if (lowScreen()) 44.dp else 64.dp)
             .clip(shape)
             .background(Chat.Ink)
             .border(2.dp, fill, shape),
@@ -306,6 +330,7 @@ private fun SwipeCard(
     val character = league.character(card.character)
     BoxWithConstraints(modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
         val threshold = with(LocalDensity.current) { maxWidth.toPx() } * 0.28f
+        val compact = maxHeight < COMPACT_CARD
         Column(
             Modifier
                 .fillMaxSize()
@@ -333,48 +358,105 @@ private fun SwipeCard(
                     }
                 }
                 .testTag("card")
-                .padding(if (isShortScreen()) 16.dp else 24.dp),
+                .padding(if (isShortScreen() || compact) 16.dp else 24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // The answer the card leans to while dragged; the room is kept when there is none.
-            Box(Modifier.fillMaxWidth().height(48.dp), contentAlignment = Alignment.Center) {
-                if (leaningLabel != null) {
+            val name = character?.name ?: card.character
+            val emoji = character?.emoji?.ifBlank { null } ?: name
+            // The answer the card leans to while dragged: its own row on roomy cards, over the
+            // header on compact ones.
+            val leaning = @Composable { m: Modifier ->
+                Box(m.fillMaxWidth().height(if (compact) 32.dp else 48.dp), contentAlignment = Alignment.Center) {
+                    if (leaningLabel != null) {
+                        Text(
+                            leaningLabel,
+                            color = Chat.Gold,
+                            fontWeight = FontWeight.Black,
+                            style = MaterialTheme.typography.titleMedium,
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                }
+            }
+            if (compact) {
+                Box {
+                    Row(
+                        Modifier.fillMaxWidth().padding(top = 8.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Avatar(emoji, color, size = 40)
+                        Spacer(Modifier.size(10.dp))
+                        Text(
+                            name,
+                            color = color,
+                            fontWeight = FontWeight.Bold,
+                            style = MaterialTheme.typography.titleMedium
+                        )
+                    }
+                    if (leaningLabel != null) leaning(Modifier.background(Chat.Raised))
+                }
+            } else {
+                leaning(Modifier)
+                Avatar(emoji, color, size = if (isShortScreen()) 48 else 72)
+                Spacer(Modifier.height(10.dp))
+                Text(name, color = color, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleLarge)
+                character?.tagline?.takeIf { it.isNotBlank() }?.let {
                     Text(
-                        leaningLabel,
-                        color = Chat.Gold,
-                        fontWeight = FontWeight.Black,
-                        style = MaterialTheme.typography.titleMedium,
+                        it,
+                        color = Chat.Muted,
+                        style = MaterialTheme.typography.bodyMedium,
                         textAlign = TextAlign.Center
                     )
                 }
             }
-            Avatar(
-                character?.emoji?.ifBlank { null } ?: character?.name ?: card.character,
-                color,
-                size = if (isShortScreen()) 48 else 72
-            )
-            Spacer(Modifier.height(10.dp))
-            Text(
-                character?.name ?: card.character,
-                color = color,
-                fontWeight = FontWeight.Bold,
-                style = MaterialTheme.typography.titleLarge
-            )
-            character?.tagline?.takeIf { it.isNotBlank() }?.let {
-                Text(it, color = Chat.Muted, style = MaterialTheme.typography.bodyMedium, textAlign = TextAlign.Center)
-            }
-            // The card's text shrinks to fit the room left, so a long card is always read whole.
             val style = MaterialTheme.typography.run { if (isShortScreen()) titleLarge else headlineSmall }
-            Box(Modifier.weight(1f).fillMaxWidth().padding(top = 8.dp), contentAlignment = Alignment.Center) {
-                Text(
-                    card.text,
-                    style = style,
-                    textAlign = TextAlign.Center,
-                    color = Chat.Text,
-                    autoSize = TextAutoSize.StepBased(minFontSize = 12.sp, maxFontSize = style.fontSize),
-                    modifier = Modifier.testTag("card_text")
+            CardText(card.text, style, Modifier.weight(1f).fillMaxWidth().padding(top = 8.dp))
+        }
+    }
+}
+
+/**
+ * The card's text, as big as fits the room left (down to [MIN_CARD_TEXT]); when even that doesn't
+ * fit (a long card on a small phone with a large font), it scrolls inside the card: always read whole.
+ */
+@Composable
+private fun CardText(text: String, style: TextStyle, modifier: Modifier = Modifier) {
+    val measurer = rememberTextMeasurer()
+    BoxWithConstraints(modifier, contentAlignment = Alignment.Center) {
+        val needed = measurer.measure(
+            text,
+            style.copy(fontSize = MIN_CARD_TEXT, textAlign = TextAlign.Center),
+            constraints = Constraints(maxWidth = constraints.maxWidth)
+        ).size.height
+        if (needed > constraints.maxHeight) {
+            val scroll = rememberScrollState()
+            Text(
+                text,
+                style = style.copy(fontSize = MIN_CARD_TEXT, lineHeight = MIN_CARD_TEXT * 1.3f),
+                textAlign = TextAlign.Center,
+                color = Chat.Text,
+                modifier = Modifier.fillMaxSize().verticalScroll(scroll).testTag("card_text")
+            )
+            // There is more below: the last line fades out until it is scrolled to.
+            if (scroll.canScrollForward) {
+                Box(
+                    Modifier
+                        .align(Alignment.BottomCenter)
+                        .fillMaxWidth()
+                        .height(28.dp)
+                        .background(Brush.verticalGradient(listOf(Color.Transparent, Chat.Raised)))
                 )
             }
+        } else {
+            Text(
+                text,
+                style = style,
+                textAlign = TextAlign.Center,
+                color = Chat.Text,
+                autoSize = TextAutoSize.StepBased(minFontSize = MIN_CARD_TEXT, maxFontSize = style.fontSize),
+                modifier = Modifier.testTag("card_text")
+            )
         }
     }
 }
