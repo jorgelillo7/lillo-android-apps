@@ -29,8 +29,7 @@ Lines are pruned as items ship. What has **shipped** lives in `apps/<app>/releas
 
 | | What is missing | Waiting on |
 |---|---|---|
-| ⏳ | 1.2 (versionCode 6) sent to production on 2026-10-24 with the testers' feedback (names on the result, 24-player cap, colour wheel, no hint in Blind): ask the tester to check it after Google's review | Google's review |
-| ⏳ | A tester got "Item not found" on the opt-in link: likely the first review still pending or the wrong Google account in Play | Their next try |
+| ⏳ | 1.3 (versionCode 7) live since 2026-10-27 with the testers' feedback (names on the result, 24-player cap, colour wheel, no hint in Blind, choose packs): ask the tester to check it | The tester |
 
 ## group-polls (new app, parked until 2026-10-23)
 
@@ -44,14 +43,14 @@ Lines are pruned as items ship. What has **shipped** lives in `apps/<app>/releas
 
 | | What is missing | Waiting on |
 |---|---|---|
-| 👤 | v1 is a **draft** in production since 2026-10-24 (an app's first production release must be): Play Console → Publishing overview → Send changes for review; then check it on a real phone | You, then Google's review |
+| ⏳ | v1 (1.0) live in production since 2026-10-27: check it on a real phone (bracket, Swiss, QR share, two panes on a tablet) | You |
 | ⏳ | Double elimination and round robin | Feedback after real use |
 
 ## league-cards (new game, live with the private deck)
 
 | | What is missing | Waiting on |
 |---|---|---|
-| 👤 | v2 (1.0) is a **draft** in production since 2026-10-24, with the private deck (every member's OK given): Play Console → Publishing overview → Send changes for review; after Google's review, send the league the Play link | You, then Google's review |
+| ⏳ | 1.1 (versionCode 3) sent to production on 2026-10-27: long cards read whole on small phones with large fonts (a tester's Oppo Reno 12 F). After Google's review, ask that tester to check the goalkeeper card | Google's review |
 | 🔨 | The store screenshots show the sample deck; retake them with the league's deck if wanted | You |
 | ⏳ | More cards and chat lines from the group | Ideas from the league · private deck, never in this repo |
 
@@ -61,7 +60,6 @@ Lines are pruned as items ship. What has **shipped** lives in `apps/<app>/releas
 |---|---|---|
 | 👤 | Play v1 on a phone and say how it feels (jump, speed, how much a hit costs) | You · [docs/plans/slipper.md](docs/plans/slipper.md) |
 | 👤 | First release straight to production: upload key, Play app, first bundle by hand | You · checklist in `apps/slipper/OPERATIONS.md` → Release |
-| 👤 | Website PR (games tab, privacy page, `/c/` page): merge it before the Play submission | You · jorgelillo7.github.io PR #1 |
 | ⏳ | `assetlinks.json` entry for `/c/` with the Play app-signing SHA-256 | The app created in Play Console |
 
 ## repo
@@ -69,6 +67,5 @@ Lines are pruned as items ship. What has **shipped** lives in `apps/<app>/releas
 | | What is missing | Waiting on |
 |---|---|---|
 | ⏳ | Move into `lillorepo` (Bazel) | Gradle builds or the Play publishing loop slowing you down · domain modules are pure Kotlin to make it easy |
-| 👤 | Publishing from CI is ready (Release workflow): create the Google Cloud service account and give it access in Play Console, then `scripts/set-release-secrets.sh --play` and `scripts/set-release-secrets.sh <app>` per app, in your terminal (docs/publishing-on-google-play.md §6) | You |
 | ⏳ | Release workflow without a stored key: Workload Identity Federation (GitHub OIDC → the `play-publisher` service account), then delete its JSON key | The first CI releases working with the key |
 | 👤 | Baseline profiles are in every app (but group-polls), 2026-10: measure the cold start on a real phone (USB debugging on, `./gradlew :apps:slipper:baselineprofile:connectedBenchmarkReleaseAndroidTest`, then christmas-countdown). **It reinstalls the app with the upload key and removes it afterwards: the phone's Play copy and its data go** (use a phone without them, or accept losing that app's data). The emulator shows no difference on this Mac; Google's figure is ~20–30 % on real phones. Also more journeys (tournaments with data, whos-lying past the welcome) | You, with a phone at hand |
