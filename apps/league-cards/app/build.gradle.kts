@@ -16,8 +16,8 @@ android {
 
     defaultConfig {
         applicationId = "com.jorgelillo.leaguecards"
-        versionCode = 2
-        versionName = "1.0"
+        versionCode = 3
+        versionName = "1.1"
     }
 
     // Release signing and R8: the jorgelillo.android.application convention plugin.

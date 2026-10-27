@@ -31,5 +31,9 @@ echo "== Native libraries (Play warns about missing debug symbols if any)"
 unzip -l "$aab" | awk '/\.so$/ {print $4}' | sed 's#.*/##' | sort -u
 
 echo "== Baseline profile (precompiled startup; scripts/generate-baseline-profiles.sh)"
-unzip -l "$aab" | grep -q "BUNDLE-METADATA/com.android.tools.build.profiles/baseline.prof" && echo "included" ||
+# grep without -q: with pipefail, -q's early exit fails unzip (SIGPIPE) and the check reads "none".
+if unzip -l "$aab" | grep "BUNDLE-METADATA/com.android.tools.build.profiles/baseline.prof" >/dev/null; then
+  echo "included"
+else
   echo "none (apps with a baselineprofile module should have one)"
+fi
