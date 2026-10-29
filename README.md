@@ -19,11 +19,11 @@
 |---|---|---|
 | 🎄 [Is it Christmas yet? · Countdown](apps/christmas-countdown) | [On Google Play](https://play.google.com/store/apps/details?id=com.jorgelillo.christmascountdown) | `apps/christmas-countdown` |
 | 🎡 [What next? · Decision Wheel](apps/decision-wheel) | [On Google Play](https://play.google.com/store/apps/details?id=com.jorgelillo.decisionwheel) | `apps/decision-wheel` |
-| 🕵️ [Who's lying? · Impostor game](apps/whos-lying) | In development | `apps/whos-lying` |
-| 🔴🔵 [What do you vote? · Group polls](apps/group-polls) | In development (needs its Firebase project) | `apps/group-polls` |
-| 👑 [Last one standing? · Tournaments](apps/tournaments) | In development | `apps/tournaments` |
-| 😭 [¿Quién llora esta jornada? · Fantasy-league card game](apps/league-cards) | In development | `apps/league-cards` |
-| 🩴 [¿Te pilla la chancla? · Slipper runner](apps/slipper) | Prototype | `apps/slipper` |
+| 🕵️ [Who's lying? · Impostor game](apps/whos-lying) | [On Google Play](https://play.google.com/store/apps/details?id=com.jorgelillo.whoslying) | `apps/whos-lying` |
+| 👑 [Last one standing? · Tournaments](apps/tournaments) | [On Google Play](https://play.google.com/store/apps/details?id=com.jorgelillo.tournaments) | `apps/tournaments` |
+| 😭 [¿Quién llora esta jornada? · Fantasy-league card game](apps/league-cards) | [On Google Play](https://play.google.com/store/apps/details?id=com.jorgelillo.leaguecards) (its league deck is private, outside this repo) | `apps/league-cards` |
+| 🩴 [¿Te pilla la chancla? · Slipper runner](apps/slipper) | Ready, first release pending | `apps/slipper` |
+| 🔴🔵 [What do you vote? · Group polls](apps/group-polls) | Parked until its Firebase project exists | `apps/group-polls` |
 
 ## 🗂️ Repository layout
 
@@ -31,19 +31,22 @@
 PENDING.md                         Open work, one line per item
 docs/                              Runbook, Google Play guide, decisions, lessons learned (index: docs/README.md)
 scripts/                           Shared scripts: env, emulator, UI driver (ui_lib), smoke / capture libs, store graphics
-build-logic/                       Gradle convention plugins: Android, Compose, screenshots, Robolectric, publishing
+build-logic/                       Gradle convention plugins: Android, Compose, screenshots, Robolectric, baseline profiles, publishing
 gradle/libs.versions.toml          Single source of truth for every dependency version
 core/
 ├── designsystem/                  Theme and Compose components every app uses (page, buttons, rows, avatar, about…)
 ├── platform/                      Android helpers without UI: JsonStore, sharing, links, backup rules
 ├── sharelink/                     Pure Kotlin: any value inside a share link
-└── screenshot-testing/            What every screenshot test shares (capture, accessibility checks)
+├── screenshot-testing/            What every screenshot test shares (capture, accessibility checks)
+├── testing/                       What every unit test shares (main dispatcher rule, Turbine helpers)
+└── baselineprofile/               Baseline profile generator and startup Macrobenchmark every app builds on
 apps/                              One folder per app (table above), all with the same layout:
 └── <app>/
     ├── app/                       :apps:<app>:app — Android app (UI, resources)
     │   ├── src/main/play/         Google Play listing and release notes (Gradle Play Publisher)
     │   └── src/test/screenshots/  Screenshot test images, reviewed like code
     ├── domain/                    :apps:<app>:domain — pure Kotlin business logic, unit tested
+    ├── baselineprofile/           :apps:<app>:baselineprofile — the app's startup and main journeys, for its baseline profile
     ├── store/                     Raw screenshots and the 512 px icon the listing graphics come from
     ├── tools/                     App-specific scripts (icon, store graphics, captures, smoke test)
     ├── README.md                  What the app does and how it is built
@@ -89,8 +92,9 @@ Every change goes the same way, small enough to review in one sitting:
    ([docs/publishing-on-google-play.md](docs/publishing-on-google-play.md#6-release)).
 
 What every app gets from the shared pieces: the same page and components, per-app language,
-compact layouts for landscape and handhelds, screenshot, accessibility, ViewModel and flow tests,
-release smoke tests, store graphics, publishing from CI.
+compact layouts for landscape and handhelds, readable width and two panes on tablets, edge-to-edge
+and predictive back, screenshot, accessibility, ViewModel and flow tests, release smoke tests,
+baseline profiles, phone and tablet store graphics, publishing from CI.
 
 ## 🚀 Building
 
@@ -106,7 +110,8 @@ source scripts/env.sh                                      # Android Studio's JD
 
 ## ➕ Adding a new app
 
-Two Gradle files of a few lines each, plus registering them in `settings.gradle.kts`.
+Three Gradle files of a few lines each (app, domain, baseline profile), plus registering them in
+`settings.gradle.kts`.
 Full recipe (modules, icon, privacy policy, store assets): [docs/adding-a-new-app.md](docs/adding-a-new-app.md).
 
 ## 📚 Docs
