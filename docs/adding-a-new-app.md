@@ -47,18 +47,34 @@ Release signing and R8 come from the `jorgelillo.android.application` plugin: it
 debug key without it, so the release build can be smoke tested before the app has its key. Each
 app still needs its own `proguard-rules.pro`.
 
-Register both in `settings.gradle.kts`:
+`apps/roulette/baselineprofile/build.gradle.kts` (its baseline profile: startup and main journeys):
+```kotlin
+plugins {
+    alias(libs.plugins.jorgelillo.android.baselineprofile)
+}
+
+android {
+    namespace = "com.jorgelillo.roulette.baselineprofile"
+}
+```
+plus one file, `src/main/kotlin/com/jorgelillo/roulette/baselineprofile/Profiles.kt`, with
+`class BaselineProfile : AppBaselineProfile()` (override `journeys()` with the main path, by test
+tag) and `class StartupBenchmark : AppStartupBenchmark()`. The app picks it up on its own; generate
+the profile with `scripts/generate-baseline-profiles.sh roulette` on the emulator and commit it.
+
+Register the three in `settings.gradle.kts`:
 ```kotlin
 include(":apps:roulette:app")
 include(":apps:roulette:domain")
+include(":apps:roulette:baselineprofile")
 ```
 
 SDK levels, Java target, desugaring and Compose setup come from `build-logic`; nothing else to configure.
 
 Notes from app #2:
-- Apps get `minSdk` 24 (`appMinSdk` in the catalogue): Play's automatic protection rejects bundles
-  below it, and navigation-compose needs it. Only an app already live on a lower one keeps it in its
-  own `defaultConfig` (Christmas, 23); never raise it for an app with users without checking them.
+- Apps get `minSdk` 24 (`appMinSdk` in the catalogue): Play's automatic protection, navigation-compose
+  and WorkManager 2.12 need it. Raising it for an app with users drops the phones below it (they keep
+  the version they have): check how many first.
 - Wrap the content in `Modifier.semantics { testTagsAsResourceId = true }` and give buttons a
   `testTag`: some Compose components (e.g. extended FABs) don't expose their text to UI Automator.
 
