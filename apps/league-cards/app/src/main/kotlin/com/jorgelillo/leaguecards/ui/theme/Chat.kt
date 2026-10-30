@@ -24,8 +24,8 @@ object Chat {
 
     val Background = Brush.verticalGradient(listOf(InkTop, Ink))
 
-    /** The home summary's gradient: pitch green into night blue, white text on top. */
-    val Hero = listOf(Color(0xFF0E6B57), Color(0xFF1F4E79))
+    /** The home summary's gradient: emerald into bright blue, white text on top. */
+    val Hero = listOf(Color(0xFF00695C), Color(0xFF1E5BB8))
     val Confetti = listOf(Gold, Green, Tear, Red, Text)
 }
 
