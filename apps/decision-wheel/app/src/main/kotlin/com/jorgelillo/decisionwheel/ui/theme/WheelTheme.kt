@@ -19,8 +19,8 @@ object WheelColors {
     val Blue = Color(0xFF6C8EF5)
     val Lilac = Color(0xFFC792EA)
 
-    /** The home summary's gradient: sunset plum into night blue, white text on top. */
-    val Hero = listOf(Color(0xFF8A2F62), Color(0xFF3A3B95))
+    /** The home summary's gradient: raspberry into deep violet, white text on top. */
+    val Hero = listOf(Color(0xFFC2185B), Color(0xFF4527A0))
 
     /** Order matters: neighbours in this list contrast well. */
     val Segments = listOf(Coral, Orange, Sun, Teal, Blue, Lilac)

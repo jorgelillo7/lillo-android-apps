@@ -3,8 +3,6 @@
 
     <!-- Home -->
     <string name="new_tournament">New tournament</string>
-    <string name="home_empty_title">Who will be the only one?</string>
-    <string name="home_empty_body">Cards, ping-pong, FIFA, padel… Create a tournament in seconds and keep the record. No account, nothing to install on the other phones.</string>
     <plurals name="players_count">
         <item quantity="one">%d player</item>
         <item quantity="other">%d players</item>
@@ -138,4 +136,6 @@
     <string name="hero_next_round">⚔️ %s: next round</string>
     <string name="hero_last_champion">🏆 Last champion: %s</string>
     <string name="about_rate">Rate on Google Play</string>
+    <string name="hero_first">👑 Make your first one: knockout or Swiss</string>
+    <string name="hero_none">None yet</string>
 </resources>

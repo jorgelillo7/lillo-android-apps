@@ -13,8 +13,8 @@ object Neon {
     val Muted = Color(0xFF9692BE)
     val Violet = Color(0xFF7756FA)
 
-    /** The home summary's gradient: violet into night magenta, white text on top. */
-    val Hero = listOf(Color(0xFF5A3FD6), Color(0xFF8E2A6E))
+    /** The home summary's gradient: electric violet into raspberry, white text on top. */
+    val Hero = listOf(Color(0xFF5B2EE6), Color(0xFFC2185B))
     val Turquoise = Color(0xFF00E0B8)
     val Pink = Color(0xFFFF4D94)
     val Amber = Color(0xFFFFC94D)

@@ -33,6 +33,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
@@ -48,6 +49,7 @@ import com.jorgelillo.core.designsystem.HeroChip
 import com.jorgelillo.core.designsystem.LilloAboutSheet
 import com.jorgelillo.core.designsystem.LilloSummaryHero
 import com.jorgelillo.core.designsystem.TestTagsAsResourceIds
+import com.jorgelillo.core.designsystem.accentEdge
 import com.jorgelillo.core.designsystem.isShortScreen
 import com.jorgelillo.core.platform.LilloLinks
 import com.jorgelillo.tournaments.BuildConfig
@@ -90,26 +92,9 @@ internal fun HomeScreen(
         bottom = { if (!short) BigButton(stringResource(R.string.new_tournament), onNew, "new") }
     ) {
         if (library.tournaments.isEmpty()) {
-            Column(
-                Modifier.weight(1f).fillMaxWidth(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text("🏆", fontSize = 64.sp)
-                Spacer(Modifier.height(12.dp))
-                Text(
-                    stringResource(R.string.home_empty_title),
-                    style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
-                )
-                Spacer(Modifier.height(8.dp))
-                Text(stringResource(R.string.home_empty_body), color = Arena.Muted, textAlign = TextAlign.Center)
-                if (short) {
-                    Spacer(Modifier.height(16.dp))
-                    BigButton(stringResource(R.string.new_tournament), onNew, "new")
-                }
-            }
+            Summary(library)
+            Spacer(Modifier.weight(1f))
+            if (short) BigButton(stringResource(R.string.new_tournament), onNew, "new")
             return@Page
         }
         LazyColumn(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -127,6 +112,7 @@ private fun Summary(library: Library) {
     val running = library.sorted.filter { it.champion == null }
     val finished = library.sorted.filter { it.champion != null }
     val chips = buildList {
+        if (library.tournaments.isEmpty()) add(HeroChip(stringResource(R.string.hero_first), "hero_first"))
         running.firstOrNull()?.let { next ->
             val pending = Tournaments.pending(next).size
             val text = if (pending > 0) {
@@ -142,10 +128,14 @@ private fun Summary(library: Library) {
     }
     LilloSummaryHero(
         title = stringResource(R.string.hero_title),
-        subtitle = listOf(
-            pluralStringResource(R.plurals.hero_running, running.size, running.size),
-            pluralStringResource(R.plurals.hero_finished, finished.size, finished.size)
-        ).joinToString(" · "),
+        subtitle = if (library.tournaments.isEmpty()) {
+            stringResource(R.string.hero_none)
+        } else {
+            listOf(
+                pluralStringResource(R.plurals.hero_running, running.size, running.size),
+                pluralStringResource(R.plurals.hero_finished, finished.size, finished.size)
+            ).joinToString(" · ")
+        },
         colors = Arena.Hero,
         emoji = "🏆",
         chips = chips
@@ -158,7 +148,9 @@ private fun TournamentCard(t: Tournament, onClick: () -> Unit) {
     Row(
         Modifier
             .fillMaxWidth()
-            .background(Arena.Raised, RoundedCornerShape(16.dp))
+            .clip(RoundedCornerShape(16.dp))
+            .background(Arena.Raised)
+            .accentEdge(if (champion != null) Arena.Gold else Arena.Teal)
             .clickable(onClick = onClick)
             .padding(16.dp)
             .testTag("tournament_${t.id}"),

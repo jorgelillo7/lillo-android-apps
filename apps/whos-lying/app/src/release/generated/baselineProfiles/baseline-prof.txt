@@ -426,7 +426,6 @@ SPLandroidx/collection/MutableScatterSet;->addAll(Landroidx/collection/ScatterSe
 SPLandroidx/collection/MutableScatterSet;->adjustStorage$collection()V
 SPLandroidx/collection/MutableScatterSet;->asMutableSet()Ljava/util/Set;
 SPLandroidx/collection/MutableScatterSet;->clear()V
-SPLandroidx/collection/MutableScatterSet;->dropDeletes$collection()V
 SPLandroidx/collection/MutableScatterSet;->findAbsoluteInsertIndex(Ljava/lang/Object;)I
 SPLandroidx/collection/MutableScatterSet;->findFirstAvailableSlot(I)I
 SPLandroidx/collection/MutableScatterSet;->initializeGrowth()V
@@ -13029,7 +13028,6 @@ SPLkotlin/collections/ArraysKt___ArraysKt;->contains([Ljava/lang/Object;Ljava/la
 SPLkotlin/collections/ArraysKt___ArraysKt;->filterNotNull([Ljava/lang/Object;)Ljava/util/List;
 SPLkotlin/collections/ArraysKt___ArraysKt;->filterNotNullTo([Ljava/lang/Object;Ljava/util/Collection;)Ljava/util/Collection;
 SPLkotlin/collections/ArraysKt___ArraysKt;->firstOrNull([Ljava/lang/Object;)Ljava/lang/Object;
-SPLkotlin/collections/ArraysKt___ArraysKt;->getLastIndex([J)I
 SPLkotlin/collections/ArraysKt___ArraysKt;->getLastIndex([Ljava/lang/Object;)I
 SPLkotlin/collections/ArraysKt___ArraysKt;->indexOf([Ljava/lang/Object;Ljava/lang/Object;)I
 SPLkotlin/collections/ArraysKt___ArraysKt;->toList([Ljava/lang/Object;)Ljava/util/List;

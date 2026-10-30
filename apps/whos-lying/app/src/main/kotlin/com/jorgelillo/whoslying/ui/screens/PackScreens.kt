@@ -59,6 +59,7 @@ import androidx.compose.ui.unit.sp
 import com.jorgelillo.core.designsystem.LilloQrCode
 import com.jorgelillo.core.designsystem.LilloSectionTitle
 import com.jorgelillo.core.designsystem.TestTagsAsResourceIds
+import com.jorgelillo.core.designsystem.accentEdge
 import com.jorgelillo.core.platform.shareText
 import com.jorgelillo.whoslying.R
 import com.jorgelillo.whoslying.domain.PackShare
@@ -288,6 +289,8 @@ private fun PackRow(pack: WordPack, onClick: (() -> Unit)?, onShare: (() -> Unit
             .fillMaxWidth()
             .clip(MaterialTheme.shapes.large)
             .background(Neon.Card)
+            // The group's own packs stand apart from the built-in ones.
+            .then(if (pack.custom) Modifier.accentEdge(Neon.Pink) else Modifier)
             .let { if (onClick != null) it.clickable(onClick = onClick) else it }
             .padding(16.dp)
             .testTag("pack_${pack.id}"),
