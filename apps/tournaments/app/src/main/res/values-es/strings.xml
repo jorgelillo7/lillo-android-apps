@@ -126,4 +126,23 @@
     <string name="stats_line">Torneos: %1$d · Finales: %2$d · G-E-P: %3$d-%4$d-%5$d</string>
     <string name="stats_win_rate">%d%% victorias</string>
     <string name="bracket_a11y">Cuadro del torneo. La pestaña Partidas tiene todas las partidas.</string>
+    <string name="hero_title">Tus torneos</string>
+    <plurals name="hero_running">
+        <item quantity="one">%d en curso</item>
+        <item quantity="many">%d en curso</item>
+        <item quantity="other">%d en curso</item>
+    </plurals>
+    <plurals name="hero_finished">
+        <item quantity="one">%d terminado</item>
+        <item quantity="many">%d terminados</item>
+        <item quantity="other">%d terminados</item>
+    </plurals>
+    <plurals name="hero_next_pending">
+        <item quantity="one">⚔️ %1$s: %2$d partida por jugar</item>
+        <item quantity="many">⚔️ %1$s: %2$d partidas por jugar</item>
+        <item quantity="other">⚔️ %1$s: %2$d partidas por jugar</item>
+    </plurals>
+    <string name="hero_next_round">⚔️ %s: toca la siguiente ronda</string>
+    <string name="hero_last_champion">🏆 Último campeón: %s</string>
+    <string name="about_rate">Valorar en Google Play</string>
 </resources>

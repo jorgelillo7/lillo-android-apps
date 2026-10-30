@@ -122,4 +122,20 @@
     <string name="stats_line">Tournaments: %1$d · Finals: %2$d · W-D-L: %3$d-%4$d-%5$d</string>
     <string name="stats_win_rate">%d%% wins</string>
     <string name="bracket_a11y">Tournament bracket. The Matches tab lists every match.</string>
+    <string name="hero_title">Your tournaments</string>
+    <plurals name="hero_running">
+        <item quantity="one">%d in progress</item>
+        <item quantity="other">%d in progress</item>
+    </plurals>
+    <plurals name="hero_finished">
+        <item quantity="one">%d finished</item>
+        <item quantity="other">%d finished</item>
+    </plurals>
+    <plurals name="hero_next_pending">
+        <item quantity="one">⚔️ %1$s: %2$d match to play</item>
+        <item quantity="other">⚔️ %1$s: %2$d matches to play</item>
+    </plurals>
+    <string name="hero_next_round">⚔️ %s: next round</string>
+    <string name="hero_last_champion">🏆 Last champion: %s</string>
+    <string name="about_rate">Rate on Google Play</string>
 </resources>

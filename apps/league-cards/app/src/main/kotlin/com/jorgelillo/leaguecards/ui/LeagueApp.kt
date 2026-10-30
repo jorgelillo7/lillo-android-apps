@@ -228,11 +228,11 @@ internal fun HomeScreen(
                 title = stringResource(R.string.app_name),
                 version = stringResource(R.string.about_version, BuildConfig.VERSION_NAME),
                 body = stringResource(R.string.about_body),
-                rate = null,
+                rate = stringResource(R.string.about_rate),
                 privacy = stringResource(R.string.about_privacy)
             ),
             privacyUrl = LilloLinks.privacyPolicy("league-cards"),
-            playStoreUrl = null,
+            playStoreUrl = LilloLinks.playStore("com.jorgelillo.leaguecards"),
             onDismiss = { about = false }
         )
     }

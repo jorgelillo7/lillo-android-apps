@@ -44,7 +44,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jorgelillo.core.designsystem.AboutTexts
+import com.jorgelillo.core.designsystem.HeroChip
 import com.jorgelillo.core.designsystem.LilloAboutSheet
+import com.jorgelillo.core.designsystem.LilloSummaryHero
 import com.jorgelillo.core.designsystem.TestTagsAsResourceIds
 import com.jorgelillo.core.designsystem.isShortScreen
 import com.jorgelillo.core.platform.LilloLinks
@@ -111,11 +113,43 @@ internal fun HomeScreen(
             return@Page
         }
         LazyColumn(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+            item { Summary(library) }
             if (short) item { BigButton(stringResource(R.string.new_tournament), onNew, "new") }
             items(library.sorted, key = { it.id }) { TournamentCard(it, onClick = { onOpen(it) }) }
             item { Spacer(Modifier.height(4.dp)) }
         }
     }
+}
+
+/** The library at a glance: how many are running and finished, what to play next, the last champion. */
+@Composable
+private fun Summary(library: Library) {
+    val running = library.sorted.filter { it.champion == null }
+    val finished = library.sorted.filter { it.champion != null }
+    val chips = buildList {
+        running.firstOrNull()?.let { next ->
+            val pending = Tournaments.pending(next).size
+            val text = if (pending > 0) {
+                pluralStringResource(R.plurals.hero_next_pending, pending, next.name, pending)
+            } else {
+                stringResource(R.string.hero_next_round, next.name)
+            }
+            add(HeroChip(text, "hero_next"))
+        }
+        finished.firstOrNull()?.let { it.player(it.champion) }?.let {
+            add(HeroChip(stringResource(R.string.hero_last_champion, it.name), "hero_champion"))
+        }
+    }
+    LilloSummaryHero(
+        title = stringResource(R.string.hero_title),
+        subtitle = listOf(
+            pluralStringResource(R.plurals.hero_running, running.size, running.size),
+            pluralStringResource(R.plurals.hero_finished, finished.size, finished.size)
+        ).joinToString(" · "),
+        colors = Arena.Hero,
+        emoji = "🏆",
+        chips = chips
+    )
 }
 
 @Composable
@@ -226,10 +260,10 @@ internal fun AboutSheet(onDismiss: () -> Unit) = LilloAboutSheet(
         title = stringResource(R.string.app_name),
         version = stringResource(R.string.about_version, BuildConfig.VERSION_NAME),
         body = stringResource(R.string.about_body),
-        rate = null,
+        rate = stringResource(R.string.about_rate),
         privacy = stringResource(R.string.about_open_privacy)
     ),
     privacyUrl = LilloLinks.privacyPolicy("tournaments"),
-    playStoreUrl = null, // not on Google Play yet
+    playStoreUrl = LilloLinks.playStore("com.jorgelillo.tournaments"),
     onDismiss = onDismiss
 )

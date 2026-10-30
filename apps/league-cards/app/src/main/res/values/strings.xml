@@ -53,4 +53,5 @@
     <string name="about_version">Versión %s</string>
     <string name="about_body">Un juego de cartas para una liga fantasy entre amigos. Sin cuentas, sin anuncios: la temporada se guarda solo en tu móvil.</string>
     <string name="about_privacy">Política de privacidad</string>
+    <string name="about_rate">Valorar en Google Play</string>
 </resources>
