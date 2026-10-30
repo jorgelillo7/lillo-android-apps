@@ -1,5 +1,3 @@
-First version! 👑
-- Knockout with a two-sided bracket, and Swiss
-- Results with comments, best of 1, 3 or 5
-- Take it to another phone with a QR code, no accounts
-- Hall of fame, image and CSV export
+- New home: at a glance, how many tournaments are in progress, which matches are left and the last champion
+- On tablets in landscape, the matches and the bracket (or standings) side by side
+- Rate the app from About

@@ -1,5 +1,3 @@
-¡Primera versión! 👑
-- Eliminatoria con cuadro a dos lados y sistema suizo
-- Resultados con comentario, al mejor de 1, 3 o 5
-- Pásalo a otro móvil con un QR, sin cuentas
-- Salón de la fama, imagen y CSV
+- Nuevo inicio: de un vistazo, cuántos torneos tienes en curso, qué partidas faltan y el último campeón
+- En tablets en horizontal, las partidas y el cuadro (o la clasificación) a la vez
+- Valora la app desde Información
