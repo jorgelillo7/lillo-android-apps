@@ -7,7 +7,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 A Gradle multi-project hosting several small Android apps published on Google Play. Each app is a
 self-contained folder under `apps/<app>/`; shared Compose code lives in `core/`; shared build
 configuration lives in `build-logic/`. Human docs are in `docs/` (index `docs/README.md`, repo runbook `docs/operations.md`); open work in `PENDING.md`;
-each app has its own `apps/<app>/OPERATIONS.md` (exact commands) and `release-notes.md` (version history).
+each app has its own `apps/<app>/OPERATIONS.md` (exact commands), `release-notes.md` (version history) and
+`DESIGN.md` (its palette and components, on the shared system in `docs/design.md`; read both before changing colours).
 
 Apps today, live on Play: `christmas-countdown` ("¿Ya es Navidad?", `com.jorgelillo.christmascountdown`),
 `decision-wheel` ("¿Qué hacemos?", `com.jorgelillo.decisionwheel`), `whos-lying` ("¿Quién miente?",

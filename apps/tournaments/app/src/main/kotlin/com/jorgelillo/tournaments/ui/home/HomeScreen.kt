@@ -150,7 +150,7 @@ private fun TournamentCard(t: Tournament, onClick: () -> Unit) {
             .fillMaxWidth()
             .clip(RoundedCornerShape(16.dp))
             .background(Arena.Raised)
-            .accentEdge(if (champion != null) Arena.Gold else Arena.Teal)
+            .accentEdge(if (champion != null) Arena.Gold else Arena.Accent)
             .clickable(onClick = onClick)
             .padding(16.dp)
             .testTag("tournament_${t.id}"),
@@ -202,7 +202,7 @@ private fun TournamentCard(t: Tournament, onClick: () -> Unit) {
                     pending > 0 -> pluralStringResource(R.plurals.status_pending, pending, pending)
                     else -> stringResource(R.string.status_next_round)
                 },
-                color = if (champion != null) Arena.GoldText else Arena.TealText,
+                color = if (champion != null) Arena.GoldText else Arena.AccentText,
                 fontSize = 13.sp,
                 fontWeight = FontWeight.SemiBold
             )

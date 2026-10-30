@@ -107,7 +107,7 @@ private fun WinRateBar(rate: Double) {
                 Box(
                     Modifier.fillMaxWidth(
                         rate.toFloat()
-                    ).fillMaxHeight().background(Arena.Teal, RoundedCornerShape(5.dp))
+                    ).fillMaxHeight().background(Arena.Accent, RoundedCornerShape(5.dp))
                 )
             }
         }

@@ -150,7 +150,7 @@ private fun MatchCard(t: Tournament, m: Match, onEdit: (Match) -> Unit) {
         if (playable &&
             !done
         ) {
-            Text(stringResource(R.string.match_tap_to_score), color = Arena.TealText, fontSize = 12.sp)
+            Text(stringResource(R.string.match_tap_to_score), color = Arena.AccentText, fontSize = 12.sp)
         }
     }
 }

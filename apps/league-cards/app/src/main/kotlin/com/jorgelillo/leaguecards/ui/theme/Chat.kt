@@ -6,13 +6,13 @@ import androidx.compose.ui.graphics.Color
 
 /** "Group chat at night" palette: the league lives in a chat, so the game looks like one. */
 object Chat {
-    val Ink = Color(0xFF0B141A)
-    val InkTop = Color(0xFF16252E)
-    val Bubble = Color(0xFF202C33)
+    val Ink = Color(0xFF00110E)
+    val InkTop = Color(0xFF00251F)
+    val Bubble = Color(0xFF002C25)
     val Mine = Color(0xFF005C4B)
-    val Raised = Color(0xFF1A262D)
-    val Text = Color(0xFFE9EDEF)
-    val Muted = Color(0xFF8696A0)
+    val Raised = Color(0xFF001E19)
+    val Text = Color(0xFFE5E6E3)
+    val Muted = Color(0xFFAAABA9)
     val Faint = Color(0x33E9EDEF)
 
     val Green = Color(0xFF00A884)
@@ -25,7 +25,7 @@ object Chat {
     val GreenText = Color(0xFF5FD8BC)
     val Tear = Color(0xFF53BDEB)
     val Red = Color(0xFFF15C6D)
-    val System = Color(0xFF182229)
+    val System = Color(0xFF001713)
     val SystemText = Color(0xFFFFD279)
 
     val Background = Brush.verticalGradient(listOf(InkTop, Ink))
