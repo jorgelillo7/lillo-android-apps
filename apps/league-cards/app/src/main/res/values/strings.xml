@@ -31,9 +31,6 @@
     </plurals>
     <string name="autosave">Se guarda sola: sal cuando quieras y sigue luego por la misma jornada.</string>
     <string name="how_to_play">Cada jornada te escriben los de la liga. Desliza la carta a la izquierda o a la derecha para decidir.\n\nVigila las cuatro barras: 💰 dinero, 💪 plantilla, 🙄 paciencia de la liga y 😭 lloros. Si una se vacía o se llena del todo, se acabó tu temporada.\n\nAguanta la vuelta entera y gana la liga. Colecciona los logros y todos los finales.</string>
-    <string name="stat_seasons">temporadas</string>
-    <string name="stat_titles">ligas</string>
-    <string name="stat_best">mejor puesto</string>
     <string name="characters">LA LIGA</string>
     <string name="ending_stats">Jornadas aguantadas: %1$d · puesto final: %2$dº</string>
     <string name="record">Temporadas jugadas: %1$d · ligas ganadas: %2$d</string>
@@ -54,4 +51,17 @@
     <string name="about_body">Un juego de cartas para una liga fantasy entre amigos. Sin cuentas, sin anuncios: la temporada se guarda solo en tu móvil.</string>
     <string name="about_privacy">Política de privacidad</string>
     <string name="about_rate">Valorar en Google Play</string>
+    <plurals name="hero_seasons">
+        <item quantity="one">%d temporada</item>
+        <item quantity="many">%d temporadas</item>
+        <item quantity="other">%d temporadas</item>
+    </plurals>
+    <plurals name="hero_titles">
+        <item quantity="one">%d liga ganada</item>
+        <item quantity="many">%d ligas ganadas</item>
+        <item quantity="other">%d ligas ganadas</item>
+    </plurals>
+    <string name="hero_in_progress">📅 Jornada %1$d de %2$d en curso</string>
+    <string name="hero_best">🥇 Mejor puesto: %dº</string>
+    <string name="hero_first_season">⚽ Empieza tu primera temporada</string>
 </resources>

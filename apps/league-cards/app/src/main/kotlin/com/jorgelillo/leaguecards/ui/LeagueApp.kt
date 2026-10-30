@@ -42,8 +42,10 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.jorgelillo.core.designsystem.AboutTexts
 import com.jorgelillo.core.designsystem.ConfettiBurst
+import com.jorgelillo.core.designsystem.HeroChip
 import com.jorgelillo.core.designsystem.LilloAboutSheet
 import com.jorgelillo.core.designsystem.LilloSecondaryButton
+import com.jorgelillo.core.designsystem.LilloSummaryHero
 import com.jorgelillo.core.designsystem.TestTagsAsResourceIds
 import com.jorgelillo.core.designsystem.isShortScreen
 import com.jorgelillo.core.platform.LilloLinks
@@ -169,22 +171,16 @@ internal fun HomeScreen(
             Modifier.fillMaxWidth().verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text("😭⚽", fontSize = 64.sp)
             Text(
                 stringResource(R.string.app_name),
-                style = MaterialTheme.typography.headlineMedium,
+                style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Black,
                 textAlign = TextAlign.Center
             )
-            Text(league.name, color = Chat.Green, fontWeight = FontWeight.Bold)
-            Spacer(Modifier.height(20.dp))
-            ChatBubble(league, "", stringResource(R.string.how_to_play))
+            Spacer(Modifier.height(12.dp))
+            Summary(league, saved, inProgress)
             Spacer(Modifier.height(16.dp))
-            Row(horizontalArrangement = Arrangement.spacedBy(20.dp)) {
-                Stat(stringResource(R.string.stat_seasons), saved.seasonsPlayed.toString())
-                Stat(stringResource(R.string.stat_titles), saved.titles.toString())
-                Stat(stringResource(R.string.stat_best), saved.bestPosition?.let { "${it}º" } ?: "–")
-            }
+            ChatBubble(league, "", stringResource(R.string.how_to_play))
             Spacer(Modifier.height(12.dp))
             OutlinedButton(onClick = onTrophies, modifier = Modifier.testTag("trophies")) {
                 Text(
@@ -238,12 +234,32 @@ internal fun HomeScreen(
     }
 }
 
+/** The league at a glance: seasons and titles, the season in progress, the best finish. */
 @Composable
-private fun Stat(label: String, value: String) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(value, style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Black)
-        Text(label, color = Chat.Muted, style = MaterialTheme.typography.labelMedium)
+private fun Summary(league: League, saved: Saved, inProgress: Season?) {
+    val chips = buildList {
+        when {
+            inProgress != null -> add(
+                HeroChip(
+                    stringResource(R.string.hero_in_progress, inProgress.matchday, inProgress.matchdays(league)),
+                    "hero_in_progress"
+                )
+            )
+
+            saved.seasonsPlayed == 0 -> add(HeroChip(stringResource(R.string.hero_first_season)))
+        }
+        saved.bestPosition?.let { add(HeroChip(stringResource(R.string.hero_best, it), "hero_best")) }
     }
+    LilloSummaryHero(
+        title = league.name,
+        subtitle = listOf(
+            pluralStringResource(R.plurals.hero_seasons, saved.seasonsPlayed, saved.seasonsPlayed),
+            pluralStringResource(R.plurals.hero_titles, saved.titles, saved.titles)
+        ).joinToString(" · "),
+        colors = Chat.Hero,
+        emoji = "😭",
+        chips = chips
+    )
 }
 
 @Composable

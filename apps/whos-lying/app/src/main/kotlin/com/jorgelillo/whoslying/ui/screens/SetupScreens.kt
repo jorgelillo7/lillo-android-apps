@@ -50,7 +50,9 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.jorgelillo.core.designsystem.HeroChip
 import com.jorgelillo.core.designsystem.LilloSettingRow
+import com.jorgelillo.core.designsystem.LilloSummaryHero
 import com.jorgelillo.core.designsystem.isShortScreen
 import com.jorgelillo.whoslying.R
 import com.jorgelillo.whoslying.domain.GameMode
@@ -62,6 +64,8 @@ import com.jorgelillo.whoslying.ui.theme.Neon
 
 @Composable
 internal fun HomeScreen(
+    /** The saved group and match, for the summary; null or no players: no summary. */
+    group: HomeGroup?,
     onPlay: () -> Unit,
     onHowTo: () -> Unit,
     onModes: () -> Unit,
@@ -80,24 +84,72 @@ internal fun HomeScreen(
             Text("⚙️  " + stringResource(R.string.action_about), color = Neon.Muted)
         }
     }) {
-        Spacer(Modifier.weight(1f))
-        Emoji("🕵️", size = 110, modifier = Modifier.fillMaxWidth())
-        Spacer(Modifier.height(16.dp))
-        Text(
-            stringResource(R.string.home_title),
-            style = MaterialTheme.typography.displayMedium,
-            fontWeight = FontWeight.Black,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth()
-        )
-        Text(
-            stringResource(R.string.home_subtitle),
-            color = Neon.Muted,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
-        )
+        val summary = group?.takeIf { it.players.isNotEmpty() }
+        if (summary != null && isShortScreen()) {
+            // Landscape and handhelds: the group's summary is worth more than the big detective.
+            Spacer(Modifier.weight(1f))
+            GroupSummary(summary)
+        } else {
+            Spacer(Modifier.weight(1f))
+            Emoji("🕵️", size = if (summary != null) 80 else 110, modifier = Modifier.fillMaxWidth())
+            Spacer(Modifier.height(16.dp))
+            Text(
+                stringResource(R.string.home_title),
+                style = MaterialTheme.typography.displayMedium,
+                fontWeight = FontWeight.Black,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
+            )
+            Text(
+                stringResource(R.string.home_subtitle),
+                color = Neon.Muted,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
+            )
+            if (summary != null) {
+                Spacer(Modifier.height(24.dp))
+                GroupSummary(summary)
+            }
+        }
         Spacer(Modifier.weight(1.3f))
     }
+}
+
+/** What the home summary shows: the saved group, its settings and the match so far. */
+internal data class HomeGroup(
+    val players: List<String>,
+    val settings: GameSettings,
+    val scores: Map<String, Int> = emptyMap(),
+    val roundsPlayed: Int = 0
+)
+
+/** The group at a glance: players and mode, the match so far, who is leading. */
+@Composable
+private fun GroupSummary(group: HomeGroup) {
+    val settings = group.settings
+    val mode = stringResource(
+        when (settings.mode) {
+            GameMode.CLASSIC -> R.string.mode_classic
+            GameMode.BLIND -> R.string.mode_blind
+            GameMode.DRIFTER -> R.string.mode_drifter
+        }
+    )
+    val chips = buildList {
+        group.scores.filterKeys { it in group.players }.maxByOrNull { it.value }?.takeIf { it.value > 0 }?.let {
+            add(HeroChip(stringResource(R.string.hero_leader, it.key, it.value), "hero_leader"))
+        }
+        if (group.roundsPlayed > 0 && settings.rounds > 0) {
+            add(HeroChip(stringResource(R.string.hero_match, group.roundsPlayed + 1, settings.rounds), "hero_match"))
+        }
+        if (settings.drawing) add(HeroChip(stringResource(R.string.hero_drawing)))
+    }
+    LilloSummaryHero(
+        title = stringResource(R.string.hero_title),
+        subtitle = pluralStringResource(R.plurals.hero_players, group.players.size, group.players.size) + " · " + mode,
+        colors = Neon.Hero,
+        emoji = "👥",
+        chips = chips
+    )
 }
 
 @Composable

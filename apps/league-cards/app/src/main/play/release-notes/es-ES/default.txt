@@ -1,3 +1,2 @@
-- Las cartas largas se leen enteras en todos los móviles, también con letra grande: si no caben, se desliza el texto dentro de la carta
-- Marcadores y mensajes más compactos en pantallas pequeñas
-- En tablets en horizontal: la carta a un lado y los marcadores, el chat y la clasificación al otro
+- Nuevo inicio: tu liga de un vistazo, con temporadas, ligas ganadas, la jornada en curso y tu mejor puesto
+- Valora el juego desde Información
