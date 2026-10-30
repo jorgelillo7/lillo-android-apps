@@ -3,7 +3,6 @@
 
     <!-- Home -->
     <string name="home_title">What next?</string>
-    <string name="home_subtitle">Pick a wheel, or make your own.</string>
     <string name="new_wheel">New wheel</string>
     <plurals name="options_count">
         <item quantity="one">%d option</item>
@@ -95,4 +94,16 @@
         <item>Yes</item>
         <item>No</item>
     </string-array>
+    <string name="hero_title">Your wheels</string>
+    <plurals name="hero_wheels">
+        <item quantity="one">%d wheel</item>
+        <item quantity="other">%d wheels</item>
+    </plurals>
+    <plurals name="hero_decisions">
+        <item quantity="one">%d decision</item>
+        <item quantity="other">%d decisions</item>
+    </plurals>
+    <string name="hero_last">🎯 Last: %1$s · %2$s</string>
+    <string name="hero_top">🏅 Most picked: %1$s (%2$d)</string>
+    <string name="hero_first_spin">🎲 Spin one and decide</string>
 </resources>

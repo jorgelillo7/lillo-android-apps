@@ -2,7 +2,6 @@
     <string name="app_name">¿Qué hacemos?</string>
 
     <string name="home_title">¿Qué hacemos?</string>
-    <string name="home_subtitle">Elige una ruleta o crea la tuya.</string>
     <string name="new_wheel">Nueva ruleta</string>
     <plurals name="options_count">
         <item quantity="one">%d opción</item>
@@ -90,4 +89,18 @@
         <item>Sí</item>
         <item>No</item>
     </string-array>
+    <string name="hero_title">Tus ruletas</string>
+    <plurals name="hero_wheels">
+        <item quantity="one">%d ruleta</item>
+        <item quantity="many">%d ruletas</item>
+        <item quantity="other">%d ruletas</item>
+    </plurals>
+    <plurals name="hero_decisions">
+        <item quantity="one">%d decisión</item>
+        <item quantity="many">%d decisiones</item>
+        <item quantity="other">%d decisiones</item>
+    </plurals>
+    <string name="hero_last">🎯 Última: %1$s · %2$s</string>
+    <string name="hero_top">🏅 La más elegida: %1$s (%2$d)</string>
+    <string name="hero_first_spin">🎲 Gira una y decide</string>
 </resources>

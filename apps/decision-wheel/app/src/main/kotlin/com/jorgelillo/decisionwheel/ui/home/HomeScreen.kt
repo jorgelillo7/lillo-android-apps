@@ -1,5 +1,6 @@
 package com.jorgelillo.decisionwheel.ui.home
 
+import android.text.format.DateUtils
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -21,6 +22,8 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExtendedFloatingActionButton
@@ -39,13 +42,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.jorgelillo.core.designsystem.HeroChip
+import com.jorgelillo.core.designsystem.LilloSummaryHero
 import com.jorgelillo.core.designsystem.TestTagsAsResourceIds
+import com.jorgelillo.core.designsystem.isShortScreen
 import com.jorgelillo.decisionwheel.R
 import com.jorgelillo.decisionwheel.domain.AppState
 import com.jorgelillo.decisionwheel.domain.Wheel
@@ -64,32 +71,54 @@ internal fun HomeScreen(
     onRestorePresets: () -> Unit
 ) {
     var menu by remember { mutableStateOf(false) }
+    // Short screens (landscape, handhelds): "New wheel" sits in the title row; a floating button
+    // would cover the last wheel's star.
+    val short = isShortScreen()
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
         floatingActionButton = {
-            ExtendedFloatingActionButton(
-                onClick = onNew,
-                modifier = Modifier.testTag("new_wheel"),
-                icon = { Icon(Icons.Filled.Add, contentDescription = null) },
-                text = { Text(stringResource(R.string.new_wheel), fontWeight = FontWeight.Bold) },
-                containerColor = WheelColors.Sun,
-                contentColor = WheelColors.Night
-            )
+            if (!short) {
+                ExtendedFloatingActionButton(
+                    onClick = onNew,
+                    modifier = Modifier.testTag("new_wheel"),
+                    icon = { Icon(Icons.Filled.Add, contentDescription = null) },
+                    text = { Text(stringResource(R.string.new_wheel), fontWeight = FontWeight.Bold) },
+                    containerColor = WheelColors.Sun,
+                    contentColor = WheelColors.Night
+                )
+            }
         }
     ) { padding ->
         LazyColumn(
             modifier = Modifier.fillMaxSize().padding(padding),
-            contentPadding = PaddingValues(start = 20.dp, end = 20.dp, top = 16.dp, bottom = 96.dp)
+            contentPadding = PaddingValues(
+                start = 20.dp,
+                end = 20.dp,
+                top = 16.dp,
+                bottom = if (short) 16.dp else 96.dp
+            )
         ) {
             item {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Column(Modifier.weight(1f)) {
-                        Text(
-                            stringResource(R.string.home_title),
-                            style = MaterialTheme.typography.displaySmall,
-                            fontWeight = FontWeight.Black
-                        )
-                        Text(stringResource(R.string.home_subtitle), color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text(
+                        stringResource(R.string.home_title),
+                        style = MaterialTheme.typography.run { if (short) headlineMedium else displaySmall },
+                        fontWeight = FontWeight.Black,
+                        modifier = Modifier.weight(1f)
+                    )
+                    if (short) {
+                        Button(
+                            onClick = onNew,
+                            modifier = Modifier.testTag("new_wheel"),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = WheelColors.Sun,
+                                contentColor = WheelColors.Night
+                            )
+                        ) {
+                            Icon(Icons.Filled.Add, contentDescription = null)
+                            Spacer(Modifier.width(8.dp))
+                            Text(stringResource(R.string.new_wheel), fontWeight = FontWeight.Bold)
+                        }
                     }
                     Box {
                         IconButton(onClick = { menu = true }, modifier = Modifier.testTag("more")) {
@@ -119,7 +148,9 @@ internal fun HomeScreen(
                         }
                     }
                 }
-                Spacer(Modifier.height(20.dp))
+                Spacer(Modifier.height(16.dp))
+                Summary(state)
+                Spacer(Modifier.height(16.dp))
             }
             items(state.sortedWheels, key = { it.id }) { wheel ->
                 WheelCard(wheel, onClick = { onOpen(wheel) }, onToggleFavorite = { onToggleFavorite(wheel) })
@@ -127,6 +158,37 @@ internal fun HomeScreen(
             }
         }
     }
+}
+
+/** The wheels at a glance: how many and how many decisions, the last one, the most picked option. */
+@Composable
+private fun Summary(state: AppState) {
+    val context = LocalContext.current
+    val last = state.history.maxByOrNull { it.atEpochMillis }
+    val top = state.history.groupingBy { it.option }.eachCount().maxByOrNull { it.value }?.takeIf { it.value > 1 }
+    val chips = buildList {
+        if (last == null) {
+            add(HeroChip(stringResource(R.string.hero_first_spin)))
+        } else {
+            val day = DateUtils.formatDateTime(
+                context,
+                last.atEpochMillis,
+                DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_ABBREV_MONTH or DateUtils.FORMAT_NO_YEAR
+            )
+            add(HeroChip(stringResource(R.string.hero_last, last.option, day), "hero_last"))
+        }
+        top?.let { add(HeroChip(stringResource(R.string.hero_top, it.key, it.value), "hero_top")) }
+    }
+    LilloSummaryHero(
+        title = stringResource(R.string.hero_title),
+        subtitle = listOf(
+            pluralStringResource(R.plurals.hero_wheels, state.wheels.size, state.wheels.size),
+            pluralStringResource(R.plurals.hero_decisions, state.history.size, state.history.size)
+        ).joinToString(" · "),
+        colors = WheelColors.Hero,
+        emoji = "🎡",
+        chips = chips
+    )
 }
 
 @Composable
