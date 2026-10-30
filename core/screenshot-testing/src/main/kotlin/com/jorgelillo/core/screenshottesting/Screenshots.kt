@@ -29,19 +29,26 @@ private val ChecksButContrast = AccessibilityCheckPreset.getAccessibilityHierarc
     .filterNot { it is TextContrastCheck }
     .toSet()
 
+/** Below this height (px) a text node is a sliver at a scroll edge, not something to read. */
+private const val SLIVER_PX = 24
+
 /**
  * Not text contrast problems: disabled controls (exempt in WCAG 1.4.3, Material dims them on purpose;
  * a disabled button's text is its own enabled node, so its ancestors are checked too) and emoji,
- * which are pictures that ATF measures as if they were letters.
+ * which are pictures that ATF measures as if they were letters, and lines cut to a sliver by a
+ * scrolling container's edge.
  */
 private val NotContrastProblems = object : TypeSafeMatcher<AccessibilityViewCheckResult>() {
     override fun describeTo(description: Description) {
-        description.appendText("a disabled element or an emoji")
+        description.appendText("a disabled element, an emoji or a sliver at a scroll edge")
     }
 
     override fun matchesSafely(item: AccessibilityViewCheckResult): Boolean {
         val text = item.element?.text?.toString().orEmpty()
         if (text.isNotBlank() && text.none { it.isLetterOrDigit() }) return true
+        // A line cut to a sliver by a scrolling container's edge: nothing to read, and ATF then
+        // measures it against itself. Its contrast is checked where it shows whole.
+        if ((item.element?.boundsInScreen?.height ?: Int.MAX_VALUE) < SLIVER_PX) return true
         var element: ViewHierarchyElement? = item.element
         while (element != null) {
             if (!element.isEnabled) return true

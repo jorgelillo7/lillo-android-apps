@@ -276,4 +276,12 @@
     <string name="welcome_ok">Let\'s play!</string>
     <string name="welcome_feedback">Send feedback</string>
     <string name="welcome_settings">About this app</string>
+    <string name="hero_title">Your group</string>
+    <plurals name="hero_players">
+        <item quantity="one">%d player</item>
+        <item quantity="other">%d players</item>
+    </plurals>
+    <string name="hero_leader">🏆 Leading: %1$s (%2$d pts)</string>
+    <string name="hero_match">🎯 Game %1$d of %2$d</string>
+    <string name="hero_drawing">✏️ Drawing mode</string>
 </resources>

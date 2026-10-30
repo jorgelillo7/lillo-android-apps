@@ -272,4 +272,13 @@
     <string name="welcome_ok">¡A jugar!</string>
     <string name="welcome_feedback">Contarnos algo</string>
     <string name="welcome_settings">Sobre esta app</string>
+    <string name="hero_title">Tu grupo</string>
+    <plurals name="hero_players">
+        <item quantity="one">%d jugador</item>
+        <item quantity="many">%d jugadores</item>
+        <item quantity="other">%d jugadores</item>
+    </plurals>
+    <string name="hero_leader">🏆 Va ganando: %1$s (%2$d pts)</string>
+    <string name="hero_match">🎯 Partida %1$d de %2$d</string>
+    <string name="hero_drawing">✏️ Modo dibujo</string>
 </resources>

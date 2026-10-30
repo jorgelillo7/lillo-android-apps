@@ -28,6 +28,7 @@ import com.jorgelillo.whoslying.ui.screens.CountdownScreen
 import com.jorgelillo.whoslying.ui.screens.DebateScreen
 import com.jorgelillo.whoslying.ui.screens.DrawingScreen
 import com.jorgelillo.whoslying.ui.screens.ExposeScreen
+import com.jorgelillo.whoslying.ui.screens.HomeGroup
 import com.jorgelillo.whoslying.ui.screens.HomeScreen
 import com.jorgelillo.whoslying.ui.screens.HowToSheet
 import com.jorgelillo.whoslying.ui.screens.ModesSheet
@@ -141,6 +142,7 @@ internal fun WhosLyingApp(app: WhosLyingApplication, incomingText: String? = nul
     NavHost(nav, startDestination = Home) {
         composable<Home> {
             HomeScreen(
+                group = HomeGroup(state.players, state.settings, state.scores, state.roundsPlayed),
                 onPlay = { nav.navigate(Players) },
                 onHowTo = { showHowTo = true },
                 onModes = { showModes = true },

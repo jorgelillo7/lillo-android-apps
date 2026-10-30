@@ -1,4 +1,3 @@
-Más fácil elegir paquetes 🕵️
-- «Quitar todos» para quedarte solo con los que quieras
-- Mantén pulsado un paquete para jugar solo con ese
-- Gesto de volver más fluido y mejor en móviles con muesca
+Nuevo inicio 🕵️
+- Tu grupo de un vistazo: jugadores, modo, quién va ganando y en qué partida vais
+- En horizontal, todo cabe sin desplazarse

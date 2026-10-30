@@ -60,6 +60,24 @@ class RoundScreensScreenshotTest {
         beforeCapture()
     }) { LilloTheme(NeonColorScheme) { content() } }
 
+    /** Home with a group mid-match (summary header), and a first launch (no group yet). */
+    private fun home(name: String, group: HomeGroup?) = shot(name) { HomeScreen(group, {}, {}, {}, {}, {}) }
+
+    private val group = HomeGroup(
+        players,
+        GameSettings(GameMode.CLASSIC, rounds = 10, drawing = true),
+        scores = mapOf("Bea" to 12, "Ana" to 7),
+        roundsPlayed = 3
+    )
+
+    @Test fun homeWithGroup() = home("home_group", group)
+
+    @Test
+    @Config(qualifiers = "+land")
+    fun homeWithGroupLandscape() = home("home_group_landscape", group)
+
+    @Test fun homeFirstLaunch() = home("home", null)
+
     private fun voting(name: String) = shot(name) {
         val game = deal(GameMode.CLASSIC)
         VotingScreen(game, game.alive.map { it.player }.toSet(), forced = false, onConfirm = {}, onBack = {})

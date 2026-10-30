@@ -1,4 +1,3 @@
-Easier to pick packs 🕵️
-- "Clear all" to keep only the ones you want
-- Long-press a pack to play only that one
-- Smoother back gesture, better on phones with a notch
+New home 🕵️
+- Your group at a glance: players, mode, who is leading and which game you are on
+- In landscape, it all fits without scrolling
