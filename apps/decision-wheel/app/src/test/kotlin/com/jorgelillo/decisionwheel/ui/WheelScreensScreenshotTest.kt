@@ -36,7 +36,12 @@ class WheelScreensScreenshotTest {
         )
     private val state = AppState(
         wheels = listOf(food, Wheel("plan", "Friday plan", listOf("Cinema", "Board games", "Bowling"))),
-        history = listOf(Decision("food", "Sushi", 1_760_000_000_000))
+        history = listOf(
+            Decision("food", "Pizza", 1_759_000_000_000),
+            Decision("plan", "Bowling", 1_759_500_000_000),
+            Decision("food", "Pizza", 1_759_800_000_000),
+            Decision("food", "Sushi", 1_760_000_000_000)
+        )
     )
 
     private fun shot(name: String, content: @Composable () -> Unit) = compose.captureScreenshot(name) {

@@ -1,5 +1,4 @@
-What's new in 1.1 ⭐
-- Star your favourite wheels: they come first
-- Shortcuts: long-press the app icon to open a favourite or recent wheel straight away
-- Deleted an example wheel? Menu ⋮ → Restore example wheels
-- In landscape and on handhelds, the wheel and the spin button fit side by side
+What's new in 1.2 🎡
+- New home: your wheels at a glance, with the last decision and the most picked option
+- In landscape, "New wheel" no longer covers the favourite star
+- On tablets, everything at a comfortable reading width
