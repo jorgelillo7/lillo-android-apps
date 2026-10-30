@@ -13,6 +13,7 @@ import com.jorgelillo.leaguecards.domain.Meters
 import com.jorgelillo.leaguecards.domain.Outcome
 import com.jorgelillo.leaguecards.domain.Saved
 import com.jorgelillo.leaguecards.domain.Season
+import com.jorgelillo.leaguecards.domain.SeasonRecord
 import com.jorgelillo.leaguecards.ui.theme.ChatColorScheme
 import java.io.File
 import org.junit.Rule
@@ -133,4 +134,18 @@ class LeagueScreensScreenshotTest {
     fun reportLandscape() = report("report_landscape")
 
     @Test fun trophiesPortrait() = shot("trophies") { TrophiesScreen(league, Saved()) {} }
+
+    /** Some unlocked (gold edge) next to locked ones; a won league in the history. */
+    @Test
+    fun trophiesSomeUnlocked() = shot("trophies_unlocked") {
+        val saved = Saved(
+            seasonsPlayed = 2,
+            titles = 1,
+            bestPosition = 1,
+            endingsSeen = league.endings.keys.take(2).toSet(),
+            achievements = league.achievements.take(3).map { it.id }.toSet(),
+            history = listOf(SeasonRecord(20_400, 19, 1, 812, "champion"), SeasonRecord(20_380, 19, 6, 233, "finished"))
+        )
+        TrophiesScreen(league, saved) {}
+    }
 }

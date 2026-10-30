@@ -1,5 +1,6 @@
 package com.jorgelillo.core.screenshottesting
 
+import android.provider.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.test.junit4.ComposeContentTestRule
 import androidx.compose.ui.test.onRoot
@@ -14,6 +15,7 @@ import com.google.android.apps.common.testing.accessibility.framework.checks.Tex
 import com.google.android.apps.common.testing.accessibility.framework.uielement.ViewHierarchyElement
 import org.hamcrest.Description
 import org.hamcrest.TypeSafeMatcher
+import org.robolectric.RuntimeEnvironment
 
 /**
  * Up to 0.5% of the pixels may differ: images are recorded on a Mac and verified on Linux CI,
@@ -72,6 +74,12 @@ fun ComposeContentTestRule.captureScreenshot(
     content: @Composable () -> Unit
 ) {
     mainClock.autoAdvance = false
+    // "Remove animations" on: entrance animations show their end state (see animationsEnabled).
+    Settings.Global.putFloat(
+        RuntimeEnvironment.getApplication().contentResolver,
+        Settings.Global.ANIMATOR_DURATION_SCALE,
+        0f
+    )
     setContent(content)
     mainClock.advanceTimeByFrame()
     beforeCapture()

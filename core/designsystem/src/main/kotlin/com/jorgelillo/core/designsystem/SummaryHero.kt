@@ -29,6 +29,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+/** Each chip comes in this much after the one before it. */
+private const val CHIP_DELAY_MILLIS = 120
+
 /** One status line in a [LilloSummaryHero]: what to do next, the last champion, a record… */
 data class HeroChip(val text: String, val tag: String? = null)
 
@@ -36,7 +39,7 @@ data class HeroChip(val text: String, val tag: String? = null)
  * A home screen's header: a gradient card with the app's state at a glance (a [title], a one-line
  * [subtitle] such as "2 in progress · 1 finished", and [chips] for what matters now), a big [emoji]
  * and a few translucent circles. On short screens (landscape, handhelds) it shrinks to a strip so
- * the list below keeps the room.
+ * the list below keeps the room. It fades in on first show, the chips one after another.
  *
  * [colors] is the gradient, start to end: dark enough for [contentColor] (white by default) to
  * keep 4.5:1, which the screenshot tests check.
@@ -55,6 +58,7 @@ fun LilloSummaryHero(
     val compact = isShortScreen()
     Box(
         modifier
+            .entrance()
             .fillMaxWidth()
             .clip(RoundedCornerShape(if (compact) 18.dp else 24.dp))
             .background(Brush.linearGradient(colors))
@@ -71,7 +75,9 @@ fun LilloSummaryHero(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                chips.forEach { HeroChipText(it, contentColor, compact) }
+                chips.forEachIndexed { i, chip ->
+                    HeroChipText(chip, contentColor, compact, Modifier.entrance(CHIP_DELAY_MILLIS * (i + 1)))
+                }
             }
         }
         if (compact) {
@@ -123,7 +129,7 @@ fun LilloSummaryHero(
 }
 
 @Composable
-private fun HeroChipText(chip: HeroChip, color: Color, compact: Boolean) {
+private fun HeroChipText(chip: HeroChip, color: Color, compact: Boolean, modifier: Modifier = Modifier) {
     Text(
         chip.text,
         color = color,
@@ -131,7 +137,7 @@ private fun HeroChipText(chip: HeroChip, color: Color, compact: Boolean) {
         fontWeight = FontWeight.Bold,
         maxLines = 1,
         overflow = TextOverflow.Ellipsis,
-        modifier = Modifier
+        modifier = modifier
             .background(Color(0x40000000), RoundedCornerShape(50))
             .padding(horizontal = if (compact) 10.dp else 14.dp, vertical = if (compact) 4.dp else 8.dp)
             .then(if (chip.tag != null) Modifier.testTag(chip.tag) else Modifier)

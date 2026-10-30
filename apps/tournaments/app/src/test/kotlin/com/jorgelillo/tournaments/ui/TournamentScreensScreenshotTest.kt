@@ -67,6 +67,9 @@ class TournamentScreensScreenshotTest {
 
     @Test fun homePortrait() = home("home")
 
+    /** First launch: the summary invites to make the first tournament. */
+    @Test fun homeEmpty() = shot("home_empty") { HomeScreen(Library(emptyList()), {}, {}, {}, {}, {}) }
+
     @Test
     @Config(qualifiers = "+land")
     fun homeLandscape() = home("home_landscape")

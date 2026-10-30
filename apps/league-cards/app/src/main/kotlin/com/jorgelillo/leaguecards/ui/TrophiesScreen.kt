@@ -17,11 +17,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.jorgelillo.core.designsystem.LilloSectionTitle
+import com.jorgelillo.core.designsystem.accentEdge
 import com.jorgelillo.leaguecards.R
 import com.jorgelillo.leaguecards.domain.League
 import com.jorgelillo.leaguecards.domain.Saved
@@ -103,8 +105,10 @@ private fun Tile(emoji: String, title: String, subtitle: String?, dim: Boolean, 
         Modifier
             .fillMaxWidth()
             .padding(vertical = 3.dp)
-            .background(Chat.Bubble, RoundedCornerShape(12.dp))
-            .padding(horizontal = 12.dp, vertical = 10.dp)
+            .clip(RoundedCornerShape(12.dp))
+            .background(Chat.Bubble)
+            .then(if (dim) Modifier else Modifier.accentEdge(Chat.Gold))
+            .padding(start = 16.dp, end = 12.dp, top = 10.dp, bottom = 10.dp)
             .testTag(tag),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -129,8 +133,11 @@ private fun HistoryRow(league: League, r: SeasonRecord) {
         Modifier
             .fillMaxWidth()
             .padding(vertical = 3.dp)
-            .background(Chat.Bubble, RoundedCornerShape(12.dp))
-            .padding(horizontal = 12.dp, vertical = 10.dp),
+            .clip(RoundedCornerShape(12.dp))
+            .background(Chat.Bubble)
+            // Leagues won stand out.
+            .then(if (r.position == 1) Modifier.accentEdge(Chat.Gold) else Modifier)
+            .padding(start = 16.dp, end = 12.dp, top = 10.dp, bottom = 10.dp),
         verticalArrangement = Arrangement.spacedBy(2.dp)
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {

@@ -52,6 +52,7 @@ import androidx.compose.ui.unit.dp
 import com.jorgelillo.core.designsystem.HeroChip
 import com.jorgelillo.core.designsystem.LilloSummaryHero
 import com.jorgelillo.core.designsystem.TestTagsAsResourceIds
+import com.jorgelillo.core.designsystem.accentEdge
 import com.jorgelillo.core.designsystem.isShortScreen
 import com.jorgelillo.decisionwheel.R
 import com.jorgelillo.decisionwheel.domain.AppState
@@ -208,6 +209,8 @@ private fun WheelCard(wheel: Wheel, onClick: () -> Unit, onToggleFavorite: () ->
             .fillMaxWidth()
             .clip(MaterialTheme.shapes.large)
             .background(WheelColors.NightRaised)
+            // Favourites (first in the list, launcher shortcuts) get the star's colour on their edge.
+            .then(if (wheel.favorite) Modifier.accentEdge(WheelColors.Sun) else Modifier)
             .clickable(onClick = onClick)
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically

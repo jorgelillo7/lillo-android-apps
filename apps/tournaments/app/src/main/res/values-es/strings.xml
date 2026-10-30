@@ -3,8 +3,6 @@
 
     <!-- Home -->
     <string name="new_tournament">Nuevo torneo</string>
-    <string name="home_empty_title">¿Quién será el único?</string>
-    <string name="home_empty_body">Cartas, ping-pong, FIFA, pádel… Crea un torneo en segundos y guarda el historial. Sin cuentas y sin instalar nada en los otros móviles.</string>
     <plurals name="players_count">
         <item quantity="one">%d jugador</item>
         <item quantity="many">%d jugadores</item>
@@ -145,4 +143,6 @@
     <string name="hero_next_round">⚔️ %s: toca la siguiente ronda</string>
     <string name="hero_last_champion">🏆 Último campeón: %s</string>
     <string name="about_rate">Valorar en Google Play</string>
+    <string name="hero_first">👑 Crea el primero: eliminatoria o suizo</string>
+    <string name="hero_none">Aún no hay ninguno</string>
 </resources>

@@ -4,7 +4,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
@@ -13,6 +15,7 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Devices
@@ -75,6 +78,22 @@ private fun SummaryHeroLandscapePreview() = CatalogueTheme {
         emoji = "🏆",
         chips = listOf(HeroChip("⚔️ Office ping-pong: 2 to play"), HeroChip("🏆 Last champion: Riley"))
     )
+}
+
+@Preview(name = "Accent edge")
+@Composable
+private fun AccentEdgePreview() = CatalogueTheme {
+    listOf(Color(0xFF3DDC97) to "In progress", Color(0xFFFFC83D) to "Finished").forEach { (color, label) ->
+        Text(
+            label,
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(16.dp))
+                .background(MaterialTheme.colorScheme.surfaceContainer)
+                .accentEdge(color)
+                .padding(20.dp)
+        )
+    }
 }
 
 @Preview(name = "Avatars")
