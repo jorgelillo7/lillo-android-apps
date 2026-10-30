@@ -151,7 +151,7 @@ internal fun EditScreen(
                 if (!isNew) {
                     item {
                         TextButton(onClick = { confirmDelete = true }, modifier = Modifier.padding(top = 16.dp)) {
-                            Text(stringResource(R.string.edit_delete), color = WheelColors.Coral)
+                            Text(stringResource(R.string.edit_delete), color = WheelColors.CoralText)
                         }
                     }
                 }
@@ -164,7 +164,9 @@ internal fun EditScreen(
             onDismissRequest = { confirmDelete = false },
             text = { Text(stringResource(R.string.edit_delete_confirm)) },
             confirmButton = {
-                TextButton(onClick = onDelete) { Text(stringResource(R.string.edit_delete), color = WheelColors.Coral) }
+                TextButton(onClick = onDelete) {
+                    Text(stringResource(R.string.edit_delete), color = WheelColors.CoralText)
+                }
             },
             dismissButton = {
                 TextButton(onClick = { confirmDelete = false }) { Text(stringResource(R.string.edit_cancel)) }

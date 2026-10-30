@@ -55,7 +55,7 @@ internal fun StandingsView(t: Tournament) {
                     Box(Modifier.weight(1f).height(2.dp).background(Arena.Gold))
                     Text(
                         stringResource(R.string.setup_top_cut_n, t.topCut),
-                        color = Arena.Gold,
+                        color = Arena.GoldText,
                         fontSize = 11.sp,
                         modifier = Modifier.padding(horizontal = 8.dp)
                     )
@@ -72,14 +72,14 @@ internal fun StandingsView(t: Tournament) {
             ) {
                 Text(
                     "${i + 1}",
-                    color = if (leader) Arena.Gold else Arena.Muted,
+                    color = if (leader) Arena.GoldText else Arena.Muted,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.width(28.dp)
                 )
                 Text(
                     t.player(s.player)?.name.orEmpty(),
                     fontWeight = FontWeight.Bold,
-                    color = if (leader) Arena.Gold else Arena.Cream,
+                    color = if (leader) Arena.GoldText else Arena.Cream,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.weight(1f)

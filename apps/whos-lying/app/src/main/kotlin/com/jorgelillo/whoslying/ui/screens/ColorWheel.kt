@@ -59,7 +59,7 @@ internal fun ColorWheelDialog(initial: Color, onPick: (Color) -> Unit, onDismiss
         text = { ColorWheel(initial, onChange = { color = it }) },
         confirmButton = {
             TextButton(onClick = { onPick(color) }, modifier = Modifier.testTag("color_use")) {
-                Text(stringResource(R.string.drawing_use_color), color = Neon.Turquoise)
+                Text(stringResource(R.string.drawing_use_color), color = Neon.TurquoiseText)
             }
         },
         dismissButton = {

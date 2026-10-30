@@ -378,7 +378,7 @@ private fun ResultCard(winner: String, onAccept: () -> Unit, onAgain: () -> Unit
     ) {
         Text(
             stringResource(R.string.result_title),
-            color = WheelColors.Sun,
+            color = WheelColors.SunText,
             style = MaterialTheme.typography.labelLarge
         )
         Text(

@@ -5,9 +5,12 @@ import androidx.compose.ui.graphics.Color
 
 object ChristmasColors {
     val Gold = Color(0xFFFFC857)
+
+    /** Gold for text: a little softer, so it doesn't vibrate on the dark background. */
+    val GoldText = Color(0xFFF5CF6E)
     val Pine = Color(0xFF2A9D5C)
     val Berry = Color(0xFFE63946)
-    val Snow = Color(0xFFFFF8EE)
+    val Snow = Color(0xFFF3ECE2)
     val Wine = Color(0xFF4A0E1C)
     val Midnight = Color(0xFF0B1426)
 

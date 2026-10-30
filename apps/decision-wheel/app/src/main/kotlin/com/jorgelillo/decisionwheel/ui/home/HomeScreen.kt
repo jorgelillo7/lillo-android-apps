@@ -249,7 +249,7 @@ private fun WheelCard(wheel: Wheel, onClick: () -> Unit, onToggleFavorite: () ->
             Text(
                 pluralStringResource(R.plurals.options_count, wheel.options.size, wheel.options.size),
                 style = MaterialTheme.typography.labelSmall,
-                color = WheelColors.Sun
+                color = WheelColors.SunText
             )
         }
         FavoriteButton(wheel, onToggleFavorite)

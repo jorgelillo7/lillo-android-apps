@@ -9,7 +9,7 @@ object Neon {
     val Night = Color(0xFF100E20)
     val Card = Color(0xFF1E1A3A)
     val CardHigh = Color(0xFF2A2550)
-    val Ink = Color(0xFFF0EEFF)
+    val Ink = Color(0xFFE6E3F5)
     val Muted = Color(0xFF9692BE)
     val Violet = Color(0xFF7756FA)
 
@@ -26,6 +26,12 @@ object Neon {
 
     /** "Go" actions: hide the card, vote, next round. */
     val Go = Color(0xFF00D26A)
+
+    /** Turquoise for text: a little softer, so it doesn't vibrate on the dark background. */
+    val TurquoiseText = Color(0xFF6AE7D0)
+
+    /** Go for text: a little softer, so it doesn't vibrate on the dark background. */
+    val GoText = Color(0xFF6AE7A9)
 
     /** Confetti and fireworks. */
     val Confetti = listOf(Amber, Pink, Turquoise, Color.White, Color(0xFF7CFF6B), Violet)

@@ -113,7 +113,7 @@ private fun TimeContent(timeLeft: TimeLeft) {
         Text(
             text = stringResource(R.string.unit_days),
             style = MaterialTheme.typography.titleLarge,
-            color = ChristmasColors.Gold
+            color = ChristmasColors.GoldText
         )
         Spacer(Modifier.height(24.dp))
         Row(
@@ -135,7 +135,7 @@ private fun SleepsContent(sleeps: Long) {
         Text(
             text = pluralStringResource(R.plurals.sleeps_left, sleeps.toInt(), sleeps),
             style = MaterialTheme.typography.titleLarge,
-            color = ChristmasColors.Gold
+            color = ChristmasColors.GoldText
         )
         Spacer(Modifier.height(24.dp))
         // A row of moons, one per night, for the last two weeks.
@@ -155,7 +155,7 @@ private fun ChristmasDayContent() {
         Text(
             text = stringResource(R.string.christmas_day_title),
             style = MaterialTheme.typography.displayMedium,
-            color = ChristmasColors.Gold,
+            color = ChristmasColors.GoldText,
             textAlign = TextAlign.Center
         )
         Spacer(Modifier.height(12.dp))

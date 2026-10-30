@@ -17,6 +17,15 @@ object Arena {
     val Gold = Color(0xFFFFC83D)
     val Teal = Color(0xFF3DDC97)
     val Coral = Color(0xFFFF6B6B)
+
+    /** Gold for text: a little softer, so it doesn't vibrate on the dark background. */
+    val GoldText = Color(0xFFF5CF6E)
+
+    /** Teal for text: a little softer, so it doesn't vibrate on the dark background. */
+    val TealText = Color(0xFF6CE4B0)
+
+    /** Coral for text: a little softer, so it doesn't vibrate on the dark background. */
+    val CoralText = Color(0xFFEA8080)
     val Blue = Color(0xFF6C8EF5)
 
     val Background = Brush.verticalGradient(listOf(InkTop, Ink))

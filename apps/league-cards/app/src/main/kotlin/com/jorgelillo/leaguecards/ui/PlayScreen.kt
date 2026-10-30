@@ -92,7 +92,7 @@ internal fun PlayScreen(
             // One line at most: on small phones every line taken here is one the card loses.
             Text(
                 stringResource(R.string.card_points, "%+d".format(season.matchdayPoints)),
-                color = if (season.matchdayPoints > 0) Chat.Green else Chat.Red,
+                color = if (season.matchdayPoints > 0) Chat.GreenText else Chat.Red,
                 modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
                 textAlign = TextAlign.Center,
                 maxLines = 1,
@@ -129,7 +129,7 @@ internal fun PlayScreen(
         if (Game.canUseJoker(league, season)) {
             val joker = league.joker!!
             TextButton(onClick = onJoker, modifier = Modifier.fillMaxWidth().testTag("joker")) {
-                Text("🃏 " + joker.label + " · " + stringResource(R.string.joker_once), color = Chat.Gold)
+                Text("🃏 " + joker.label + " · " + stringResource(R.string.joker_once), color = Chat.GoldText)
             }
         }
     }
@@ -370,7 +370,7 @@ private fun SwipeCard(
                     if (leaningLabel != null) {
                         Text(
                             leaningLabel,
-                            color = Chat.Gold,
+                            color = Chat.GoldText,
                             fontWeight = FontWeight.Black,
                             style = MaterialTheme.typography.titleMedium,
                             textAlign = TextAlign.Center

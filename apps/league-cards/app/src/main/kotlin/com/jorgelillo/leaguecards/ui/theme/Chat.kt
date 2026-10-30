@@ -17,6 +17,12 @@ object Chat {
 
     val Green = Color(0xFF00A884)
     val Gold = Color(0xFFFFC83D)
+
+    /** Gold for text: a little softer, so it doesn't vibrate on the dark background. */
+    val GoldText = Color(0xFFF5CF6E)
+
+    /** Green for text: a little softer, so it doesn't vibrate on the dark background. */
+    val GreenText = Color(0xFF5FD8BC)
     val Tear = Color(0xFF53BDEB)
     val Red = Color(0xFFF15C6D)
     val System = Color(0xFF182229)

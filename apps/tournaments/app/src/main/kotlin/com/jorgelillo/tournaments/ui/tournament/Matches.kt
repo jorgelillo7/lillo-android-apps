@@ -91,7 +91,7 @@ internal fun MatchList(t: Tournament, onEdit: (Match) -> Unit) {
             item(key = "${key.first}${key.second}") {
                 Text(
                     roundName(t, key.first, key.second),
-                    color = Arena.Gold,
+                    color = Arena.GoldText,
                     fontWeight = FontWeight.Bold,
                     fontSize = 14.sp,
                     modifier = Modifier.padding(top = 8.dp)
@@ -147,7 +147,11 @@ private fun MatchCard(t: Tournament, m: Match, onEdit: (Match) -> Unit) {
                 overflow = TextOverflow.Ellipsis
             )
         }
-        if (playable && !done) Text(stringResource(R.string.match_tap_to_score), color = Arena.Teal, fontSize = 12.sp)
+        if (playable &&
+            !done
+        ) {
+            Text(stringResource(R.string.match_tap_to_score), color = Arena.TealText, fontSize = 12.sp)
+        }
     }
 }
 
@@ -179,7 +183,7 @@ private fun PlayerLine(name: String?, wins: Int, done: Boolean, won: Boolean) {
                 "$wins",
                 fontWeight = FontWeight.Black,
                 fontSize = 18.sp,
-                color = if (won) Arena.Gold else Arena.Muted
+                color = if (won) Arena.GoldText else Arena.Muted
             )
         }
     }
@@ -266,7 +270,7 @@ internal fun ResultSheet(
             ).padding(horizontal = 20.dp).navigationBarsPadding(),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            Text(res.roundName(t, match), color = Arena.Gold, fontWeight = FontWeight.Bold)
+            Text(res.roundName(t, match), color = Arena.GoldText, fontWeight = FontWeight.Bold)
             Text(stringResource(R.string.result_who_won), fontSize = 22.sp, fontWeight = FontWeight.Black)
             Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                 WinnerButton(a, outcome == 0, { outcome = 0 }, "winner_a", Modifier.weight(1f))
@@ -333,7 +337,13 @@ internal fun ResultSheet(
                     modifier = Modifier.fillMaxWidth().testTag("preview")
                 )
             }
-            if (laterReset) Text(stringResource(R.string.result_resets_later), color = Arena.Coral, fontSize = 13.sp)
+            if (laterReset) {
+                Text(
+                    stringResource(R.string.result_resets_later),
+                    color = Arena.CoralText,
+                    fontSize = 13.sp
+                )
+            }
             BigButton(
                 stringResource(R.string.result_save),
                 {

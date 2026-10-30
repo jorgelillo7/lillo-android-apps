@@ -188,7 +188,7 @@ internal fun PlayersScreen(
             if (players.size >= Rules.MAX_PLAYERS) {
                 Text(
                     pluralStringResource(R.plurals.players_full, Rules.MAX_PLAYERS, Rules.MAX_PLAYERS),
-                    color = Neon.Amber,
+                    color = Neon.AmberText,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.fillMaxWidth().testTag("players_full")
                 )
@@ -288,7 +288,7 @@ internal fun SetupScreen(
     ) {
         Column(Modifier.verticalScroll(rememberScrollState())) {
             TextButton(onClick = onModesInfo, modifier = Modifier.align(Alignment.End).testTag("modes_info")) {
-                Text("ⓘ  " + stringResource(R.string.setup_which_mode), color = Neon.Turquoise)
+                Text("ⓘ  " + stringResource(R.string.setup_which_mode), color = Neon.TurquoiseText)
             }
             listOf(
                 Triple(GameMode.CLASSIC, R.string.mode_classic to R.string.mode_classic_desc, "🎭"),
@@ -377,7 +377,7 @@ internal fun SetupScreen(
                 }
                 Text(
                     if (settings.rounds == 0) "∞" else "${settings.rounds}",
-                    color = if (settings.rounds == recommendedRounds) Neon.Turquoise else Neon.Ink,
+                    color = if (settings.rounds == recommendedRounds) Neon.TurquoiseText else Neon.Ink,
                     style = MaterialTheme.typography.titleLarge,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.width(40.dp).testTag("rounds")
@@ -420,7 +420,7 @@ internal fun SetupScreen(
                     } else {
                         stringResource(R.string.setup_timer_minutes, settings.discussionSeconds / 60)
                     },
-                    color = if (settings.discussionSeconds == recommendedTimer) Neon.Turquoise else Neon.Ink,
+                    color = if (settings.discussionSeconds == recommendedTimer) Neon.TurquoiseText else Neon.Ink,
                     style = MaterialTheme.typography.titleMedium,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.width(64.dp).testTag("timer_value")
@@ -477,7 +477,7 @@ internal fun SetupScreen(
                 Text(
                     stringResource(R.string.setup_running_out),
                     style = MaterialTheme.typography.bodySmall,
-                    color = Neon.Amber,
+                    color = Neon.AmberText,
                     modifier = Modifier.padding(top = 6.dp)
                 )
             }
