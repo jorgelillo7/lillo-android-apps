@@ -6,11 +6,11 @@ import androidx.compose.ui.graphics.luminance
 
 /** "Sunset" palette: deep night background, six warm-to-cool accents of similar intensity. */
 object WheelColors {
-    val Night = Color(0xFF1F1B2E)
-    val NightRaised = Color(0xFF2A2540)
-    val NightHigh = Color(0xFF363052)
-    val Cream = Color(0xFFF7F3EE)
-    val Muted = Color(0xFFB9B2C9)
+    val Night = Color(0xFF15052B)
+    val NightRaised = Color(0xFF220E3C)
+    val NightHigh = Color(0xFF30194F)
+    val Cream = Color(0xFFEFDFFF)
+    val Muted = Color(0xFFB7A2D1)
 
     val Coral = Color(0xFFFF6B6B)
     val Orange = Color(0xFFFFB347)

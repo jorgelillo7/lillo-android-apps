@@ -10,7 +10,7 @@ object ChristmasColors {
     val GoldText = Color(0xFFF5CF6E)
     val Pine = Color(0xFF2A9D5C)
     val Berry = Color(0xFFE63946)
-    val Snow = Color(0xFFF3ECE2)
+    val Snow = Color(0xFFEEE3E2)
     val Wine = Color(0xFF4A0E1C)
     val Midnight = Color(0xFF0B1426)
 

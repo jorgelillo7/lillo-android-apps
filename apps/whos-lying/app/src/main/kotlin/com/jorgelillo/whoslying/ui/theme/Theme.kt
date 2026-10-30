@@ -6,11 +6,11 @@ import androidx.compose.ui.graphics.Color
 
 /** "Neon" palette: midnight blue, violet actions, turquoise for the word, pink for impostors. */
 object Neon {
-    val Night = Color(0xFF100E20)
-    val Card = Color(0xFF1E1A3A)
-    val CardHigh = Color(0xFF2A2550)
-    val Ink = Color(0xFFE6E3F5)
-    val Muted = Color(0xFF9692BE)
+    val Night = Color(0xFF14052B)
+    val Card = Color(0xFF210F3D)
+    val CardHigh = Color(0xFF2F1A50)
+    val Ink = Color(0xFFEEE0FF)
+    val Muted = Color(0xFFB6A3D1)
     val Violet = Color(0xFF7756FA)
 
     /** The home summary's gradient: electric violet into raspberry, white text on top. */

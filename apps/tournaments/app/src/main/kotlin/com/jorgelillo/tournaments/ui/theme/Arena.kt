@@ -4,41 +4,42 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 
-/** "Arena" palette: deep blue night, cream text, gold for winners (the victory line). */
+/**
+ * "Arena" palette (apps/tournaments/DESIGN.md): a night arena from the seed #2B3FD8 (Material 3
+ * Vibrant, see docs/design.md), cream text, gold only for what is won, lilac for what is going on.
+ */
 object Arena {
-    val Ink = Color(0xFF12202D)
-    val InkTop = Color(0xFF1E3A52)
-    val Raised = Color(0xFF1B2E3E)
-    val High = Color(0xFF25405A)
-    val Cream = Color(0xFFF4F1EA)
-    val Muted = Color(0xFFA9B6C2)
-    val Faint = Color(0x33F4F1EA)
+    val Ink = Color(0xFF0C072E)
+    val InkTop = Color(0xFF1E184A)
+    val Raised = Color(0xFF181241)
+    val High = Color(0xFF241D54)
+    val Cream = Color(0xFFE7E2FF)
+    val Muted = Color(0xFFABA6D5)
+    val Faint = Color(0x33E7E2FF)
 
+    /** Brand fill: the primary button, the champion, finished tournaments, the winners' path. */
     val Gold = Color(0xFFFFC83D)
-    val Teal = Color(0xFF3DDC97)
+
+    /** The harmonised accent: in progress, the selected tab, "tap to score". */
+    val Accent = Color(0xFF9DA7FF)
     val Coral = Color(0xFFFF6B6B)
 
-    /** Gold for text: a little softer, so it doesn't vibrate on the dark background. */
+    // As text, softer tones: saturated colours vibrate as small text on a dark background.
     val GoldText = Color(0xFFF5CF6E)
-
-    /** Teal for text: a little softer, so it doesn't vibrate on the dark background. */
-    val TealText = Color(0xFF6CE4B0)
-
-    /** Coral for text: a little softer, so it doesn't vibrate on the dark background. */
+    val AccentText = Color(0xFF9DA7FF)
     val CoralText = Color(0xFFEA8080)
-    val Blue = Color(0xFF6C8EF5)
 
     val Background = Brush.verticalGradient(listOf(InkTop, Ink))
 
-    /** The home summary's gradient: electric blue into emerald, white text on top. */
-    val Hero = listOf(Color(0xFF2B3FD8), Color(0xFF00695C))
-    val Confetti = listOf(Gold, Teal, Coral, Blue, Cream)
+    /** The home summary's gradient: electric blue into violet, white text on top. */
+    val Hero = listOf(Color(0xFF2B3FD8), Color(0xFF7B3FE4))
+    val Confetti = listOf(Gold, Accent, Coral, Cream)
 }
 
 val ArenaColorScheme = darkColorScheme(
     primary = Arena.Gold,
     onPrimary = Arena.Ink,
-    secondary = Arena.Teal,
+    secondary = Arena.Accent,
     onSecondary = Arena.Ink,
     tertiary = Arena.Coral,
     background = Arena.Ink,
