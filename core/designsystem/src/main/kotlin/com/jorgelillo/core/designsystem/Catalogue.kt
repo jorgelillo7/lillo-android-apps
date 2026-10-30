@@ -53,6 +53,30 @@ private fun ButtonsPreview() = CatalogueTheme {
     LilloSecondaryButton("Short season · 10 matchdays", {})
 }
 
+@Preview(name = "Summary hero")
+@Composable
+private fun SummaryHeroPreview() = CatalogueTheme {
+    LilloSummaryHero(
+        title = "Your tournaments",
+        subtitle = "1 in progress · 3 finished",
+        colors = listOf(Color(0xFF3346A8), Color(0xFF1D7A6C)),
+        emoji = "🏆",
+        chips = listOf(HeroChip("⚔️ Office ping-pong: 2 to play"), HeroChip("🏆 Last champion: Riley"))
+    )
+}
+
+@Preview(name = "Summary hero, landscape", device = Devices.PIXEL_7, widthDp = 915, heightDp = 412)
+@Composable
+private fun SummaryHeroLandscapePreview() = CatalogueTheme {
+    LilloSummaryHero(
+        title = "Your tournaments",
+        subtitle = "1 in progress · 3 finished",
+        colors = listOf(Color(0xFF3346A8), Color(0xFF1D7A6C)),
+        emoji = "🏆",
+        chips = listOf(HeroChip("⚔️ Office ping-pong: 2 to play"), HeroChip("🏆 Last champion: Riley"))
+    )
+}
+
 @Preview(name = "Avatars")
 @Composable
 private fun AvatarsPreview() = CatalogueTheme {

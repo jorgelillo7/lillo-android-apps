@@ -43,7 +43,17 @@ class TournamentScreensScreenshotTest {
         while (Tournaments.pending(t).isNotEmpty()) t = Tournaments.record(t, Tournaments.pending(t).first(), 2, 1)
         t
     }
-    private val library = Library(listOf(cup))
+
+    /** A Swiss league with one result in: "in progress" next to the finished cup on the home screen. */
+    private val league: Tournament = Tournaments.create(
+        "league",
+        "Office ping-pong",
+        20_410,
+        listOf("Chris", "Robin", "Max", "Kim", "Lee", "Pat"),
+        Format.SWISS,
+        random = Random(2)
+    ).let { Tournaments.record(it, Tournaments.pending(it).first(), 2, 0) }
+    private val library = Library(listOf(cup, league))
 
     private fun shot(name: String, content: @Composable () -> Unit) = compose.captureScreenshot(name) {
         LilloTheme(ArenaColorScheme) { content() }

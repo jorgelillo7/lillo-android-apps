@@ -20,6 +20,9 @@ object Arena {
     val Blue = Color(0xFF6C8EF5)
 
     val Background = Brush.verticalGradient(listOf(InkTop, Ink))
+
+    /** The home summary's gradient: night blue into pitch green, white text on top. */
+    val Hero = listOf(Color(0xFF3346A8), Color(0xFF1D7A6C))
     val Confetti = listOf(Gold, Teal, Coral, Blue, Cream)
 }
 
