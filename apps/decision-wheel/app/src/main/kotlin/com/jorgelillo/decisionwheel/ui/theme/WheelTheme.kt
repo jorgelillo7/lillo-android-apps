@@ -15,6 +15,12 @@ object WheelColors {
     val Coral = Color(0xFFFF6B6B)
     val Orange = Color(0xFFFFB347)
     val Sun = Color(0xFFFFD93D)
+
+    /** Sun for text: a little softer, so it doesn't vibrate on the dark background. */
+    val SunText = Color(0xFFF3D56A)
+
+    /** Coral for text: a little softer, so it doesn't vibrate on the dark background. */
+    val CoralText = Color(0xFFEA8080)
     val Teal = Color(0xFF4ECDC4)
     val Blue = Color(0xFF6C8EF5)
     val Lilac = Color(0xFFC792EA)

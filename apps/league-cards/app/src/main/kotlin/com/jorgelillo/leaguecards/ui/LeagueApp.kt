@@ -191,7 +191,7 @@ internal fun HomeScreen(
                         saved.endingsSeen.size,
                         league.endings.keys.size
                     ),
-                    color = Chat.Gold
+                    color = Chat.GoldText
                 )
             }
             Spacer(Modifier.height(16.dp))
@@ -328,7 +328,7 @@ private fun EndScreen(
                 TextButton(onClick = onTrophies, modifier = Modifier.testTag("trophies")) {
                     Text(
                         stringResource(R.string.endings_discovered, saved.endingsSeen.size, league.endings.keys.size),
-                        color = Chat.Gold
+                        color = Chat.GoldText
                     )
                 }
                 val unlocked = season.unlocked.mapNotNull { league.achievement(it) }
@@ -342,7 +342,7 @@ private fun EndScreen(
                     ) {
                         Text(
                             stringResource(R.string.season_achievements, unlocked.size),
-                            color = Chat.Gold,
+                            color = Chat.GoldText,
                             style = MaterialTheme.typography.labelLarge
                         )
                         Text(unlocked.joinToString(" ") { it.emoji }, style = MaterialTheme.typography.headlineSmall)

@@ -105,7 +105,7 @@ internal fun DrawingScreen(
     val turns: @Composable () -> Unit = {
         Text(
             stringResource(R.string.drawing_turns, starter),
-            color = Neon.Amber,
+            color = Neon.AmberText,
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center,
             modifier = Modifier.fillMaxWidth()
@@ -295,7 +295,7 @@ private fun TimerBar(seconds: Int, onTimeUp: () -> Unit) {
                 "%d:%02d".format(left / 60, left % 60) +
                     if (paused) "  ⏸" else ""
             },
-            color = if (left == 0) Neon.Pink else Neon.Ink,
+            color = if (left == 0) Neon.PinkText else Neon.Ink,
             fontWeight = FontWeight.Black
         )
     }

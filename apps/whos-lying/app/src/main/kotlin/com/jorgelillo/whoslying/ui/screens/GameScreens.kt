@@ -254,7 +254,7 @@ private fun SecretCard(card: Card, compact: Boolean) {
         card.hint?.let { hint ->
             Text(
                 stringResource(R.string.reveal_hint, hint),
-                color = Neon.Amber,
+                color = Neon.AmberText,
                 modifier = Modifier.padding(top = if (compact) 4.dp else 14.dp)
             )
         }
@@ -277,7 +277,7 @@ internal fun CountdownScreen(starter: String, onDone: () -> Unit) {
         Spacer(Modifier.weight(1f))
         Text(
             stringResource(R.string.countdown_starts, starter),
-            color = Neon.Amber,
+            color = Neon.AmberText,
             style = MaterialTheme.typography.headlineLarge,
             fontWeight = FontWeight.Black,
             textAlign = TextAlign.Center,

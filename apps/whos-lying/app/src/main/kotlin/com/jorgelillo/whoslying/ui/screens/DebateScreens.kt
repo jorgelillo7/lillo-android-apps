@@ -111,7 +111,7 @@ internal fun DebateScreen(
                     ?: game.cards.first { it.player in alive && it.role != Role.DRIFTER }.player
             Text(
                 stringResource(R.string.countdown_starts, starter),
-                color = Neon.Amber,
+                color = Neon.AmberText,
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(top = 12.dp)
@@ -208,7 +208,7 @@ private fun CircularTimer(seconds: Int, onTimeUp: () -> Unit) {
                         else -> R.string.timer_pause
                     }
                 ),
-                color = if (left == 0) Neon.Pink else Color.White.copy(alpha = 0.8f),
+                color = if (left == 0) Neon.PinkText else Color.White.copy(alpha = 0.8f),
                 style = MaterialTheme.typography.bodySmall,
                 fontWeight = if (left == 0) FontWeight.Bold else null,
                 textAlign = TextAlign.Center,

@@ -141,7 +141,7 @@ internal fun BracketView(t: Tournament, onEdit: (Match) -> Unit) {
                     grid.cells.distinctBy { it.column }.forEach { cell ->
                         Text(
                             roundName(t, Stage.ELIMINATION, cell.round),
-                            color = Arena.Gold,
+                            color = Arena.GoldText,
                             fontSize = 12.sp,
                             fontWeight = FontWeight.Bold,
                             textAlign = TextAlign.Center,
@@ -315,7 +315,7 @@ private fun Slot(name: String?, score: Int?, won: Boolean, done: Boolean, height
             Spacer(Modifier.width(4.dp))
             Text(
                 "$score",
-                color = if (won) Arena.Gold else Arena.Muted,
+                color = if (won) Arena.GoldText else Arena.Muted,
                 fontWeight = FontWeight.Black,
                 fontSize = 14.sp
             )

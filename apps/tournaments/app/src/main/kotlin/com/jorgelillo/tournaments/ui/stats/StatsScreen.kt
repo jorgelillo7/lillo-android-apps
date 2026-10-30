@@ -81,7 +81,7 @@ internal fun StatsScreen(library: Library, onBack: () -> Unit) {
                             overflow = TextOverflow.Ellipsis,
                             modifier = Modifier.weight(1f)
                         )
-                        if (s.titles > 0) Text("🏆 ${s.titles}", color = Arena.Gold, fontWeight = FontWeight.Black)
+                        if (s.titles > 0) Text("🏆 ${s.titles}", color = Arena.GoldText, fontWeight = FontWeight.Black)
                     }
                     Spacer(Modifier.height(6.dp))
                     Text(

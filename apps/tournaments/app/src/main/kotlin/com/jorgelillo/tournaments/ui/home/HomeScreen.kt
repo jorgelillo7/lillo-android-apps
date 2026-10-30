@@ -202,7 +202,7 @@ private fun TournamentCard(t: Tournament, onClick: () -> Unit) {
                     pending > 0 -> pluralStringResource(R.plurals.status_pending, pending, pending)
                     else -> stringResource(R.string.status_next_round)
                 },
-                color = if (champion != null) Arena.Gold else Arena.Teal,
+                color = if (champion != null) Arena.GoldText else Arena.TealText,
                 fontSize = 13.sp,
                 fontWeight = FontWeight.SemiBold
             )

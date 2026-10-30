@@ -64,7 +64,7 @@ internal fun HowToSheet(onDismiss: () -> Unit) {
                 Column(Modifier.fillMaxWidth().clip(MaterialTheme.shapes.large).background(Neon.Night).padding(18.dp)) {
                     Text(
                         "$emoji  " + stringResource(title),
-                        color = Neon.Amber,
+                        color = Neon.AmberText,
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold
                     )
@@ -118,7 +118,7 @@ internal fun ModesSheet(onDismiss: () -> Unit) {
                 Column(Modifier.fillMaxWidth().clip(MaterialTheme.shapes.large).background(Neon.Night).padding(18.dp)) {
                     Text(
                         "${mode.emoji}  " + stringResource(mode.title),
-                        color = Neon.Amber,
+                        color = Neon.AmberText,
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold
                     )
@@ -129,7 +129,7 @@ internal fun ModesSheet(onDismiss: () -> Unit) {
                     ).forEach { (label, body) ->
                         Text(
                             stringResource(label),
-                            color = Neon.Turquoise,
+                            color = Neon.TurquoiseText,
                             style = MaterialTheme.typography.labelLarge,
                             modifier = Modifier.padding(top = 12.dp)
                         )
@@ -147,7 +147,7 @@ internal fun ModesSheet(onDismiss: () -> Unit) {
                 Column(Modifier.fillMaxWidth().clip(MaterialTheme.shapes.large).background(Neon.Night).padding(18.dp)) {
                     Text(
                         "$emoji  " + stringResource(title),
-                        color = Neon.Amber,
+                        color = Neon.AmberText,
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold
                     )
@@ -193,11 +193,11 @@ internal fun ReportSheet(word: String, decoy: String?, pack: String, language: S
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Black
             )
-            Text(stringResource(R.string.report_word, word), color = Neon.Amber, fontWeight = FontWeight.Bold)
+            Text(stringResource(R.string.report_word, word), color = Neon.AmberText, fontWeight = FontWeight.Bold)
             if (decoy !=
                 null
             ) {
-                Text(stringResource(R.string.report_decoy, decoy), color = Neon.Amber, fontWeight = FontWeight.Bold)
+                Text(stringResource(R.string.report_decoy, decoy), color = Neon.AmberText, fontWeight = FontWeight.Bold)
             }
             Text(stringResource(R.string.report_pick), color = Neon.Muted, style = MaterialTheme.typography.bodySmall)
             reasons.forEachIndexed { i, reason ->

@@ -142,7 +142,7 @@ internal fun TournamentScreen(
                             }
                         )
                         DropdownMenuItem(
-                            text = { Text(stringResource(R.string.action_delete), color = Arena.Coral) },
+                            text = { Text(stringResource(R.string.action_delete), color = Arena.CoralText) },
                             onClick = {
                                 menu = false
                                 confirmDelete = true
@@ -228,7 +228,7 @@ internal fun TournamentScreen(
                     confirmDelete = false
                     onDelete()
                 }, modifier = Modifier.testTag("delete_ok")) {
-                    Text(stringResource(R.string.action_delete), color = Arena.Coral)
+                    Text(stringResource(R.string.action_delete), color = Arena.CoralText)
                 }
             },
             dismissButton = {

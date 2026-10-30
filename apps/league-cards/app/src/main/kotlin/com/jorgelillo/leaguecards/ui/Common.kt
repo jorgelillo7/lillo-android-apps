@@ -151,7 +151,7 @@ internal fun AchievementBanner(a: Achievement, modifier: Modifier = Modifier) {
         Column(Modifier.padding(start = 10.dp)) {
             Text(
                 stringResource(R.string.achievement_new),
-                color = Chat.Gold,
+                color = Chat.GoldText,
                 style = MaterialTheme.typography.labelSmall
             )
             Text(a.title, color = Chat.Text, fontWeight = FontWeight.Bold)

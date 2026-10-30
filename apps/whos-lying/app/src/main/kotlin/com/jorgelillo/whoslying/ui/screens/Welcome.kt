@@ -66,7 +66,7 @@ internal fun WelcomeDialog(showCheckbox: Boolean, onDismiss: (dontShowAgain: Boo
         },
         confirmButton = {
             TextButton(onClick = { onDismiss(dontShowAgain) }, modifier = Modifier.testTag("welcome_ok")) {
-                Text(stringResource(R.string.welcome_ok), fontWeight = FontWeight.Bold, color = Neon.Turquoise)
+                Text(stringResource(R.string.welcome_ok), fontWeight = FontWeight.Bold, color = Neon.TurquoiseText)
             }
         },
         dismissButton = {

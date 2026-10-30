@@ -113,16 +113,16 @@ internal fun PackPickerScreen(
                     chosen.isEmpty() -> stringResource(R.string.pick_packs_none)
                     else -> pluralStringResource(R.plurals.pick_packs_some, chosen.size, chosen.size)
                 },
-                color = if (chosen.isEmpty()) Neon.Amber else Neon.Muted,
+                color = if (chosen.isEmpty()) Neon.AmberText else Neon.Muted,
                 modifier = Modifier.weight(1f)
             )
             if (all) {
                 TextButton(onClick = { chosen = emptyList() }, modifier = Modifier.testTag("clear_packs")) {
-                    Text(stringResource(R.string.pick_packs_clear), color = Neon.Turquoise)
+                    Text(stringResource(R.string.pick_packs_clear), color = Neon.TurquoiseText)
                 }
             } else {
                 TextButton(onClick = { chosen = ids }, modifier = Modifier.testTag("select_all_packs")) {
-                    Text(stringResource(R.string.pick_packs_select_all), color = Neon.Turquoise)
+                    Text(stringResource(R.string.pick_packs_select_all), color = Neon.TurquoiseText)
                 }
             }
         }
@@ -157,7 +157,7 @@ internal fun PackPickerScreen(
                         .testTag("picker_new_pack"),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text("＋", style = MaterialTheme.typography.displaySmall, color = Neon.Turquoise)
+                    Text("＋", style = MaterialTheme.typography.displaySmall, color = Neon.TurquoiseText)
                     Text(
                         stringResource(R.string.packs_new),
                         fontWeight = FontWeight.SemiBold,
@@ -235,7 +235,7 @@ internal fun PacksScreen(
         onBack = onBack,
         actions = {
             TextButton(onClick = { importing = true }, modifier = Modifier.testTag("import_pack")) {
-                Text(stringResource(R.string.pack_import), color = Neon.Turquoise)
+                Text(stringResource(R.string.pack_import), color = Neon.TurquoiseText)
             }
         },
         bottom = {
@@ -409,7 +409,7 @@ internal fun PackEditScreen(
             }, enabled = valid, modifier = Modifier.testTag("save_pack"))
             if (!isNew) {
                 TextButton(onClick = onDelete, modifier = Modifier.align(Alignment.CenterHorizontally)) {
-                    Text(stringResource(R.string.pack_delete), color = Neon.Pink)
+                    Text(stringResource(R.string.pack_delete), color = Neon.PinkText)
                 }
             }
         }
@@ -431,7 +431,7 @@ internal fun PackEditScreen(
         Text(
             if (valid) stringResource(R.string.pack_words_help) else stringResource(R.string.pack_need),
             style = MaterialTheme.typography.bodySmall,
-            color = if (valid) Neon.Muted else Neon.Pink,
+            color = if (valid) Neon.Muted else Neon.PinkText,
             modifier = Modifier.padding(top = 6.dp)
         )
     }
