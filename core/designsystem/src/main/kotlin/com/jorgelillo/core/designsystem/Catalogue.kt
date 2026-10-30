@@ -59,7 +59,7 @@ private fun SummaryHeroPreview() = CatalogueTheme {
     LilloSummaryHero(
         title = "Your tournaments",
         subtitle = "1 in progress · 3 finished",
-        colors = listOf(Color(0xFF3346A8), Color(0xFF1D7A6C)),
+        colors = listOf(Color(0xFF3346A8), Color(0xFF166558)),
         emoji = "🏆",
         chips = listOf(HeroChip("⚔️ Office ping-pong: 2 to play"), HeroChip("🏆 Last champion: Riley"))
     )
@@ -71,7 +71,7 @@ private fun SummaryHeroLandscapePreview() = CatalogueTheme {
     LilloSummaryHero(
         title = "Your tournaments",
         subtitle = "1 in progress · 3 finished",
-        colors = listOf(Color(0xFF3346A8), Color(0xFF1D7A6C)),
+        colors = listOf(Color(0xFF3346A8), Color(0xFF166558)),
         emoji = "🏆",
         chips = listOf(HeroChip("⚔️ Office ping-pong: 2 to play"), HeroChip("🏆 Last champion: Riley"))
     )
