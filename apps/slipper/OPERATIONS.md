@@ -61,9 +61,10 @@ production** (an app's first production release goes up as a draft and is sent f
 5. Production → Create release → upload the `.aab`, release notes from
    `app/src/main/play/release-notes/`, → Send for review.
 6. `scripts/set-release-secrets.sh slipper`: later releases go out with the Release workflow.
-7. After the first release: Play Console → App integrity → App signing → SHA-256 of the **app
-   signing** key into `/.well-known/assetlinks.json` on the website (challenge links then open the
-   app directly; until then they open the `/c/` page, which still opens the app on Android).
+7. Done 2026-10-31: the **app signing** key's SHA-256
+   (`10:07:4B:28:4B:B6:0F:2F:E6:E9:A2:3D:B4:ED:35:EA:D1:13:DC:58:9A:D3:54:60:EE:9A:35:F6:83:E0:F0:97`)
+   is in the website's `/.well-known/assetlinks.json` (with the upload and debug keys): challenge
+   links open the app directly.
 
 Upload key (created 25 Oct 2026 with `scripts/new-upload-key.sh`, see [docs/signing.md](../../docs/signing.md)):
 

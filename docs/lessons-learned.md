@@ -89,3 +89,6 @@ Short, one line each. Add to it whenever something bites.
 - **Test the content users actually get.** The sample deck's longest card is 89 characters, the
   league's private one 140: a card that fit in every test vanished on a tester's phone with a large
   font. Size tests on the longest real text, on a small screen with font scale 1.3.
+- **The app-signing SHA-256 comes from the API too**, once a bundle is uploaded: the Play API's
+  `generatedApks/<versionCode>` lists each generated APK with `certificateSha256Hash` (Play's signing
+  key, not the upload key). No Play Console visit needed for `assetlinks.json`.
