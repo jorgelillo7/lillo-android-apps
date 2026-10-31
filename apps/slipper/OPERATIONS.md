@@ -55,9 +55,9 @@ production** (an app's first production release goes up as a draft and is sent f
 3. Signed bundle and its check: `./gradlew :apps:slipper:app:bundleRelease`, then
    `scripts/verify-bundle.sh apps/slipper/app/build/outputs/bundle/release/app-release.aab`
    (versionCode 1, the upload key's serial, no permissions).
-4. Play Console → Create app: "¿Te pilla la chancla?", Spanish (Spain), Game, Free. Answer the App
-   content forms (table above), store listing from `app/src/main/play/listings/` (texts and
-   `graphics/`), production countries.
+4. Play Console → Create app: "¿Te pilla la chancla?", Spanish (Spain), Game, Free (done 2026-10-31).
+   Store listing published from the repo (es-ES, then en-US once the language existed: see
+   docs/lessons-learned.md). Then the App content forms (table above) and production countries.
 5. Production → Create release → upload the `.aab`, release notes from
    `app/src/main/play/release-notes/`, → Send for review.
 6. `scripts/set-release-secrets.sh slipper`: later releases go out with the Release workflow.

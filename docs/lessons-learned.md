@@ -89,3 +89,7 @@ Short, one line each. Add to it whenever something bites.
 - **Test the content users actually get.** The sample deck's longest card is 89 characters, the
   league's private one 140: a card that fit in every test vanished on a tester's phone with a large
   font. Size tests on the longest real text, on a small screen with font scale 1.3.
+- **A new app's second listing language must exist before `publishListing`.** Play Console only
+  creates the default language (es-ES); Gradle Play Publisher then fails with "Listing for language
+  'en-US' not found". Publish the default language first, create the other with the API
+  (`edits.listings.update` + commit) or in Play Console, then publish everything (slipper, 2026-10).
