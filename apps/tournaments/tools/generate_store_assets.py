@@ -13,9 +13,9 @@ sys.path.insert(0, str(ROOT.parent.parent / "scripts"))
 from store_assets import Style, build  # noqa: E402
 
 # The app's "Arena" palette: deep blue night, cream text, gold for winners.
-INK_TOP, INK = (30, 58, 82), (18, 32, 45)
-GOLD, CREAM = (255, 200, 61), (244, 241, 234)
-ACCENTS = [(255, 200, 61), (61, 220, 151), (255, 107, 107), (108, 142, 245)]
+INK_TOP, INK = (30, 24, 74), (12, 7, 46)
+GOLD, CREAM = (255, 200, 61), (231, 226, 255)
+ACCENTS = [(255, 200, 61), (157, 167, 255), (255, 107, 107), (108, 142, 245)]
 
 LOCALES = {
     "en-US": {
@@ -49,7 +49,7 @@ STYLE = Style(
     bottom=INK,
     headline=CREAM,
     highlight=GOLD,
-    tagline=(169, 182, 194),
+    tagline=(171, 166, 213),
     accents=ACCENTS,
 )
 
