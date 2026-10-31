@@ -5,6 +5,7 @@ Newest first. User-facing notes per language are in
 
 | versionCode | Version | Date | Notes |
 |---|---|---|---|
+| 9 | 1.5 | 2026-10-31 (production) | New palette from seed #7756FA (Vibrant): violet-night surfaces; pink edge for own packs; softer accents as text; baseline profile, new store screenshots |
 | 8 | 1.4 | 2026-10-30 (production) | Home summary header (LilloSummaryHero): group, mode, leader, game of the match, drawing mode; compact in landscape; baseline profile |
 | 7 | 1.3 | 2026-10-26 (production) | Pack picker: "clear all" and long-press for only one pack (tester request); word count readable on ticked packs; dependencies 2026-10, cutout-safe pages, predictive back |
 | 6 | 1.2 | 2026-10-24 (production) | Tester feedback: result rows keep the name whole (word under it), "remove someone" notice at the 24-player cap, drawing colour wheel, Blind never shows the category hint, primary violet darkened for WCAG AA |

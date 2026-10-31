@@ -1,4 +1,3 @@
-Under-the-hood improvements 🎄
-- Smoother back gesture on Android 13 and later
-- Better in landscape on phones with a notch
-- More reliable reminders and up-to-date libraries
+Easier on the eyes 🎄
+- Softer text on the night sky, no glare
+- Golds that read better

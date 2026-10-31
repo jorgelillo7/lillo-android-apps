@@ -1,3 +1,4 @@
-- New home: at a glance, how many tournaments are in progress, which matches are left and the last champion
-- On tablets in landscape, the matches and the bracket (or standings) side by side
-- Rate the app from About
+New colours 👑
+- Indigo background, gold for champions, lilac for what is in play
+- Each tournament marked: in progress or finished
+- A summary on the home screen even before your first tournament
