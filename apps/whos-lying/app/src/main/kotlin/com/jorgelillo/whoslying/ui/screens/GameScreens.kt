@@ -44,7 +44,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
@@ -76,6 +78,7 @@ internal val DialogTags = TestTagsAsResourceIds
 internal fun RevealScreen(game: Game, onDone: () -> Unit, onQuit: () -> Unit) {
     var index by rememberSaveable(game) { mutableIntStateOf(0) }
     var peeked by rememberSaveable(game) { mutableStateOf(false) }
+    val haptics = LocalHapticFeedback.current
     val card = game.cards[index]
     val lift = remember(index) { Animatable(0f) }
     val scope = rememberCoroutineScope()
@@ -118,7 +121,11 @@ internal fun RevealScreen(game: Game, onDone: () -> Unit, onQuit: () -> Unit) {
                             change.consume()
                             scope.launch {
                                 lift.snapTo((lift.value - dy).coerceIn(0f, height * 0.85f))
-                                if (lift.value > height * PEEK_SHARE) peeked = true
+                                if (lift.value > height * PEEK_SHARE && !peeked) {
+                                    // A tick under the finger: the word is showing now.
+                                    haptics.performHapticFeedback(HapticFeedbackType.GestureThresholdActivate)
+                                    peeked = true
+                                }
                             }
                         }
                     }

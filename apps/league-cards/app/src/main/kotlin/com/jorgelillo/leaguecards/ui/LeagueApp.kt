@@ -234,6 +234,22 @@ internal fun HomeScreen(
     }
 }
 
+/**
+ * The header's face reacts to how it is going: leading the season in progress, in the top half,
+ * at the bottom; with no season on, a trophy once a league is won, tears before.
+ */
+private fun moodOf(league: League, saved: Saved, inProgress: Season?): String {
+    if (inProgress == null) return if (saved.titles > 0) "🏆" else "😭"
+    // Before the first matchday everyone is level on 0: the game's own face.
+    if (inProgress.matchday <= 1) return "😭"
+    val position = Game.position(inProgress)
+    return when {
+        position == 1 -> "😎"
+        position <= (league.characters.size + 1) / 2 -> "🙂"
+        else -> "😭"
+    }
+}
+
 /** The league at a glance: seasons and titles, the season in progress, the best finish. */
 @Composable
 private fun Summary(league: League, saved: Saved, inProgress: Season?) {
@@ -257,7 +273,7 @@ private fun Summary(league: League, saved: Saved, inProgress: Season?) {
             pluralStringResource(R.plurals.hero_titles, saved.titles, saved.titles)
         ).joinToString(" · "),
         colors = Chat.Hero,
-        emoji = "😭",
+        emoji = moodOf(league, saved, inProgress),
         chips = chips
     )
 }

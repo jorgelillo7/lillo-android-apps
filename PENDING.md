@@ -14,7 +14,7 @@ Lines are pruned as items ship. What has **shipped** lives in `apps/<app>/releas
 
 | | What is missing | Waiting on |
 |---|---|---|
-| ⏳ | v5 (4.1, new name and listing) sent to production on 2026-10-22: check it on a real phone after Google's review (advent, music days, sharing, reminders) | Google's review |
+| ⏳ | 4.3 (versionCode 7, new colours) sent to production on 2026-11-01: check it on a real phone after Google's review | Google's review |
 | 👤 | Spanish carols (Los peces en el río, Campana sobre campana, Fum fum fum, Marimorena) | Reliable public-domain scores from you · *El burrito sabanero* is copyrighted (1972), not allowed |
 | ⏳ | Grow the advent pool (activities and songs) between January and November, never during an Advent in progress | Ideas from you · `AdventActivity` / `AdventSong` in the domain |
 | ⏳ | Raise `targetSdk` to 37 (Android 17 behaviour changes, test on an API 37 emulator) | Google Play announcing API 37 as the requirement (usually each August) |
@@ -23,13 +23,13 @@ Lines are pruned as items ship. What has **shipped** lives in `apps/<app>/releas
 
 | | What is missing | Waiting on |
 |---|---|---|
-| ⏳ | v2 (1.1) sent to production on 2026-10-22 with the new listing: check it on a real phone after Google's review | Google's review |
+| ⏳ | 1.3 (versionCode 4, new colours) sent to production on 2026-11-01: check it on a real phone after Google's review | Google's review |
 
 ## whos-lying
 
 | | What is missing | Waiting on |
 |---|---|---|
-| ⏳ | 1.3 (versionCode 7) live since 2026-10-27 with the testers' feedback (names on the result, 24-player cap, colour wheel, no hint in Blind, choose packs): ask the tester to check it | The tester |
+| ⏳ | 1.5 (versionCode 9, new colours) sent to production on 2026-11-01; ask the tester to check the 1.3+ feedback fixes (names on the result, 24-player cap, colour wheel, no hint in Blind, choose packs) | Google's review, the tester |
 
 ## group-polls (new app, parked until 2026-10-23)
 
@@ -43,24 +43,23 @@ Lines are pruned as items ship. What has **shipped** lives in `apps/<app>/releas
 
 | | What is missing | Waiting on |
 |---|---|---|
-| ⏳ | v1 (1.0) live in production since 2026-10-27: check it on a real phone (bracket, Swiss, QR share, two panes on a tablet) | You |
+| ⏳ | 1.2 (versionCode 3, new colours) sent to production on 2026-11-01: check it on a real phone (bracket, Swiss, QR share, two panes on a tablet) | You |
 | ⏳ | Double elimination and round robin | Feedback after real use |
 
 ## league-cards (new game, live with the private deck)
 
 | | What is missing | Waiting on |
 |---|---|---|
-| ⏳ | 1.1 (versionCode 3) sent to production on 2026-10-27: long cards read whole on small phones with large fonts (a tester's Oppo Reno 12 F). After Google's review, ask that tester to check the goalkeeper card | Google's review |
+| ⏳ | 1.3 (versionCode 5, new colours) sent to production on 2026-11-01. Ask the tester (Oppo Reno 12 F) to check the long goalkeeper card (fixed in 1.1) | Google's review, the tester |
 | 🔨 | The store screenshots show the sample deck; retake them with the league's deck if wanted | You |
 | ⏳ | More cards and chat lines from the group | Ideas from the league · private deck, never in this repo |
 
-## slipper game (¿Te pilla la chancla?, v1 ready, not on Play)
+## slipper game (¿Te pilla la chancla?, first release in review)
 
 | | What is missing | Waiting on |
 |---|---|---|
 | 👤 | Play v1 on a phone and say how it feels (jump, speed, how much a hit costs) | You · [docs/plans/slipper.md](docs/plans/slipper.md) |
-| 👤 | First release straight to production: upload key, Play app, first bundle by hand | You · checklist in `apps/slipper/OPERATIONS.md` → Release |
-| ⏳ | `assetlinks.json` entry for `/c/` with the Play app-signing SHA-256 | The app created in Play Console |
+| ⏳ | 1.0 sent for review on 2026-10-31 (first release, listing and assetlinks done). After approval: Play link on the website instead of "coming soon" | Google's review |
 
 ## repo
 

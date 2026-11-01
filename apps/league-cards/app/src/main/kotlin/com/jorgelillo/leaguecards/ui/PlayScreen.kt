@@ -38,8 +38,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
@@ -326,6 +328,7 @@ private fun SwipeCard(
     modifier: Modifier = Modifier
 ) {
     val scope = rememberCoroutineScope()
+    val haptics = LocalHapticFeedback.current
     val color = league.colorOf(card.character)
     val character = league.character(card.character)
     BoxWithConstraints(modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
@@ -343,6 +346,7 @@ private fun SwipeCard(
                         onDragEnd = {
                             scope.launch {
                                 if (abs(drag.value) > threshold) {
+                                    haptics.performHapticFeedback(HapticFeedbackType.Confirm)
                                     val right = drag.value > 0
                                     drag.animateTo(if (right) threshold * 4 else -threshold * 4)
                                     onChoose(right)

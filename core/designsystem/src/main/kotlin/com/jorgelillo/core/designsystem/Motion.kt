@@ -3,9 +3,19 @@ package com.jorgelillo.core.designsystem
 import android.provider.Settings
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.interaction.InteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
@@ -58,3 +68,41 @@ fun Modifier.accentEdge(color: Color, width: Dp = 5.dp): Modifier = drawWithCont
     val x = if (layoutDirection == LayoutDirection.Rtl) size.width - w else 0f
     drawRect(color, Offset(x, 0f), Size(w, size.height))
 }
+
+/**
+ * Shrinks the element a little while [interactionSource] is pressed and springs it back on release,
+ * with a small bounce (Material 3 Expressive's press feedback). Still with animations off.
+ */
+@Composable
+fun Modifier.springPress(interactionSource: InteractionSource): Modifier {
+    val pressed by interactionSource.collectIsPressedAsState()
+    val animate = animationsEnabled()
+    val scale by animateFloatAsState(
+        targetValue = if (pressed && animate) PRESSED_SCALE else 1f,
+        animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessMedium),
+        label = "springPress"
+    )
+    return graphicsLayer {
+        scaleX = scale
+        scaleY = scale
+    }
+}
+
+private const val PRESSED_SCALE = 0.94f
+
+/** A slow, gentle bob up and down, like something waiting to be picked up. Still with animations off. */
+@Composable
+fun Modifier.idleFloat(): Modifier {
+    if (!animationsEnabled()) return this
+    val transition = rememberInfiniteTransition(label = "idleFloat")
+    val offset by transition.animateFloat(
+        initialValue = -1f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(tween(FLOAT_MILLIS, easing = FastOutSlowInEasing), RepeatMode.Reverse),
+        label = "idleFloatOffset"
+    )
+    return graphicsLayer { translationY = offset * FLOAT_DISTANCE.toPx() }
+}
+
+private const val FLOAT_MILLIS = 1_800
+private val FLOAT_DISTANCE = 4.dp

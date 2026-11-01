@@ -106,7 +106,7 @@ fun LilloSummaryHero(
             Text(
                 emoji,
                 fontSize = 56.sp,
-                modifier = Modifier.align(Alignment.TopEnd).padding(16.dp).clearAndSetSemantics {}
+                modifier = Modifier.align(Alignment.TopEnd).padding(16.dp).idleFloat().clearAndSetSemantics {}
             )
             Column(Modifier.padding(20.dp)) {
                 // Clear of the emoji in the corner; the chips below may run under it.

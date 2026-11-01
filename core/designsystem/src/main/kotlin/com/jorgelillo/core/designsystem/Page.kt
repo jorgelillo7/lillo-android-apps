@@ -1,6 +1,7 @@
 package com.jorgelillo.core.designsystem
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
@@ -34,13 +35,16 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
@@ -145,7 +149,7 @@ val LilloReadableWidth = 640.dp
 private val PageInsets: WindowInsets
     @Composable get() = WindowInsets.systemBars.union(WindowInsets.displayCutout)
 
-/** The main call to action: full width, tall, bold. */
+/** The main call to action: full width, tall, bold; springs when pressed and confirms with a light tick. */
 @Composable
 fun LilloBigButton(
     text: String,
@@ -158,10 +162,16 @@ fun LilloBigButton(
     fontSize: TextUnit = 20.sp,
     shape: Shape = ButtonDefaults.shape
 ) {
+    val interaction = remember { MutableInteractionSource() }
+    val haptics = LocalHapticFeedback.current
     Button(
-        onClick = onClick,
+        onClick = {
+            haptics.performHapticFeedback(HapticFeedbackType.Confirm)
+            onClick()
+        },
         enabled = enabled,
-        modifier = modifier.fillMaxWidth().height(height),
+        interactionSource = interaction,
+        modifier = modifier.springPress(interaction).fillMaxWidth().height(height),
         shape = shape,
         colors = ButtonDefaults.buttonColors(containerColor = color, contentColor = contentColor)
     ) { Text(text, fontSize = fontSize, fontWeight = FontWeight.Black) }
@@ -178,7 +188,12 @@ fun LilloSecondaryButton(
     modifier: Modifier = Modifier,
     contentColor: Color = MaterialTheme.colorScheme.onBackground
 ) {
-    OutlinedButton(onClick = onClick, modifier = modifier.fillMaxWidth().heightIn(min = 52.dp)) {
+    val interaction = remember { MutableInteractionSource() }
+    OutlinedButton(
+        onClick = onClick,
+        interactionSource = interaction,
+        modifier = modifier.springPress(interaction).fillMaxWidth().heightIn(min = 52.dp)
+    ) {
         Text(text, color = contentColor, textAlign = TextAlign.Center)
     }
 }
