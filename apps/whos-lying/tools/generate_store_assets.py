@@ -13,8 +13,8 @@ sys.path.insert(0, str(ROOT.parent.parent / "scripts"))
 from store_assets import Style, build  # noqa: E402
 
 # The app's "Neon" palette.
-NIGHT_TOP, NIGHT = (43, 27, 107), (16, 14, 32)
-GOLD, SNOW = (255, 201, 77), (240, 238, 255)
+NIGHT_TOP, NIGHT = (47, 26, 80), (20, 5, 43)
+GOLD, SNOW = (255, 201, 77), (238, 224, 255)
 ACCENTS = [(124, 92, 255), (0, 224, 184), (255, 77, 148), (255, 201, 77)]
 
 LOCALES = {
@@ -51,7 +51,7 @@ STYLE = Style(
     bottom=NIGHT,
     headline=SNOW,
     highlight=GOLD,
-    tagline=(200, 196, 235),
+    tagline=(182, 163, 209),
     accents=ACCENTS,
 )
 

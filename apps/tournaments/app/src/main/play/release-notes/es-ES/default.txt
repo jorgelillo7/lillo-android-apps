@@ -1,3 +1,4 @@
-- Nuevo inicio: de un vistazo, cuántos torneos tienes en curso, qué partidas faltan y el último campeón
-- En tablets en horizontal, las partidas y el cuadro (o la clasificación) a la vez
-- Valora la app desde Información
+Nuevo color 👑
+- Fondo índigo, dorado para los campeones y lila para lo que está en juego
+- Cada torneo marcado: en curso o terminado
+- Inicio con un resumen aunque aún no tengas torneos

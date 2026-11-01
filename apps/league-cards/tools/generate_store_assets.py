@@ -14,7 +14,7 @@ sys.path.insert(0, str(ROOT.parent.parent / "scripts"))
 from store_assets import Style, build  # noqa: E402
 
 # The app's chat palette: dark chat background, chat green, gold for the champion, tear blue.
-INK_TOP, INK = (22, 37, 46), (11, 20, 26)
+INK_TOP, INK = (0, 37, 31), (0, 17, 14)
 GREEN, GOLD, TEAR, RED = (0, 168, 132), (255, 200, 61), (83, 189, 235), (241, 92, 109)
 
 LOCALES = {
@@ -35,9 +35,9 @@ LOCALES = {
 STYLE = Style(
     top=INK_TOP,
     bottom=INK,
-    headline=(233, 237, 239),
+    headline=(229, 230, 227),
     highlight=GOLD,
-    tagline=(134, 150, 160),
+    tagline=(170, 171, 169),
     accents=[GREEN, GOLD, TEAR, RED],
 )
 

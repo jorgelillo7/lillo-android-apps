@@ -1,4 +1,3 @@
-Mejoras por dentro 🎄
-- Gesto de volver más fluido en Android 13 o superior
-- Mejor en horizontal en móviles con muesca
-- Avisos más fiables y bibliotecas al día
+Colores más cómodos 🎄
+- Texto más suave sobre el cielo de noche, sin brillos molestos
+- Los dorados se leen mejor

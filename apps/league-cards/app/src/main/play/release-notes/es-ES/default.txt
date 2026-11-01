@@ -1,2 +1,3 @@
-- Nuevo inicio: tu liga de un vistazo, con temporadas, ligas ganadas, la jornada en curso y tu mejor puesto
-- Valora el juego desde Información
+Nuevo color ⚽
+- Fondo verde césped de noche y texto más fácil de leer
+- Logros, finales y ligas ganadas, marcados en dorado

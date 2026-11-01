@@ -13,7 +13,7 @@ sys.path.insert(0, str(ROOT.parent.parent / "scripts"))
 from store_assets import Style, build  # noqa: E402
 
 WINE, MIDNIGHT = (74, 14, 28), (11, 20, 38)
-GOLD, SNOW = (255, 200, 87), (255, 248, 238)
+GOLD, SNOW = (255, 200, 87), (238, 227, 226)
 
 LOCALES = {
     "en-US": {

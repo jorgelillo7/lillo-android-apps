@@ -1,4 +1,3 @@
-Novedades de la 1.2 🎡
-- Nuevo inicio: tus ruletas de un vistazo, con la última decisión y la opción más elegida
-- En horizontal, «Nueva ruleta» ya no tapa la estrella de favorita
-- En tablets, todo a un ancho cómodo de leer
+Nuevo color 🎡
+- Fondo violeta noche, más cálido y agradable
+- Tus favoritas, marcadas con una franja amarilla

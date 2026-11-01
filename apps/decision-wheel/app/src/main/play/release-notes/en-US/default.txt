@@ -1,4 +1,3 @@
-What's new in 1.2 🎡
-- New home: your wheels at a glance, with the last decision and the most picked option
-- In landscape, "New wheel" no longer covers the favourite star
-- On tablets, everything at a comfortable reading width
+New colours 🎡
+- A warmer violet night background
+- Your favourites get a yellow edge
