@@ -1,4 +1,4 @@
-New colours 👑
-- Indigo background, gold for champions, lilac for what is in play
-- Each tournament marked: in progress or finished
-- A summary on the home screen even before your first tournament
+More alive 👑
+- A buzz when the champion is crowned
+- The home shows ⚔️ while something is being played, 🏆 once all is decided
+- Buttons with a little bounce

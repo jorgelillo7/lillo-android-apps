@@ -1,6 +1,4 @@
-First version! 🩴
-- Run from grandma and jump her slippers
-- Croqueta combos and close calls
-- Sandwich, skates, the cat and more
-- Run of the day and slippers to unlock
-- Challenge friends with a link: same run
+Slippers easier to find 🩴
+- Unlock a slipper and wear it right away
+- In landscape and on handhelds, the slipper picker shows without scrolling
+- Buttons with a little bounce
