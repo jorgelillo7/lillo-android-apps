@@ -5,6 +5,7 @@ Newest first. User-facing notes per language are in
 
 | versionCode | Version | Date | Notes |
 |---|---|---|---|
+| 4 | 1.3 | 2026-11-03 (production) | Haptic when the champion is decided; ⚔️/🏆 header; spring press; baseline profile |
 | 3 | 1.2 | 2026-10-31 (production) | New palette from seed #2B3FD8 (Vibrant): indigo surfaces, lilac accent, gold for winners; status edges; summary hero on the empty home; baseline profile, new store screenshots |
 | 2 | 1.1 | 2026-10-30 (production) | Home summary header (LilloSummaryHero): in progress / finished, next matches, last champion; two panes on tablets in landscape; rate link; baseline profile |
 | 1 | 1.0 | 2026-10-21 (internal testing), 2026-10-24 (production draft, sent for review by hand: an app's first production release) | First version: knockout and Swiss, two-sided bracket, results with comments, share by link / QR, image and CSV export, hall of fame |

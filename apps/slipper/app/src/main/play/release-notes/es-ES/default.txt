@@ -1,6 +1,4 @@
-¡Primera versión! 🩴
-- Huye de la abuela y salta sus chanclas
-- Combos de croquetas y "¡por los pelos!"
-- Bocata, patines, el gato y más sorpresas
-- Reto del día y chanclas para desbloquear
-- Reta a tus amigos con un enlace: misma partida
+Chanclas más fáciles de encontrar 🩴
+- Al desbloquear una chancla, póntela al momento
+- En horizontal y en consolas, el selector de chanclas se ve sin desplazarse
+- Botones con un pequeño rebote
