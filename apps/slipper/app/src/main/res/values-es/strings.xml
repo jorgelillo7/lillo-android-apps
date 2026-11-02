@@ -61,4 +61,7 @@
         <item quantity="many">%1$d croquetas</item>
         <item quantity="other">%1$d croquetas</item>
     </plurals>
+    <string name="skin_wear">Ponérmela ahora</string>
+    <string name="skin_wearing">Puesta: la verás en la próxima partida</string>
+    <string name="skin_where">Puedes cambiarla cuando quieras en el inicio, en «La chancla de la abuela».</string>
 </resources>

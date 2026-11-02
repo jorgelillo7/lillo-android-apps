@@ -34,7 +34,9 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
@@ -90,6 +92,8 @@ internal fun TournamentScreen(
     // Confetti only when the champion is decided while watching, not every time the screen opens.
     val championAtOpen = rememberSaveable(t.id) { t.champion ?: -1 }
     val celebrate = t.champion?.takeIf { it != championAtOpen }
+    val haptics = LocalHapticFeedback.current
+    LaunchedEffect(celebrate) { if (celebrate != null) haptics.performHapticFeedback(HapticFeedbackType.LongPress) }
 
     Box(Modifier.fillMaxSize()) {
         Page(

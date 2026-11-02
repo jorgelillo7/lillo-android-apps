@@ -37,6 +37,8 @@ components:
   summary-hero: "LilloSummaryHero — gradient card on home screens: title, one-line state, chips; compact strip on short screens"
   accent-edge: "Modifier.accentEdge — a coloured bar on a card's start edge, only when it means something"
   entrance: "Modifier.entrance — fade and lift in once; nothing moves with 'Remove animations' on"
+  spring-press: "Modifier.springPress — buttons shrink a little when pressed and spring back (in LilloBigButton and LilloSecondaryButton)"
+  idle-float: "Modifier.idleFloat — a slow 4dp bob for the summary hero's emoji"
   confetti: "ConfettiBurst / ConfettiRain — wins only"
 motion:
   entrance: "450 ms, FastOutSlowIn, 16dp lift; chips staggered 120 ms"
@@ -119,6 +121,18 @@ primary.
 Small and purposeful: the summary hero fades and lifts in, chips one after another; confetti for
 wins. Everything decorative goes through `animationsEnabled()` and stays still with the system's
 *Remove animations*. Screenshot tests switch that on, so captures show the final state.
+
+## Haptics
+
+A light *confirm* tick on the primary button (in `LilloBigButton`), and one at each game's key
+moment: the impostor's word showing under the curtain, a league card answered with a swipe, a
+tournament's champion decided. Never on every tap; never as the only feedback.
+
+## Characters that react
+
+Where an app has a face, it reacts to how things are going (Focus Friend's lesson): league-cards'
+header shows 😎 leading the season, 🙂 in the top half, 😭 at the bottom; tournaments' shows ⚔️
+while something is being played and 🏆 once everything is decided.
 
 ## Do's and Don'ts
 

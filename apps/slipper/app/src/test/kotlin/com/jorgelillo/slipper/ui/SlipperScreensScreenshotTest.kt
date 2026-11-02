@@ -139,6 +139,13 @@ class SlipperScreensScreenshotTest {
         )
     }
 
+    /** A run that unlocked a slipper still not worn: "Wear it now" and where to change it. */
+    @Test
+    fun unlockedNotWorn() = shot("over_unlocked") {
+        GameOverScreen(result(SlipperSkin.CHECKED, previousBest = 2000, daily = false), SlipperSkin.CLASSIC, null, {
+        }, {}, {})
+    }
+
     private fun challengeWon(name: String) = shot(name) {
         GameOverScreen(result(null, previousBest = 2000, daily = false), SlipperSkin.BUNNY, challenge = 980, {}, {}, {})
     }

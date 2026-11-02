@@ -129,7 +129,8 @@ internal fun SlipperApp(vm: SlipperViewModel) {
                     val link = vm.challengeLink(result.seed, result.score)
                     context.shareText(resources.getString(R.string.share_challenge, formatScore(result.score), link))
                 },
-                onHome = { nav.popBackStack<Home>(inclusive = false) }
+                onHome = { nav.popBackStack<Home>(inclusive = false) },
+                onWear = vm::chooseSkin
             )
         }
     }

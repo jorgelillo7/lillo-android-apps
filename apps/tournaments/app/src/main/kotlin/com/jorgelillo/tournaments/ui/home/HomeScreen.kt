@@ -137,7 +137,8 @@ private fun Summary(library: Library) {
             ).joinToString(" · ")
         },
         colors = Arena.Hero,
-        emoji = "🏆",
+        // Swords while something is being played, the trophy once everything is decided.
+        emoji = if (running.isNotEmpty()) "⚔️" else "🏆",
         chips = chips
     )
 }
