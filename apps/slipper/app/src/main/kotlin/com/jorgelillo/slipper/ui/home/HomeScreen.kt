@@ -44,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import com.jorgelillo.core.designsystem.AboutTexts
 import com.jorgelillo.core.designsystem.LilloAboutSheet
 import com.jorgelillo.core.designsystem.LilloSecondaryButton
+import com.jorgelillo.core.designsystem.isShortScreen
 import com.jorgelillo.core.platform.LilloLinks
 import com.jorgelillo.slipper.BuildConfig
 import com.jorgelillo.slipper.R
@@ -140,10 +141,17 @@ internal fun HomeScreen(
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
             )
+            // Short screens (landscape, handhelds): a smaller scene, so the slipper picker shows without scrolling.
+            val short = isShortScreen()
             GameScene(
                 remember { PosterWorld },
                 sprites,
-                Modifier.fillMaxWidth().aspectRatio(1.4f).padding(vertical = 8.dp).clip(RoundedCornerShape(20.dp)),
+                Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .fillMaxWidth(if (short) 0.5f else 1f)
+                    .aspectRatio(if (short) 2.4f else 1.4f)
+                    .padding(vertical = 8.dp)
+                    .clip(RoundedCornerShape(20.dp)),
                 skin = saved.skin
             )
             if (saved.best > 0) {

@@ -73,7 +73,9 @@ internal fun GameOverScreen(
     challenge: Int?,
     onRetry: () -> Unit,
     onChallengeFriend: () -> Unit,
-    onHome: () -> Unit
+    onHome: () -> Unit,
+    /** Wear the slipper this run unlocked, right away. */
+    onWear: (SlipperSkin) -> Unit = {}
 ) {
     Page(
         bottom = {
@@ -152,6 +154,28 @@ internal fun GameOverScreen(
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.padding(top = 12.dp).testTag("unlocked")
+                )
+                if (skin == result.unlocked) {
+                    Text(
+                        "✓ " + stringResource(R.string.skin_wearing),
+                        color = Kitchen.GreenText,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(top = 4.dp).testTag("wearing")
+                    )
+                } else {
+                    TextButton(onClick = { onWear(result.unlocked) }, modifier = Modifier.testTag("wear")) {
+                        Text(
+                            stringResource(R.string.skin_wear),
+                            color = Kitchen.GreenText,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                }
+                Text(
+                    stringResource(R.string.skin_where),
+                    color = Kitchen.Muted,
+                    style = MaterialTheme.typography.bodySmall,
+                    textAlign = TextAlign.Center
                 )
             } else if (result.croquetasToNext != null) {
                 Text(

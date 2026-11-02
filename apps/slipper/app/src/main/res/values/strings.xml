@@ -57,4 +57,7 @@
         <item quantity="one">%1$d croqueta</item>
         <item quantity="other">%1$d croquetas</item>
     </plurals>
+    <string name="skin_wear">Wear it now</string>
+    <string name="skin_wearing">On: you will see it next run</string>
+    <string name="skin_where">Change it any time on the home screen, under \"Grandma\'s slipper\".</string>
 </resources>
