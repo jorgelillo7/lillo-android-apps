@@ -65,7 +65,6 @@ Lines are pruned as items ship. What has **shipped** lives in `apps/<app>/releas
 
 | | What is missing | Waiting on |
 |---|---|---|
-| 👤 | Play policy update (2026-10): declare the developer account's **trader status** in Play Console when it asks (from November 2026; one form for the account, not per app). No sales, ads or subscriptions: most likely "not a trader", your call. None of the restricted permissions (location, contacts, local network, all files, SMS/call log) is used by any app (merged manifests checked) | Play Console's prompt, November 2026 |
 | ⏳ | Play's new app-quality thresholds (memory and code optimisation) are enforced from February 2027: in January, check Android vitals for every app once the thresholds are published (R8 is on everywhere and the apps are 1–2 MB) | January 2027 |
 | ⏳ | Move into `lillorepo` (Bazel) | Gradle builds or the Play publishing loop slowing you down · domain modules are pure Kotlin to make it easy |
 | ⏳ | Release workflow without a stored key: Workload Identity Federation (GitHub OIDC → the `play-publisher` service account), then delete its JSON key | The first CI releases working with the key |
