@@ -14,22 +14,8 @@ Lines are pruned as items ship. What has **shipped** lives in `apps/<app>/releas
 
 | | What is missing | Waiting on |
 |---|---|---|
-| 👤 | 4.4 (versionCode 8) live since 2026-11-04: check it on a real phone | You |
-| 👤 | Spanish carols (Los peces en el río, Campana sobre campana, Fum fum fum, Marimorena) | Reliable public-domain scores from you · *El burrito sabanero* is copyrighted (1972), not allowed |
 | ⏳ | Grow the advent pool (activities and songs) between January and November, never during an Advent in progress | Ideas from you · `AdventActivity` / `AdventSong` in the domain |
 | ⏳ | Raise `targetSdk` to 37 (Android 17 behaviour changes, test on an API 37 emulator) | Google Play announcing API 37 as the requirement (usually each August) |
-
-## decision-wheel
-
-| | What is missing | Waiting on |
-|---|---|---|
-| 👤 | 1.4 (versionCode 5) live since 2026-11-04: check it on a real phone | You |
-
-## whos-lying
-
-| | What is missing | Waiting on |
-|---|---|---|
-| 👤 | 1.6 (versionCode 10) live since 2026-11-04: ask the tester to check the 1.3+ feedback fixes (names on the result, 24-player cap, colour wheel, no hint in Blind, choose packs) | You, the tester |
 
 ## group-polls (new app, parked until 2026-10-23)
 
@@ -43,28 +29,19 @@ Lines are pruned as items ship. What has **shipped** lives in `apps/<app>/releas
 
 | | What is missing | Waiting on |
 |---|---|---|
-| 👤 | 1.3 (versionCode 4) live since 2026-11-04: check it on a real phone (bracket, Swiss, QR share, two panes on a tablet) | You |
 | ⏳ | Double elimination and round robin | Feedback after real use |
 
 ## league-cards (new game, live with the private deck)
 
 | | What is missing | Waiting on |
 |---|---|---|
-| 👤 | 1.4 (versionCode 6) live since 2026-11-04: ask the tester (Oppo Reno 12 F, large font) to check the long goalkeeper card | You, the tester |
 | 🔨 | The store screenshots show the sample deck; retake them with the league's deck if wanted | You |
 | ⏳ | More cards and chat lines from the group | Ideas from the league · private deck, never in this repo |
-
-## slipper game (¿Te pilla la chancla?, live)
-
-| | What is missing | Waiting on |
-|---|---|---|
-| 👤 | 1.1 (versionCode 2) live since 2026-11-04: play it on a phone and on a console, and say how it feels (jump, speed, how much a hit costs, "Wear it now", the picker in landscape) | You · [docs/plans/slipper.md](docs/plans/slipper.md) |
 
 ## repo
 
 | | What is missing | Waiting on |
 |---|---|---|
 | ⏳ | Play's new app-quality thresholds (memory and code optimisation) are enforced from February 2027: in January, check Android vitals for every app once the thresholds are published (R8 is on everywhere and the apps are 1–2 MB) | January 2027 |
-| ⏳ | Move into `lillorepo` (Bazel) | Gradle builds or the Play publishing loop slowing you down · domain modules are pure Kotlin to make it easy |
 | ⏳ | Release workflow without a stored key: Workload Identity Federation (GitHub OIDC → the `play-publisher` service account), then delete its JSON key | The first CI releases working with the key |
 | 👤 | Baseline profiles are in every app (but group-polls), 2026-10: measure the cold start on a real phone (USB debugging on, `./gradlew :apps:slipper:baselineprofile:connectedBenchmarkReleaseAndroidTest`, then christmas-countdown). **It reinstalls the app with the upload key and removes it afterwards: the phone's Play copy and its data go** (use a phone without them, or accept losing that app's data). The emulator shows no difference on this Mac; Google's figure is ~20–30 % on real phones. Also more journeys (tournaments with data, whos-lying past the welcome) | You, with a phone at hand |
