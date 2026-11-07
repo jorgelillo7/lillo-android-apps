@@ -124,6 +124,11 @@ in this repo next to each Play track's releases and their status (`completed`, `
 `inProgress`), marking the apps whose repo version is ahead of production. Read only
 (`scripts/play_status.py`). "In review" isn't in Google's API: Play Console shows it.
 
+**Android vitals**: `.venv/bin/python scripts/play_vitals.py` prints every app's user-perceived
+crash, ANR, low-memory-kill and slow-start rates over 28 days, next to Google's thresholds. Same
+service account, through the Play Developer Reporting API (enabled in `lilloapps-play-publishing`
+on 2026-11-07). Below Google's minimum of users an app gets no data ("—"): on 2026-11-07 every app did.
+
 Once, in your own terminal (values go to GitHub through stdin, never through the chat):
 
 ```bash

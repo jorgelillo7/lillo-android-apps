@@ -31,13 +31,13 @@ SCOPE = ["https://www.googleapis.com/auth/androidpublisher"]
 KEY_FILE = Path.home() / ".config/lillo-android-apps/play-service-account.json"
 
 
-def credentials():
+def credentials(scopes=SCOPE):
     raw = os.environ.get("ANDROID_PUBLISHER_CREDENTIALS")
     if not raw and KEY_FILE.is_file():
         raw = KEY_FILE.read_text()
     if not raw:
         sys.exit("No Play service account key: set ANDROID_PUBLISHER_CREDENTIALS or create " + str(KEY_FILE))
-    creds = service_account.Credentials.from_service_account_info(json.loads(raw), scopes=SCOPE)
+    creds = service_account.Credentials.from_service_account_info(json.loads(raw), scopes=scopes)
     creds.refresh(Request())
     return creds
 
