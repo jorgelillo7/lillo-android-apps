@@ -155,7 +155,7 @@ Project skills in `.claude/skills/`: `new-android-app` (competitor study → des
   on `:core:baselineprofile`: startup plus the app's main journeys by test tag). The generated
   `app/src/release/generated/baselineProfiles/` is committed and ships in the bundle; regenerate it
   with `scripts/generate-baseline-profiles.sh <app>` before a release whose code changed.
-- `targetSdk` must meet Google Play's current requirement (API 36 since Aug 2026).
+- `targetSdk` must meet Google Play's current requirement (API 36 since Aug 2026; the apps target 37 since 2026-11).
 - Share links and App Links use `jorgelillo7.github.io` (`/q/`, `/t/`, `/p/` and
   `/.well-known/assetlinks.json` live in that repo): free static GitHub Pages, data in the link
   fragment, no server. The domain is tied to the GitHub username, which the user keeps for good,

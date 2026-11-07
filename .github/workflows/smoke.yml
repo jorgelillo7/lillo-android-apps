@@ -89,7 +89,7 @@ jobs:
       - name: Smoke test
         uses: reactivecircus/android-emulator-runner@a421e43855164a8197daf9d8d40fe71c6996bb0d # v2.38.0
         with:
-          api-level: 36
+          api-level: "37.0"
           arch: x86_64
           # Automated Test Device image: made for CI, without the Google apps that index in the
           # background on a fresh boot. With google_apis the emulator died on whos-lying in 9 of 11

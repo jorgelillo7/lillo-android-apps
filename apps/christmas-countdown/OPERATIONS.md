@@ -25,7 +25,7 @@ Module paths: app `:apps:christmas-countdown:app`, logic `:apps:christmas-countd
 
 | Task | Command |
 |---|---|
-| Start (Pixel 9, API 36) | `scripts/emulator.sh start` |
+| Start (Pixel 9, API 37) | `scripts/emulator.sh start` |
 | Stop | `scripts/emulator.sh stop` |
 | Pretend it's 5 December (test advent) | `scripts/emulator.sh date 120512002026` |
 | Back to real time | `scripts/emulator.sh date auto` |

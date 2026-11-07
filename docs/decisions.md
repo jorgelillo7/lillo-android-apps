@@ -44,6 +44,7 @@ lives in the PR. Add a line when a decision is taken; change it when it is rever
 | Releases from a manual Release workflow (Gradle Play Publisher): upload to internal or production, promote, listing; production needs an approval | No Play Console visits after an app's first release, and nothing goes live without a click; keys stay in GitHub environments | #75 |
 | Spotless + ktlint (Android Studio style) + Compose rules, 120 columns | One formatter, checked in CI; 120 keeps Compose call chains readable | #53, #62 |
 | Renovate for dependency PRs, grouped (Kotlin, AGP, AndroidX), WorkManager held below 2.12 | Weekly, reviewable updates; WorkManager 2.12 needs minSdk 24 | #53 |
+| targetSdk raised as soon as the platform is stable, not when Play requires it (37 in 2026-11, required Aug 2027) | The behaviour changes land in one calm PR with the emulator at hand, not under a deadline; the local and CI emulators run that API |
 | Gradle Play Publisher, listing in its own `app/src/main/play` layout | Publish from the terminal; a Gradle plugin, no Ruby | #51 |
 | Installers only from official channels (Gradle plugin portal, Maven Central, PyPI) | Wrapper installers (`npx`, `curl \| bash`) are a supply-chain risk | 2026-10 |
 | Backups copy only `files/datastore/` | Users' data travels to a new phone; WorkManager's database never does | #56 |

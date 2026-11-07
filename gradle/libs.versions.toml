@@ -39,7 +39,7 @@ androidxProfileinstaller = "1.4.1"
 
 # Shared Android configuration, read by the convention plugins in build-logic.
 compileSdk = "37"
-targetSdk = "36"
+targetSdk = "37"
 # minSdk: the floor of the shared libraries (core). appMinSdk: every app's. 24: Play's automatic
 # protection, navigation-compose and WorkManager 2.12 require it (Christmas Countdown left 23 in
 # 2026-10: phones on API 23 keep the version they have).

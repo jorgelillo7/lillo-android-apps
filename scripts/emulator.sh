@@ -2,7 +2,7 @@
 # Starts, stops and prepares the Android emulator for testing and store screenshots.
 #
 #   scripts/emulator.sh start [--headless] [avd]
-#                                          boot (default AVD: Pixel_9_API_36) and wait until ready;
+#                                          boot (default AVD: Pixel_9_API_37) and wait until ready;
 #                                          --headless: no window (smoke tests, screenshots still work)
 #   scripts/emulator.sh stop               shut the emulator down
 #   scripts/emulator.sh date MMDDhhmmYYYY  freeze the clock at a date (e.g. 121210002026 = 12 Dec 2026 10:00)
@@ -27,7 +27,7 @@ case "${1:-}" in
     shift
     window=()
     if [ "${1:-}" = --headless ]; then window=(-no-window); shift; fi
-    avd="${1:-Pixel_9_API_36}"
+    avd="${1:-Pixel_9_API_37}"
     nohup "$EMULATOR" -avd "$avd" -no-boot-anim -no-snapshot-save -gpu host ${window[@]+"${window[@]}"} >/tmp/emulator.log 2>&1 &
     wait_boot
     echo "Emulator ready ($avd)"
