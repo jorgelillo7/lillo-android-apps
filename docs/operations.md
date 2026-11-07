@@ -24,7 +24,7 @@ Commands shared by every app. Per-app commands (module paths, release steps, sig
 | Script | Use |
 |---|---|
 | `env.sh` | `source` it: JDK, adb and SDK paths |
-| `emulator.sh start [--headless]\|stop` | Boot (default `Pixel_9_API_36`; `--headless` without a window) / shut down the emulator |
+| `emulator.sh start [--headless]\|stop` | Boot (default `Pixel_9_API_37`; `--headless` without a window) / shut down the emulator |
 | `emulator.sh date MMDDhhmmYYYY\|auto` | Freeze the emulator clock (e.g. to test December) / restore it |
 | `emulator.sh demo on\|off` | Clean status bar for screenshots |
 | `screenshot.sh <out.png>` | Screenshot, dismissing "isn't responding" dialogs first |
