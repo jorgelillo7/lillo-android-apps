@@ -71,9 +71,10 @@ player only taps *Enviar*. The app itself never goes online.
 |---|---|
 | Public form (what players see) | https://docs.google.com/forms/d/e/1FAIpQLSf36XFjNcuWZLrEj4Msc01SdGrY8a-2GlxUy_DqQ-quov1dAQ/viewform |
 | Apps Script project | "Script - ¿Quién miente? · Reportar palabra": https://script.google.com/home/projects/1FNOkHu9I9jCSLiGsM6TFvQ6dToGux63-maHfHmXYkFcYOqSnybrjeCzC/edit (only Jorge's account can open it) |
-| Form and responses sheet | Jorge's Google Drive: "¿Quién miente? · Reportar palabra" and "¿Quién miente? · Reportes" |
+| Form (editor) | "¿Quién miente? · Reportar palabra" in Jorge's Drive: https://docs.google.com/forms/d/1OEuZyjM4Q5QXzl2CgJ3glTMhB-jAflMf_tzwsExqIZY/edit |
+| Responses sheet | "¿Quién miente? · Reportes" in Jorge's Drive: https://docs.google.com/spreadsheets/d/14jC9J5dxli3qCMN7Q8_XXCbH_iXv-t2VpSyJptswxBk/edit |
 | Script source | `tools/create_report_form.gs` (the copy in Apps Script is the same code) |
-| Form URL and field ids used by the app | `app/src/main/kotlin/com/jorgelillo/whoslying/ui/Report.kt` (`WordReport`) |
+| Form URL and field ids used by the app | `app/src/main/kotlin/com/jorgelillo/whoslying/ui/WordReport.kt` |
 
 **Changing texts** (title, description, thank-you message, question titles): edit the form directly
 in Google Forms. Field ids don't change, so the app keeps working.
@@ -86,6 +87,11 @@ in Google Forms. Field ids don't change, so the app keeps working.
 3. Update `FORM_URL` and the `entry.*` constants in `WordReport`, ship a new version.
 4. Keep the old form open until most players have updated (old versions still point to it), then
    close it in Forms (*Responses → Accepting responses: off*).
+
+Run the script **once**: each run creates another form and sheet with the same names (three
+copies existed until 2026-11-07). To tell which Drive form the app uses, open
+`https://docs.google.com/forms/d/<edit id>/viewform`: it redirects to the public `/d/e/…` URL,
+which must match `FORM_URL`. Trash the copies that don't match.
 
 Opening the `Prefilled:` link yourself shows the placeholders (PALABRA, PARECIDA…); that's
 expected. The app replaces them with the real values.
