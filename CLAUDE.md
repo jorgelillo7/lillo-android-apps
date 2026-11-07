@@ -95,8 +95,7 @@ Project skills in `.claude/skills/`: `new-android-app` (competitor study → des
 ## App architecture (conventions for every app)
 
 - `:apps:<app>:domain` is **pure Kotlin, no `android.*`**: all business rules live here, unit
-  tested with `kotlin.test`. This keeps them portable (a later move into the `lillorepo` Bazel
-  monorepo starts with these modules).
+  tested with `kotlin.test`, fast on the JVM.
 - `:apps:<app>:app`: Compose + Material 3 (its composables are `internal`; public API lives in core), MVVM (`ViewModel` + `StateFlow`, collected with
   `collectAsStateWithLifecycle`; domain state immutable, replaced on change — never a mutable object
   Compose can't observe). Navigation uses type-safe `@Serializable` routes (`composable<Route>`,
