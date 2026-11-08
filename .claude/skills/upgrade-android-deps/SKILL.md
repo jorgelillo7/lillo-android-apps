@@ -10,7 +10,15 @@ All versions live in `gradle/libs.versions.toml` (plus `distributionUrl` in
 
 ## 1. Baseline
 
-Run the `check-android-env` skill first and fix what is red.
+Run the `check-android-env` skill first and fix what is red. Then bring the local tools up to date:
+
+```bash
+source scripts/env.sh
+"$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --update   # SDK packages
+scripts/update_android_studio.sh                               # needs Android Studio closed
+```
+
+Then:
 
 ```bash
 source scripts/env.sh
@@ -20,8 +28,7 @@ git switch -c chore/deps-$(date +%Y-%m)
 ./gradlew test   # must be green before changing anything
 ```
 
-If the user's Android Studio is behind the latest stable, ask them to update it first (from
-https://developer.android.com/studio): new AGP majors may need it. Don't install it yourself.
+Android Studio goes first because new AGP majors may need it. If it is open, ask the user to close it.
 
 ## 2. Find latest versions
 

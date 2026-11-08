@@ -30,8 +30,8 @@ A row that says it couldn't check something is unknown, not healthy: say so.
 
 ## 3. Fixing
 
-Don't fix anything until the user asks. Then use each row's Fix column. Android Studio is updated
-by the user. Details of the broken-AVD case: `docs/setup/toolchain.md` → Gotchas.
+Don't fix anything until the user asks. Then use each row's Fix column; `upgrade-android-deps` updates
+everything at once. Details of the broken-AVD case: `docs/setup/toolchain.md` → Gotchas.
 
 The Play deadlines are constants at the top of the script (`PLAY_DEADLINES`): when Google announces
 a new one, update them and `docs/publishing-on-google-play.md`.

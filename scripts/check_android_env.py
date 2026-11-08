@@ -203,7 +203,7 @@ def check_studio():
         return
     current = next((item["name"] for item in releases if item.get("build") == installed.strip()), installed.strip())
     if numbers(installed) < numbers(stable["build"]):
-        report(YELLOW, "Android Studio", f"{current} → {stable['name']}", "Update it from Studio's Help menu")
+        report(YELLOW, "Android Studio", f"{current} → {stable['name']}", "scripts/update_android_studio.sh")
     else:
         report(GREEN, "Android Studio", current)
 
@@ -277,7 +277,7 @@ def main():
     order = {RED: 0, YELLOW: 1, GREEN: 2}
     print("| | Check | State | Fix |\n|---|---|---|---|")
     for status, area, state, fix in sorted(rows, key=lambda row: order[row[0]]):
-        shown_fix = f"`{fix}`" if fix.startswith(("sdkmanager", "source", "gh ")) else fix
+        shown_fix = f"`{fix}`" if fix.startswith(("sdkmanager", "source", "gh ", "scripts/")) else fix
         print(f"| {status} | {area} | {state.replace('|', '·')} | {shown_fix} |")
     return 1 if any(row[0] == RED for row in rows) else 0
 

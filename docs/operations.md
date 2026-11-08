@@ -30,6 +30,8 @@ Commands shared by every app. Per-app commands (module paths, release steps, sig
 | `screenshot.sh <out.png>` | Screenshot, dismissing "isn't responding" dialogs first |
 | `tap-text.sh "<label or tag>"` | Tap an element by its on-screen text or Compose test tag (any language, any layout) |
 | `verify-bundle.sh <aab>` | Signature, versionCode, permissions and native libs of a bundle |
+| `check_android_env.py` | Health of the local Android setup, as a table (the `check-android-env` skill) |
+| `update_android_studio.sh` | Install the latest stable Android Studio from Google, checking checksum and signature |
 | `setup-python.sh` | Create `.venv` with Pillow/numpy |
 | `smoke_lib.sh` | Sourced by every `apps/<app>/tools/smoke_test.sh`: release build, clean install, `tap`/`shot`, crash check |
 | `store_assets.py` | Draws the Play feature graphic and framed screenshots; each app's `tools/generate_store_assets.py` passes its colours and headlines |
