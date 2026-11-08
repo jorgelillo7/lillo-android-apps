@@ -57,3 +57,9 @@ The shell's default `java` (Homebrew) is newer than Gradle supports; always use 
   and point `JAVA_HOME` to it just for that build.
 - **The Mac has 8 GB RAM.** Emulator + Android Studio + Gradle don't fit together: close Chrome,
   and stop the emulator (`scripts/emulator.sh stop`) during long builds.
+- **An API 37 AVD that hangs on boot, then segfaults.** The log shows `hvf is not enabled on this
+  aarch64 host` and `qemu_mprotect__osdep: mprotect failed: Permission denied`. Command-line Tools
+  19.0 and older can't read an API level with a minor version, so `avdmanager` writes
+  `target=android-0` and the emulator runs without the hypervisor. Fix the line in
+  `~/.android/avd/<avd>.ini` (`target=android-37.0`) and keep the tools current:
+  `sdkmanager "cmdline-tools;latest"` (20.0 or newer).
