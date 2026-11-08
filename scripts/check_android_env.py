@@ -163,6 +163,20 @@ def check_repo_levels():
     return target
 
 
+def check_readme_badges():
+    catalog, readme = read("gradle/libs.versions.toml"), read("README.md")
+    wrong = []
+    for badge, entry in (("AGP", "androidGradlePlugin"), ("Kotlin", "kotlin")):
+        shown = search(rf"badge/{badge}-([\d.]+)-", readme)
+        version = search(rf'^{entry} = "(\d+\.\d+)', catalog)
+        if shown != version:
+            wrong.append(f"{badge}: README {shown}, catalog {version}")
+    if wrong:
+        report(YELLOW, "README badges", ", ".join(wrong), "Update the badges in README.md")
+    else:
+        report(GREEN, "README badges", "match the catalog")
+
+
 def check_play_deadline(target, today=None):
     today = today or date.today()
     passed = [item for item in PLAY_DEADLINES if item[0] <= today]
@@ -270,6 +284,7 @@ def main():
     check_sdk_updates()
     check_avds()
     check_play_deadline(check_repo_levels())
+    check_readme_badges()
     check_studio()
     check_jdk()
     check_disk()
