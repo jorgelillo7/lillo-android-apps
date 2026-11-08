@@ -10,6 +10,8 @@ All versions live in `gradle/libs.versions.toml` (plus `distributionUrl` in
 
 ## 1. Baseline
 
+Run the `check-android-env` skill first and fix what is red.
+
 ```bash
 source scripts/env.sh
 git switch -c chore/deps-$(date +%Y-%m)
