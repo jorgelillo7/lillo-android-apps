@@ -7,7 +7,7 @@
   ],
   "timezone": "Europe/Madrid",
   "schedule": [
-    "before 9am on monday"
+    "on monday"
   ],
   "prConcurrentLimit": 4,
   "packageRules": [
