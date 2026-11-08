@@ -52,4 +52,4 @@ testing, and a short **"what it means"** column:
 
 Then say what the user should do next, if anything (approve a waiting run, send a draft for
 review, look at a failed run), cross-checking `PENDING.md`. Apps "not on Play" that PENDING lists
-as ready (the slipper) are a pending manual first upload.
+as ready are a pending manual first upload.

@@ -97,7 +97,7 @@ on launch. Read crashes with `$ADB logcat -d -b crash` and check R8 output in
 
 ## 6. Finish
 
-- Update the versions table and any new gotcha in `docs/setup/toolchain.md`; add a line to
+- Update the README badges, the versions table and any new gotcha in `docs/setup/toolchain.md`; add a line to
   `docs/lessons-learned.md` if something broke.
 - Commit (message lists old → new versions and any fix), push, open a PR with the version table
   and the test plan (tests, lint, smoke test per app).

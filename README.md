@@ -6,7 +6,7 @@
 
 ![Kotlin](https://img.shields.io/badge/Kotlin-2.4-7F52FF?logo=kotlin&logoColor=white)
 ![Compose](https://img.shields.io/badge/Jetpack%20Compose-Material%203-4285F4?logo=jetpackcompose&logoColor=white)
-![AGP](https://img.shields.io/badge/AGP-9.4-02303A?logo=gradle&logoColor=white)
+![AGP](https://img.shields.io/badge/AGP-9.5-02303A?logo=gradle&logoColor=white)
 ![Target SDK](https://img.shields.io/badge/targetSdk-37-3DDC84?logo=android&logoColor=white)
 
 </div>
@@ -22,7 +22,7 @@
 | 🕵️ [Who's lying? · Impostor game](apps/whos-lying) | [On Google Play](https://play.google.com/store/apps/details?id=com.jorgelillo.whoslying) | `apps/whos-lying` |
 | 👑 [Last one standing? · Tournaments](apps/tournaments) | [On Google Play](https://play.google.com/store/apps/details?id=com.jorgelillo.tournaments) | `apps/tournaments` |
 | 😭 [¿Quién llora esta jornada? · Fantasy-league card game](apps/league-cards) | [On Google Play](https://play.google.com/store/apps/details?id=com.jorgelillo.leaguecards) (its league deck is private, outside this repo) | `apps/league-cards` |
-| 🩴 [¿Te pilla la chancla? · Slipper runner](apps/slipper) | Ready, first release pending | `apps/slipper` |
+| 🩴 [¿Te pilla la chancla? · Slipper runner](apps/slipper) | [On Google Play](https://play.google.com/store/apps/details?id=com.jorgelillo.slipper) | `apps/slipper` |
 | 🔴🔵 [What do you vote? · Group polls](apps/group-polls) | Parked until its Firebase project exists | `apps/group-polls` |
 
 ## 🗂️ Repository layout
@@ -57,8 +57,7 @@ apps/                              One folder per app (table above), all with th
 ### Principles
 
 - **Each app is a self-contained folder** under `apps/`, with its own `app` and `domain` modules.
-- **Domain modules are pure Kotlin** (no `android.*`): fast to test and easy to move to another
-  build system later.
+- **Domain modules are pure Kotlin** (no `android.*`): fast to test.
 - **Reuse first.** Before writing something, look in `core/`, `build-logic/`, `scripts/` and the
   other apps; the second copy of anything moves to `core` in the same change.
 - **Configuration is written once** in `build-logic` convention plugins and the version catalog.
@@ -129,12 +128,6 @@ storePassword=...
 keyAlias=...
 keyPassword=...
 ```
-
-## 🧭 Roadmap
-
-- **Now:** one repo, Gradle, more apps added as folders under `apps/`.
-- **Later:** possible move into a larger monorepo. The pure Kotlin domain modules are the parts
-  designed to migrate first.
 
 ## ⚖️ License
 
