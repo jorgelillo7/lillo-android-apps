@@ -2,6 +2,10 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+The owner's habits that hold in every repo (language, git and PRs, comments, working style) are
+personal rules in `~/.claude/rules/`, versioned in lillorepo `system/rules/`; a session that cannot
+read `~/.claude/` reads them there. This file holds only what is true of this repo.
+
 ## What this repo is
 
 A Gradle multi-project hosting several small Android apps published on Google Play. Each app is a
