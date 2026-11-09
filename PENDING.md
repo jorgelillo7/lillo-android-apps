@@ -15,6 +15,7 @@ Lines are pruned as items ship. What has **shipped** lives in `apps/<app>/releas
 | | What is missing | Waiting on |
 |---|---|---|
 | ⏳ | Grow the advent pool (activities and songs) between January and November, never during an Advent in progress | Ideas from you · `AdventActivity` / `AdventSong` in the domain |
+| ⏳ | Spanish carols (villancicos) for the advent songs | Public-domain scores to be found |
 
 ## group-polls (new app, parked until 2026-10-23)
 
@@ -41,6 +42,7 @@ Lines are pruned as items ship. What has **shipped** lives in `apps/<app>/releas
 
 | | What is missing | Waiting on |
 |---|---|---|
+| 🔨 | Write each app's behaviour specs in `openspec/specs/{app}/` (and `core/`), each scenario naming the Kotlin test that proves it; the scaffold and map are in `openspec/project.md` | Pick one app at a time |
 | ⏳ | Play's new app-quality thresholds (memory and code optimisation) are enforced from February 2027: in January, run `scripts/play_vitals.py` and compare with the thresholds once published (2026-11-07: no app has enough users for Google to report vitals; R8 is on everywhere and the apps are 1–2 MB) | January 2027 |
 | 🔨 | The six live apps' Play builds predate targetSdk 37 (2026-11) and the AGP 9.5 toolchain: add something worthwhile to each one and release it, so users get them. Candidates: Play's In-App Review once in `core`, shown after a good moment (first check with `verify-bundle.sh` that it adds no INTERNET permission to the apps that promise none); review that each app's first store screenshot says why to install it. No rush: Play is expected to require 37 from Aug 2027 | Your ideas for each app · `release-android-app` skill |
 | ⏳ | Release workflow without a stored key: Workload Identity Federation (GitHub OIDC → the `play-publisher` service account), then delete its JSON key | The first CI releases working with the key |

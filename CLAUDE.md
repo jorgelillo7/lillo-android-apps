@@ -61,15 +61,15 @@ hide_keyboard, swipe_up/down, back, on_screen, wait_for, bounds/in_box/swipe_in 
 keyboard, rotation, screenshots: what the shell helpers, `tap-text.sh`, `screenshot.sh` and UI batteries
 such as `apps/whos-lying/tools/battery_test.py` run on); each app's `tools/` only holds its own part.
 
-Project skills in `.claude/skills/`: `new-android-app` (competitor study → design → scaffold),
-`upgrade-android-deps` (toolchain/dependency upgrades), `check-android-env` (local SDK, AVDs, API
-levels across the repo, Play deadline, Renovate), `release-android-app` (ship a version) and
-`play-status` (repo versions vs every Play track, as one table).
+Project skills are indexed in [`.claude/CLAUDE.md`](.claude/CLAUDE.md).
 
 ## Working on a change
 
 - **Decisions**: `docs/decisions.md` lists the choices that shape the repo, with their reason.
   Read it before changing a convention; add a line when a new decision is taken.
+- **Behaviour**: `openspec/` states what each app must keep doing (`openspec/project.md` is the
+  map). A new feature is agreed in `openspec/changes/{name}/` before it is written; a change to
+  behaviour updates its spec in the same PR, and each scenario names the test that proves it.
 - **Before the PR**: `./gradlew spotlessApply`, then `test verifyRoborazziDebug lintDebug`, and
   the release smoke test of every app touched. A new or changed screen gets a screenshot test,
   upright and `+land`; re-record on purpose and review the images.

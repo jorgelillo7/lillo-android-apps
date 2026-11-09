@@ -29,6 +29,7 @@
 
 ```
 PENDING.md                         Open work, one line per item
+openspec/                          What each app must keep doing: specs per app, change proposals (map: openspec/project.md)
 docs/                              Runbook, Google Play guide, decisions, lessons learned (index: docs/README.md)
 scripts/                           Shared scripts: env, emulator, UI driver (ui_lib), smoke / capture libs, store graphics
 build-logic/                       Gradle convention plugins: Android, Compose, screenshots, Robolectric, baseline profiles, publishing
