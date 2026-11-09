@@ -15,6 +15,7 @@ Lines are pruned as items ship. What has **shipped** lives in `apps/<app>/releas
 | | What is missing | Waiting on |
 |---|---|---|
 | ⏳ | Grow the advent pool (activities and songs) between January and November, never during an Advent in progress | Ideas from you · `AdventActivity` / `AdventSong` in the domain |
+| ⏳ | Spanish carols (villancicos) for the advent songs | Public-domain scores to be found |
 
 ## group-polls (new app, parked until 2026-10-23)
 
