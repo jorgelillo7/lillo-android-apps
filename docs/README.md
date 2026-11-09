@@ -23,6 +23,7 @@ One entry per document. Runbooks first, then setup, then reference.
 |---|---|
 | [`design.md`](design.md) | The design system: colour recipe, typography, components, motion; each app's palette in `apps/<app>/DESIGN.md` |
 | [`decisions.md`](decisions.md) | The choices that shape the repo, one line each with its reason and PR |
+| [`../openspec/project.md`](../openspec/project.md) | What each app must keep doing: the behaviour specs and change proposals |
 | [`lessons-learned.md`](lessons-learned.md) | Things that went wrong once and how to avoid them |
 
 ## Per app

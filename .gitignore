@@ -20,3 +20,6 @@ local.properties
 # Local Python environment for the asset generators
 /.venv/
 __pycache__/
+
+# Session-scoped implementation plans
+/.claude/plans/
