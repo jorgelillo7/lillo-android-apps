@@ -41,7 +41,8 @@ One entry per document. Runbooks first, then setup, then reference.
 ## Plans
 
 Design decisions of apps that needed a plan before coding:
-[`plans/group-polls.md`](plans/group-polls.md), [`plans/tournaments.md`](plans/tournaments.md).
+[`plans/group-polls.md`](plans/group-polls.md), [`plans/tournaments.md`](plans/tournaments.md),
+[`plans/stadium-events.md`](plans/stadium-events.md).
 
 Shared scripts: [`scripts/`](../scripts). Branding: [`branding/`](../branding).
 Claude Code skills: [`.claude/skills/`](../.claude/skills) — `new-android-app`, `upgrade-android-deps`, `check-android-env`, `release-android-app`.

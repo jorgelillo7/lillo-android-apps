@@ -25,6 +25,12 @@ Lines are pruned as items ship. What has **shipped** lives in `apps/<app>/releas
 | 👤 | Create the Firebase project and give the OK | You · lillorepo `packages/group_polls/OPERATIONS.md` → "Create the project" |
 | 🔨 | Then: `firebase.properties`, App Check (Play Integrity + debug token), Play signing SHA-256 in `assetlinks.json`, publish `/q/` and `assetlinks.json` on the website (privacy page already live), Terraform on, internal test | The two steps above · plan in [docs/plans/group-polls.md](docs/plans/group-polls.md) |
 
+## stadium-events (new app, designed 2026-11)
+
+| | What is missing | Waiting on |
+|---|---|---|
+| 🔨 | Build v1 from [docs/plans/stadium-events.md](docs/plans/stadium-events.md): the daily events file on `jorgelillo7.github.io`, then the app (main card, reminder the evening before, widget) | Your go |
+
 ## tournaments (new app)
 
 | | What is missing | Waiting on |
