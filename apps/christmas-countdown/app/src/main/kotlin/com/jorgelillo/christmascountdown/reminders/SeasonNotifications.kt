@@ -1,21 +1,16 @@
 package com.jorgelillo.christmascountdown.reminders
 
-import android.Manifest
-import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.os.Build
-import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
-import androidx.core.content.ContextCompat
 import com.jorgelillo.christmascountdown.MainActivity
 import com.jorgelillo.christmascountdown.R
 import com.jorgelillo.christmascountdown.domain.AdventDoor
 import com.jorgelillo.christmascountdown.domain.AdventPlan
 import com.jorgelillo.christmascountdown.domain.Reminder
+import com.jorgelillo.core.reminders.LilloChannel
+import com.jorgelillo.core.reminders.LilloNotificationStyle
+import com.jorgelillo.core.reminders.LilloNotifications
 import java.time.LocalDate
 
 /**
@@ -25,52 +20,35 @@ import java.time.LocalDate
 object SeasonNotifications {
     const val EXTRA_OPEN_ADVENT = "open_advent"
 
-    private enum class Channel(val id: String, val title: Int, val description: Int) {
-        COUNTDOWN("countdown", R.string.channel_countdown, R.string.channel_countdown_desc),
-        ADVENT("advent", R.string.channel_advent, R.string.channel_advent_desc),
-        CHRISTMAS("christmas", R.string.channel_christmas, R.string.channel_christmas_desc)
-    }
+    private val countdown = LilloChannel("countdown", R.string.channel_countdown, R.string.channel_countdown_desc)
+    private val advent = LilloChannel("advent", R.string.channel_advent, R.string.channel_advent_desc)
+    private val christmas = LilloChannel(
+        "christmas",
+        R.string.channel_christmas,
+        R.string.channel_christmas_desc,
+        NotificationManager.IMPORTANCE_HIGH
+    )
+    private val style = LilloNotificationStyle(R.drawable.ic_notification, R.color.notification_accent)
 
-    fun createChannels(context: Context) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return
-        val manager = context.getSystemService(NotificationManager::class.java)
-        Channel.entries.forEach { channel ->
-            val importance = if (channel ==
-                Channel.CHRISTMAS
-            ) {
-                NotificationManager.IMPORTANCE_HIGH
-            } else {
-                NotificationManager.IMPORTANCE_DEFAULT
-            }
-            manager.createNotificationChannel(
-                NotificationChannel(channel.id, context.getString(channel.title), importance).apply {
-                    description = context.getString(channel.description)
-                }
-            )
-        }
-    }
-
-    fun canNotify(context: Context): Boolean = Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU ||
-        ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) ==
-        PackageManager.PERMISSION_GRANTED
+    fun createChannels(context: Context) =
+        LilloNotifications.createChannels(context, listOf(countdown, advent, christmas))
 
     fun show(context: Context, reminder: Reminder, date: LocalDate) {
-        if (!canNotify(context)) return
         val (channel, title, text) = when (reminder) {
             Reminder.ONE_MONTH_LEFT -> Triple(
-                Channel.COUNTDOWN,
+                countdown,
                 context.getString(R.string.reminder_month_title),
                 context.getString(R.string.reminder_month_text)
             )
 
             Reminder.ONE_WEEK_LEFT -> Triple(
-                Channel.COUNTDOWN,
+                countdown,
                 context.getString(R.string.reminder_week_title),
                 context.getString(R.string.reminder_week_text)
             )
 
             Reminder.ADVENT_STARTS -> Triple(
-                Channel.ADVENT,
+                advent,
                 context.getString(R.string.reminder_advent_title),
                 context.getString(R.string.reminder_advent_text)
             )
@@ -78,41 +56,27 @@ object SeasonNotifications {
             Reminder.DOOR_WAITING -> {
                 val music = AdventPlan.forYear(date.year)[date.dayOfMonth] is AdventDoor.Song
                 Triple(
-                    Channel.ADVENT,
+                    advent,
                     context.getString(R.string.reminder_door_title, date.dayOfMonth),
                     context.getString(if (music) R.string.reminder_door_music_text else R.string.reminder_door_text)
                 )
             }
 
             Reminder.CHRISTMAS_DAY -> Triple(
-                Channel.CHRISTMAS,
+                christmas,
                 context.getString(R.string.reminder_christmas_title),
                 context.getString(R.string.reminder_christmas_text)
             )
         }
         val opensAdvent = reminder == Reminder.ADVENT_STARTS || reminder == Reminder.DOOR_WAITING
-        val intent = Intent(context, MainActivity::class.java)
-            .putExtra(EXTRA_OPEN_ADVENT, opensAdvent)
-            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        val pending = PendingIntent.getActivity(
+        LilloNotifications.show(
             context,
+            channel,
+            style,
             reminder.ordinal,
-            intent,
-            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+            title,
+            text,
+            Intent(context, MainActivity::class.java).putExtra(EXTRA_OPEN_ADVENT, opensAdvent)
         )
-        val notification = NotificationCompat.Builder(context, channel.id)
-            .setSmallIcon(R.drawable.ic_notification)
-            .setColor(ContextCompat.getColor(context, R.color.notification_accent))
-            .setContentTitle(title)
-            .setContentText(text)
-            .setStyle(NotificationCompat.BigTextStyle().bigText(text))
-            .setContentIntent(pending)
-            .setAutoCancel(true)
-            .build()
-        try {
-            NotificationManagerCompat.from(context).notify(reminder.ordinal, notification)
-        } catch (_: SecurityException) {
-            // Permission revoked between the check and now: nothing to show.
-        }
     }
 }

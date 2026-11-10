@@ -26,6 +26,7 @@ include(":core:sharelink")
 include(":core:screenshot-testing")
 include(":core:testing")
 include(":core:baselineprofile")
+include(":core:reminders")
 
 // Christmas Countdown
 include(":apps:christmas-countdown:app")
@@ -60,3 +61,8 @@ include(":apps:league-cards:baselineprofile")
 include(":apps:slipper:app")
 include(":apps:slipper:domain")
 include(":apps:slipper:baselineprofile")
+
+// ¿Hay jaleo? Metropolitano (stadium events for the neighbours)
+include(":apps:stadium-events:app")
+include(":apps:stadium-events:domain")
+include(":apps:stadium-events:baselineprofile")

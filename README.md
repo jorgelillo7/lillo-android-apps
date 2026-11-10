@@ -23,6 +23,7 @@
 | 👑 [Last one standing? · Tournaments](apps/tournaments) | [On Google Play](https://play.google.com/store/apps/details?id=com.jorgelillo.tournaments) | `apps/tournaments` |
 | 😭 [¿Quién llora esta jornada? · Fantasy-league card game](apps/league-cards) | [On Google Play](https://play.google.com/store/apps/details?id=com.jorgelillo.leaguecards) (its league deck is private, outside this repo) | `apps/league-cards` |
 | 🩴 [¿Te pilla la chancla? · Slipper runner](apps/slipper) | [On Google Play](https://play.google.com/store/apps/details?id=com.jorgelillo.slipper) | `apps/slipper` |
+| 🏟️ [¿Hay jaleo? Metropolitano · Stadium events for the neighbours](apps/stadium-events) | Built, first release pending | `apps/stadium-events` |
 | 🔴🔵 [What do you vote? · Group polls](apps/group-polls) | Parked until its Firebase project exists | `apps/group-polls` |
 
 ## 🗂️ Repository layout
@@ -40,6 +41,7 @@ core/
 ├── sharelink/                     Pure Kotlin: any value inside a share link
 ├── screenshot-testing/            What every screenshot test shares (capture, accessibility checks)
 ├── testing/                       What every unit test shares (main dispatcher rule, Turbine helpers)
+├── reminders/                     Notifications and reminder jobs (WorkManager), with the R8 rule it needs
 └── baselineprofile/               Baseline profile generator and startup Macrobenchmark every app builds on
 apps/                              One folder per app (table above), all with the same layout:
 └── <app>/

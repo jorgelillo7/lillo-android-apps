@@ -1,0 +1,24 @@
+¿Vives o te mueves cerca del Riyadh Air Metropolitano? Canillejas, Las Rosas, Coslada, San Fernando, la A-2, la M-21 o la M-40: cuando hay partido o concierto, la zona se llena de gente y de tráfico. Esta app te lo dice antes.
+
+UNA SOLA PREGUNTA: ¿MAÑANA HAY JALEO?
+• Abre la app y verás la respuesta en grande: «SÍ, hay jaleo» o «NO, día tranquilo».
+• Qué hay, a qué hora y desde cuándo habrá más movimiento (unas dos horas antes).
+• Debajo, los próximos días con jaleo: partidos, conciertos y finales.
+
+SIN CONFIGURAR NADA
+• Al instalarla ya está lista: la víspera de cada día con jaleo te llega un aviso por la tarde.
+• Widget para la pantalla de inicio: «Mañana: partido 21:00» sin abrir nada.
+• Letra grande y colores claros, pensada para que la use cualquiera.
+
+¿DE DÓNDE SALEN LOS DATOS?
+De dos fuentes oficiales y públicas, revisadas cada día:
+• La agenda del estadio: riyadhairmetropolitano.com (partidos, conciertos, finales).
+• El calendario del Atlético de Madrid: la hora de cada partido y el día cuando LaLiga lo confirma.
+Mientras LaLiga no fija el día, la app lo dice tal cual: «sábado 5 o domingo 6, día por confirmar».
+La hora de más movimiento es una estimación (unas dos horas antes del inicio), no datos de tráfico en tiempo real.
+
+SIN DATOS TUYOS
+• Sin anuncios, sin cuentas y sin ubicación.
+• La app solo descarga un archivo público con la lista de eventos.
+
+App independiente: no tiene relación con el estadio, el Atlético de Madrid, LaLiga ni los organizadores de los eventos.

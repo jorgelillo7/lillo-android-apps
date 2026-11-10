@@ -24,7 +24,7 @@ on:
       app:
         description: App
         type: choice
-        options: [christmas-countdown, decision-wheel, whos-lying, tournaments, group-polls, league-cards, slipper]
+        options: [christmas-countdown, decision-wheel, whos-lying, tournaments, group-polls, league-cards, slipper, stadium-events]
       action:
         description: "upload: build and upload this version · promote: move the internal release on"
         type: choice
