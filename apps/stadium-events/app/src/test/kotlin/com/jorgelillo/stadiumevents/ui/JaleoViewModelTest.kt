@@ -6,6 +6,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import app.cash.turbine.test
 import com.jorgelillo.core.platform.JsonStore
 import com.jorgelillo.core.testing.MainDispatcherRule
+import com.jorgelillo.core.testing.StoreTimeout
 import com.jorgelillo.core.testing.awaitMatching
 import com.jorgelillo.stadiumevents.SampleFeed
 import com.jorgelillo.stadiumevents.data.FeedFetcher
@@ -52,7 +53,7 @@ class JaleoViewModelTest {
     @Test
     fun firstOpenDownloadsTheEventsAndAnswersTomorrow() = runTest {
         val vm = viewModel()
-        vm.state.filterNotNull().test {
+        vm.state.filterNotNull().test(timeout = StoreTimeout) {
             val state = awaitMatching { it.fetchedAt != null }
             val busy = assertIs<Tomorrow.Busy>(state.tomorrow)
             assertEquals("atletico-vs-viking", busy.event.id)
@@ -61,6 +62,7 @@ class JaleoViewModelTest {
                 state.upcoming.map { it.event.id }
             )
             assertEquals(now, state.fetchedAt)
+            cancelAndIgnoreRemainingEvents()
         }
     }
 
@@ -68,10 +70,11 @@ class JaleoViewModelTest {
     fun aFailedDownloadKeepsTheLastCopyAndSaysSo() = runTest {
         val saved = store(AppState(SampleFeed.feed(today), fetchedAt = now - 5 * 60 * 60 * 1000L))
         val vm = viewModel(saved, FeedFetcher { throw IOException("no network") })
-        vm.state.filterNotNull().test {
+        vm.state.filterNotNull().test(timeout = StoreTimeout) {
             val state = awaitMatching { it.offline }
             assertIs<Tomorrow.Busy>(state.tomorrow)
             assertEquals(now - 5 * 60 * 60 * 1000L, state.fetchedAt)
+            cancelAndIgnoreRemainingEvents()
         }
     }
 
@@ -79,12 +82,13 @@ class JaleoViewModelTest {
     fun aRecentCopyIsNotDownloadedAgain() = runTest {
         val saved = store(AppState(SampleFeed.feed(today), fetchedAt = now - 60 * 60 * 1000L))
         val vm = viewModel(saved)
-        vm.state.filterNotNull().test {
+        vm.state.filterNotNull().test(timeout = StoreTimeout) {
             awaitMatching { it.fetchedAt != null }
             assertEquals(0, downloads)
             vm.refresh()
             awaitMatching { it.fetchedAt == now }
             assertEquals(1, downloads)
+            cancelAndIgnoreRemainingEvents()
         }
     }
 
@@ -92,10 +96,11 @@ class JaleoViewModelTest {
     fun theNotificationsQuestionIsAskedOnce() = runTest {
         val saved = store()
         val vm = viewModel(saved)
-        vm.state.filterNotNull().test {
+        vm.state.filterNotNull().test(timeout = StoreTimeout) {
             assertEquals(false, awaitMatching { it.fetchedAt != null }.notificationsAsked)
             vm.notificationsAsked()
             awaitMatching { it.notificationsAsked }
+            cancelAndIgnoreRemainingEvents()
         }
         assertTrue(saved.state.first().notificationsAsked)
     }
