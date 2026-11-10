@@ -23,6 +23,7 @@
 | 👑 [Last one standing? · Tournaments](apps/tournaments) | [On Google Play](https://play.google.com/store/apps/details?id=com.jorgelillo.tournaments) | `apps/tournaments` |
 | 😭 [¿Quién llora esta jornada? · Fantasy-league card game](apps/league-cards) | [On Google Play](https://play.google.com/store/apps/details?id=com.jorgelillo.leaguecards) (its league deck is private, outside this repo) | `apps/league-cards` |
 | 🩴 [¿Te pilla la chancla? · Slipper runner](apps/slipper) | [On Google Play](https://play.google.com/store/apps/details?id=com.jorgelillo.slipper) | `apps/slipper` |
+| 🏟️ [¿Hay jaleo? Metropolitano · Stadium events for the neighbours](apps/stadium-events) | Built, first release pending | `apps/stadium-events` |
 | 🔴🔵 [What do you vote? · Group polls](apps/group-polls) | Parked until its Firebase project exists | `apps/group-polls` |
 
 ## 🗂️ Repository layout

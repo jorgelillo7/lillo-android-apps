@@ -1,0 +1,59 @@
+<resources>
+    <string name="app_name">¿Hay jaleo?</string>
+    <string name="question">¿Hay jaleo mañana?</string>
+    <string name="place">Alrededores del Riyadh Air Metropolitano</string>
+
+    <string name="tomorrow_label">Mañana, %1$s</string>
+    <string name="answer_busy">SÍ, hay jaleo</string>
+    <string name="answer_maybe">PUEDE haber jaleo</string>
+    <string name="answer_calm">NO, día tranquilo</string>
+    <string name="calm_line">No hay nada en el estadio</string>
+    <string name="calm_reminder">Te avisamos la víspera si lo hay</string>
+    <string name="upcoming_title">Próximos días con jaleo</string>
+    <string name="upcoming_none">Aún no hay días con jaleo anunciados</string>
+
+    <string name="kind_match">Partido</string>
+    <string name="kind_final">Final</string>
+    <string name="kind_concert">Concierto</string>
+    <string name="kind_other">Evento</string>
+    <string name="what_at">%1$s · %2$s</string>
+    <string name="or_separator">" o "</string>
+    <string name="date_pattern_long">EEEE d \'de\' MMMM</string>
+    <string name="day_to_be_fixed">día por confirmar</string>
+    <plurals name="days_in_a_row">
+        <item quantity="one">%1$d día</item>
+        <item quantity="many">%1$d días</item>
+        <item quantity="other">%1$d días</item>
+    </plurals>
+    <string name="hint_busy_from">Más gente y tráfico desde las %1$s aprox. por Canillejas, Las Rosas, Coslada y la M-40</string>
+    <string name="hint_busy_day">Más gente y tráfico de lo normal por la zona del estadio</string>
+    <string name="hint_maybe">El %1$s: el día aún no está confirmado</string>
+
+    <string name="loading">Buscando eventos…</string>
+    <string name="offline">Sin conexión: lo intentamos más tarde</string>
+    <string name="retry">Reintentar</string>
+    <string name="sources">Datos: agenda oficial del estadio (riyadhairmetropolitano.com) y calendario del Atlético de Madrid. App independiente, sin relación con el estadio ni con el club.</string>
+    <string name="checked_today">Revisado hoy a las %1$s</string>
+    <string name="checked_on">Revisado el %1$s a las %2$s</string>
+
+    <string name="channel_tomorrow">Mañana hay jaleo</string>
+    <string name="channel_tomorrow_desc">La víspera de un partido, concierto o final en el estadio</string>
+    <string name="notification_title">Mañana hay jaleo en el Metropolitano</string>
+    <string name="notification_maybe_title">Mañana puede haber jaleo en el Metropolitano</string>
+    <string name="notification_text">%1$s · %2$s. %3$s.</string>
+
+    <string name="widget_name">¿Hay jaleo mañana?</string>
+    <string name="widget_description">Si mañana hay algo en el estadio</string>
+    <string name="widget_tomorrow">Mañana</string>
+    <string name="widget_calm">Día tranquilo</string>
+    <string name="widget_calm_line">Nada en el estadio</string>
+    <string name="widget_maybe">Puede haber %1$s</string>
+    <string name="widget_empty">Abre la app</string>
+
+    <string name="action_about">Acerca de</string>
+    <string name="about_title">¿Hay jaleo? Metropolitano</string>
+    <string name="about_version">Versión %1$s</string>
+    <string name="about_body">Avisa a los vecinos de los alrededores del Riyadh Air Metropolitano de si mañana hay partido, concierto o final, con un aviso la víspera. Los datos salen de la agenda oficial del estadio y del calendario del Atlético de Madrid, revisados cada día. App independiente: sin relación con el estadio, el club ni los organizadores. Sin anuncios, sin cuentas y sin ubicación.</string>
+    <string name="about_rate">Valorar en Google Play</string>
+    <string name="about_privacy">Política de privacidad</string>
+</resources>

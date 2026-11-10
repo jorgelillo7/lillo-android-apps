@@ -25,11 +25,14 @@ Lines are pruned as items ship. What has **shipped** lives in `apps/<app>/releas
 | 👤 | Create the Firebase project and give the OK | You · lillorepo `packages/group_polls/OPERATIONS.md` → "Create the project" |
 | 🔨 | Then: `firebase.properties`, App Check (Play Integrity + debug token), Play signing SHA-256 in `assetlinks.json`, publish `/q/` and `assetlinks.json` on the website (privacy page already live), Terraform on, internal test | The two steps above · plan in [docs/plans/group-polls.md](docs/plans/group-polls.md) |
 
-## stadium-events (new app, designed 2026-11)
+## stadium-events (new app, v1 built 2026-11; feed live at `jorgelillo7.github.io/stadium/events.json`)
 
 | | What is missing | Waiting on |
 |---|---|---|
-| 🔨 | Build v1 from [docs/plans/stadium-events.md](docs/plans/stadium-events.md): the daily events file on `jorgelillo7.github.io`, then the app (main card, reminder the evening before, widget) | Your go |
+| 👤 | Preview the privacy policy page (`privacy/stadium-events/` on the website) before it is published | You |
+| 🔨 | Store graphics (phone and tablet screenshots, feature graphic: `tools/capture_store_screenshots.sh` + `tools/generate_store_assets.py`, like the other apps) and the baseline profile (`scripts/generate-baseline-profiles.sh stadium-events`) | Before the first upload |
+| 👤 | Play Console: create the app (`com.jorgelillo.stadiumevents`), register the package in Android developer verification, App content answers (`apps/stadium-events/OPERATIONS.md`), upload key (`scripts/new-upload-key.sh stadium-events`, then `scripts/set-release-secrets.sh stadium-events`), first bundle by hand | You · `release-android-app` skill |
+| ⏳ | Try it with the family for a couple of weeks: does the evening reminder arrive, is the widget clear? | Real use |
 
 ## tournaments (new app)
 

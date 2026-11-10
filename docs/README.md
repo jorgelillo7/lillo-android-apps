@@ -37,6 +37,7 @@ One entry per document. Runbooks first, then setup, then reference.
 | Last one standing? (tournaments) | [`OPERATIONS.md`](../apps/tournaments/OPERATIONS.md) | [`release-notes.md`](../apps/tournaments/release-notes.md) |
 | ¿Quién llora esta jornada? (league cards) | [`OPERATIONS.md`](../apps/league-cards/OPERATIONS.md) | [`release-notes.md`](../apps/league-cards/release-notes.md) |
 | ¿Te pilla la chancla? (slipper runner) | [`OPERATIONS.md`](../apps/slipper/OPERATIONS.md) | [`release-notes.md`](../apps/slipper/release-notes.md) |
+| ¿Hay jaleo? Metropolitano (stadium events) | [`OPERATIONS.md`](../apps/stadium-events/OPERATIONS.md) | [`release-notes.md`](../apps/stadium-events/release-notes.md) |
 
 ## Plans
 

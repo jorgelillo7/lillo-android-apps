@@ -1,0 +1,24 @@
+Do you live or drive near the Riyadh Air Metropolitano in Madrid? Canillejas, Las Rosas, Coslada, San Fernando, the A-2, M-21 or M-40: on match and concert days the area fills with people and traffic. This app tells you beforehand.
+
+ONE QUESTION: BUSY TOMORROW?
+• Open the app and the answer is right there, in big letters: "YES, it'll be busy" or "NO, a quiet day".
+• What's on, at what time, and from when it gets busy (about two hours before).
+• Below it, the next busy days: matches, concerts and finals.
+
+NOTHING TO SET UP
+• Ready as soon as it's installed: the evening before every busy day you get a reminder.
+• Home-screen widget: "Tomorrow: Match 21:00" without opening anything.
+• Big text and light colours, made for anyone to use.
+
+WHERE DOES THE DATA COME FROM?
+Two official, public sources, checked every day:
+• The stadium's agenda: riyadhairmetropolitano.com (matches, concerts, finals).
+• Atlético de Madrid's fixtures: each match's kick-off, and the day once LaLiga fixes it.
+Until LaLiga fixes the day, the app says so: "Saturday 5 or Sunday 6, day to be confirmed".
+The busy time is an estimate (about two hours before the start), not real-time traffic data.
+
+NO DATA ABOUT YOU
+• No ads, no account, no location.
+• The app only downloads a public file with the list of events.
+
+An independent app: not related to the stadium, Atlético de Madrid, LaLiga or the events' organisers.

@@ -1,0 +1,58 @@
+<resources>
+    <string name="app_name">Busy day?</string>
+    <string name="question">Busy around the stadium tomorrow?</string>
+    <string name="place">Around the Riyadh Air Metropolitano</string>
+
+    <string name="tomorrow_label">Tomorrow, %1$s</string>
+    <string name="answer_busy">YES, it\'ll be busy</string>
+    <string name="answer_maybe">MAYBE busy</string>
+    <string name="answer_calm">NO, a quiet day</string>
+    <string name="calm_line">Nothing on at the stadium</string>
+    <string name="calm_reminder">We\'ll let you know the evening before if there is</string>
+    <string name="upcoming_title">Next busy days</string>
+    <string name="upcoming_none">No busy days announced yet</string>
+
+    <string name="kind_match">Match</string>
+    <string name="kind_final">Final</string>
+    <string name="kind_concert">Concert</string>
+    <string name="kind_other">Event</string>
+    <string name="what_at">%1$s · %2$s</string>
+    <string name="or_separator">" or "</string>
+    <string name="date_pattern_long">EEEE d MMMM</string>
+    <string name="day_to_be_fixed">day to be confirmed</string>
+    <plurals name="days_in_a_row">
+        <item quantity="one">%1$d day</item>
+        <item quantity="other">%1$d days</item>
+    </plurals>
+    <string name="hint_busy_from">More people and traffic from about %1$s around Canillejas, Las Rosas, Coslada and the M-40</string>
+    <string name="hint_busy_day">More people and traffic than usual around the stadium</string>
+    <string name="hint_maybe">On %1$s: the day isn\'t fixed yet</string>
+
+    <string name="loading">Looking for events…</string>
+    <string name="offline">No connection: we\'ll try again later</string>
+    <string name="retry">Try again</string>
+    <string name="sources">Data: the stadium\'s official agenda (riyadhairmetropolitano.com) and Atlético de Madrid\'s fixtures. Independent app, not related to the stadium or the club.</string>
+    <string name="checked_today">Checked today at %1$s</string>
+    <string name="checked_on">Checked on %1$s at %2$s</string>
+
+    <string name="channel_tomorrow">Busy tomorrow</string>
+    <string name="channel_tomorrow_desc">The evening before a match, concert or final at the stadium</string>
+    <string name="notification_title">Busy around the stadium tomorrow</string>
+    <string name="notification_maybe_title">Maybe busy around the stadium tomorrow</string>
+    <string name="notification_text">%1$s · %2$s. %3$s.</string>
+
+    <string name="widget_name">Busy tomorrow?</string>
+    <string name="widget_description">Whether there is something at the stadium tomorrow</string>
+    <string name="widget_tomorrow">Tomorrow</string>
+    <string name="widget_calm">Quiet day</string>
+    <string name="widget_calm_line">Nothing at the stadium</string>
+    <string name="widget_maybe">Maybe a %1$s</string>
+    <string name="widget_empty">Open the app</string>
+
+    <string name="action_about">About</string>
+    <string name="about_title">Busy day? Metropolitano</string>
+    <string name="about_version">Version %1$s</string>
+    <string name="about_body">Tells the neighbours around the Riyadh Air Metropolitano whether tomorrow there is a match, a concert or a final, with a reminder the evening before. The data comes from the stadium\'s official agenda and Atlético de Madrid\'s fixtures, checked every day. An independent app: not related to the stadium, the club or the organisers. No ads, no account, no location.</string>
+    <string name="about_rate">Rate on Google Play</string>
+    <string name="about_privacy">Privacy policy</string>
+</resources>
