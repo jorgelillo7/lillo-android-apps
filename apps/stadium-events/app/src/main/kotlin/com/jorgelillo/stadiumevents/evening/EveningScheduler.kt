@@ -1,19 +1,14 @@
 package com.jorgelillo.stadiumevents.evening
 
 import android.content.Context
-import androidx.work.ExistingWorkPolicy
-import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.WorkManager
 import androidx.work.workDataOf
-import java.time.Duration
+import com.jorgelillo.core.reminders.LilloSchedule
 import java.time.LocalDateTime
 import java.time.LocalTime
-import java.util.concurrent.TimeUnit
 
 /**
- * Keeps one pending job, every evening at [AT]: it downloads the events, tells the neighbours if
- * tomorrow is busy, and plans the next evening. WorkManager survives reboots; Android may run it a
- * little late to save battery, which is fine for a reminder the evening before.
+ * One pending job, every evening at [AT]: it downloads the events, tells the neighbours if tomorrow
+ * is busy, and plans the next evening. Android may run it a little late, fine for the evening before.
  */
 object EveningScheduler {
     private const val WORK = "evening_reminder"
@@ -27,10 +22,13 @@ object EveningScheduler {
 
     fun scheduleNext(context: Context, now: LocalDateTime = LocalDateTime.now()) {
         val at = nextRun(now)
-        val request = OneTimeWorkRequestBuilder<EveningWorker>()
-            .setInitialDelay(Duration.between(now, at).toMillis().coerceAtLeast(0), TimeUnit.MILLISECONDS)
-            .setInputData(workDataOf(KEY_DATE to at.toLocalDate().toString()))
-            .build()
-        WorkManager.getInstance(context).enqueueUniqueWork(WORK, ExistingWorkPolicy.REPLACE, request)
+        LilloSchedule.at(
+            context,
+            WORK,
+            EveningWorker::class.java,
+            at,
+            workDataOf(KEY_DATE to at.toLocalDate().toString()),
+            now
+        )
     }
 }

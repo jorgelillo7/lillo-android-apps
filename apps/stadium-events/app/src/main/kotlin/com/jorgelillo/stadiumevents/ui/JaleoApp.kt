@@ -20,10 +20,10 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jorgelillo.core.designsystem.AboutTexts
 import com.jorgelillo.core.designsystem.LilloAboutSheet
 import com.jorgelillo.core.platform.LilloLinks
+import com.jorgelillo.core.reminders.LilloNotifications
 import com.jorgelillo.stadiumevents.BuildConfig
 import com.jorgelillo.stadiumevents.R
 import com.jorgelillo.stadiumevents.StadiumEventsApplication
-import com.jorgelillo.stadiumevents.evening.JaleoNotifications
 import com.jorgelillo.stadiumevents.ui.theme.JaleoPalette
 
 /** The screen with its ViewModel, the About sheet, and the one-time notifications permission. */
@@ -40,7 +40,7 @@ internal fun JaleoApp(app: StadiumEventsApplication, palette: JaleoPalette) {
     }
     LaunchedEffect(state?.notificationsAsked) {
         if (state?.notificationsAsked == false) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && !JaleoNotifications.canNotify(context)) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && !LilloNotifications.canNotify(context)) {
                 askPermission.launch(Manifest.permission.POST_NOTIFICATIONS)
             } else {
                 vm.notificationsAsked()

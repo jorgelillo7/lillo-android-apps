@@ -45,8 +45,8 @@ The shell's default `java` (Homebrew) is newer than Gradle supports; always use 
 - **AGP 9 has Kotlin built in.** Don't apply `org.jetbrains.kotlin.android`. `CommonExtension` is no
   longer generic. The Compose compiler plugin is still needed.
 - **R8 strict full mode (AGP 9 default)** stops keeping implicit constructors for `-keep class X`
-  rules. Room's rule lost `WorkDatabase_Impl()` and the release crashed on start. Fix in the app's
-  `proguard-rules.pro`:
+  rules. Room's rule lost `WorkDatabase_Impl()` and the release crashed on start. The fix lives in
+  `core/reminders/consumer-rules.pro`, applied to every app that depends on `:core:reminders`:
   ```
   -keep class * extends androidx.room.RoomDatabase { <init>(); }
   ```

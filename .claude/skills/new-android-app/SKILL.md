@@ -57,9 +57,10 @@ Follow [docs/adding-a-new-app.md](../../../docs/adding-a-new-app.md). Checklist:
 - Persistence: DataStore (+ kotlinx.serialization JSON for small object graphs). Room only when
   queries/relations justify it.
 - Signing and R8 come from the `jorgelillo.android.application` plugin: the app only needs a
-  `proguard-rules.pro` (RoomDatabase keep rule if WorkManager/Glance/Room is pulled in).
+  `proguard-rules.pro`. Reminders, scheduled jobs or a widget: depend on `:core:reminders`
+  (notifications, `LilloSchedule`, and the RoomDatabase keep rule WorkManager needs).
 - **Start from what is already proven, never from a copy** (CLAUDE.md, "Reuse first"). List
-  `core/designsystem`, `core/platform`, `core/sharelink` and `scripts/` first and build on them:
+  `core/designsystem`, `core/platform`, `core/reminders`, `core/sharelink` and `scripts/` first and build on them:
   `installLilloWindow` + `setLilloContent` in `MainActivity`, `LilloTheme`, `LilloPage` /
   `LilloBigButton`, `LilloAboutSheet` (language, rate, privacy), `LilloLanguageDialog`,
   `isShortScreen` / `sideActionsWhenShort`, `ConfettiBurst`, `LilloQrCode`, `JsonStore`,

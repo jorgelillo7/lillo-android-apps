@@ -113,7 +113,8 @@ Project skills are indexed in [`.claude/CLAUDE.md`](.claude/CLAUDE.md).
   `ConfettiBurst` / `ConfettiRain`, `LilloAvatar`, `LilloSummaryHero` (home screen header: gradient, state at a glance, chips), `Modifier.accentEdge` (a card's state or kind as a coloured edge), `Modifier.entrance` / `animationsEnabled()` (motion that honours "Remove animations"), `LilloSettingRow`, `LilloSectionTitle`, `LilloQrCode`. Each core component has a
   `@Preview` in `core/designsystem/.../Catalogue.kt`; `CatalogueScreenshotTest` captures every preview there
   (with the accessibility checks), so a new component needs a preview, not a hand-written screenshot test. `:core:platform` has
-  `JsonStore`, sharing and links; `:core:sharelink` (pure Kotlin) puts any serializable value in a
+  `JsonStore`, sharing and links; `:core:reminders` has notifications (`LilloNotifications`: channels,
+  permission check, tap to open) and reminder chains (`LilloSchedule.at`: one WorkManager job at a time); `:core:sharelink` (pure Kotlin) puts any serializable value in a
   `jorgelillo7.github.io/<path>/#…` link (tournaments `/t/`, impostor packs `/p/`).
 - **Reuse first; the second copy goes to core.** Every app should get what the others already
   proved. Before writing a composable, helper, Gradle setting or script, look for it in `core/`,
@@ -140,8 +141,8 @@ Project skills are indexed in [`.claude/CLAUDE.md`](.claude/CLAUDE.md).
 
 - **Always test the release build** (`apps/<app>/tools/smoke_test.sh`), not just debug: R8 strict
   full mode (AGP 9 default) once stripped WorkManager's `WorkDatabase_Impl` constructor and the app
-  crashed on start. Any app using WorkManager/Glance/Room needs the `RoomDatabase` keep rule
-  (see `apps/christmas-countdown/app/proguard-rules.pro`).
+  crashed on start. The `RoomDatabase` keep rule WorkManager/Glance need comes from `:core:reminders`'
+  consumer rules: an app with reminders or widgets depends on it, never on WorkManager alone.
 - Signing reads `apps/<app>/keystore.properties` (git-ignored, values trimmed). Never commit it or
   any `.jks`; check `git status` for filename variants (a leading-space copy once slipped in).
 - Each release bumps `versionCode` in `apps/<app>/app/build.gradle.kts`, rewrites

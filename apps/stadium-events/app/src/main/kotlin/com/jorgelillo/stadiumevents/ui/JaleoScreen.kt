@@ -4,14 +4,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -32,10 +28,13 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jorgelillo.core.designsystem.LilloPage
+import com.jorgelillo.core.designsystem.LilloSectionTitle
+import com.jorgelillo.core.designsystem.accentEdge
 import com.jorgelillo.stadiumevents.R
 import com.jorgelillo.stadiumevents.domain.Level
 import com.jorgelillo.stadiumevents.domain.Tomorrow
@@ -152,32 +151,28 @@ private fun AnswerCard(tomorrow: Tomorrow, texts: JaleoTexts, palette: JaleoPale
 private fun Upcoming(days: List<UpcomingDay>, texts: JaleoTexts, palette: JaleoPalette) = Column(
     verticalArrangement = Arrangement.spacedBy(12.dp)
 ) {
-    Text(
+    LilloSectionTitle(
         stringResource(R.string.upcoming_title),
-        fontSize = 24.sp,
-        fontWeight = FontWeight.Bold,
-        modifier = Modifier.padding(top = 8.dp).semantics { heading() }
+        modifier = Modifier.padding(top = 8.dp).semantics { heading() },
+        color = palette.text,
+        style = TextStyle(fontSize = 24.sp),
+        fontWeight = FontWeight.Bold
     )
     if (days.isEmpty()) {
         Text(stringResource(R.string.upcoming_none), fontSize = 19.sp, color = palette.secondaryText)
     }
     days.forEach { day ->
-        Row(
+        Column(
             Modifier
                 .fillMaxWidth()
-                .height(IntrinsicSize.Min)
                 .clip(RoundedCornerShape(20.dp))
                 .background(palette.surface)
+                .accentEdge(if (day.event.level == Level.MAX) palette.max else palette.busy, width = 10.dp)
+                .padding(start = 28.dp, end = 18.dp, top = 14.dp, bottom = 14.dp)
                 .testTag("upcoming_${day.event.id}")
         ) {
-            Box(
-                Modifier.width(10.dp).fillMaxHeight()
-                    .background(if (day.event.level == Level.MAX) palette.max else palette.busy)
-            )
-            Column(Modifier.padding(horizontal = 18.dp, vertical = 14.dp)) {
-                Text(texts.upcomingWhen(day), fontSize = 21.sp, fontWeight = FontWeight.Bold)
-                Text(texts.upcomingWhat(day), fontSize = 18.sp, lineHeight = 24.sp, color = palette.secondaryText)
-            }
+            Text(texts.upcomingWhen(day), fontSize = 21.sp, fontWeight = FontWeight.Bold)
+            Text(texts.upcomingWhat(day), fontSize = 18.sp, lineHeight = 24.sp, color = palette.secondaryText)
         }
     }
 }

@@ -41,6 +41,7 @@ core/
 ├── sharelink/                     Pure Kotlin: any value inside a share link
 ├── screenshot-testing/            What every screenshot test shares (capture, accessibility checks)
 ├── testing/                       What every unit test shares (main dispatcher rule, Turbine helpers)
+├── reminders/                     Notifications and reminder jobs (WorkManager), with the R8 rule it needs
 └── baselineprofile/               Baseline profile generator and startup Macrobenchmark every app builds on
 apps/                              One folder per app (table above), all with the same layout:
 └── <app>/

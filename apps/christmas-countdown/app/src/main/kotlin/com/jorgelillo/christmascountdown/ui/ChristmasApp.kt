@@ -52,7 +52,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jorgelillo.christmascountdown.ChristmasCountdownApplication
 import com.jorgelillo.christmascountdown.R
 import com.jorgelillo.christmascountdown.domain.CountdownState
-import com.jorgelillo.christmascountdown.reminders.SeasonNotifications
 import com.jorgelillo.christmascountdown.ui.about.AboutSheet
 import com.jorgelillo.christmascountdown.ui.about.PLAY_STORE_URL
 import com.jorgelillo.christmascountdown.ui.advent.AdventScreen
@@ -62,6 +61,7 @@ import com.jorgelillo.christmascountdown.ui.countdown.CountdownScreen
 import com.jorgelillo.christmascountdown.ui.countdown.CountdownViewModel
 import com.jorgelillo.christmascountdown.ui.theme.ChristmasColors
 import com.jorgelillo.core.platform.shareText
+import com.jorgelillo.core.reminders.LilloNotifications
 import kotlinx.coroutines.launch
 
 private enum class Tab(val label: Int) { Countdown(R.string.tab_countdown), Advent(R.string.tab_advent) }
@@ -77,10 +77,10 @@ internal fun ChristmasApp(app: ChristmasCountdownApplication, openAdvent: Boolea
 
     var tab by rememberSaveable { mutableIntStateOf(if (openAdvent) Tab.Advent.ordinal else Tab.Countdown.ordinal) }
     // "Shall we remind you?": Android 13+ needs the permission; asked in context, once.
-    var canNotify by remember { mutableStateOf(SeasonNotifications.canNotify(context)) }
+    var canNotify by remember { mutableStateOf(LilloNotifications.canNotify(context)) }
     // Granted (or revoked) in system settings while away: check again on the way back.
     LifecycleResumeEffect(Unit) {
-        canNotify = SeasonNotifications.canNotify(context)
+        canNotify = LilloNotifications.canNotify(context)
         onPauseOrDispose { }
     }
     val promptDismissed by app.settings.reminderPromptDismissed.collectAsStateWithLifecycle(initialValue = true)

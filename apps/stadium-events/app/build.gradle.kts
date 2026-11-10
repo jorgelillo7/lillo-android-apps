@@ -25,6 +25,7 @@ dependencies {
     implementation(projects.apps.stadiumEvents.domain)
     implementation(projects.core.designsystem)
     implementation(projects.core.platform)
+    implementation(projects.core.reminders)
 
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.core.ktx)
@@ -34,6 +35,5 @@ dependencies {
     implementation(libs.androidx.glance.material3)
     implementation(libs.androidx.lifecycle.runtimeCompose)
     implementation(libs.androidx.lifecycle.viewModelCompose)
-    implementation(libs.androidx.work.runtime)
     testImplementation(libs.androidx.work.testing)
 }
