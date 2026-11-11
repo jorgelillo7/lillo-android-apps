@@ -113,7 +113,7 @@ Publisher and tags the commit `<app>/v<versionCode>`.
 | `upload` + `internal` | the usual first step: install it from the opt-in link and try it |
 | `promote` + `production` | moves that same bundle on (no new build) |
 | `upload` + `production` | straight to production, when no testing round is needed |
-| `listing` | also publishes the store texts and graphics, with the release that needs them |
+| `listing` | also publishes the store texts and graphics, with the release that needs them. The workflow publishes the texts first and then everything: Google rejects a language's graphics until its listing exists (a new app's second language). From the terminal, do the same by hand: `publishListing` with the `graphics/` folders set aside, then again with them |
 | `draft` | the release is created as a draft: needed for an app's **first** production release (Google answers "Only releases with status draft may be created on draft app" until the app has been published once; internal testing doesn't count). Then Play Console → *Publishing overview* → *Send changes for review* |
 | `dry_run` | builds and checks everything, publishes nothing |
 

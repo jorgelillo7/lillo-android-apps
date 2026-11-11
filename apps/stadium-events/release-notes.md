@@ -5,4 +5,4 @@ Newest first. User-facing notes per language are in
 
 | versionCode | Version | Date | Notes |
 |---|---|---|---|
-| 1 | 1.0 | 2026-11 (not on Play yet) | First version: tomorrow's answer from the stadium's agenda and Atlético de Madrid's fixtures, the next three busy days, the reminder the evening before, home-screen widget |
+| 1 | 1.0 | 2026-11-11 (production draft, with the listing) | First version: tomorrow's answer from the stadium's agenda and Atlético de Madrid's fixtures, the next three busy days, the reminder the evening before, home-screen widget |
