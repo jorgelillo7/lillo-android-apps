@@ -29,7 +29,7 @@ Lines are pruned as items ship. What has **shipped** lives in `apps/<app>/releas
 
 | | What is missing | Waiting on |
 |---|---|---|
-| 👤 | Play Console (app created, upload key and GitHub secrets done 2026-11-11): App content answers (`apps/stadium-events/OPERATIONS.md`), store listing (texts and graphics in `app/src/main/play/listings`), first bundle by hand, then register the package in Android developer verification with the app signing key | You · `release-android-app` skill |
+| 👤 | Play Console: 1.0 is a **production draft** with its listing (2026-11-11). Fill in App content (answers in `apps/stadium-events/OPERATIONS.md`), then *Publishing overview → Send changes for review*; after the first upload, register the package in Android developer verification with the app signing key | You |
 | ⏳ | Try it with the family for a couple of weeks: does the evening reminder arrive, is the widget clear? | Real use |
 
 ## tournaments (new app)

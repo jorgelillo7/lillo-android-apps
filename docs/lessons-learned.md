@@ -92,3 +92,7 @@ Short, one line each. Add to it whenever something bites.
 - **The app-signing SHA-256 comes from the API too**, once a bundle is uploaded: the Play API's
   `generatedApks/<versionCode>` lists each generated APK with `certificateSha256Hash` (Play's signing
   key, not the upload key). No Play Console visit needed for `assetlinks.json`.
+- **A new app's listing in a second language can't be created together with its graphics**: the
+  Release workflow's `listing` for stadium-events failed with "Listing for language 'en-US' not
+  found" (the app was created in Spanish). Texts first, then the graphics
+  ([publishing-on-google-play.md](publishing-on-google-play.md) §6, `listing`).
