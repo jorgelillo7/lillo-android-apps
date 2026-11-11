@@ -58,7 +58,9 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -74,6 +76,9 @@ import androidx.compose.ui.input.pointer.util.VelocityTracker
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.SemanticsPropertyKey
+import androidx.compose.ui.semantics.SemanticsPropertyReceiver
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
@@ -94,6 +99,11 @@ import kotlin.random.Random
 import kotlinx.coroutines.launch
 
 private val FrictionEasing = Easing { Spin.easeOut(it) }
+private const val FULL_TURN = 360f
+
+/** The wheel's current angle, for tests to check the pointer and the result agree. */
+internal val WheelDegrees = SemanticsPropertyKey<Float>("WheelDegrees")
+private var SemanticsPropertyReceiver.wheelDegrees by WheelDegrees
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
@@ -117,7 +127,11 @@ internal fun WheelScreen(
     var spinning by remember { mutableStateOf(false) }
     var showHistory by rememberSaveable { mutableStateOf(false) }
     var celebration by remember { mutableStateOf<Int?>(null) }
-    val rotation = remember(wheel.id) { Animatable(0f) }
+
+    // The wheel's angle and a spin's landing outlive a rotation, so the wheel and its result agree.
+    var restDegrees by rememberSaveable(wheel.id) { mutableFloatStateOf(0f) }
+    var landingDegrees by rememberSaveable(wheel.id) { mutableStateOf<Float?>(null) }
+    val rotation = remember(wheel.id) { Animatable(landingDegrees?.mod(FULL_TURN) ?: restDegrees) }
 
     val history = state.historyOf(wheel.id)
     val weights = DecisionEngine.weights(
@@ -132,11 +146,24 @@ internal fun WheelScreen(
     val chipColors = segmentColors(wheel.options.size)
     val colorByOption = wheel.options.zip(chipColors).toMap()
 
+    fun land(): String? {
+        val angle = rotation.value.mod(FULL_TURN)
+        restDegrees = angle
+        landingDegrees = null
+        return DecisionEngine.segmentAtPointer(segments, angle.toDouble())?.option
+    }
+
+    // A spin cut short by a configuration change: the wheel starts at its landing, show the result.
+    LaunchedEffect(wheel.id) {
+        if (landingDegrees != null) winner = land()
+    }
+
     fun spin(fling: Float? = null) {
         if (!canSpin) return
         val plan = Spin.plan(rotation.value.toDouble(), Random.Default, fling)
         winner = null
         spinning = true
+        landingDegrees = plan.targetDegrees.toFloat()
         scope.launch {
             var last = rotation.value.toDouble()
             var lastTickAt = 0L
@@ -152,8 +179,8 @@ internal fun WheelScreen(
                 }
                 last = now
             }
-            rotation.snapTo(rotation.value % 360f)
-            winner = DecisionEngine.segmentAtPointer(segments, rotation.value.toDouble())?.option
+            rotation.snapTo(rotation.value.mod(FULL_TURN))
+            winner = land()
             view.performHapticFeedback(
                 if (Build.VERSION.SDK_INT >=
                     Build.VERSION_CODES.R
@@ -220,7 +247,13 @@ internal fun WheelScreen(
                             onDragEnd = {
                                 val velocity = tracker.calculateVelocity()
                                 val speed = abs(velocity.x) + abs(velocity.y)
-                                if (speed > 400f) spin(fling = speed * 2f)
+                                if (speed >
+                                    400f
+                                ) {
+                                    spin(fling = speed * 2f)
+                                } else {
+                                    restDegrees = rotation.value.mod(FULL_TURN)
+                                }
                             }
                         )
                     },
@@ -228,7 +261,7 @@ internal fun WheelScreen(
             ) {
                 WheelCanvas(segments, {
                     colorByOption[it] ?: WheelColors.Muted
-                }, rotation.value, winner, Modifier.fillMaxSize())
+                }, rotation.value, winner, Modifier.fillMaxSize().semantics { wheelDegrees = rotation.value })
                 ConfettiBurst(celebration, WheelColors.Segments, Modifier.fillMaxSize())
             }
         }
