@@ -3,6 +3,7 @@ package com.jorgelillo.stadiumevents.domain
 import java.time.LocalDate
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertIs
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
@@ -96,5 +97,32 @@ class JaleoTest {
         assertEquals(Kind.OTHER, only.kind)
         assertEquals(Level.BUSY, only.level)
         assertEquals(listOf(LocalDate.of(2026, 11, 25)), only.dates)
+    }
+
+    @Test
+    fun aFeedLargerThanAnyRealOneIsRefused() {
+        val huge = """{"events": [], "padding": "${"x".repeat(EventFeed.MAX_CHARS)}"}"""
+        assertFailsWith<IllegalArgumentException> { EventFeed.parse(huge) }
+    }
+
+    @Test
+    fun everyListAndTextIsCutToWhatTheAppShows() {
+        val long = "y".repeat(1_000)
+        val one = """{"id": "$long", "title": "$long", "days": [${List(50) { "\"2026-11-25\"" }.joinToString()}],
+            "time": "$long", "competition": "$long", "url": "$long", "extra": 1}"""
+        val e = EventFeed.parse("""{"events": [$one]}""").events.single()
+        assertEquals(EventFeed.MAX_TITLE, e.title.length)
+        assertEquals(EventFeed.MAX_ID, e.id.length)
+        assertEquals(EventFeed.MAX_DAYS, e.days.size)
+        assertEquals(EventFeed.MAX_TIME, e.time!!.length)
+        assertEquals(EventFeed.MAX_COMPETITION, e.competition!!.length)
+        assertEquals(EventFeed.MAX_URL, e.url!!.length)
+    }
+
+    @Test
+    fun aFeedWithMoreEventsThanTheAppShowsKeepsTheFirstOnes() {
+        val short = """{"id": "e", "title": "t", "days": ["2026-11-25"]}"""
+        val feed = EventFeed.parse("""{"events": [${List(EventFeed.MAX_EVENTS + 50) { short }.joinToString()}]}""")
+        assertEquals(EventFeed.MAX_EVENTS, feed.events.size)
     }
 }

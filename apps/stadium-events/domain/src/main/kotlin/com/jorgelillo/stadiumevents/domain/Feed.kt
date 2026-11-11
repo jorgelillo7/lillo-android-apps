@@ -9,6 +9,8 @@ import kotlinx.serialization.json.Json
  * The events file published daily at [FEED_URL] (built from the stadium's agenda and Atlético de
  * Madrid's fixtures by jorgelillo7.github.io's tools/stadium_events.py). Unknown fields are ignored
  * and unknown values fall back to the defaults, so the file can grow without breaking old apps.
+ * The file is downloaded, so it is untrusted: [parse] refuses one over [MAX_CHARS] and cuts every
+ * list and text to a size the screen, the widget and the evening notification can show.
  */
 @Serializable
 data class EventFeed(val version: Int = 1, val events: List<StadiumEvent> = emptyList()) {
@@ -21,7 +23,33 @@ data class EventFeed(val version: Int = 1, val events: List<StadiumEvent> = empt
             coerceInputValues = true
         }
 
-        fun parse(text: String): EventFeed = json.decodeFromString(serializer(), text)
+        /** The real file is a few KB; anything this large is not ours. */
+        const val MAX_CHARS = 256 * 1024
+        const val MAX_EVENTS = 200
+        const val MAX_DAYS = 7
+        const val MAX_ID = 80
+        const val MAX_TITLE = 120
+        const val MAX_COMPETITION = 60
+        const val MAX_TIME = 5
+        const val MAX_URL = 300
+
+        fun parse(text: String): EventFeed {
+            require(text.length <= MAX_CHARS) { "feed too large: ${text.length} chars" }
+            return json.decodeFromString(serializer(), text).bounded()
+        }
+
+        private fun EventFeed.bounded() = copy(
+            events = events.take(MAX_EVENTS).map { e ->
+                e.copy(
+                    id = e.id.take(MAX_ID),
+                    title = e.title.take(MAX_TITLE),
+                    days = e.days.take(MAX_DAYS).map { it.take(10) },
+                    time = e.time?.take(MAX_TIME),
+                    competition = e.competition?.take(MAX_COMPETITION),
+                    url = e.url?.take(MAX_URL)
+                )
+            }
+        )
     }
 }
 

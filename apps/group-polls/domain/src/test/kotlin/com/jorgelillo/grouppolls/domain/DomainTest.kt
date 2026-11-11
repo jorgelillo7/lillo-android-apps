@@ -111,9 +111,17 @@ class DomainTest {
         assertEquals(200, codes.toSet().size)
         assertTrue(codes.all(InviteCodes::isValid))
         val code = codes.first()
-        assertEquals(code, InviteCodes.fromLink("Vota aquí: https://jorgelillo7.github.io/q/?c=$code"))
+        assertEquals(code, InviteCodes.fromLink("Vota aquí: https://jorgelillo7.github.io/q/#$code"))
+        assertEquals(code, InviteCodes.fromLink("https://jorgelillo7.github.io/q/?c=$code"))
         assertEquals(code, InviteCodes.fromLink("  $code "))
         assertNull(InviteCodes.fromLink("https://jorgelillo7.github.io/q/?c=short"))
+    }
+
+    @Test
+    fun theSharedLinkCarriesTheCodeInItsFragment() {
+        val code = InviteCodes.generate()
+        assertEquals(code, InviteCodes.fromLink(InviteCodes.link(code)))
+        assertTrue("?" !in InviteCodes.link(code), InviteCodes.link(code))
     }
 
     @Test

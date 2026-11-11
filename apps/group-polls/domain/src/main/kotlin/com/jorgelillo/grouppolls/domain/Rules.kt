@@ -60,9 +60,16 @@ object InviteCodes {
 
     fun isValid(code: String): Boolean = code.length == LENGTH && code.all { it in ALPHABET }
 
-    /** Reads the code from a shared link (`…/q/?c=CODE`) or a pasted bare code. */
+    /** The code is the poll's only key: it goes in the fragment, which browsers never send to a server. */
+    fun link(code: String): String = "https://jorgelillo7.github.io/q/#$code"
+
+    /**
+     * Reads the code from a shared link (`…/q/#CODE`), the landing page's "open in the app" link
+     * (`…/q/?c=CODE`, the form an Android intent link can carry) or a pasted bare code.
+     */
     fun fromLink(text: String): String? {
-        val candidate = Regex("[?&]c=([A-Za-z0-9]+)").find(text)?.groupValues?.get(1) ?: text.trim()
+        val candidate = (Regex("/q/#([A-Za-z0-9]+)").find(text) ?: Regex("[?&]c=([A-Za-z0-9]+)").find(text))
+            ?.groupValues?.get(1) ?: text.trim()
         return candidate.takeIf(::isValid)
     }
 }

@@ -204,8 +204,8 @@ internal fun ResultSheet(
 ) {
     val res = LocalResources.current
     val needed = Match.needed(t.bestOf)
-    val a = t.player(match.a)!!.name
-    val b = t.player(match.b)!!.name
+    val a = t.player(match.a)?.name.orEmpty()
+    val b = t.player(match.b)?.name.orEmpty()
     val current = match.winner(t.bestOf)
     // 0 = A won, 1 = B won, 2 = draw, -1 = not chosen yet.
     var outcome by rememberSaveable {

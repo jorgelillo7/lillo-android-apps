@@ -81,4 +81,60 @@ class ShareTest {
         assertNull(Share.decode(Share.encode(played()).dropLast(20)))
         assertNull(Share.codeFromLink("https://example.com/"))
     }
+
+    @Test
+    fun aLinkWhoseMatchNamesAMissingPlayerIsRefused() {
+        val t = played()
+        val broken = t.copy(matches = t.matches.mapIndexed { i, m -> if (i == 0) m.copy(a = 999) else m })
+        assertNull(Share.decode(Share.encode(broken)))
+    }
+
+    @Test
+    fun aLinkBeyondWhatTheAppCreatesIsRefused() {
+        val t = played()
+        val tooMany = t.copy(players = List(Tournaments.MAX_PLAYERS + 1) { Player(it + 1, "P$it") })
+        val longName = t.copy(name = "x".repeat(Share.MAX_NAME + 1))
+        val longComment = t.copy(
+            matches = t.matches.mapIndexed { i, m ->
+                if (i ==
+                    0
+                ) {
+                    m.copy(comment = "y".repeat(500))
+                } else {
+                    m
+                }
+            }
+        )
+        val oddBestOf = t.copy(bestOf = 4)
+        val duplicateIds = t.copy(players = t.players.map { it.copy(id = 1) })
+        val impossibleScore = t.copy(matches = t.matches.mapIndexed { i, m -> if (i == 0) m.copy(winsA = 99) else m })
+        listOf(tooMany, longName, longComment, oddBestOf, duplicateIds, impossibleScore).forEach {
+            assertNull(Share.decode(Share.encode(it)))
+        }
+    }
+
+    @Test
+    fun everyTournamentTheAppMakesIsWellFormed() {
+        assertTrue(Share.isWellFormed(played()))
+        val swiss = Tournaments.create(
+            "s1",
+            "Suizo",
+            20_000,
+            names.take(9),
+            Format.SWISS,
+            topCut = 4,
+            random = Random(2)
+        )
+        assertTrue(Share.isWellFormed(swiss))
+        val biggest = Tournaments.create(
+            "b1",
+            "Grande",
+            20_000,
+            List(Tournaments.MAX_PLAYERS) {
+                "J$it"
+            },
+            Format.ELIMINATION
+        )
+        assertTrue(Share.isWellFormed(biggest))
+    }
 }

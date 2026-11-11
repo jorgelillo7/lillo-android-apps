@@ -34,21 +34,31 @@ class ShareLink<T>(private val serializer: KSerializer<T>, val path: String) {
         return VERSION + Base64.getUrlEncoder().withoutPadding().encodeToString(out.toByteArray())
     }
 
-    /** The value in [code], or null if it isn't one of ours (truncated, other version, other type…). */
-    fun decode(code: String): T? = runCatching {
-        require(code.startsWith(VERSION))
-        val bytes = Base64.getUrlDecoder().decode(code.substring(VERSION.length))
-        val inflater = Inflater(true).apply { setInput(bytes) }
-        val out = ByteArrayOutputStream()
-        val buffer = ByteArray(1024)
-        while (!inflater.finished()) {
-            val n = inflater.inflate(buffer)
-            if (n == 0 && (inflater.needsInput() || inflater.needsDictionary())) error("truncated")
-            out.write(buffer, 0, n)
-        }
-        inflater.end()
-        json.decodeFromString(serializer, out.toString(Charsets.UTF_8.name()))
-    }.getOrNull()
+    /**
+     * The value in [code], or null if it isn't one of ours (truncated, other version, other type…)
+     * or is larger than any link the apps make: a code over [MAX_CODE_CHARS], or one that inflates
+     * past [MAX_JSON_BYTES], is refused before it is parsed.
+     */
+    fun decode(code: String): T? {
+        if (!code.startsWith(VERSION) || code.length > MAX_CODE_CHARS) return null
+        return runCatching {
+            val bytes = Base64.getUrlDecoder().decode(code.substring(VERSION.length))
+            val inflater = Inflater(true).apply { setInput(bytes) }
+            try {
+                val out = ByteArrayOutputStream()
+                val buffer = ByteArray(1024)
+                while (!inflater.finished()) {
+                    val n = inflater.inflate(buffer)
+                    if (n == 0 && (inflater.needsInput() || inflater.needsDictionary())) error("truncated")
+                    if (out.size() + n > MAX_JSON_BYTES) error("too large")
+                    out.write(buffer, 0, n)
+                }
+                json.decodeFromString(serializer, out.toString(Charsets.UTF_8.name()))
+            } finally {
+                inflater.end()
+            }
+        }.getOrNull()
+    }
 
     fun link(value: T): String = "https://$HOST$path#${encode(value)}"
 
@@ -68,6 +78,12 @@ class ShareLink<T>(private val serializer: KSerializer<T>, val path: String) {
     companion object {
         const val HOST = "jorgelillo7.github.io"
         const val VERSION = "1"
+
+        /** The longest code accepted: far above any real tournament or pack, far below a memory problem. */
+        const val MAX_CODE_CHARS = 32_000
+
+        /** The most JSON a code may inflate to; a link that expands past it is refused. */
+        const val MAX_JSON_BYTES = 256 * 1024
 
         /** Longer links are still shared as text, but no QR code: too dense to scan off a screen. */
         const val QR_MAX_CHARS = 1_800

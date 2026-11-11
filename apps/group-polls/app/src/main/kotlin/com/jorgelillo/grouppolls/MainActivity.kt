@@ -31,7 +31,7 @@ class MainActivity : ComponentActivity() {
         handleLink(intent)
     }
 
-    /** `https://jorgelillo7.github.io/q/?c=CODE` opens that poll. */
+    /** `https://jorgelillo7.github.io/q/#CODE` (or the landing page's `…/q/?c=CODE`) opens that poll. */
     private fun handleLink(intent: Intent?) {
         intent?.dataString?.let(vm::open)
     }

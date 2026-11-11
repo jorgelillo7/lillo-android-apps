@@ -23,7 +23,17 @@ class HttpFeedFetcher(private val userAgent: String) : FeedFetcher {
             connection.readTimeout = TIMEOUT_MILLIS
             connection.setRequestProperty("User-Agent", userAgent)
             check(connection.responseCode == HttpURLConnection.HTTP_OK) { "HTTP ${connection.responseCode}" }
-            connection.inputStream.bufferedReader().use { it.readText() }
+            // Read at most one char past the limit: EventFeed.parse refuses the oversized file.
+            connection.inputStream.bufferedReader().use { reader ->
+                val buffer = CharArray(EventFeed.MAX_CHARS + 1)
+                var read = 0
+                while (read < buffer.size) {
+                    val n = reader.read(buffer, read, buffer.size - read)
+                    if (n < 0) break
+                    read += n
+                }
+                String(buffer, 0, read)
+            }
         } finally {
             connection.disconnect()
         }
