@@ -29,9 +29,7 @@ Lines are pruned as items ship. What has **shipped** lives in `apps/<app>/releas
 
 | | What is missing | Waiting on |
 |---|---|---|
-| 👤 | Preview the privacy policy page (`privacy/stadium-events/` on the website) before it is published | You |
-| 🔨 | Store graphics (phone and tablet screenshots, feature graphic: `tools/capture_store_screenshots.sh` + `tools/generate_store_assets.py`, like the other apps) and the baseline profile (`scripts/generate-baseline-profiles.sh stadium-events`) | Before the first upload |
-| 👤 | Play Console: create the app (`com.jorgelillo.stadiumevents`), register the package in Android developer verification, App content answers (`apps/stadium-events/OPERATIONS.md`), upload key (`scripts/new-upload-key.sh stadium-events`, then `scripts/set-release-secrets.sh stadium-events`), first bundle by hand | You · `release-android-app` skill |
+| 👤 | Play Console (app created, upload key and GitHub secrets done 2026-11-11): App content answers (`apps/stadium-events/OPERATIONS.md`), store listing (texts and graphics in `app/src/main/play/listings`), first bundle by hand, then register the package in Android developer verification with the app signing key | You · `release-android-app` skill |
 | ⏳ | Try it with the family for a couple of weeks: does the evening reminder arrive, is the widget clear? | Real use |
 
 ## tournaments (new app)
