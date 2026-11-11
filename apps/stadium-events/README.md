@@ -12,7 +12,7 @@ neighbours around it, with nothing to set up.**
 ## ✨ Features
 
 - 🔔 One answer, in big letters: **"SÍ, hay jaleo"** (what, when, from when it gets busy) or
-  **"NO, día tranquilo"**; amber for a match, coral for concerts and finals, green for a quiet day
+  **"NO, día tranquilo"**; amber for a match, coral for the biggest days (concerts, finals, Champions League, Real Madrid and Barcelona), green for a quiet day
 - 🗓️ The next three busy days below it; LaLiga matches without a fixed day say "sábado o domingo,
   día por confirmar"; concert tours count their nights
 - 🌙 A reminder **the evening before** every busy day (19:00), on from the first launch
