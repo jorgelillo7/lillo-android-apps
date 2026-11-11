@@ -53,6 +53,7 @@ data class GameSettings(
 )
 
 /** What one player sees when it's their turn to look at the phone. */
+@Serializable
 data class Card(
     val player: String,
     val role: Role,
