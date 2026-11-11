@@ -172,7 +172,24 @@ jobs:
           fi
           if [ "${{ inputs.draft }}" = true ]; then tasks+=(--release-status draft); fi
           ./gradlew "${tasks[@]}" $GRADLE_EXTRA -Dorg.gradle.jvmargs="-Xmx4g -Dfile.encoding=UTF-8"
-          if [ "${{ inputs.listing }}" = true ]; then ./gradlew ":apps:$APP:app:publishListing"; fi
+          if [ "${{ inputs.listing }}" = true ]; then
+            # Texts first, then everything: Google rejects a language's graphics until its listing
+            # exists, and Gradle Play Publisher sends both in one edit (a new app's second language
+            # failed with "Listing for language 'en-US' not found").
+            listings="apps/$APP/app/src/main/play/listings"
+            aside="$(mktemp -d)"
+            for graphics in "$listings"/*/graphics; do
+              [ -d "$graphics" ] || continue
+              locale="$(basename "$(dirname "$graphics")")"
+              mkdir -p "$aside/$locale" && mv "$graphics" "$aside/$locale/"
+            done
+            ./gradlew ":apps:$APP:app:publishListing"
+            for saved in "$aside"/*/graphics; do
+              [ -d "$saved" ] || continue
+              mv "$saved" "$listings/$(basename "$(dirname "$saved")")/"
+            done
+            ./gradlew ":apps:$APP:app:publishListing"
+          fi
 
       # <app>/v<versionCode>, on the commit that was published (once: a promote tags nothing new).
       - name: Tag

@@ -90,6 +90,11 @@ gh workflow run release.yml -f app=<app> -f action=promote -f track=production  
 
 - Straight to production (no testing round): `-f action=upload -f track=production`.
 - With the store listing (texts, graphics): add `-f listing=true` to the run that ships the change.
+  The workflow publishes the texts first and then the graphics: Google rejects a language's graphics
+  until its listing exists. From the terminal, do the same in two `publishListing` runs, the first one
+  with the `graphics/` folders set aside.
+- An app's **first** production release: add `-f draft=true` (Google only takes a draft until the app
+  has been published once), then the user sends it for review in Play Console (*Publishing overview*).
 - `-f dry_run=true` builds and checks everything and publishes nothing.
 - Production runs wait in GitHub (Actions → the run → *Review deployments*) until the user approves.
 - Follow it with `gh run watch`; the run's summary shows the bundle check.
@@ -100,8 +105,10 @@ gh workflow run release.yml -f app=<app> -f action=promote -f track=production  
 `./gradlew :apps:<app>:app:publishBundle` (internal), `promoteArtifact --from-track internal
 --promote-track production`, `publishListing`.
 
-**By hand in Play Console**: the app's very first bundle (the API can't create an app), and the App
-content forms. Upload the `.aab`, paste the notes, roll out; *Send changes for review*.
+**By hand in Play Console**: creating the app (the API can't), the App content forms, sending a
+draft for review, and registering the package in Android developer verification (with the app
+signing key, after the first upload). The first bundle itself goes through the workflow with
+`-f draft=true`.
 
 Managed publishing on? The user presses "Publish" in Play Console after approval.
 
