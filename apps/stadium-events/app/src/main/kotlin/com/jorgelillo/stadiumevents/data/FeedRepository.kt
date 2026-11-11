@@ -1,6 +1,7 @@
 package com.jorgelillo.stadiumevents.data
 
 import com.jorgelillo.core.platform.JsonStore
+import com.jorgelillo.core.platform.runCatchingCancellable
 import com.jorgelillo.stadiumevents.domain.AppState
 import com.jorgelillo.stadiumevents.domain.EventFeed
 import java.net.HttpURLConnection
@@ -47,7 +48,7 @@ class FeedRepository(
 
     /** True if the download worked. */
     suspend fun refresh(now: Long = System.currentTimeMillis()): Boolean {
-        val feed = runCatching { EventFeed.parse(fetcher.fetch()) }.getOrNull() ?: return false
+        val feed = runCatchingCancellable { EventFeed.parse(fetcher.fetch()) }.getOrNull() ?: return false
         store.update { it.copy(feed = feed, fetchedAt = now) }
         onUpdated()
         return true

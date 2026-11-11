@@ -125,6 +125,8 @@ Project skills are indexed in [`.claude/CLAUDE.md`](.claude/CLAUDE.md).
   apps over — never copy it. A one-off stays in the app; a second one never does.
 - Strings ship in English (`values/`) and Spanish (`values-es/`); keep both in sync, including
   plurals (Spanish needs `one`/`many`/`other`).
+- Around suspend calls, catch with `runCatchingCancellable` (`:core:platform`), never `runCatching`:
+  a cancelled coroutine must stop, not read as a failure.
 - **Screenshot tests** (Roborazzi on Robolectric, no emulator): a module applies
   `jorgelillo.android.screenshots` and writes tests with `captureScreenshot` from
   `:core:screenshot-testing` (frozen clock, shared tolerance), upright and `@Config(qualifiers = "+land")`.
