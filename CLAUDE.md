@@ -19,8 +19,10 @@ Apps today, live on Play: `christmas-countdown` ("¿Ya es Navidad?", `com.jorgel
 `com.jorgelillo.whoslying`), `tournaments` ("¿Solo quedará uno?", `com.jorgelillo.tournaments`),
 `league-cards` ("¿Quién llora esta jornada?", `com.jorgelillo.leaguecards`, a card game; its league deck
 is private and lives outside this public repo) and `slipper` ("¿Te pilla la chancla?",
-`com.jorgelillo.slipper`, a pixel-art runner). Not on Play yet: `group-polls`
-("¿Qué votáis?", `com.jorgelillo.grouppolls`, parked). `group-polls` is the only one with a backend
+`com.jorgelillo.slipper`, a pixel-art runner). Not on Play yet: `stadium-events` ("¿Hay jaleo?
+Metropolitano", `com.jorgelillo.stadiumevents`, 1.0 waiting as a production draft; it reads a static
+events feed from `jorgelillo7.github.io`) and `group-polls` ("¿Qué votáis?",
+`com.jorgelillo.grouppolls`, parked). `group-polls` is the only one with a backend
 (Firestore; its rules, tests and infra live in lillorepo `packages/group_polls`). Write code,
 docs and scripts so they work for any app.
 

@@ -8,6 +8,8 @@
 ![Compose](https://img.shields.io/badge/Jetpack%20Compose-Material%203-4285F4?logo=jetpackcompose&logoColor=white)
 ![AGP](https://img.shields.io/badge/AGP-9.5-02303A?logo=gradle&logoColor=white)
 ![Target SDK](https://img.shields.io/badge/targetSdk-37-3DDC84?logo=android&logoColor=white)
+[![CI](https://github.com/jorgelillo7/lillo-android-apps/actions/workflows/ci.yml/badge.svg)](https://github.com/jorgelillo7/lillo-android-apps/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 </div>
 

@@ -46,4 +46,4 @@ Design decisions of apps that needed a plan before coding:
 [`plans/stadium-events.md`](plans/stadium-events.md).
 
 Shared scripts: [`scripts/`](../scripts). Branding: [`branding/`](../branding).
-Claude Code skills: [`.claude/skills/`](../.claude/skills) — `new-android-app`, `upgrade-android-deps`, `check-android-env`, `release-android-app`.
+Claude Code skills: [`.claude/skills/`](../.claude/skills) — `new-android-app`, `release-android-app`, `upgrade-android-deps`, `check-android-env`, `play-status`.
