@@ -3,7 +3,7 @@ name: Lillo Android Apps
 description: Small, polished Android apps — each with its own colour, one shared design system
 format: Google Labs design.md (tokens in YAML, rules in prose); each app's own file is apps/<app>/DESIGN.md
 color-recipe:
-  scheme: "Material 3 Vibrant, dark, from the app's seed colour (material-color-utilities)"
+  scheme: "Material 3 Vibrant, dark, from the app's seed colour: derived once, then hand-typed in the theme object (nothing regenerates it)"
   background: "{scheme.surface} → {scheme.surfaceContainerHigh} at the top (vertical gradient)"
   container: "{scheme.surfaceContainer}"
   containerHigh: "{scheme.surfaceContainerHighest}"
@@ -47,20 +47,24 @@ motion:
 
 ## Overview
 
-Seven apps, one family. Each app has **its own colour** (gold for tournaments, green for the league,
+Eight apps, one family. Each app has **its own colour** (gold for tournaments, green for the league,
 violet for the impostor, red and gold for Christmas…), and every app builds its screens **the same
 way** from it: same recipe for surfaces and text, same components from `:core:designsystem`, same
-rules for contrast and motion. Dark themes everywhere but the slipper game (a light, warm pixel-art
-kitchen) and group-polls (light, paper-like): those two are light on purpose and documented as such.
+rules for contrast and motion. Five apps are dark only. Three are light on purpose and documented
+as such: the slipper game (a warm pixel-art kitchen), group-polls (paper-like) and stadium-events,
+which is light by default for its older readers and the only app that follows the phone's dark mode
+(`JaleoLightScheme` / `JaleoDarkScheme`).
 
 The goal is not award-winning flash but **comfortable and usable**: calm tinted backgrounds, one
 vivid colour where it matters, text that reads at a glance on a handheld in the sun.
 
 ## Colors
 
-**Recipe (dark apps).** The seed colour goes through Material 3's *Vibrant* dynamic scheme
-(Google's colour system, `material-color-utilities`): it gives tinted backgrounds and cards, a
-harmonised accent and text tones with guaranteed contrast. On top of that, the app keeps its **brand
+**Recipe (dark apps).** The seed colour went through Material 3's *Vibrant* dynamic scheme
+(Google's colour system, `material-color-utilities`) once, when the palette was made: it gave tinted
+backgrounds and cards, a harmonised accent and text tones with guaranteed contrast. Those tones are
+typed by hand into each app's theme object (`ui/theme/*.kt`) and tuned until the screenshot tests'
+contrast checks pass; no script derives them, so a new seed means picking the tones again. On top of that, the app keeps its **brand
 colour vivid** for fills (primary button, champion banner, summary hero), where colour shows off.
 
 - Backgrounds: tinted, never pure black; a vertical gradient from `containerHigh`-ish at the top to
@@ -89,8 +93,9 @@ user-made or unbounded (cards, labels), down to a readable minimum, then scrolls
 - `LilloPage` for every screen: 20dp gutters, bottom actions, side actions on short screens
   (landscape, handhelds), readable width (640dp) on tablets, two panes from 840dp where a screen
   has two things to show (tournaments, league-cards).
-- Short screens (< 480dp tall) and large fonts are first-class: every screen has a landscape
-  screenshot test, critical ones a large-font one.
+- Short screens (< 480dp tall) are first-class: every screen has a landscape screenshot test.
+  Large fonts are checked on league-cards' play screen only (`play_large_font`,
+  `play_landscape_large_font`); the other apps have no large-font test yet.
 
 ## Components
 
