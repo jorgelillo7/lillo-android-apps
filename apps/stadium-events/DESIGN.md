@@ -8,7 +8,7 @@ colors:            # ui/theme/JaleoTheme.kt (LightPalette, DarkPalette)
   SecondaryText: "#3F3A35"  # darker than usual on purpose: older eyes (dark: #D3D8E2)
   Accent: "#2F5D8A"       # primary (dark: #8FB8F2)
   Busy: "#F2B544"         # amber: a match tomorrow
-  Max: "#E8705F"          # coral: concerts and finals
+  Max: "#E8705F"          # coral: concerts, finals, Champions League nights, Real Madrid and Barcelona
   Calm: "#8CC7A4"         # green: a quiet day
 components:
   answer-card: "Busy / Max / Calm fill, Ink text, 28 dp corners, 40 sp answer"
@@ -24,7 +24,7 @@ light background reads best for the people it is for, outdoors and with tired ey
 is only used when the phone is in dark mode (some people choose it on purpose).
 
 One screen, one question. The answer card's colour is the answer: amber for a match, coral for the
-biggest days (concerts, finals), green for a quiet day. Text never sits in a light grey: secondary
+biggest days (concerts, finals, Champions League nights, Real Madrid and Barcelona), green for a quiet day. Text never sits in a light grey: secondary
 text is a dark brown in light mode. Sizes are large on purpose (32 sp title, 40 sp answer, nothing
 under 15 sp).
 

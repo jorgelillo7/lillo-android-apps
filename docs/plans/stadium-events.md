@@ -18,7 +18,7 @@ say so.
 | Main screen | One card answering tomorrow: "SÍ, hay jaleo" (amber; coral for the biggest days) with what, time and "more movement about 2 h before", or "NO, día tranquilo" (green). Below it, only the next three busy days. |
 | Settings | None in v1. The reminder is on from the start: the evening before, at a fixed hour. |
 | Widget | Home-screen widget with the same answer as the main card ("Mañana · Partido 21:00"), built on Christmas Countdown's Glance widget. |
-| Busy levels | Atlético home matches, Spain matches and other events: "Mucho jaleo". Concerts and finals (e.g. the 2027 Champions League final): "Jaleo máximo". |
+| Busy levels | Atlético home matches, Spain matches and other events: "Mucho jaleo". Concerts, finals (e.g. the 2027 Champions League final), Champions League nights and matches against Real Madrid or Barcelona: "Jaleo máximo". Decided in the feed (`level`), so changing it needs no app update. |
 | Unconfirmed dates | LaLiga fixes the day a few weeks ahead ("sábado 5 o domingo 6"): the card and the list show both days and "día por confirmar"; the reminder goes out once the day is fixed. |
 | Traffic | No real-time traffic. "About 2 h before" is a rule of thumb and is worded as one. |
 | Where the data comes from | Shown in the app (footer: "Datos: agenda oficial del estadio (riyadhairmetropolitano.com) y calendario del Atlético de Madrid. Revisado hoy a las 8:00") and in the store description. |
