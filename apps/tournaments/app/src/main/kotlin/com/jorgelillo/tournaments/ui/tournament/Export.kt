@@ -23,7 +23,7 @@ import com.jorgelillo.tournaments.domain.Stats
 import com.jorgelillo.tournaments.domain.Tournament
 import com.jorgelillo.tournaments.ui.formatDay
 import com.jorgelillo.tournaments.ui.roundName
-import com.jorgelillo.tournaments.ui.theme.Arena
+import com.jorgelillo.tournaments.ui.theme.ArenaNight
 
 private const val MARGIN = 48f
 private const val TITLE_H = 150f
@@ -63,20 +63,34 @@ private fun frame(context: Context, t: Tournament, width: Float, height: Float):
         height,
         Paint().apply {
             shader =
-                LinearGradient(0f, 0f, 0f, height, Arena.InkTop.toArgb(), Arena.Ink.toArgb(), Shader.TileMode.CLAMP)
+                LinearGradient(
+                    0f,
+                    0f,
+                    0f,
+                    height,
+                    ArenaNight.InkTop.toArgb(),
+                    ArenaNight.Ink.toArgb(),
+                    Shader.TileMode.CLAMP
+                )
         }
     )
-    canvas.text(t.name, MARGIN, MARGIN + 52, paint(Arena.Cream, 56f, bold = true), width - 2 * MARGIN)
+    canvas.text(t.name, MARGIN, MARGIN + 52, paint(ArenaNight.Cream, 56f, bold = true), width - 2 * MARGIN)
     val subtitle = listOf(t.game, formatDay(t.epochDay)).filter { it.isNotBlank() }.joinToString(" · ")
     val champion = t.player(t.champion)?.let { "🏆 " + context.getString(R.string.champion_label) + ": " + it.name }
     canvas.text(
         listOfNotNull(subtitle, champion).joinToString("   "),
         MARGIN,
         MARGIN + 100,
-        paint(Arena.Gold, 32f, bold = true),
+        paint(ArenaNight.Gold, 32f, bold = true),
         width - 2 * MARGIN
     )
-    canvas.text(context.getString(R.string.app_name), MARGIN, height - 22, paint(Arena.Muted, 24f), width - 2 * MARGIN)
+    canvas.text(
+        context.getString(R.string.app_name),
+        MARGIN,
+        height - 22,
+        paint(ArenaNight.Muted, 24f),
+        width - 2 * MARGIN
+    )
     return bitmap to canvas
 }
 
@@ -104,7 +118,7 @@ private fun bracketBitmap(context: Context, t: Tournament): Bitmap {
         val points = g.connector(grid, cell) ?: return@forEach
         val m = t.round(Stage.ELIMINATION, cell.round).getOrNull(cell.slot)
         val won = m != null && !m.isBye && m.winner(t.bestOf) != null
-        line.color = (if (won) Arena.Gold else Arena.Faint).toArgb()
+        line.color = (if (won) ArenaNight.Gold else ArenaNight.Faint).toArgb()
         line.strokeWidth = (
             if ((cell.round to cell.slot) in path) {
                 10f
@@ -120,7 +134,7 @@ private fun bracketBitmap(context: Context, t: Tournament): Bitmap {
         }
         canvas.drawPath(p, line)
     }
-    val header = paint(Arena.Gold, 26f * scale, bold = true).apply { textAlign = Paint.Align.CENTER }
+    val header = paint(ArenaNight.Gold, 26f * scale, bold = true).apply { textAlign = Paint.Align.CENTER }
     grid.cells.distinctBy { it.column }.forEach { cell ->
         canvas.drawText(
             context.resources.roundName(t, Stage.ELIMINATION, cell.round),
@@ -129,7 +143,7 @@ private fun bracketBitmap(context: Context, t: Tournament): Bitmap {
             header
         )
     }
-    val card = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = Arena.Raised.toArgb() }
+    val card = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = ArenaNight.Raised.toArgb() }
     val border = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         style = Paint.Style.STROKE
         strokeWidth = 2f
@@ -142,7 +156,8 @@ private fun bracketBitmap(context: Context, t: Tournament): Bitmap {
         canvas.drawRoundRect(rect, 18f * scale, 18f * scale, card)
         val winner = m.winner(t.bestOf)
         val done = winner != null && !m.isBye
-        border.color = (if (cell.side == BracketLayout.Side.CENTER && done) Arena.Gold else Arena.Faint).toArgb()
+        border.color =
+            (if (cell.side == BracketLayout.Side.CENTER && done) ArenaNight.Gold else ArenaNight.Faint).toArgb()
         canvas.drawRoundRect(rect, 18f * scale, 18f * scale, border)
         val rows = if (m.isBye && m.round == 1) {
             listOf(
@@ -169,18 +184,18 @@ private fun bracketBitmap(context: Context, t: Tournament): Bitmap {
             val baseline = y + g.cardH / 2 * i + g.cardH / 4 + 10f * scale
             val p = paint(
                 if (won) {
-                    Arena.Gold
+                    ArenaNight.Gold
                 } else if (name == null || done) {
-                    Arena.Muted
+                    ArenaNight.Muted
                 } else {
-                    Arena.Cream
+                    ArenaNight.Cream
                 },
                 28f * scale,
                 bold = won
             )
             canvas.text(name ?: "—", x + 16f * scale, baseline, p, g.cardW - 64f * scale)
             if (score != null) {
-                val sp = paint(if (won) Arena.Gold else Arena.Muted, 30f * scale, bold = true).apply {
+                val sp = paint(if (won) ArenaNight.Gold else ArenaNight.Muted, 30f * scale, bold = true).apply {
                     textAlign =
                         Paint.Align.RIGHT
                 }
@@ -198,18 +213,18 @@ private fun standingsBitmap(context: Context, t: Tournament): Bitmap {
     val height = TITLE_H + 2 * MARGIN + 60 + rows.size * rowH + 30
     val (bitmap, canvas) = frame(context, t, width, height)
     var y = TITLE_H + MARGIN + 40
-    val head = paint(Arena.Muted, 26f)
+    val head = paint(ArenaNight.Muted, 26f)
     canvas.drawText(context.getString(R.string.standings_player), MARGIN + 70, y, head)
     canvas.drawText(context.getString(R.string.standings_points), width - MARGIN - 300, y, head)
     canvas.drawText(context.getString(R.string.standings_record), width - MARGIN - 160, y, head)
     rows.forEachIndexed { i, s ->
         y += rowH
         val gold = i == 0 && s.points > 0
-        val p = paint(if (gold) Arena.Gold else Arena.Cream, 32f, bold = gold)
-        canvas.drawText("${i + 1}", MARGIN, y, paint(Arena.Muted, 32f, bold = true))
+        val p = paint(if (gold) ArenaNight.Gold else ArenaNight.Cream, 32f, bold = gold)
+        canvas.drawText("${i + 1}", MARGIN, y, paint(ArenaNight.Muted, 32f, bold = true))
         canvas.text(t.player(s.player)?.name.orEmpty(), MARGIN + 70, y, p, width - 2 * MARGIN - 400)
-        canvas.drawText("${s.points}", width - MARGIN - 300, y, paint(Arena.Cream, 32f, bold = true))
-        canvas.drawText("${s.wins}-${s.draws}-${s.losses}", width - MARGIN - 160, y, paint(Arena.Cream, 32f))
+        canvas.drawText("${s.points}", width - MARGIN - 300, y, paint(ArenaNight.Cream, 32f, bold = true))
+        canvas.drawText("${s.wins}-${s.draws}-${s.losses}", width - MARGIN - 160, y, paint(ArenaNight.Cream, 32f))
     }
     return bitmap
 }

@@ -116,5 +116,12 @@ object Tournaments {
         .filter { it.a != null && it.b != null && !it.isDone(t.bestOf) }
         .sortedWith(compareBy({ it.stage != Stage.SWISS }, { it.round }, { it.slot }))
 
+    /**
+     * The knockout round to show first: the earliest with a match ready to play, else the last
+     * (the final, decided or waiting for its players). 0 when there is no knockout.
+     */
+    fun currentEliminationRound(t: Tournament): Int =
+        pending(t).firstOrNull { it.stage == Stage.ELIMINATION }?.round ?: t.eliminationRounds
+
     private fun Match.sameAs(other: Match) = stage == other.stage && round == other.round && slot == other.slot
 }

@@ -62,6 +62,7 @@ import com.jorgelillo.tournaments.ui.BigButton
 import com.jorgelillo.tournaments.ui.Page
 import com.jorgelillo.tournaments.ui.formatDay
 import com.jorgelillo.tournaments.ui.theme.Arena
+import com.jorgelillo.tournaments.ui.theme.ArenaNight
 
 @Composable
 internal fun HomeScreen(
@@ -247,7 +248,7 @@ internal fun ImportDialog(onImport: (String) -> Unit, onDismiss: () -> Unit) {
 @Composable
 internal fun AboutSheet(onDismiss: () -> Unit) = LilloAboutSheet(
     icon = painterResource(R.drawable.ic_launcher_foreground),
-    iconBackground = Arena.Ink,
+    iconBackground = ArenaNight.Ink,
     containerColor = Arena.Raised,
     texts = AboutTexts(
         title = stringResource(R.string.app_name),

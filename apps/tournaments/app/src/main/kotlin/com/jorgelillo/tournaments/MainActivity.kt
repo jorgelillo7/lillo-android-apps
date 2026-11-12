@@ -6,10 +6,12 @@ import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
 import com.jorgelillo.core.designsystem.installLilloWindow
 import com.jorgelillo.core.designsystem.setLilloContent
+import com.jorgelillo.core.designsystem.startsDark
 import com.jorgelillo.core.platform.sharedText
 import com.jorgelillo.tournaments.ui.TournamentsApp
 import com.jorgelillo.tournaments.ui.TournamentsViewModel
-import com.jorgelillo.tournaments.ui.theme.ArenaColorScheme
+import com.jorgelillo.tournaments.ui.theme.ArenaDark
+import com.jorgelillo.tournaments.ui.theme.ArenaLight
 
 class MainActivity : ComponentActivity() {
 
@@ -18,10 +20,10 @@ class MainActivity : ComponentActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        installLilloWindow(darkDesign = true)
+        installLilloWindow(darkDesign = startsDark())
         super.onCreate(savedInstanceState)
         if (savedInstanceState == null) handleLink(intent)
-        setLilloContent(ArenaColorScheme) {
+        setLilloContent(ArenaLight, ArenaDark) {
             TournamentsApp(vm)
         }
     }
