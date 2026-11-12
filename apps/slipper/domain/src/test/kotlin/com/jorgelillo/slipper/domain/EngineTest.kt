@@ -226,6 +226,13 @@ class EngineTest {
     }
 
     @Test
+    fun aChallengeNoRunCouldScoreIsRefused() {
+        assertNull(Challenges.fromText(Challenges.link(Challenge(seed = 1, score = -5))))
+        assertNull(Challenges.fromText(Challenges.link(Challenge(seed = 1, score = Challenges.MAX_SCORE + 1))))
+        assertNull(Challenges.fromText(Challenges.link(Challenge(seed = 1, score = 900, version = 0))))
+    }
+
+    @Test
     fun theSpritesFileParses() {
         val sprites = Sprites.parse(File("../app/src/main/assets/sprites.txt").readText())
         for (name in listOf(

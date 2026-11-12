@@ -63,7 +63,7 @@ class PollsViewModelTest {
         val vm = viewModel()
         vm.local.filterNotNull().test {
             vm.open("see you there")
-            vm.open("https://jorgelillo7.github.io/q/?c=abcdefghijkm")
+            vm.open("https://jorgelillo7.github.io/q/#abcdefghijkm")
             assertEquals("abcdefghijkm", vm.openCode.value)
             assertEquals(listOf("abcdefghijkm"), awaitMatching { it.myPolls.isNotEmpty() }.myPolls)
             vm.consumeOpenCode()

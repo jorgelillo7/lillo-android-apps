@@ -16,7 +16,7 @@
 - 🔴🔵 Two answers, red against blue, voted by tapping one half of the screen; the vote is final
 - 🔮 **Prediction** (Wii homage): guess which side wins; your accuracy shows in Settings once polls close
 - ⏳ Open for 1 day, 7 days or with no limit; the creator can close a poll, never delete it
-- ↗ Share any poll: `https://jorgelillo7.github.io/q/?c=CODE` opens it in the app (App Links), or
+- ↗ Share any poll: `https://jorgelillo7.github.io/q/#CODE` opens it in the app (App Links), or
   a page with Google Play otherwise
 - 🛡️ Moderation: word filter on public polls, report + hide a creator, auto-hide after 3 reports,
   manual review; terms accepted before the first public poll

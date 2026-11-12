@@ -26,7 +26,7 @@ Common rules:
    (**1 day / 7 days / no limit**).
 3. Vote is **final**, followed by a **prediction** of which side wins (Wii homage); your prediction
    accuracy is kept on the device.
-4. Share on every poll: `https://jorgelillo7.github.io/q/?c=<code>` (App Link into the app,
+4. Share on every poll: `https://jorgelillo7.github.io/q/#<code>` (the code in the fragment, never sent to a server) (App Link into the app,
    fallback page to Google Play).
 5. Moderation from day one (public UGC by anyone, Google Play UGC policy): terms accepted before the
    first public poll, report on every public poll, hide polls from a creator, auto-hide after N
