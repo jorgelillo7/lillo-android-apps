@@ -1,5 +1,6 @@
 package com.jorgelillo.whoslying.ui
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -8,6 +9,7 @@ import com.jorgelillo.core.platform.JsonStore
 import com.jorgelillo.core.testing.MainDispatcherRule
 import com.jorgelillo.core.testing.awaitMatching
 import com.jorgelillo.whoslying.data.SavedState
+import com.jorgelillo.whoslying.data.StateRepository
 import com.jorgelillo.whoslying.domain.Outcome
 import com.jorgelillo.whoslying.domain.Role
 import java.util.UUID
@@ -32,12 +34,16 @@ class GameViewModelTest {
     val main = MainDispatcherRule()
 
     // One DataStore per file and process: every test gets its own file.
-    private fun viewModel() = GameViewModel(
+    private fun store(): StateRepository =
         JsonStore(ApplicationProvider.getApplicationContext(), "test-${UUID.randomUUID()}", SavedState.serializer()) {
             SavedState()
-        },
-        language = "en"
-    ).also { main.cancelAtEnd(it.viewModelScope) }
+        }
+
+    private fun viewModel(store: StateRepository = store(), savedState: SavedStateHandle = SavedStateHandle()) =
+        GameViewModel(store, language = "en", savedState).also { main.cancelAtEnd(it.viewModelScope) }
+
+    /** What Android hands a new process after it stopped the app: the saved state's contents, copied. */
+    private fun SavedStateHandle.afterProcessDeath() = SavedStateHandle(keys().associateWith { get<Any>(it) })
 
     private fun GameViewModel.addPlayers(vararg names: String) = names.forEach(::addPlayer)
 
@@ -153,6 +159,65 @@ class GameViewModelTest {
             assertEquals(0, state.roundsPlayed)
             assertTrue(state.scores.isEmpty())
         }
+    }
+
+    @Test
+    fun aRoundInProgressComesBackAfterAndroidStopsTheApp() = runTest {
+        val store = store()
+        val savedState = SavedStateHandle()
+        val before = viewModel(store, savedState)
+        before.saved.filterNotNull().test {
+            before.addPlayers("Ana", "Bea", "Carlos", "Dani", "Eva")
+            awaitMatching { it.players.size == 5 }
+            cancelAndIgnoreRemainingEvents()
+        }
+        assertTrue(before.startGame())
+        val civilian = before.game.value!!.cards.first { it.role == Role.CIVILIAN }.player
+        before.eliminate(civilian)
+        before.forceVote()
+        val game = before.game.value!!
+
+        val after = viewModel(store, savedState.afterProcessDeath())
+
+        val restored = assertNotNull(after.game.value)
+        assertEquals(game.cards, restored.cards)
+        assertEquals(game.civilianWord, restored.civilianWord)
+        assertEquals(game.alive, restored.alive)
+        assertNull(restored.outcome)
+        assertEquals(civilian, after.lastElimination.value?.player)
+        assertTrue(after.voteForced.value)
+        // The restored round plays on: voting out the impostor wins it.
+        after.eliminate(restored.cards.single { it.role == Role.IMPOSTOR }.player)
+        assertEquals(Outcome.CiviliansWin, after.game.value!!.outcome)
+    }
+
+    @Test
+    fun aFinishedGameBroughtBackIsNotScoredAgain() = runTest {
+        val store = store()
+        val savedState = SavedStateHandle()
+        val before = viewModel(store, savedState)
+        before.saved.filterNotNull().test {
+            before.addPlayers("Ana", "Bea", "Carlos", "Dani")
+            awaitMatching { it.players.size == 4 }
+            before.startGame()
+            before.eliminate(before.game.value!!.cards.first { it.role == Role.IMPOSTOR }.player)
+            val scored = awaitMatching { it.roundsPlayed == 1 }
+
+            val after = viewModel(store, savedState.afterProcessDeath())
+            assertEquals(before.lastPoints.value, after.lastPoints.value)
+            after.revealAll()
+            after.addPlayer("Fran") // once this later write is saved, a second scoring would have been too
+            val later = awaitMatching { it.players.size == 5 }
+            assertEquals(1, later.roundsPlayed)
+            assertEquals(scored.scores, later.scores)
+        }
+    }
+
+    @Test
+    fun noGameIsKeptBeforeTheFirstOne() {
+        val savedState = SavedStateHandle()
+        viewModel(savedState = savedState)
+        assertNull(viewModel(savedState = savedState.afterProcessDeath()).game.value)
     }
 
     @Test
