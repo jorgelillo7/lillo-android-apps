@@ -5,16 +5,22 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.performClick
 import androidx.compose.ui.unit.dp
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.takahirom.roborazzi.RobolectricDeviceQualifiers
 import com.jorgelillo.core.designsystem.LilloTheme
+import com.jorgelillo.core.designsystem.LilloThemeMode
+import com.jorgelillo.core.designsystem.LocalLilloThemeMode
 import com.jorgelillo.core.screenshottesting.captureScreenshot
 import com.jorgelillo.whoslying.domain.Entry
 import com.jorgelillo.whoslying.domain.Game
@@ -29,6 +35,7 @@ import com.jorgelillo.whoslying.ui.theme.Neon
 import com.jorgelillo.whoslying.ui.theme.NeonDark
 import com.jorgelillo.whoslying.ui.theme.NeonLight
 import kotlin.random.Random
+import kotlin.test.assertEquals
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -171,6 +178,19 @@ class RoundScreensScreenshotTest {
     /** Choosing packs: every pack ticked, with "clear all" and the long-press hint. */
     private fun packPicker(name: String, dark: Boolean = true) = shot(name, dark) {
         PackPickerScreen(WordPacks.builtIn("en"), selected = emptySet(), onNewPack = {}, onDone = {})
+    }
+
+    /** The settings sheet is this app's About: the look is picked there. */
+    @Test
+    fun theSettingsOfferTheLook() {
+        val mode = mutableStateOf(LilloThemeMode.System)
+        compose.setContent {
+            CompositionLocalProvider(LocalLilloThemeMode provides mode) {
+                LilloTheme(NeonLight) { SettingsSheet(onHowTo = {}, onModes = {}, onWelcome = {}, onDismiss = {}) }
+            }
+        }
+        compose.onNodeWithTag("theme_dark").performClick()
+        compose.runOnIdle { assertEquals(LilloThemeMode.Dark, mode.value) }
     }
 
     @Test fun packPickerPortrait() = packPicker("pack_picker")

@@ -34,6 +34,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.jorgelillo.core.designsystem.LilloLanguageDialog
 import com.jorgelillo.core.designsystem.LilloSettingRow
+import com.jorgelillo.core.designsystem.LilloThemeModeChoice
 import com.jorgelillo.core.designsystem.R as CoreR
 import com.jorgelillo.core.designsystem.canPickAppLanguage
 import com.jorgelillo.core.designsystem.currentAppLanguageName
@@ -266,6 +267,7 @@ internal fun SettingsSheet(onHowTo: () -> Unit, onModes: () -> Unit, onWelcome: 
                         true
                 }
             }
+            LilloThemeModeChoice(Modifier.padding(vertical = 4.dp))
             SettingsRow("📖", stringResource(R.string.how_to_play), null, "settings_how_to") {
                 onDismiss()
                 onHowTo()

@@ -4,6 +4,7 @@ import android.os.Build
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -101,6 +102,16 @@ fun LilloAboutSheet(
     if (pickLanguage && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         LilloLanguageDialog(onDismiss = { pickLanguage = false }, languages = languages)
     }
+}
+
+/**
+ * The appearance choice (automatic, light or dark) for an app with its own settings sheet instead
+ * of [LilloAboutSheet], which already has it. Nothing for an app with a single look.
+ */
+@Composable
+fun LilloThemeModeChoice(modifier: Modifier = Modifier) {
+    val mode = LocalLilloThemeMode.current ?: return
+    Box(modifier) { ThemeModeRow(mode.value) { mode.value = it } }
 }
 
 /** The appearance choice of [LilloAboutSheet]: automatic, light or dark. */
