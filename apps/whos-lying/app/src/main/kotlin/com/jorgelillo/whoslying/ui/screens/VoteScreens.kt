@@ -54,6 +54,7 @@ import com.jorgelillo.whoslying.domain.Elimination
 import com.jorgelillo.whoslying.domain.Game
 import com.jorgelillo.whoslying.domain.Role
 import com.jorgelillo.whoslying.ui.theme.Neon
+import com.jorgelillo.whoslying.ui.theme.NightStage
 import kotlinx.coroutines.delay
 
 /** The group picks who to vote out, then confirms. */
@@ -66,96 +67,100 @@ internal fun VotingScreen(
     onConfirm: (String) -> Unit,
     onBack: () -> Unit
 ) {
-    var chosen by rememberSaveable { mutableStateOf<String?>(null) }
-    val short = isShortScreen()
-    BackHandler(enabled = forced) {}
-    Page(
-        title = null,
-        onBack = onBack.takeUnless { forced },
-        background = Neon.RevealBackdrop,
-        bottom = {
-            BigButton(
-                stringResource(R.string.voting_confirm),
-                { chosen?.let(onConfirm) },
-                Modifier.testTag("confirm_vote"),
-                enabled = chosen != null,
-                color = Neon.Go,
-                contentColor = Neon.Night
-            )
-            if (!forced) {
-                TextButton(
-                    onClick = onBack,
-                    modifier = Modifier.align(Alignment.CenterHorizontally).testTag("back_to_debate")
-                ) {
-                    Text(stringResource(R.string.voting_back), color = Color.White.copy(alpha = 0.8f))
+    NightStage {
+        var chosen by rememberSaveable { mutableStateOf<String?>(null) }
+        val short = isShortScreen()
+        BackHandler(enabled = forced) {}
+        Page(
+            title = null,
+            onBack = onBack.takeUnless { forced },
+            background = Neon.RevealBackdrop,
+            bottom = {
+                BigButton(
+                    stringResource(R.string.voting_confirm),
+                    { chosen?.let(onConfirm) },
+                    Modifier.testTag("confirm_vote"),
+                    enabled = chosen != null,
+                    color = Neon.Go,
+                    contentColor = Neon.OnFill
+                )
+                if (!forced) {
+                    TextButton(
+                        onClick = onBack,
+                        modifier = Modifier.align(Alignment.CenterHorizontally).testTag("back_to_debate")
+                    ) {
+                        Text(stringResource(R.string.voting_back), color = Color.White.copy(alpha = 0.8f))
+                    }
                 }
             }
-        }
-    ) {
-        Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-            // Short screens keep only the question, so the players stay visible.
-            if (!short) {
-                Emoji("🗳️", size = 56)
+        ) {
+            Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+                // Short screens keep only the question, so the players stay visible.
+                if (!short) {
+                    Emoji("🗳️", size = 56)
+                    Text(
+                        stringResource(R.string.voting_title),
+                        color = Color.White,
+                        style = MaterialTheme.typography.headlineMedium,
+                        fontWeight = FontWeight.Black
+                    )
+                    Text(
+                        stringResource(R.string.voting_desc),
+                        color = Color.White.copy(alpha = 0.85f),
+                        textAlign = TextAlign.Center
+                    )
+                }
                 Text(
-                    stringResource(R.string.voting_title),
-                    color = Color.White,
-                    style = MaterialTheme.typography.headlineMedium,
-                    fontWeight = FontWeight.Black
-                )
-                Text(
-                    stringResource(R.string.voting_desc),
-                    color = Color.White.copy(alpha = 0.85f),
-                    textAlign = TextAlign.Center
+                    stringResource(R.string.voting_question),
+                    color = Neon.AmberText,
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Black,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(vertical = if (short) 4.dp else 12.dp)
                 )
             }
-            Text(
-                stringResource(R.string.voting_question),
-                color = Neon.AmberText,
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Black,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(vertical = if (short) 4.dp else 12.dp)
-            )
-        }
-        LazyVerticalGrid(
-            columns = GridCells.Adaptive(if (short) 120.dp else 140.dp),
-            horizontalArrangement = Arrangement.spacedBy(10.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp)
-        ) {
-            items(game.cards.filter { it.player in alive }, key = { it.player }) { card ->
-                val selected = chosen == card.player
-                Box(
-                    Modifier
-                        .clip(MaterialTheme.shapes.large)
-                        .background(if (selected) Neon.Night.copy(alpha = 0.55f) else Color.White.copy(alpha = 0.1f))
-                        .border(
-                            2.dp,
-                            if (selected) Neon.Go else Color.White.copy(alpha = 0.25f),
-                            MaterialTheme.shapes.large
-                        )
-                        .clickable { chosen = card.player }
-                        .testTag("vote_${card.player}")
-                ) {
-                    Column(
-                        Modifier.fillMaxWidth().padding(vertical = if (short) 8.dp else 18.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
+            LazyVerticalGrid(
+                columns = GridCells.Adaptive(if (short) 120.dp else 140.dp),
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                verticalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                items(game.cards.filter { it.player in alive }, key = { it.player }) { card ->
+                    val selected = chosen == card.player
+                    Box(
+                        Modifier
+                            .clip(MaterialTheme.shapes.large)
+                            .background(
+                                if (selected) Neon.Night.copy(alpha = 0.55f) else Color.White.copy(alpha = 0.1f)
+                            )
+                            .border(
+                                2.dp,
+                                if (selected) Neon.Go else Color.White.copy(alpha = 0.25f),
+                                MaterialTheme.shapes.large
+                            )
+                            .clickable { chosen = card.player }
+                            .testTag("vote_${card.player}")
                     ) {
-                        Avatar(card.player, game.cards.map { it.player }, if (short) 40.dp else 64.dp)
-                        Text(
-                            card.player,
-                            color = Color.White,
-                            fontWeight = FontWeight.Bold,
-                            maxLines = 1,
-                            modifier = Modifier.padding(top = if (short) 4.dp else 10.dp)
-                        )
-                    }
-                    if (selected) {
-                        Box(
-                            Modifier.align(
-                                Alignment.TopEnd
-                            ).padding(8.dp).size(24.dp).clip(CircleShape).background(Neon.Go),
-                            contentAlignment = Alignment.Center
-                        ) { Text("✓", color = Neon.Night, fontWeight = FontWeight.Black) }
+                        Column(
+                            Modifier.fillMaxWidth().padding(vertical = if (short) 8.dp else 18.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Avatar(card.player, game.cards.map { it.player }, if (short) 40.dp else 64.dp)
+                            Text(
+                                card.player,
+                                color = Color.White,
+                                fontWeight = FontWeight.Bold,
+                                maxLines = 1,
+                                modifier = Modifier.padding(top = if (short) 4.dp else 10.dp)
+                            )
+                        }
+                        if (selected) {
+                            Box(
+                                Modifier.align(
+                                    Alignment.TopEnd
+                                ).padding(8.dp).size(24.dp).clip(CircleShape).background(Neon.Go),
+                                contentAlignment = Alignment.Center
+                            ) { Text("✓", color = Neon.OnFill, fontWeight = FontWeight.Black) }
+                        }
                     }
                 }
             }
@@ -175,61 +180,63 @@ internal fun ExposeScreen(
     onContinue: () -> Unit,
     onGameOver: () -> Unit
 ) {
-    var count by rememberSaveable(elimination) { mutableIntStateOf(3) }
-    var guessResult by rememberSaveable(elimination) { mutableStateOf<Boolean?>(null) }
-    // The effect outlives recompositions: read the newest game, not the one it started with.
-    val latestGame by rememberUpdatedState(game)
-    val gameOver by rememberUpdatedState(onGameOver)
-    LaunchedEffect(elimination) {
-        while (count > 0) {
-            delay(800)
-            count--
-        }
-        if (latestGame.isOver && latestGame.pendingGuess == null) gameOver()
-    }
-    val card = game.cardOf(elimination.player)
-    // Game is a plain object: read the guess through guessResult (state) so the bar recomposes after it.
-    val guessing = game.pendingGuess != null && guessResult == null
-    val background = when {
-        count > 0 -> Neon.RevealBackdrop
-        card.role == Role.CIVILIAN -> Neon.ImpostorsBackdrop
-        card.role == Role.DRIFTER -> Neon.DrifterBackdrop
-        else -> Neon.CiviliansBackdrop
-    }
-    Page(
-        title = null,
-        onBack = null,
-        background = background,
-        bottom = {
-            if (count == 0 && !guessing && !game.isOver) {
-                BigButton(
-                    stringResource(R.string.next_vote),
-                    onContinue,
-                    Modifier.testTag("keep_playing"),
-                    color = Color.White,
-                    contentColor = Neon.Night
-                )
+    NightStage {
+        var count by rememberSaveable(elimination) { mutableIntStateOf(3) }
+        var guessResult by rememberSaveable(elimination) { mutableStateOf<Boolean?>(null) }
+        // The effect outlives recompositions: read the newest game, not the one it started with.
+        val latestGame by rememberUpdatedState(game)
+        val gameOver by rememberUpdatedState(onGameOver)
+        LaunchedEffect(elimination) {
+            while (count > 0) {
+                delay(800)
+                count--
             }
+            if (latestGame.isOver && latestGame.pendingGuess == null) gameOver()
         }
-    ) {
-        Column(
-            Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState()),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+        val card = game.cardOf(elimination.player)
+        // Game is a plain object: read the guess through guessResult (state) so the bar recomposes after it.
+        val guessing = game.pendingGuess != null && guessResult == null
+        val background = when {
+            count > 0 -> Neon.RevealBackdrop
+            card.role == Role.CIVILIAN -> Neon.ImpostorsBackdrop
+            card.role == Role.DRIFTER -> Neon.DrifterBackdrop
+            else -> Neon.CiviliansBackdrop
+        }
+        Page(
+            title = null,
+            onBack = null,
+            background = background,
+            bottom = {
+                if (count == 0 && !guessing && !game.isOver) {
+                    BigButton(
+                        stringResource(R.string.next_vote),
+                        onContinue,
+                        Modifier.testTag("keep_playing"),
+                        color = Color.White,
+                        contentColor = Neon.OnFill
+                    )
+                }
+            }
         ) {
-            if (count > 0) {
-                Emoji("👀", size = 110)
-                Text(
-                    stringResource(R.string.expose_in) + " " + (3 downTo count).joinToString(", ") + "…",
-                    color = Color.White,
-                    fontSize = 44.sp,
-                    lineHeight = 50.sp,
-                    fontWeight = FontWeight.Black,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(top = 16.dp).testTag("exposing")
-                )
-            } else {
-                EliminatedCard(card, game, guessResult, onGuess = { guessResult = onGuess(it) })
+            Column(
+                Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState()),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                if (count > 0) {
+                    Emoji("👀", size = 110)
+                    Text(
+                        stringResource(R.string.expose_in) + " " + (3 downTo count).joinToString(", ") + "…",
+                        color = Color.White,
+                        fontSize = 44.sp,
+                        lineHeight = 50.sp,
+                        fontWeight = FontWeight.Black,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(top = 16.dp).testTag("exposing")
+                    )
+                } else {
+                    EliminatedCard(card, game, guessResult, onGuess = { guessResult = onGuess(it) })
+                }
             }
         }
     }
@@ -348,5 +355,5 @@ private fun ColumnScope.GuessInput(onGuess: (String) -> Unit) {
     Spacer(Modifier.height(12.dp))
     BigButton(stringResource(R.string.guess_go), {
         onGuess(text)
-    }, Modifier.testTag("guess"), enabled = text.isNotBlank(), color = Color.White, contentColor = Neon.Night)
+    }, Modifier.testTag("guess"), enabled = text.isNotBlank(), color = Color.White, contentColor = Neon.OnFill)
 }

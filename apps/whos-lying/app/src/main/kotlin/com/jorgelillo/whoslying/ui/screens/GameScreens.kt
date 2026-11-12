@@ -62,6 +62,7 @@ import com.jorgelillo.whoslying.domain.Card
 import com.jorgelillo.whoslying.domain.Game
 import com.jorgelillo.whoslying.domain.Role
 import com.jorgelillo.whoslying.ui.theme.Neon
+import com.jorgelillo.whoslying.ui.theme.NightStage
 import kotlin.math.roundToInt
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -76,115 +77,119 @@ internal val DialogTags = TestTagsAsResourceIds
  */
 @Composable
 internal fun RevealScreen(game: Game, onDone: () -> Unit, onQuit: () -> Unit) {
-    var index by rememberSaveable(game) { mutableIntStateOf(0) }
-    var peeked by rememberSaveable(game) { mutableStateOf(false) }
-    val haptics = LocalHapticFeedback.current
-    val card = game.cards[index]
-    val lift = remember(index) { Animatable(0f) }
-    val scope = rememberCoroutineScope()
+    NightStage {
+        var index by rememberSaveable(game) { mutableIntStateOf(0) }
+        var peeked by rememberSaveable(game) { mutableStateOf(false) }
+        val haptics = LocalHapticFeedback.current
+        val card = game.cards[index]
+        val lift = remember(index) { Animatable(0f) }
+        val scope = rememberCoroutineScope()
 
-    Page(
-        title = stringResource(R.string.reveal_counter, index + 1, game.cards.size),
-        onBack = onQuit,
-        background = Neon.RevealBackdrop,
-        bottom = {
-            if (peeked) {
-                BigButton(stringResource(R.string.reveal_hide), {
-                    peeked = false
-                    if (index == game.cards.lastIndex) onDone() else index++
-                }, color = Neon.Go, contentColor = Neon.Night, modifier = Modifier.testTag("hide"))
-            } else {
-                Spacer(Modifier.height(60.dp))
+        Page(
+            title = stringResource(R.string.reveal_counter, index + 1, game.cards.size),
+            onBack = onQuit,
+            background = Neon.RevealBackdrop,
+            bottom = {
+                if (peeked) {
+                    BigButton(stringResource(R.string.reveal_hide), {
+                        peeked = false
+                        if (index == game.cards.lastIndex) onDone() else index++
+                    }, color = Neon.Go, contentColor = Neon.OnFill, modifier = Modifier.testTag("hide"))
+                } else {
+                    Spacer(Modifier.height(60.dp))
+                }
             }
-        }
-    ) {
-        // Clipped so the lifted curtain never covers the header.
-        BoxWithConstraints(Modifier.weight(1f).fillMaxWidth().clipToBounds()) {
-            val height = constraints.maxHeight.toFloat()
-            // Short screens (landscape phones, handhelds like the AYN Thor): smaller curtain content so it all fits.
-            val compact = maxHeight < 440.dp
-            Box(Modifier.fillMaxSize().padding(bottom = 8.dp), contentAlignment = Alignment.BottomCenter) {
-                SecretCard(card, compact)
-            }
-            Column(
-                Modifier
-                    .fillMaxSize()
-                    .offset { IntOffset(0, -lift.value.roundToInt()) }
-                    .clip(MaterialTheme.shapes.extraLarge)
-                    .background(Curtain)
-                    .border(2.dp, Color.White.copy(alpha = 0.25f), MaterialTheme.shapes.extraLarge)
-                    .pointerInput(index) {
-                        val drop: () -> Unit = {
-                            scope.launch { lift.animateTo(0f, spring(dampingRatio = Spring.DampingRatioMediumBouncy)) }
-                        }
-                        detectVerticalDragGestures(onDragEnd = drop, onDragCancel = drop) { change, dy ->
-                            change.consume()
-                            scope.launch {
-                                lift.snapTo((lift.value - dy).coerceIn(0f, height * 0.85f))
-                                if (lift.value > height * PEEK_SHARE && !peeked) {
-                                    // A tick under the finger: the word is showing now.
-                                    haptics.performHapticFeedback(HapticFeedbackType.GestureThresholdActivate)
-                                    peeked = true
+        ) {
+            // Clipped so the lifted curtain never covers the header.
+            BoxWithConstraints(Modifier.weight(1f).fillMaxWidth().clipToBounds()) {
+                val height = constraints.maxHeight.toFloat()
+                // Short screens (landscape phones, handhelds like the AYN Thor): smaller curtain content so it all fits.
+                val compact = maxHeight < 440.dp
+                Box(Modifier.fillMaxSize().padding(bottom = 8.dp), contentAlignment = Alignment.BottomCenter) {
+                    SecretCard(card, compact)
+                }
+                Column(
+                    Modifier
+                        .fillMaxSize()
+                        .offset { IntOffset(0, -lift.value.roundToInt()) }
+                        .clip(MaterialTheme.shapes.extraLarge)
+                        .background(Curtain)
+                        .border(2.dp, Color.White.copy(alpha = 0.25f), MaterialTheme.shapes.extraLarge)
+                        .pointerInput(index) {
+                            val drop: () -> Unit = {
+                                scope.launch {
+                                    lift.animateTo(0f, spring(dampingRatio = Spring.DampingRatioMediumBouncy))
+                                }
+                            }
+                            detectVerticalDragGestures(onDragEnd = drop, onDragCancel = drop) { change, dy ->
+                                change.consume()
+                                scope.launch {
+                                    lift.snapTo((lift.value - dy).coerceIn(0f, height * 0.85f))
+                                    if (lift.value > height * PEEK_SHARE && !peeked) {
+                                        // A tick under the finger: the word is showing now.
+                                        haptics.performHapticFeedback(HapticFeedbackType.GestureThresholdActivate)
+                                        peeked = true
+                                    }
                                 }
                             }
                         }
-                    }
-                    .testTag("tap_to_reveal"),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                if (compact) {
-                    // Short screens: side by side, so the whole instruction fits.
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.padding(horizontal = 24.dp)
-                    ) {
-                        Emoji("🤫", size = 56)
-                        Spacer(Modifier.width(24.dp))
-                        Column {
-                            Text(
-                                stringResource(R.string.reveal_pass_to),
-                                color = Color.White.copy(alpha = 0.8f),
-                                style = MaterialTheme.typography.titleMedium
-                            )
-                            Text(
-                                card.player,
-                                style = MaterialTheme.typography.headlineLarge,
-                                fontWeight = FontWeight.Black,
-                                color = Color.White
-                            )
-                            Spacer(Modifier.height(6.dp))
-                            Text(
-                                "⬆  " + stringResource(R.string.reveal_tap),
-                                color = Color.White,
-                                style = MaterialTheme.typography.bodyMedium
-                            )
+                        .testTag("tap_to_reveal"),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    if (compact) {
+                        // Short screens: side by side, so the whole instruction fits.
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.padding(horizontal = 24.dp)
+                        ) {
+                            Emoji("🤫", size = 56)
+                            Spacer(Modifier.width(24.dp))
+                            Column {
+                                Text(
+                                    stringResource(R.string.reveal_pass_to),
+                                    color = Color.White.copy(alpha = 0.8f),
+                                    style = MaterialTheme.typography.titleMedium
+                                )
+                                Text(
+                                    card.player,
+                                    style = MaterialTheme.typography.headlineLarge,
+                                    fontWeight = FontWeight.Black,
+                                    color = Color.White
+                                )
+                                Spacer(Modifier.height(6.dp))
+                                Text(
+                                    "⬆  " + stringResource(R.string.reveal_tap),
+                                    color = Color.White,
+                                    style = MaterialTheme.typography.bodyMedium
+                                )
+                            }
                         }
+                    } else {
+                        Text(
+                            stringResource(R.string.reveal_pass_to),
+                            color = Color.White.copy(alpha = 0.8f),
+                            style = MaterialTheme.typography.titleMedium
+                        )
+                        Text(
+                            card.player,
+                            style = MaterialTheme.typography.displayMedium,
+                            fontWeight = FontWeight.Black,
+                            color = Color.White,
+                            textAlign = TextAlign.Center
+                        )
+                        Spacer(Modifier.height(32.dp))
+                        Emoji("🤫", size = 84)
+                        Spacer(Modifier.height(24.dp))
+                        Text("⬆", color = Color.White, fontSize = 36.sp)
+                        Text(
+                            stringResource(R.string.reveal_tap),
+                            color = Color.White,
+                            style = MaterialTheme.typography.titleMedium,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.padding(horizontal = 24.dp)
+                        )
                     }
-                } else {
-                    Text(
-                        stringResource(R.string.reveal_pass_to),
-                        color = Color.White.copy(alpha = 0.8f),
-                        style = MaterialTheme.typography.titleMedium
-                    )
-                    Text(
-                        card.player,
-                        style = MaterialTheme.typography.displayMedium,
-                        fontWeight = FontWeight.Black,
-                        color = Color.White,
-                        textAlign = TextAlign.Center
-                    )
-                    Spacer(Modifier.height(32.dp))
-                    Emoji("🤫", size = 84)
-                    Spacer(Modifier.height(24.dp))
-                    Text("⬆", color = Color.White, fontSize = 36.sp)
-                    Text(
-                        stringResource(R.string.reveal_tap),
-                        color = Color.White,
-                        style = MaterialTheme.typography.titleMedium,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(horizontal = 24.dp)
-                    )
                 }
             }
         }
@@ -271,45 +276,47 @@ private fun SecretCard(card: Card, compact: Boolean) {
 /** "X starts. Get ready! 3, 2, 1" before the clue round. */
 @Composable
 internal fun CountdownScreen(starter: String, onDone: () -> Unit) {
-    var count by rememberSaveable { mutableIntStateOf(3) }
-    val done by rememberUpdatedState(onDone)
-    LaunchedEffect(Unit) {
-        while (count > 0) {
-            delay(1000)
-            count--
+    NightStage {
+        var count by rememberSaveable { mutableIntStateOf(3) }
+        val done by rememberUpdatedState(onDone)
+        LaunchedEffect(Unit) {
+            while (count > 0) {
+                delay(1000)
+                count--
+            }
+            done()
         }
-        done()
-    }
-    Page(title = null, onBack = null, background = Neon.RevealBackdrop) {
-        Spacer(Modifier.weight(1f))
-        Text(
-            stringResource(R.string.countdown_starts, starter),
-            color = Neon.AmberText,
-            style = MaterialTheme.typography.headlineLarge,
-            fontWeight = FontWeight.Black,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth()
-        )
-        Text(
-            stringResource(R.string.countdown_ready),
-            color = Color.White,
-            style = MaterialTheme.typography.headlineLarge,
-            fontWeight = FontWeight.Black,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth()
-        )
-        AnimatedContent(count, transitionSpec = {
-            scaleIn(initialScale = 1.6f) + fadeIn() togetherWith fadeOut()
-        }, modifier = Modifier.fillMaxWidth(), label = "count") {
+        Page(title = null, onBack = null, background = Neon.RevealBackdrop) {
+            Spacer(Modifier.weight(1f))
             Text(
-                "${it.coerceAtLeast(1)}",
-                color = Color.White,
-                fontSize = 180.sp,
+                stringResource(R.string.countdown_starts, starter),
+                color = Neon.AmberText,
+                style = MaterialTheme.typography.headlineLarge,
                 fontWeight = FontWeight.Black,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth()
             )
+            Text(
+                stringResource(R.string.countdown_ready),
+                color = Color.White,
+                style = MaterialTheme.typography.headlineLarge,
+                fontWeight = FontWeight.Black,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
+            )
+            AnimatedContent(count, transitionSpec = {
+                scaleIn(initialScale = 1.6f) + fadeIn() togetherWith fadeOut()
+            }, modifier = Modifier.fillMaxWidth(), label = "count") {
+                Text(
+                    "${it.coerceAtLeast(1)}",
+                    color = Color.White,
+                    fontSize = 180.sp,
+                    fontWeight = FontWeight.Black,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+            Spacer(Modifier.weight(1.4f))
         }
-        Spacer(Modifier.weight(1.4f))
     }
 }

@@ -39,6 +39,7 @@ import com.jorgelillo.core.designsystem.isShortScreen
 import com.jorgelillo.whoslying.R
 import com.jorgelillo.whoslying.domain.Match
 import com.jorgelillo.whoslying.ui.theme.Neon
+import com.jorgelillo.whoslying.ui.theme.NightStage
 
 /** Players by points, best first. */
 private fun ranking(players: List<String>, scores: Map<String, Int>) =
@@ -69,7 +70,7 @@ private fun RankRow(player: String, players: List<String>, points: Int, gained: 
         if (gained != null) {
             Text(
                 "+$gained",
-                color = Neon.Night,
+                color = Neon.OnFill,
                 fontWeight = FontWeight.Black,
                 modifier = Modifier.padding(
                     end = 12.dp
@@ -93,69 +94,71 @@ internal fun RankingScreen(
     onReset: () -> Unit,
     onBack: () -> Unit
 ) {
-    var confirmReset by rememberSaveable { mutableStateOf(false) }
-    Page(
-        title = null,
-        onBack = onBack,
-        sideActionsWhenShort = true,
-        background = Neon.RevealBackdrop,
-        bottom = {
-            BigButton(
-                stringResource(R.string.continue_),
-                onNextRound,
-                Modifier.testTag("next_round"),
-                color = Neon.Go,
-                contentColor = Neon.Night
-            )
-            TextButton(
-                onClick = {
-                    if (confirmReset) {
-                        onReset()
-                        confirmReset = false
-                    } else {
-                        confirmReset = true
-                    }
-                },
-                modifier = Modifier.align(Alignment.CenterHorizontally).testTag("reset_scores")
+    NightStage {
+        var confirmReset by rememberSaveable { mutableStateOf(false) }
+        Page(
+            title = null,
+            onBack = onBack,
+            sideActionsWhenShort = true,
+            background = Neon.RevealBackdrop,
+            bottom = {
+                BigButton(
+                    stringResource(R.string.continue_),
+                    onNextRound,
+                    Modifier.testTag("next_round"),
+                    color = Neon.Go,
+                    contentColor = Neon.OnFill
+                )
+                TextButton(
+                    onClick = {
+                        if (confirmReset) {
+                            onReset()
+                            confirmReset = false
+                        } else {
+                            confirmReset = true
+                        }
+                    },
+                    modifier = Modifier.align(Alignment.CenterHorizontally).testTag("reset_scores")
+                ) {
+                    Text(
+                        stringResource(if (confirmReset) R.string.scores_reset_confirm else R.string.scores_reset),
+                        color = Color.White.copy(alpha = 0.75f)
+                    )
+                }
+            }
+        ) {
+            Column(
+                Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState()),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                Text("🏆", fontSize = 56.sp)
                 Text(
-                    stringResource(if (confirmReset) R.string.scores_reset_confirm else R.string.scores_reset),
-                    color = Color.White.copy(alpha = 0.75f)
+                    stringResource(R.string.scores_title),
+                    color = Color.White,
+                    style = MaterialTheme.typography.headlineMedium,
+                    fontWeight = FontWeight.Black
+                )
+                Text(
+                    if (roundsLeft != null) {
+                        pluralStringResource(R.plurals.scores_rounds_left, roundsLeft, roundsLeft)
+                    } else {
+                        stringResource(R.string.scores_rounds_free, roundsPlayed)
+                    },
+                    color = Color.White.copy(alpha = 0.9f),
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.padding(bottom = 16.dp).testTag("rounds_left")
+                )
+                ranking(players, scores).forEach { player ->
+                    RankRow(player, players, scores[player] ?: 0, lastPoints[player])
+                    Spacer(Modifier.height(10.dp))
+                }
+                Text(
+                    stringResource(R.string.scores_rules),
+                    color = Color.White.copy(alpha = 0.85f),
+                    style = MaterialTheme.typography.bodySmall,
+                    textAlign = TextAlign.Center
                 )
             }
-        }
-    ) {
-        Column(
-            Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState()),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text("🏆", fontSize = 56.sp)
-            Text(
-                stringResource(R.string.scores_title),
-                color = Color.White,
-                style = MaterialTheme.typography.headlineMedium,
-                fontWeight = FontWeight.Black
-            )
-            Text(
-                if (roundsLeft != null) {
-                    pluralStringResource(R.plurals.scores_rounds_left, roundsLeft, roundsLeft)
-                } else {
-                    stringResource(R.string.scores_rounds_free, roundsPlayed)
-                },
-                color = Color.White.copy(alpha = 0.9f),
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(bottom = 16.dp).testTag("rounds_left")
-            )
-            ranking(players, scores).forEach { player ->
-                RankRow(player, players, scores[player] ?: 0, lastPoints[player])
-                Spacer(Modifier.height(10.dp))
-            }
-            Text(
-                stringResource(R.string.scores_rules),
-                color = Color.White.copy(alpha = 0.85f),
-                style = MaterialTheme.typography.bodySmall,
-                textAlign = TextAlign.Center
-            )
         }
     }
 }
@@ -163,104 +166,111 @@ internal fun RankingScreen(
 /** End of a match: the winner big in the middle with fireworks, everyone else below. */
 @Composable
 internal fun PodiumScreen(players: List<String>, scores: Map<String, Int>, onNewMatch: () -> Unit, onHome: () -> Unit) {
-    val leaders = Match.leaders(scores)
-    Box(Modifier.fillMaxSize()) {
-        Page(
-            title = null,
-            onBack = null,
-            sideActionsWhenShort = true,
-            background = Neon.RevealBackdrop,
-            bottom = {
-                BigButton(
-                    stringResource(R.string.podium_new_match),
-                    onNewMatch,
-                    Modifier.testTag("new_match"),
-                    color = Neon.Go,
-                    contentColor = Neon.Night
-                )
-                TextButton(onClick = onHome, modifier = Modifier.align(Alignment.CenterHorizontally).testTag("home")) {
-                    Text(stringResource(R.string.home), color = Color.White.copy(alpha = 0.85f))
-                }
-            }
-        ) {
-            val short = isShortScreen()
-            val winnerBlock = @Composable {
-                Text("🏆", fontSize = if (short) 32.sp else 44.sp)
-                if (leaders.size == 1) {
-                    val winner = leaders.single()
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.padding(top = if (short) 4.dp else 12.dp)
+    NightStage {
+        val leaders = Match.leaders(scores)
+        Box(Modifier.fillMaxSize()) {
+            Page(
+                title = null,
+                onBack = null,
+                sideActionsWhenShort = true,
+                background = Neon.RevealBackdrop,
+                bottom = {
+                    BigButton(
+                        stringResource(R.string.podium_new_match),
+                        onNewMatch,
+                        Modifier.testTag("new_match"),
+                        color = Neon.Go,
+                        contentColor = Neon.OnFill
+                    )
+                    TextButton(
+                        onClick = onHome,
+                        modifier = Modifier.align(Alignment.CenterHorizontally).testTag("home")
                     ) {
-                        Text("🎆", fontSize = if (short) 36.sp else 56.sp)
-                        Spacer(Modifier.width(16.dp))
-                        Avatar(winner, players, if (short) 72.dp else 128.dp, ring = Neon.Amber)
-                        Spacer(Modifier.width(16.dp))
-                        Text("🎆", fontSize = if (short) 36.sp else 56.sp)
+                        Text(stringResource(R.string.home), color = Color.White.copy(alpha = 0.85f))
                     }
-                    Text(
-                        winner,
-                        color = Color.White,
-                        fontSize = if (short) 28.sp else 34.sp,
-                        fontWeight = FontWeight.Black,
-                        modifier = Modifier.padding(top = if (short) 4.dp else 12.dp).testTag("podium_title")
-                    )
-                    Text(
-                        "${scores[winner] ?: 0}",
-                        color = Neon.AmberText,
-                        fontSize = if (short) 36.sp else 56.sp,
-                        fontWeight = FontWeight.Black
-                    )
+                }
+            ) {
+                val short = isShortScreen()
+                val winnerBlock = @Composable {
+                    Text("🏆", fontSize = if (short) 32.sp else 44.sp)
+                    if (leaders.size == 1) {
+                        val winner = leaders.single()
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.padding(top = if (short) 4.dp else 12.dp)
+                        ) {
+                            Text("🎆", fontSize = if (short) 36.sp else 56.sp)
+                            Spacer(Modifier.width(16.dp))
+                            Avatar(winner, players, if (short) 72.dp else 128.dp, ring = Neon.Amber)
+                            Spacer(Modifier.width(16.dp))
+                            Text("🎆", fontSize = if (short) 36.sp else 56.sp)
+                        }
+                        Text(
+                            winner,
+                            color = Color.White,
+                            fontSize = if (short) 28.sp else 34.sp,
+                            fontWeight = FontWeight.Black,
+                            modifier = Modifier.padding(top = if (short) 4.dp else 12.dp).testTag("podium_title")
+                        )
+                        Text(
+                            "${scores[winner] ?: 0}",
+                            color = Neon.AmberText,
+                            fontSize = if (short) 36.sp else 56.sp,
+                            fontWeight = FontWeight.Black
+                        )
+                    } else {
+                        Text(
+                            if (leaders.isEmpty()) {
+                                stringResource(
+                                    R.string.podium_nobody
+                                )
+                            } else {
+                                stringResource(R.string.podium_tie, leaders.joinToString(" · "))
+                            },
+                            color = Color.White,
+                            fontSize = if (short) 26.sp else 32.sp,
+                            lineHeight = if (short) 32.sp else 38.sp,
+                            fontWeight = FontWeight.Black,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.padding(vertical = if (short) 8.dp else 16.dp).testTag("podium_title")
+                        )
+                    }
+                }
+                val others = @Composable {
+                    ranking(players, scores).filterNot {
+                        leaders.size == 1 && it == leaders.single()
+                    }.forEach { player ->
+                        RankRow(player, players, scores[player] ?: 0, gained = null)
+                        Spacer(Modifier.height(10.dp))
+                    }
+                }
+                if (short) {
+                    // Landscape and handhelds: the winner beside the rest, or the ranking falls below the fold.
+                    Row(
+                        Modifier.weight(1f).fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(24.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column(
+                            Modifier.weight(1f).verticalScroll(rememberScrollState()),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            winnerBlock()
+                        }
+                        Column(Modifier.weight(1f).verticalScroll(rememberScrollState())) { others() }
+                    }
                 } else {
-                    Text(
-                        if (leaders.isEmpty()) {
-                            stringResource(
-                                R.string.podium_nobody
-                            )
-                        } else {
-                            stringResource(R.string.podium_tie, leaders.joinToString(" · "))
-                        },
-                        color = Color.White,
-                        fontSize = if (short) 26.sp else 32.sp,
-                        lineHeight = if (short) 32.sp else 38.sp,
-                        fontWeight = FontWeight.Black,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(vertical = if (short) 8.dp else 16.dp).testTag("podium_title")
-                    )
-                }
-            }
-            val others = @Composable {
-                ranking(players, scores).filterNot { leaders.size == 1 && it == leaders.single() }.forEach { player ->
-                    RankRow(player, players, scores[player] ?: 0, gained = null)
-                    Spacer(Modifier.height(10.dp))
-                }
-            }
-            if (short) {
-                // Landscape and handhelds: the winner beside the rest, or the ranking falls below the fold.
-                Row(
-                    Modifier.weight(1f).fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(24.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
                     Column(
-                        Modifier.weight(1f).verticalScroll(rememberScrollState()),
+                        Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState()),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         winnerBlock()
+                        Spacer(Modifier.height(20.dp))
+                        others()
                     }
-                    Column(Modifier.weight(1f).verticalScroll(rememberScrollState())) { others() }
-                }
-            } else {
-                Column(
-                    Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState()),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    winnerBlock()
-                    Spacer(Modifier.height(20.dp))
-                    others()
                 }
             }
+            if (leaders.isNotEmpty()) ConfettiRain(Neon.Confetti, Modifier.fillMaxSize())
         }
-        if (leaders.isNotEmpty()) ConfettiRain(Neon.Confetti, Modifier.fillMaxSize())
     }
 }

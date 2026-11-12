@@ -26,7 +26,8 @@ import com.jorgelillo.whoslying.domain.WordPacks
 import com.jorgelillo.whoslying.ui.DrawStroke
 import com.jorgelillo.whoslying.ui.InkColors
 import com.jorgelillo.whoslying.ui.theme.Neon
-import com.jorgelillo.whoslying.ui.theme.NeonColorScheme
+import com.jorgelillo.whoslying.ui.theme.NeonDark
+import com.jorgelillo.whoslying.ui.theme.NeonLight
 import kotlin.random.Random
 import org.junit.Rule
 import org.junit.Test
@@ -51,17 +52,20 @@ class RoundScreensScreenshotTest {
 
     private fun deal(mode: GameMode) = Game.deal(players, GameSettings(mode), pack, pack.entries.first(), Random(3))
 
+    /** Each screen in the dark look under its name, and in the light look with `_light` added. */
     private fun shot(
         name: String,
+        dark: Boolean = true,
         beforeCapture: () -> Unit = {
         },
         content: @Composable () -> Unit
-    ) = compose.captureScreenshot(name, {
+    ) = compose.captureScreenshot(if (dark) name else "${name}_light", {
         beforeCapture()
-    }) { LilloTheme(NeonColorScheme) { content() } }
+    }) { LilloTheme(if (dark) NeonDark else NeonLight) { content() } }
 
     /** Home with a group mid-match (summary header), and a first launch (no group yet). */
-    private fun home(name: String, group: HomeGroup?) = shot(name) { HomeScreen(group, {}, {}, {}, {}, {}) }
+    private fun home(name: String, group: HomeGroup?, dark: Boolean = true) =
+        shot(name, dark) { HomeScreen(group, {}, {}, {}, {}, {}) }
 
     private val group = HomeGroup(
         players,
@@ -78,7 +82,22 @@ class RoundScreensScreenshotTest {
 
     @Test fun homeFirstLaunch() = home("home", null)
 
-    private fun voting(name: String) = shot(name) {
+    @Test
+    fun homeWithGroupLight() = home("home_group", group, dark = false)
+
+    @Test
+    @Config(qualifiers = "+land")
+    fun homeWithGroupLandscapeLight() = home("home_group_landscape", group, dark = false)
+
+    @Test
+    fun homeFirstLaunchLight() = home("home", null, dark = false)
+
+    // The home is where every evening starts: it must still read with the largest text.
+    @Test
+    @Config(fontScale = 2f)
+    fun homeWithGroupLargestFont() = home("home_group_large_font", group, dark = false)
+
+    private fun voting(name: String, dark: Boolean = true) = shot(name, dark) {
         val game = deal(GameMode.CLASSIC)
         VotingScreen(game, game.alive.map { it.player }.toSet(), forced = false, onConfirm = {}, onBack = {})
     }
@@ -88,7 +107,7 @@ class RoundScreensScreenshotTest {
             it.eliminate(it.cards.single { card -> card.role == Role.DRIFTER }.player)
         }
         // Past the "exposed in 3, 2, 1…" countdown.
-        shot(name, { compose.mainClock.advanceTimeBy(3_000) }) {
+        shot(name, beforeCapture = { compose.mainClock.advanceTimeBy(3_000) }) {
             ExposeScreen(game, game.lastElimination!!, onGuess = { false }, onContinue = {}, onGameOver = {})
         }
     }
@@ -127,11 +146,11 @@ class RoundScreensScreenshotTest {
     }
 
     /** A full list: no name field, just the "remove someone" notice. */
-    private fun playersFull(name: String) = shot(name) {
+    private fun playersFull(name: String, dark: Boolean = true) = shot(name, dark) {
         PlayersScreen((1..24).map { "Player $it" }, onAdd = {}, onRemove = {}, onContinue = {}, onBack = {})
     }
 
-    private fun drawing(name: String) = shot(name) {
+    private fun drawing(name: String, dark: Boolean = true) = shot(name, dark) {
         val game = Game.deal(players, GameSettings(drawing = true), pack, pack.entries.first(), Random(3))
         val strokes = remember {
             mutableStateListOf(
@@ -144,17 +163,45 @@ class RoundScreensScreenshotTest {
         DrawingScreen(game, game.alive.map { it.player }.toSet(), strokes, 0, {}, {}, {}, {})
     }
 
-    private fun colorWheel(name: String) = shot(name) {
+    private fun colorWheel(name: String, dark: Boolean = true) = shot(name, dark) {
         // The dialog's content (a dialog is a second window, out of reach of a root capture).
         Box(Modifier.background(Neon.Card).padding(24.dp)) { ColorWheel(Color(0xFF2F6BFF), onChange = {}) }
     }
 
     /** Choosing packs: every pack ticked, with "clear all" and the long-press hint. */
-    private fun packPicker(name: String) = shot(name) {
+    private fun packPicker(name: String, dark: Boolean = true) = shot(name, dark) {
         PackPickerScreen(WordPacks.builtIn("en"), selected = emptySet(), onNewPack = {}, onDone = {})
     }
 
     @Test fun packPickerPortrait() = packPicker("pack_picker")
+
+    @Test
+    fun packPickerPortraitLight() = packPicker("pack_picker", dark = false)
+
+    @Test
+    @Config(qualifiers = "+land")
+    fun packPickerLandscapeLight() = packPicker("pack_picker_landscape", dark = false)
+
+    @Test
+    fun playersFullPortraitLight() = playersFull("players_full", dark = false)
+
+    @Test
+    @Config(qualifiers = "+land")
+    fun playersFullLandscapeLight() = playersFull("players_full_landscape", dark = false)
+
+    @Test
+    fun drawingPortraitLight() = drawing("drawing", dark = false)
+
+    @Test
+    @Config(qualifiers = "+land")
+    fun drawingLandscapeLight() = drawing("drawing_landscape", dark = false)
+
+    @Test
+    fun colorWheelPortraitLight() = colorWheel("color_wheel", dark = false)
+
+    /** The round's stages keep their night colours in the light look. */
+    @Test
+    fun votingPortraitLight() = voting("voting", dark = false)
 
     @Test
     @Config(qualifiers = "+land")

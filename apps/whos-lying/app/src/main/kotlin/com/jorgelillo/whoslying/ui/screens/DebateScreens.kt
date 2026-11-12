@@ -54,6 +54,7 @@ import com.jorgelillo.whoslying.R
 import com.jorgelillo.whoslying.domain.Game
 import com.jorgelillo.whoslying.domain.Role
 import com.jorgelillo.whoslying.ui.theme.Neon
+import com.jorgelillo.whoslying.ui.theme.NightStage
 import kotlinx.coroutines.delay
 
 /** Clue round: who starts, the optional countdown and the way to the vote. */
@@ -68,82 +69,84 @@ internal fun DebateScreen(
     onRevealAll: () -> Unit,
     onQuit: () -> Unit
 ) {
-    Page(
-        title = null,
-        onBack = onQuit,
-        background = Neon.RevealBackdrop,
-        bottom = {
-            BigButton(
-                stringResource(R.string.vote_button),
-                onVote,
-                Modifier.testTag("go_vote"),
-                color = Neon.Go,
-                contentColor = Neon.Night
-            )
-            TextButton(
-                onClick = onRevealAll,
-                modifier = Modifier.align(Alignment.CenterHorizontally).testTag("reveal_all")
-            ) {
-                Text(stringResource(R.string.vote_reveal_all), color = Color.White.copy(alpha = 0.75f))
+    NightStage {
+        Page(
+            title = null,
+            onBack = onQuit,
+            background = Neon.RevealBackdrop,
+            bottom = {
+                BigButton(
+                    stringResource(R.string.vote_button),
+                    onVote,
+                    Modifier.testTag("go_vote"),
+                    color = Neon.Go,
+                    contentColor = Neon.OnFill
+                )
+                TextButton(
+                    onClick = onRevealAll,
+                    modifier = Modifier.align(Alignment.CenterHorizontally).testTag("reveal_all")
+                ) {
+                    Text(stringResource(R.string.vote_reveal_all), color = Color.White.copy(alpha = 0.75f))
+                }
             }
-        }
-    ) {
-        Column(
-            Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState()),
-            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Emoji("💬", size = 72)
-            Text(
-                stringResource(R.string.debate_title),
-                color = Color.White,
-                style = MaterialTheme.typography.headlineMedium,
-                fontWeight = FontWeight.Black
-            )
-            Text(
-                stringResource(R.string.debate_desc),
-                color = Color.White.copy(alpha = 0.85f),
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(top = 6.dp)
-            )
-            // After the first vote, the next round starts with whoever is still in.
-            val starter =
-                game.starter.takeIf { it in alive }
-                    ?: game.cards.first { it.player in alive && it.role != Role.DRIFTER }.player
-            Text(
-                stringResource(R.string.countdown_starts, starter),
-                color = Neon.AmberText,
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(top = 12.dp)
-            )
-            Spacer(Modifier.height(24.dp))
-            if (discussionSeconds > 0) {
-                // Keyed by the players left, so every round of discussion gets the full time.
-                key(alive.size) { CircularTimer(discussionSeconds, onTimeUp) }
-            } else {
-                Emoji("🗣️", size = 110)
+            Column(
+                Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState()),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Emoji("💬", size = 72)
                 Text(
-                    stringResource(R.string.debate_no_timer),
+                    stringResource(R.string.debate_title),
                     color = Color.White,
+                    style = MaterialTheme.typography.headlineMedium,
+                    fontWeight = FontWeight.Black
+                )
+                Text(
+                    stringResource(R.string.debate_desc),
+                    color = Color.White.copy(alpha = 0.85f),
                     textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(top = 6.dp)
+                )
+                // After the first vote, the next round starts with whoever is still in.
+                val starter =
+                    game.starter.takeIf { it in alive }
+                        ?: game.cards.first { it.player in alive && it.role != Role.DRIFTER }.player
+                Text(
+                    stringResource(R.string.countdown_starts, starter),
+                    color = Neon.AmberText,
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(top = 12.dp)
                 )
-            }
-            val out = game.cards.filter { it.player !in alive }
-            if (out.isNotEmpty()) {
-                val labels = Role.entries.associateWith { roleLabel(it).lowercase() }
-                Text(
-                    stringResource(
-                        R.string.debate_out,
-                        out.joinToString {
-                            "${it.player} (${labels.getValue(it.role)})"
-                        }
-                    ),
-                    color = Color.White.copy(alpha = 0.7f),
-                    style = MaterialTheme.typography.bodySmall,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(top = 20.dp).testTag("debate_out")
-                )
+                Spacer(Modifier.height(24.dp))
+                if (discussionSeconds > 0) {
+                    // Keyed by the players left, so every round of discussion gets the full time.
+                    key(alive.size) { CircularTimer(discussionSeconds, onTimeUp) }
+                } else {
+                    Emoji("🗣️", size = 110)
+                    Text(
+                        stringResource(R.string.debate_no_timer),
+                        color = Color.White,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(top = 12.dp)
+                    )
+                }
+                val out = game.cards.filter { it.player !in alive }
+                if (out.isNotEmpty()) {
+                    val labels = Role.entries.associateWith { roleLabel(it).lowercase() }
+                    Text(
+                        stringResource(
+                            R.string.debate_out,
+                            out.joinToString {
+                                "${it.player} (${labels.getValue(it.role)})"
+                            }
+                        ),
+                        color = Color.White.copy(alpha = 0.7f),
+                        style = MaterialTheme.typography.bodySmall,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(top = 20.dp).testTag("debate_out")
+                    )
+                }
             }
         }
     }
@@ -229,29 +232,31 @@ internal fun beep() {
 /** "Time's up!" for a moment, then straight to the vote. */
 @Composable
 internal fun TimeUpScreen(onDone: () -> Unit) {
-    val done by rememberUpdatedState(onDone)
-    LaunchedEffect(Unit) {
-        delay(1_800)
-        done()
-    }
-    BackHandler {}
-    Page(title = null, onBack = null, background = Neon.ImpostorsBackdrop) {
-        val short = isShortScreen()
-        Column(
-            Modifier.weight(1f).fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            Emoji("⏰", size = if (short) 64 else 110)
-            Text(
-                stringResource(R.string.time_up),
-                color = Color.White,
-                fontSize = if (short) 36.sp else 44.sp,
-                lineHeight = if (short) 40.sp else 50.sp,
-                fontWeight = FontWeight.Black,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(top = 16.dp).testTag("time_up")
-            )
+    NightStage {
+        val done by rememberUpdatedState(onDone)
+        LaunchedEffect(Unit) {
+            delay(1_800)
+            done()
+        }
+        BackHandler {}
+        Page(title = null, onBack = null, background = Neon.ImpostorsBackdrop) {
+            val short = isShortScreen()
+            Column(
+                Modifier.weight(1f).fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Emoji("⏰", size = if (short) 64 else 110)
+                Text(
+                    stringResource(R.string.time_up),
+                    color = Color.White,
+                    fontSize = if (short) 36.sp else 44.sp,
+                    lineHeight = if (short) 40.sp else 50.sp,
+                    fontWeight = FontWeight.Black,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(top = 16.dp).testTag("time_up")
+                )
+            }
         }
     }
 }
