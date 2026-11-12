@@ -15,7 +15,6 @@ import com.jorgelillo.tournaments.domain.Format
 import com.jorgelillo.tournaments.domain.Match
 import com.jorgelillo.tournaments.domain.Stage
 import com.jorgelillo.tournaments.domain.Tournament
-import com.jorgelillo.tournaments.ui.theme.Arena
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
@@ -33,7 +32,6 @@ internal fun Page(
 ) = LilloPage(
     title,
     onBack,
-    background = Arena.Background,
     modifier = modifier,
     actions = actions,
     readable = readable,

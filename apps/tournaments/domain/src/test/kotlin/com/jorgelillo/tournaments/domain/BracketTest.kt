@@ -20,6 +20,19 @@ class BracketTest {
         assertEquals(4, Bracket.rounds(11))
     }
 
+    /** A phone shows the knockout one round at a time, opening on the one being played. */
+    @Test
+    fun theRoundToShowIsTheOneBeingPlayed() {
+        var t = Tournaments.create("t", "Cup", 0, listOf("A", "B", "C", "D"), Format.ELIMINATION, random = Random(1))
+        assertEquals(1, Tournaments.currentEliminationRound(t))
+        t.round(Stage.ELIMINATION, 1).forEach { t = Tournaments.record(t, it, 2, 0) }
+        assertEquals(2, Tournaments.currentEliminationRound(t))
+        t = Tournaments.record(t, t.round(Stage.ELIMINATION, 2).single(), 2, 0)
+        assertEquals(2, Tournaments.currentEliminationRound(t))
+        val league = Tournaments.create("l", "League", 0, listOf("A", "B", "C", "D"), Format.SWISS, random = Random(1))
+        assertEquals(0, Tournaments.currentEliminationRound(league))
+    }
+
     @Test
     fun standardSeedOrder() {
         assertEquals(listOf(1, 8, 4, 5, 2, 7, 3, 6), Bracket.seedOrder(8))

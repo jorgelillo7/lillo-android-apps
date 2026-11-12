@@ -69,6 +69,20 @@ three of them in an eight-player bracket.
 > **GAP — unverified.** `championPathEndsAtTheFinal` only counts the path (3 matches);
 > that the last of them is the final is not asserted.
 
+### Requirement: A phone upright reads the bracket one round at a time
+
+On a screen narrower than 600dp that is not short (a phone held upright), the bracket SHALL
+show one round at a time: a tab per round over full-width match cards, opening on the
+earliest round with a match ready to play, else the last. Landscape screens and tablets SHALL
+keep the whole two-sided bracket, fitted, with zoom.
+
+#### Scenario: round by round
+- **WHEN** a four-player knockout is created, its first round played, then the final **THEN** the round to show is 1, then 2, and stays 2; a league without a knockout has none
+- **WHEN** an eight-player knockout with two results is shown on a phone upright, in both looks **THEN** it opens on the quarterfinals, one card per match
+- **WHEN** the same knockout is shown in landscape **THEN** the whole bracket shows, fitted
+- *Verifies:* `theRoundToShowIsTheOneBeingPlayed`, `bracketRoundByRound`, `bracketRoundByRoundLight`,
+  `bracketFittedInLandscape`
+
 ### Requirement: A knockout can be played from creation to champion
 
 #### Scenario: the flow

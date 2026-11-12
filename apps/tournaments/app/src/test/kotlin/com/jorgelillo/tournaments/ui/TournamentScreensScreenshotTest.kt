@@ -13,7 +13,8 @@ import com.jorgelillo.tournaments.domain.Tournament
 import com.jorgelillo.tournaments.domain.Tournaments
 import com.jorgelillo.tournaments.ui.home.HomeScreen
 import com.jorgelillo.tournaments.ui.stats.StatsScreen
-import com.jorgelillo.tournaments.ui.theme.ArenaColorScheme
+import com.jorgelillo.tournaments.ui.theme.ArenaDark
+import com.jorgelillo.tournaments.ui.theme.ArenaLight
 import com.jorgelillo.tournaments.ui.tournament.TournamentScreen
 import kotlin.random.Random
 import org.junit.Rule
@@ -55,15 +56,55 @@ class TournamentScreensScreenshotTest {
     ).let { Tournaments.record(it, Tournaments.pending(it).first(), 2, 0) }
     private val library = Library(listOf(cup, league))
 
-    private fun shot(name: String, content: @Composable () -> Unit) = compose.captureScreenshot(name) {
-        LilloTheme(ArenaColorScheme) { content() }
-    }
+    /** Each screen in the dark look under its name, and in the light look with `_light` added. */
+    private fun shot(name: String, dark: Boolean = true, content: @Composable () -> Unit) =
+        compose.captureScreenshot(if (dark) name else "${name}_light") {
+            LilloTheme(if (dark) ArenaDark else ArenaLight) { content() }
+        }
 
-    private fun home(name: String) = shot(name) { HomeScreen(library, {}, {}, {}, {}, {}) }
+    private fun home(name: String, dark: Boolean = true) = shot(name, dark) { HomeScreen(library, {}, {}, {}, {}, {}) }
 
-    private fun tournament(name: String) = shot(name) { TournamentScreen(cup, {}, {}, {}) }
+    private fun tournament(name: String, dark: Boolean = true, t: Tournament = cup) =
+        shot(name, dark) { TournamentScreen(t, {}, {}, {}) }
 
-    private fun stats(name: String) = shot(name) { StatsScreen(library) {} }
+    private fun stats(name: String, dark: Boolean = true) = shot(name, dark) { StatsScreen(library) {} }
+
+    /** Eight players, the first round half played: a phone opens the bracket on that round. */
+    private val openCup: Tournament = Tournaments.create(
+        "open",
+        "Friday Magic",
+        20_400,
+        listOf("Ann", "Bob", "Cat", "Dan", "Eve", "Fay", "Gus", "Hal"),
+        Format.ELIMINATION,
+        random = Random(1)
+    ).let { t -> Tournaments.pending(t).take(2).fold(t) { acc, m -> Tournaments.record(acc, m, 2, 1) } }
+
+    @Test
+    fun homePortraitLight() = home("home", dark = false)
+
+    @Test
+    @Config(qualifiers = "+land")
+    fun homeLandscapeLight() = home("home_landscape", dark = false)
+
+    @Test
+    fun tournamentPortraitLight() = tournament("tournament", dark = false)
+
+    @Test
+    @Config(qualifiers = "+land")
+    fun tournamentLandscapeLight() = tournament("tournament_landscape", dark = false)
+
+    @Test
+    fun bracketRoundByRound() = tournament("bracket_rounds", t = openCup)
+
+    @Test
+    fun bracketRoundByRoundLight() = tournament("bracket_rounds", dark = false, t = openCup)
+
+    @Test
+    @Config(qualifiers = "+land")
+    fun bracketFittedInLandscape() = tournament("bracket_fit_landscape", dark = false, t = openCup)
+
+    @Test
+    fun statsPortraitLight() = stats("stats", dark = false)
 
     @Test fun homePortrait() = home("home")
 

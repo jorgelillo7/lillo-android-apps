@@ -350,7 +350,7 @@ private fun <T> Segmented(
                 modifier = Modifier.testTag("${tag}_$i"),
                 colors = SegmentedButtonDefaults.colors(
                     activeContainerColor = Arena.Gold,
-                    activeContentColor = Arena.Ink
+                    activeContentColor = Arena.OnGold
                 ),
                 label = { Text(label, maxLines = 1) }
             )

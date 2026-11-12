@@ -313,13 +313,13 @@ private fun ChampionBanner(name: String) {
         Column {
             Text(
                 stringResource(R.string.champion_label),
-                color = Arena.Ink,
+                color = Arena.OnGold,
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Bold
             )
             Text(
                 name,
-                color = Arena.Ink,
+                color = Arena.OnGold,
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Black,
                 maxLines = 1,

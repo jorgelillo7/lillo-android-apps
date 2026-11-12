@@ -9,10 +9,12 @@ import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.calculateZoom
 import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -23,20 +25,28 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.SecondaryScrollableTabRow
+import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.StrokeJoin
@@ -53,6 +63,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jorgelillo.core.designsystem.isShortScreen
@@ -61,12 +72,18 @@ import com.jorgelillo.tournaments.domain.BracketLayout
 import com.jorgelillo.tournaments.domain.Match
 import com.jorgelillo.tournaments.domain.Stage
 import com.jorgelillo.tournaments.domain.Tournament
+import com.jorgelillo.tournaments.domain.Tournaments
 import com.jorgelillo.tournaments.ui.roundName
 import com.jorgelillo.tournaments.ui.theme.Arena
 import kotlin.math.roundToInt
+import kotlinx.coroutines.launch
 
 private val CARD_W = 140.dp
 private val CARD_H = 60.dp
+private val LARGE_CARD_H = 88.dp
+
+/** Narrower than this and upright, the bracket shows one round at a time. */
+private val ROUND_BY_ROUND_BELOW = 600.dp
 private val PITCH = 76.dp
 private val GAP = 26.dp
 private val HEADER = 28.dp
@@ -109,6 +126,12 @@ internal fun BracketView(t: Tournament, onEdit: (Match) -> Unit) {
     val short = isShortScreen()
 
     BoxWithConstraints(Modifier.fillMaxSize()) {
+        // A phone held upright reads one round at a time; landscape and tablets keep the whole
+        // bracket, fitted.
+        if (!short && maxWidth < ROUND_BY_ROUND_BELOW) {
+            RoundByRound(t, onEdit)
+            return@BoxWithConstraints
+        }
         val screenWidth = maxWidth
         val fit = minOf(maxWidth.value / contentWidth, maxHeight.value / contentHeight).coerceIn(MIN_ZOOM, 1f)
         val zoom = userZoom ?: fit
@@ -181,6 +204,8 @@ private fun BoxScope.Connectors(
     geometry: BracketGeometry,
     championPath: Set<Pair<Int, Int>>
 ) {
+    val gold = Arena.Gold
+    val faint = Arena.Faint
     Canvas(Modifier.matchParentSize()) {
         grid.cells.forEach { cell ->
             val points = geometry.connector(grid, cell) ?: return@forEach
@@ -197,7 +222,7 @@ private fun BoxScope.Connectors(
             }
             drawPath(
                 path,
-                if (won) Arena.Gold else Arena.Faint,
+                if (won) gold else faint,
                 style = Stroke(width.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round)
             )
         }
@@ -250,20 +275,74 @@ private fun ZoomButtons(onOut: () -> Unit, onIn: () -> Unit, onFit: () -> Unit, 
     }
 }
 
+/**
+ * The knockout one round at a time, for a phone held upright: a tab per round (opening on the
+ * one being played) over full-width cards, swiped or tapped through.
+ */
+@Composable
+private fun RoundByRound(t: Tournament, onEdit: (Match) -> Unit) {
+    val rounds = t.eliminationRounds
+    val pager = rememberPagerState(initialPage = (Tournaments.currentEliminationRound(t) - 1).coerceAtLeast(0)) {
+        rounds
+    }
+    val scope = rememberCoroutineScope()
+    Column(Modifier.fillMaxSize().testTag("bracket_rounds")) {
+        SecondaryScrollableTabRow(
+            selectedTabIndex = pager.currentPage,
+            containerColor = Color.Transparent,
+            contentColor = Arena.Cream,
+            edgePadding = 0.dp
+        ) {
+            (1..rounds).forEach { round ->
+                val selected = pager.currentPage == round - 1
+                Tab(
+                    selected = selected,
+                    onClick = { scope.launch { pager.animateScrollToPage(round - 1) } },
+                    modifier = Modifier.testTag("round_$round"),
+                    text = {
+                        Text(
+                            roundName(t, Stage.ELIMINATION, round),
+                            color = if (selected) Arena.GoldText else Arena.Muted,
+                            fontWeight = if (selected) FontWeight.Black else FontWeight.SemiBold,
+                            maxLines = 1
+                        )
+                    }
+                )
+            }
+        }
+        HorizontalPager(pager, Modifier.fillMaxSize(), verticalAlignment = Alignment.Top) { page ->
+            val round = page + 1
+            LazyColumn(
+                Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(vertical = 12.dp),
+                verticalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                items(t.round(Stage.ELIMINATION, round), key = { it.slot }) { match ->
+                    BracketCard(t, match, isFinal = round == rounds, onEdit = onEdit, large = true)
+                }
+            }
+        }
+    }
+}
+
 @Composable
 private fun BracketCard(
     t: Tournament,
     m: Match,
     isFinal: Boolean,
     onEdit: (Match) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    /** Full width with larger names, for [RoundByRound]; else the overview's fixed size. */
+    large: Boolean = false
 ) {
     val winner = m.winner(t.bestOf)
     val done = winner != null && !m.isBye
     val playable = m.a != null && m.b != null
+    val height = if (large) LARGE_CARD_H else CARD_H
+    val fontSize = if (large) 16.sp else 13.sp
     Column(
         modifier
-            .size(CARD_W, CARD_H)
+            .then(if (large) Modifier.fillMaxWidth().height(height) else Modifier.size(CARD_W, CARD_H))
             .background(Arena.Raised, RoundedCornerShape(10.dp))
             .border(
                 BorderStroke(
@@ -282,18 +361,34 @@ private fun BracketCard(
             .testTag("card_${m.round}_${m.slot}")
     ) {
         if (m.isBye && m.round == 1) {
-            Slot(t.player(m.a ?: m.b)?.name, null, won = false, done = false, CARD_H / 2)
-            Slot(stringResource(R.string.bracket_bye), null, won = false, done = true, CARD_H / 2)
+            Slot(t.player(m.a ?: m.b)?.name, null, won = false, done = false, height / 2, fontSize)
+            Slot(stringResource(R.string.bracket_bye), null, won = false, done = true, height / 2, fontSize)
             return@Column
         }
-        Slot(t.player(m.a)?.name, m.winsA.takeIf { done }, won = done && winner == m.a, done = done, CARD_H / 2)
+        Slot(
+            t.player(m.a)?.name,
+            m.winsA.takeIf {
+                done
+            },
+            won = done && winner == m.a,
+            done = done,
+            height / 2,
+            fontSize
+        )
         Box(Modifier.fillMaxWidth().height(1.dp).background(Arena.Faint))
-        Slot(t.player(m.b)?.name, m.winsB.takeIf { done }, won = done && winner == m.b, done = done, CARD_H / 2 - 1.dp)
+        Slot(
+            t.player(m.b)?.name,
+            m.winsB.takeIf { done },
+            won = done && winner == m.b,
+            done = done,
+            height / 2 - 1.dp,
+            fontSize
+        )
     }
 }
 
 @Composable
-private fun Slot(name: String?, score: Int?, won: Boolean, done: Boolean, height: Dp) {
+private fun Slot(name: String?, score: Int?, won: Boolean, done: Boolean, height: Dp, fontSize: TextUnit) {
     Row(
         Modifier.fillMaxWidth().height(height).padding(horizontal = 8.dp),
         verticalAlignment = Alignment.CenterVertically
@@ -301,12 +396,12 @@ private fun Slot(name: String?, score: Int?, won: Boolean, done: Boolean, height
         Text(
             name ?: "—",
             color = when {
-                won -> Arena.Gold
+                won -> Arena.GoldText
                 name == null || done -> Arena.Muted
                 else -> Arena.Cream
             },
             fontWeight = if (won) FontWeight.Black else FontWeight.Medium,
-            fontSize = 13.sp,
+            fontSize = fontSize,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             modifier = Modifier.weight(1f)

@@ -25,7 +25,7 @@ UI test tags (`scripts/tap-text.sh`, dialogs included): `new`, `import`, `import
 `match_<stage>_<round>_<slot>` (stage `elimination` or `swiss`; round-1 slots follow the seed
 order 1-8, 4-5, 2-7, 3-6…), `card_<round>_<slot>`, `winner_a|b`, `draw`, `score_<loser games>`,
 `comment`, `preview`, `save`, `clear`, `next_round`, `top_cut`, `champion`, `bracket`,
-`zoom_in|out|fit`, `standings`, `qr`, `send_link`, `share_image`, `leaderboard`, `back`.
+`bracket_rounds` and `round_<n>` (a phone upright: one round at a time), `zoom_in|out|fit` (landscape and tablets), `standings`, `qr`, `send_link`, `share_image`, `leaderboard`, `back`.
 
 ## Share links (App Links)
 

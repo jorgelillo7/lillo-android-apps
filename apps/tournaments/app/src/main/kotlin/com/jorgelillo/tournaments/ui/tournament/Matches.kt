@@ -168,7 +168,7 @@ private fun PlayerLine(name: String?, wins: Int, done: Boolean, won: Boolean) {
             name ?: stringResource(R.string.match_tbd),
             color = when {
                 name == null -> Arena.Muted
-                won -> Arena.Gold
+                won -> Arena.GoldText
                 done -> Arena.Muted
                 else -> Arena.Cream
             },
@@ -283,7 +283,7 @@ internal fun ResultSheet(
                         color = if (outcome ==
                             2
                         ) {
-                            Arena.Gold
+                            Arena.GoldText
                         } else {
                             Arena.Cream
                         },
@@ -312,7 +312,7 @@ internal fun ResultSheet(
                             label = { Text(label, fontSize = 18.sp, fontWeight = FontWeight.Bold) },
                             colors = FilterChipDefaults.filterChipColors(
                                 selectedContainerColor = Arena.Gold,
-                                selectedLabelColor = Arena.Ink
+                                selectedLabelColor = Arena.OnGold
                             ),
                             modifier = Modifier.testTag("score_$k")
                         )
@@ -385,7 +385,7 @@ private fun WinnerButton(
     ) {
         Text(
             (if (selected) "🏆 " else "") + name,
-            color = if (selected) Arena.Ink else Arena.Cream,
+            color = if (selected) Arena.OnGold else Arena.Cream,
             fontWeight = FontWeight.Black,
             fontSize = 18.sp,
             textAlign = TextAlign.Center,
