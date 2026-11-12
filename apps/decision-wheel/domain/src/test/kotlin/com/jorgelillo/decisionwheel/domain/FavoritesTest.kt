@@ -22,6 +22,17 @@ class FavoritesTest {
     }
 
     @Test
+    fun theHomeOffersTheLastResultElseAFirstSpinOnTheFavourite() {
+        assertEquals("c", state.toggleFavorite("c").firstSpinWheel?.id)
+        assertEquals(null, state.lastResult)
+        assertEquals(null, AppState().firstSpinWheel)
+        val s = state.copy(
+            history = listOf(Decision("gone", "X", 30), Decision("b", "2", 20), Decision("a", "1", 10))
+        )
+        assertEquals(Decision("b", "2", 20) to b, s.lastResult)
+    }
+
+    @Test
     fun shortcutsAreFavouritesThenRecent() {
         val s = state.toggleFavorite("d")
             .withDecision(Decision("a", "1", 100))

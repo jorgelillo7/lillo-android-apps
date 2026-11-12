@@ -54,6 +54,12 @@ class WheelFlowTest {
         assertEquals("preset-eat-out", decision.wheelId)
         assert(decision.option in saved().wheel("preset-eat-out")!!.options)
 
+        // Home shows the result under the wheels; "Spin again" opens its wheel.
+        tap("back")
+        compose.waitUntilExactlyOneExists(hasText(decision.option), TIMEOUT)
+        tap("spin_again")
+        compose.waitUntilExactlyOneExists(hasTestTag("spin"), TIMEOUT)
+
         tap("back")
         tap("new_wheel")
         compose.onNodeWithTag("name").performTextInput("Smoke")

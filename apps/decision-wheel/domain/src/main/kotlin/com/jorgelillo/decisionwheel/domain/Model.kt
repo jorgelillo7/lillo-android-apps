@@ -30,6 +30,18 @@ data class AppState(
 
     fun withDecision(decision: Decision): AppState = copy(history = (listOf(decision) + history).take(MAX_HISTORY))
 
+    /** The latest decision whose wheel is still here, with that wheel; null when there is none. */
+    val lastResult: Pair<Decision, Wheel>?
+        get() = history.sortedByDescending { it.atEpochMillis }.firstNotNullOfOrNull { d ->
+            wheel(d.wheelId)?.let {
+                d to
+                    it
+            }
+        }
+
+    /** The wheel a first spin is offered on: the first favourite, else the first wheel. */
+    val firstSpinWheel: Wheel? get() = sortedWheels.firstOrNull()
+
     /** Home order: favourites first, each group in the user's order. */
     val sortedWheels: List<Wheel> get() = wheels.filter { it.favorite } + wheels.filterNot { it.favorite }
 

@@ -106,6 +106,23 @@ SHALL drop its history and no one else's; accepting SHALL record the decision ne
   `deletingAWheelDropsItsHistoryOnly`, `acceptingRecordsTheDecisionNewestFirst`,
   `settingsAndFavouritesAreSaved`
 
+### Requirement: The home shows the last result when there is room
+
+The home SHALL show the latest decision whose wheel still exists in a card under the wheels,
+with that wheel's name and day and a "Spin again" button that opens the wheel; with no decision
+yet, the card SHALL offer a first spin on the first favourite, else the first wheel. The card
+SHALL show only while the list is unscrolled and leaves at least 240dp free under the wheels
+(more as the font grows),
+and never on short screens. The last decision SHALL NOT also be repeated under the title.
+
+#### Scenario: the last result card
+- **WHEN** the history holds a decision for a deleted wheel and older ones **THEN** the last result is the newest decision whose wheel exists; with no history the first spin is offered on the favourite
+- **WHEN** the home has two wheels and decisions, or none, in either look **THEN** the card shows the last result, or the first-spin invitation
+- **WHEN** ten wheels fill the screen **THEN** no card shows; at twice the font size the card shows only where it fits
+- **WHEN** a result was just accepted and the user goes back home and taps "Spin again" **THEN** that wheel opens
+- *Verifies:* `theHomeOffersTheLastResultElseAFirstSpinOnTheFavourite`, `homeFirstSpin`,
+  `homeFirstSpinLight`, `theLastResultNeedsRoom`, `homeLargestFont`, `spinAcceptAndCreateAWheel`
+
 ### Requirement: Spinning, accepting and creating works end to end
 
 A user SHALL be able to spin a wheel, accept the result and create a wheel in one session.
