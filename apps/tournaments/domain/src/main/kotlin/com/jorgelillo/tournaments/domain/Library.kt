@@ -32,6 +32,13 @@ data class Library(@SerialName("tournaments") val tournaments: List<Tournament> 
         }
     }
 
+    /**
+     * The copy on this phone that importing [t] would replace, or null when importing it replaces
+     * nothing (a new tournament, or one that is not newer). Revisions count changes on each phone
+     * separately, so a "newer" link can still lack results entered only here: the app asks first.
+     */
+    fun replacedBy(t: Tournament): Tournament? = tournament(t.id)?.takeIf { t.revision > it.revision }
+
     /** In progress first, then the most recent. */
     val sorted: List<Tournament>
         get() = tournaments.sortedWith(

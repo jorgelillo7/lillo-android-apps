@@ -1,5 +1,7 @@
 package com.jorgelillo.tournaments
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
@@ -10,6 +12,7 @@ import androidx.compose.ui.test.performTextInput
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.takahirom.roborazzi.RobolectricDeviceQualifiers
 import com.jorgelillo.tournaments.domain.Library
+import com.jorgelillo.tournaments.domain.Share
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 import kotlinx.coroutines.flow.first
@@ -18,11 +21,14 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
+import org.robolectric.util.ReflectionHelpers
+import org.robolectric.util.ReflectionHelpers.ClassParameter
 
 /**
  * A whole 4-player knockout through the real MainActivity on the JVM, like tools/smoke_test.sh on
- * an emulator but in seconds: new tournament, three results, champion. One test per class: the
- * app's DataStore file can only be open once per process.
+ * an emulator but in seconds: new tournament, three results, champion; then a link with a newer
+ * copy of it opened from a chat, turned down once and accepted the second time. One test in the module: the app's
+ * DataStore file can only be open once per process.
  */
 @OptIn(ExperimentalTestApi::class)
 @RunWith(AndroidJUnit4::class)
@@ -38,6 +44,19 @@ class TournamentFlowTest {
 
     private fun saved(): Library =
         runBlocking { (compose.activity.application as TournamentsApplication).repository.state.first() }
+
+    /** The link opened from a chat while the app is running. */
+    private fun open(link: String) {
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(link))
+        compose.activity.runOnUiThread {
+            ReflectionHelpers.callInstanceMethod<Unit>(
+                compose.activity,
+                "onNewIntent",
+                ClassParameter.from(Intent::class.java, intent)
+            )
+        }
+        compose.waitUntilExactlyOneExists(hasTestTag("replace_dialog"), TIMEOUT)
+    }
 
     /** Seed order for 4 players: slot 0 = seeds 1-4, slot 1 = seeds 2-3. */
     private fun result(match: String, winner: String) {
@@ -73,6 +92,16 @@ class TournamentFlowTest {
         assertEquals("Smoke cup", cup.name)
         assertEquals(listOf("Ann", "Bob", "Cat", "Dan"), cup.players.map { it.name })
         assertTrue(cup.isOver)
+
+        val newer = Share.link(cup.copy(name = "Final", revision = cup.revision + 1))
+        open(newer)
+        tap("replace_keep")
+        compose.waitUntilDoesNotExist(hasTestTag("replace_dialog"), TIMEOUT)
+        assertEquals(cup, saved().tournaments.single())
+
+        open(newer)
+        tap("replace_confirm")
+        compose.waitUntil(TIMEOUT) { saved().tournaments.single().name == "Final" }
     }
 
     private companion object {

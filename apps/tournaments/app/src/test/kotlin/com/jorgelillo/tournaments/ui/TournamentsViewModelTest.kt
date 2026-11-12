@@ -18,6 +18,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
@@ -80,8 +81,13 @@ class TournamentsViewModelTest {
             assertEquals(ImportEvent(Library.ImportResult.ADDED, "cup"), awaitItem())
             vm.importText(link)
             assertEquals(ImportEvent(Library.ImportResult.ALREADY_UP_TO_DATE, "cup"), awaitItem())
+            // A newer copy of one already here waits for a yes: nothing is stored or announced yet.
             vm.importText(Share.link(cup().let { it.copy(name = "Final", revision = it.revision + 1) }))
+            assertEquals("Final", vm.pendingReplace.filterNotNull().first().incoming.name)
+            expectNoEvents()
+            vm.replace()
             assertEquals(ImportEvent(Library.ImportResult.UPDATED, "cup"), awaitItem())
+            assertNull(vm.pendingReplace.value)
         }
         vm.library.filterNotNull().test {
             assertEquals("Final", awaitMatching { it.tournament("cup")?.name == "Final" }.tournament("cup")?.name)
@@ -97,5 +103,25 @@ class TournamentsViewModelTest {
             assertNull(event.result)
             assertNull(event.id)
         }
+    }
+
+    /**
+     * Revisions count changes on each phone, so a "newer" link can lack results entered only here:
+     * keeping the copy on the phone must leave it exactly as it was.
+     */
+    @Test
+    fun aNewerCopyCanBeTurnedDown() = runTest {
+        val vm = viewModel()
+        val here = cup()
+        vm.imports.test(timeout = StoreTimeout) {
+            vm.importText(Share.link(here))
+            assertEquals(ImportEvent(Library.ImportResult.ADDED, "cup"), awaitItem())
+            vm.importText(Share.link(here.copy(name = "Final", revision = here.revision + 1)))
+            assertEquals(here, vm.pendingReplace.filterNotNull().first().here)
+            vm.keepHere()
+            assertEquals(ImportEvent(null, "cup", keptHere = true), awaitItem())
+        }
+        assertNull(vm.pendingReplace.value)
+        vm.library.filterNotNull().test { assertEquals(here, awaitItem().tournament("cup")) }
     }
 }

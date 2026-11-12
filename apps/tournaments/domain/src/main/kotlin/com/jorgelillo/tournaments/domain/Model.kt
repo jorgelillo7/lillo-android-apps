@@ -126,4 +126,7 @@ data class Tournament(
             }
 
     val isOver: Boolean get() = champion != null
+
+    /** Matches with a result (byes don't count). */
+    val playedMatches: Int get() = matches.count { !it.isBye && it.isDone(bestOf) }
 }

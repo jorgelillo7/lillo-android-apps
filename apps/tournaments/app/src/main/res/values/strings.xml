@@ -31,6 +31,12 @@
     <string name="import_updated">Tournament updated with the latest results</string>
     <string name="import_same">You already had this tournament, up to date</string>
     <string name="import_newer_here">Your copy has more recent results: kept yours</string>
+    <string name="replace_title">Replace your copy of “%1$s”?</string>
+    <string name="replace_played">Matches played: %1$d in the link, %2$d on this phone.</string>
+    <string name="replace_body">The link has a newer version. Results entered only on this phone will be lost.</string>
+    <string name="replace_confirm">Replace</string>
+    <string name="replace_keep">Keep mine</string>
+    <string name="import_kept">Kept your copy</string>
 
     <!-- New tournament -->
     <string name="setup_name">Name</string>
