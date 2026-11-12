@@ -18,19 +18,20 @@ shared Compose code in `core/`. No accounts, no ads, no server — except
 
 | App | Package | Capability specs (`specs/{app}/…`) |
 |---|---|---|
-| `christmas-countdown` | `com.jorgelillo.christmascountdown` | not written yet |
-| `decision-wheel` | `com.jorgelillo.decisionwheel` | not written yet |
-| `whos-lying` | `com.jorgelillo.whoslying` | not written yet |
-| `tournaments` | `com.jorgelillo.tournaments` | not written yet |
-| `league-cards` | `com.jorgelillo.leaguecards` | not written yet |
-| `slipper` | `com.jorgelillo.slipper` | not written yet |
-| `stadium-events` | `com.jorgelillo.stadiumevents` | not written yet |
-| `group-polls` | `com.jorgelillo.grouppolls` | not written yet (its Firestore rules and tests: lillorepo `packages/group_polls`) |
-| `core` | — | not written yet |
+| `christmas-countdown` | `com.jorgelillo.christmascountdown` | [`countdown`](specs/christmas-countdown/countdown/spec.md), [`advent-calendar`](specs/christmas-countdown/advent-calendar/spec.md), [`carols-and-reminders`](specs/christmas-countdown/carols-and-reminders/spec.md) |
+| `decision-wheel` | `com.jorgelillo.decisionwheel` | [`wheel`](specs/decision-wheel/wheel/spec.md) |
+| `whos-lying` | `com.jorgelillo.whoslying` | [`game`](specs/whos-lying/game/spec.md), [`packs`](specs/whos-lying/packs/spec.md) |
+| `tournaments` | `com.jorgelillo.tournaments` | [`bracket`](specs/tournaments/bracket/spec.md), [`swiss`](specs/tournaments/swiss/spec.md), [`sharing-and-stats`](specs/tournaments/sharing-and-stats/spec.md) |
+| `league-cards` | `com.jorgelillo.leaguecards` | [`season`](specs/league-cards/season/spec.md), [`trophies`](specs/league-cards/trophies/spec.md) |
+| `stadium-events` | `com.jorgelillo.stadiumevents` | [`answer`](specs/stadium-events/answer/spec.md), [`feed-and-reminders`](specs/stadium-events/feed-and-reminders/spec.md) |
+| `slipper` | `com.jorgelillo.slipper` | [`run`](specs/slipper/run/spec.md), [`challenges-and-progress`](specs/slipper/challenges-and-progress/spec.md) |
+| `group-polls` | `com.jorgelillo.grouppolls` | [`polls`](specs/group-polls/polls/spec.md), [`moderation-and-privacy`](specs/group-polls/moderation-and-privacy/spec.md) (its Firestore rules and their spec: lillorepo `packages/group_polls`) |
+| `core` | — | [`platform`](specs/core/platform/spec.md), [`sharelink`](specs/core/sharelink/spec.md), [`designsystem`](specs/core/designsystem/spec.md), [`reminders`](specs/core/reminders/spec.md) |
 
-Until an app has its specs, its behaviour is pinned by its tests alone: the
-domain tests, the ViewModel and `*FlowTest` tests, and the snapshot tests that
-freeze what users already see (see `CLAUDE.md` § "Working on a change").
+Screenshot tests freeze what users already see and are not cited by scenarios (see
+`CLAUDE.md` § "Working on a change"). `python3 scripts/check_specs.py` fails when a
+scenario names a test that does not exist, and lists scenarios with no test named; it
+runs in CI's Lint job.
 
 ## How behaviour is pinned
 
