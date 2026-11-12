@@ -7,4 +7,8 @@
     <string name="lillo_widget_add">Add the widget</string>
     <string name="lillo_widget_by_hand">To add it: touch and hold an empty spot on your home screen → Widgets → %1$s</string>
     <string name="lillo_widget_by_hand_too">If nothing appears: touch and hold an empty spot on your home screen → Widgets → %1$s</string>
+    <string name="lillo_theme">Appearance</string>
+    <string name="lillo_theme_system">Auto</string>
+    <string name="lillo_theme_light">Light</string>
+    <string name="lillo_theme_dark">Dark</string>
 </resources>

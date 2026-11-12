@@ -110,13 +110,17 @@ Project skills are indexed in [`.claude/CLAUDE.md`](.claude/CLAUDE.md).
   Compose can't observe). Navigation uses type-safe `@Serializable` routes (`composable<Route>`,
   `toRoute()`), never route strings. No DI framework: app-wide singletons live on the app's
   `Application` subclass and reach ViewModels through `viewModelFactory` companions.
-- `:core:designsystem` holds `LilloTheme` (each app passes its own `ColorScheme`) and what two or
-  more apps share: `LilloPage` (with `sideActionsWhenShort`) / `LilloBigButton` / `LilloSecondaryButton` (apps wrap them with
-  their colours in `ui/…/Common.kt`), `LilloAboutSheet` (language, rate, privacy),
+- `:core:designsystem` holds `LilloTheme` (an app passes a light and a dark `LilloStyle`, each a
+  `ColorScheme` plus a `LilloPalette` read through `LilloColors.current`: background, hero, brand,
+  accent text; the look follows the phone unless the user picks one, `LilloThemeMode`; apps not yet
+  moved pass one `ColorScheme`), the display face (`LilloDisplayFamily`, Figtree, in the display,
+  headline and `titleLarge` styles) and what two or
+  more apps share: `LilloPage` (with `sideActionsWhenShort`) / `LilloBigButton` / `LilloSecondaryButton` (they take the
+  app's background and brand from `LilloColors`), `LilloAboutSheet` (appearance, language, rate, privacy),
   `LilloLanguageDialog`, `isShortScreen()` for landscape and handhelds, `isWideScreen()` for two panes (tablets in landscape), `TestTagsAsResourceIds`,
-  `ConfettiBurst` / `ConfettiRain`, `LilloAvatar`, `LilloSummaryHero` (home screen header: gradient, state at a glance, chips), `Modifier.accentEdge` (a card's state or kind as a coloured edge), `Modifier.entrance` / `animationsEnabled()` (motion that honours "Remove animations"), `LilloSettingRow`, `LilloSectionTitle`, `LilloQrCode`, `LilloWidgetCard` (an app's home-screen widget: a button when the launcher accepts the request, the way by hand always). Each core component has a
+  `ConfettiBurst` / `ConfettiRain`, `LilloAvatar`, `LilloSummaryHero` (opt-in home header: gradient, state at a glance, chips), `LilloScreenHeader` (the light header), `Modifier.accentEdge` (a card's state or kind as a coloured edge), `Modifier.entrance` / `animationsEnabled()` (motion that honours "Remove animations"), `LilloSettingRow`, `LilloSectionTitle`, `LilloQrCode`, `LilloWidgetCard` (an app's home-screen widget: a button when the launcher accepts the request, the way by hand always). Each core component has a
   `@Preview` in `core/designsystem/.../Catalogue.kt`; `CatalogueScreenshotTest` captures every preview there
-  (with the accessibility checks), so a new component needs a preview, not a hand-written screenshot test. `:core:platform` has
+  in both looks (`_light` added to the light one; with the accessibility checks), so a new component needs a preview, not a hand-written screenshot test. `:core:platform` has
   `JsonStore` (an unreadable stored document is set aside, never overwritten; each app's `StoredStateTest` pins its released format), `AppWidgetPins` (is the app's widget placed, can the launcher be asked to place it), sharing and links; `:core:reminders` has notifications (`LilloNotifications`: channels,
   permission check, tap to open) and reminder chains (`LilloSchedule.at`: one WorkManager job at a time); `:core:sharelink` (pure Kotlin) puts any serializable value in a
   `jorgelillo7.github.io/<path>/#…` link (tournaments `/t/`, impostor packs `/p/`).

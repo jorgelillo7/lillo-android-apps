@@ -19,7 +19,12 @@ spotless {
         targetExclude("**/build/**")
         // Plus the community's Compose rules (modifier order, naming, state hoisting…).
         val composeRules = libs.composeRules.ktlint.get()
-        ktlint().customRuleSets(listOf("${composeRules.module}:${composeRules.version}"))
+        ktlint()
+            .customRuleSets(listOf("${composeRules.module}:${composeRules.version}"))
+            // The theme's own CompositionLocals: the app's palette and the user's light/dark choice (LilloTheme.kt).
+            .editorConfigOverride(
+                mapOf("compose_allowed_composition_locals" to "LocalLilloPalette,LocalLilloThemeMode")
+            )
     }
     kotlinGradle {
         target("**/*.gradle.kts")

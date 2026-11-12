@@ -15,10 +15,15 @@ color-recipe:
 contrast:
   body-text: "≥ 4.5:1 on every surface it sits on (WCAG AA); body text ~15:1, never pure white"
   checked-by: "every screenshot test (Accessibility Test Framework TextContrastCheck)"
+looks:
+  pair: "a light and a dark LilloStyle per app (scheme + LilloPalette); follows the phone unless the user picks one in the About sheet (LilloThemeMode, stored per app)"
+  palette: "LilloPalette (read through LilloColors): background brush, hero gradient, brand + onBrand, accentText"
+  no-dynamic-colour: "Material You is never used: the app's colour is its identity"
 typography:
-  family: "Roboto (system), weights 400 / 600 / 700 / 900"
-  display: "displaySmall–displayMedium, Black (900): screen titles on home screens"
-  title: "titleLarge, Bold: page headers (LilloPage)"
+  display-family: "Figtree (OFL, bundled in core: ExtraBold 800 and Black 900, Latin, ~55 KB): titles and big numbers, the store graphics' voice"
+  family: "Roboto (system) for body, labels and buttons, weights 400 / 600 / 700 / 900"
+  display: "displaySmall–displayLarge, Figtree Black/ExtraBold, tabular figures: big numbers and home titles"
+  title: "headline* and titleLarge, Figtree ExtraBold: page headers (LilloPage), LilloScreenHeader"
   body: "bodyLarge / bodyMedium, Regular"
   label: "labelLarge / labelSmall, SemiBold: chips, metadata"
 rounded:
@@ -34,7 +39,8 @@ components:
   page: "LilloPage — header, content, bottom actions; side actions on short screens; readable width on tablets"
   primary-button: "LilloBigButton — brand fill, Black label, 60dp tall"
   secondary-button: "LilloSecondaryButton — outlined, ≥ 52dp, grows with its label"
-  summary-hero: "LilloSummaryHero — gradient card on home screens: title, one-line state, chips; compact strip on short screens"
+  summary-hero: "LilloSummaryHero — opt-in gradient card for a home with real state to summarise: title, one-line state, chips; compact strip on short screens"
+  screen-header: "LilloScreenHeader — the light header: a display-face title in accentText, an optional line and emoji; for screens whose list already says it all"
   accent-edge: "Modifier.accentEdge — a coloured bar on a card's start edge, only when it means something"
   entrance: "Modifier.entrance — fade and lift in once; nothing moves with 'Remove animations' on"
   spring-press: "Modifier.springPress — buttons shrink a little when pressed and spring back (in LilloBigButton and LilloSecondaryButton)"
@@ -50,7 +56,9 @@ motion:
 Eight apps, one family. Each app has **its own colour** (gold for tournaments, green for the league,
 violet for the impostor, red and gold for Christmas…), and every app builds its screens **the same
 way** from it: same recipe for surfaces and text, same components from `:core:designsystem`, same
-rules for contrast and motion. Five apps are dark only. Three are light on purpose and documented
+rules for contrast and motion. Every app is moving to a light and a dark look that follow the
+phone, with a choice in the About sheet (`LilloTheme(light, dark)`); until an app moves, it keeps
+its single look. Five apps are dark only today. Three are light on purpose and documented
 as such: the slipper game (a warm pixel-art kitchen), group-polls (paper-like) and stadium-events,
 which is light by default for its older readers and the only app that follows the phone's dark mode
 (`JaleoLightScheme` / `JaleoDarkScheme`).
@@ -83,9 +91,14 @@ colour vivid** for fills (primary button, champion banner, summary hero), where 
 
 ## Typography
 
-System Roboto, no custom fonts (APK size, handheld rendering). Hierarchy from weight and size:
-Black (900) for home titles and big numbers, Bold for headers and names, Regular for body,
-SemiBold for chips and metadata. Text shrinks to fit (`TextAutoSize`) only where content is
+One display face, **Figtree** (SIL Open Font License; the licence ships in the APK as
+`assets/licenses/figtree-OFL.txt`), for titles and big numbers: the heavy geometric voice the store
+graphics speak in Avenir Next, carried into the app. Two static weights (ExtraBold, Black), Latin
+and Spanish punctuation only, about 55 KB in all; every Material display, headline and `titleLarge`
+style uses it, with tabular figures on the display sizes so counters don't jitter. Body text,
+labels and buttons stay the system's Roboto (Regular for body, SemiBold for chips and metadata,
+Black for the main button). Checked at twice the font size in the catalogue
+(`TypeScaleLargestFontPreview`). Text shrinks to fit (`TextAutoSize`) only where content is
 user-made or unbounded (cards, labels), down to a readable minimum, then scrolls.
 
 ## Layout
@@ -107,7 +120,15 @@ checks). Apps wrap them with their colours in `ui/Common.kt`; they never copy th
 The home screen's header: a gradient card (the app's two hero colours, white text ≥ 4.5:1 even
 under the translucent circles) with a title, a one-line state ("1 in progress · 1 finished") and up
 to three chips for what matters now. A big emoji in the corner. Compact one-line strip on short
-screens. Only on home screens, never two per screen.
+screens. Opt-in: only on a home with real state to summarise (a live status, a record, several
+things in progress), never two per screen; otherwise `LilloScreenHeader`.
+
+
+### Screen header (`LilloScreenHeader`)
+
+The light alternative to the hero, for a home whose list already shows its state: a big title in
+the display face and the app's `accentText`, an optional one-line subtitle and an emoji at the end.
+No card, no gradient, so the list stays the first thing the eye lands on.
 
 ### Accent edge (`Modifier.accentEdge`)
 
