@@ -71,7 +71,7 @@ three of them in an eight-player bracket.
 
 ### Requirement: A phone upright reads the bracket one round at a time
 
-On a screen narrower than 600dp that is not short (a phone held upright), the bracket SHALL
+On a window narrower than 600dp that is neither short nor wide (a phone held upright), the bracket SHALL
 show one round at a time: a tab per round over full-width match cards, opening on the
 earliest round with a match ready to play, else the last. Landscape screens and tablets SHALL
 keep the whole two-sided bracket, fitted, with zoom.

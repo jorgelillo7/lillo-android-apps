@@ -55,6 +55,8 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.PointerInputScope
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.layout
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.clearAndSetSemantics
@@ -67,6 +69,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jorgelillo.core.designsystem.isShortScreen
+import com.jorgelillo.core.designsystem.isWideScreen
 import com.jorgelillo.tournaments.R
 import com.jorgelillo.tournaments.domain.BracketLayout
 import com.jorgelillo.tournaments.domain.Match
@@ -82,7 +85,7 @@ private val CARD_W = 140.dp
 private val CARD_H = 60.dp
 private val LARGE_CARD_H = 88.dp
 
-/** Narrower than this and upright, the bracket shows one round at a time. */
+/** A window narrower than this and not short (a phone upright) shows one round at a time. */
 private val ROUND_BY_ROUND_BELOW = 600.dp
 private val PITCH = 76.dp
 private val GAP = 26.dp
@@ -124,11 +127,14 @@ internal fun BracketView(t: Tournament, onEdit: (Match) -> Unit) {
     // Null = follow the fit, so rotating re-fits; set once the user zooms by hand.
     var userZoom by rememberSaveable(rounds) { mutableStateOf<Float?>(null) }
     val short = isShortScreen()
+    // The window, not this pane: in two panes the bracket's half of a tablet can be narrow too.
+    val wide = isWideScreen()
+    val windowWidth = with(LocalDensity.current) { LocalWindowInfo.current.containerSize.width.toDp() }
 
     BoxWithConstraints(Modifier.fillMaxSize()) {
         // A phone held upright reads one round at a time; landscape and tablets keep the whole
         // bracket, fitted.
-        if (!short && maxWidth < ROUND_BY_ROUND_BELOW) {
+        if (!short && !wide && windowWidth < ROUND_BY_ROUND_BELOW) {
             RoundByRound(t, onEdit)
             return@BoxWithConstraints
         }
