@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.jorgelillo.android.library)
+    alias(libs.plugins.jorgelillo.android.robolectric)
 }
 
 // What apps with reminders share: notifications, one-off jobs at a given time (WorkManager), and
@@ -14,4 +15,5 @@ android {
 dependencies {
     api(libs.androidx.work.runtime)
     implementation(libs.androidx.core.ktx)
+    testImplementation(libs.androidx.work.testing)
 }
