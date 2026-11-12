@@ -5,6 +5,8 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import app.cash.turbine.test
 import com.jorgelillo.core.platform.JsonStore
+import com.jorgelillo.core.platform.WidgetOffer
+import com.jorgelillo.core.platform.WidgetPins
 import com.jorgelillo.core.testing.MainDispatcherRule
 import com.jorgelillo.core.testing.StoreTimeout
 import com.jorgelillo.core.testing.awaitMatching
@@ -41,13 +43,29 @@ class JaleoViewModelTest {
             initial
         }
 
+    /** A launcher: whether it accepts requests, and whether a request really places the widget. */
+    private class Launcher(var pinnable: Boolean, val placesOnRequest: Boolean = true) : WidgetPins {
+        var placed = false
+        var requests = 0
+
+        override fun offer() = WidgetOffer(placed, pinnable)
+
+        override fun requestPin(): Boolean {
+            if (!pinnable) return false
+            requests++
+            if (placesOnRequest) placed = true
+            return true
+        }
+    }
+
     private fun viewModel(
         store: JsonStore<AppState> = store(),
         fetcher: FeedFetcher = FeedFetcher {
             downloads++
             SampleFeed.json(today)
-        }
-    ) = JaleoViewModel(FeedRepository(store, fetcher), today = { today }, now = { now })
+        },
+        launcher: WidgetPins = Launcher(pinnable = true)
+    ) = JaleoViewModel(FeedRepository(store, fetcher), launcher, today = { today }, now = { now })
         .also { main.cancelAtEnd(it.viewModelScope) }
 
     @Test
@@ -103,5 +121,40 @@ class JaleoViewModelTest {
             cancelAndIgnoreRemainingEvents()
         }
         assertTrue(saved.state.first().notificationsAsked)
+    }
+
+    @Test
+    fun aLauncherThatRefusesRequestsStillGetsTheWidgetOfferedByHand() {
+        val miui = Launcher(pinnable = false)
+        val vm = viewModel(launcher = miui)
+        assertEquals(WidgetOffer(placed = false, pinnable = false), vm.widget.value)
+        vm.addWidget()
+        assertEquals(0, miui.requests)
+        assertEquals(WidgetOffer(placed = false, pinnable = false), vm.widget.value)
+    }
+
+    @Test
+    fun aLauncherThatAcceptsIsAskedAndTheOfferGoesOnceTheWidgetIsPlaced() {
+        val launcher = Launcher(pinnable = true)
+        val vm = viewModel(launcher = launcher)
+        vm.addWidget()
+        assertEquals(1, launcher.requests)
+        assertTrue(vm.widget.value.placed)
+    }
+
+    @Test
+    fun aRequestTheLauncherDropsSilentlyKeepsTheOffer() {
+        val vm = viewModel(launcher = Launcher(pinnable = true, placesOnRequest = false))
+        vm.addWidget()
+        assertEquals(WidgetOffer(placed = false, pinnable = true), vm.widget.value)
+    }
+
+    @Test
+    fun aWidgetAddedByHandIsNoticedOnReturningToTheApp() {
+        val miui = Launcher(pinnable = false)
+        val vm = viewModel(launcher = miui)
+        miui.placed = true
+        vm.refreshWidget()
+        assertTrue(vm.widget.value.placed)
     }
 }

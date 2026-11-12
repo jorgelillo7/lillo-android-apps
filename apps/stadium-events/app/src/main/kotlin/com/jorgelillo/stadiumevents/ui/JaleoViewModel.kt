@@ -5,6 +5,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import com.jorgelillo.core.platform.WidgetOffer
+import com.jorgelillo.core.platform.WidgetPins
 import com.jorgelillo.stadiumevents.data.FeedRepository
 import com.jorgelillo.stadiumevents.domain.AppState
 import com.jorgelillo.stadiumevents.domain.Jaleo
@@ -15,6 +17,7 @@ import java.time.ZoneId
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
@@ -48,11 +51,16 @@ data class JaleoUiState(
 
 class JaleoViewModel(
     private val repository: FeedRepository,
+    private val widgets: WidgetPins,
     private val today: () -> LocalDate = LocalDate::now,
     private val now: () -> Long = System::currentTimeMillis
 ) : ViewModel() {
     private val refreshing = MutableStateFlow(false)
     private val offline = MutableStateFlow(false)
+    private val _widget = MutableStateFlow(widgets.offer())
+
+    /** The home-screen widget: offered until one is placed (checked again on every return to the app). */
+    val widget: StateFlow<WidgetOffer> = _widget.asStateFlow()
 
     /** Null until the first read from disk, so the screen doesn't flash the wrong answer. */
     val state: StateFlow<JaleoUiState?> = combine(repository.state, refreshing, offline) { app, busy, failed ->
@@ -83,6 +91,17 @@ class JaleoViewModel(
         }
     }
 
+    /** Back in the app: the user may have added (or removed) the widget from the launcher meanwhile. */
+    fun refreshWidget() {
+        _widget.value = widgets.offer()
+    }
+
+    /** Asks the launcher to place the widget; the card keeps the way by hand for launchers that drop it. */
+    fun addWidget() {
+        widgets.requestPin()
+        refreshWidget()
+    }
+
     fun notificationsAsked() {
         viewModelScope.launch { repository.markNotificationsAsked() }
     }
@@ -90,8 +109,8 @@ class JaleoViewModel(
     companion object {
         const val STALE_MILLIS = 3 * 60 * 60 * 1000L
 
-        fun factory(repository: FeedRepository): ViewModelProvider.Factory = viewModelFactory {
-            initializer { JaleoViewModel(repository) }
+        fun factory(repository: FeedRepository, widgets: WidgetPins): ViewModelProvider.Factory = viewModelFactory {
+            initializer { JaleoViewModel(repository, widgets) }
         }
     }
 }

@@ -47,7 +47,9 @@ fun LilloAboutSheet(
     privacyUrl: String,
     playStoreUrl: String?,
     onDismiss: () -> Unit,
-    languages: List<Pair<String, String>> = LilloLanguages
+    languages: List<Pair<String, String>> = LilloLanguages,
+    /** Shown under the text: what only this app offers, such as [LilloWidgetCard]. */
+    extra: (@Composable () -> Unit)? = null
 ) {
     val uriHandler = LocalUriHandler.current
     var pickLanguage by rememberSaveable { mutableStateOf(false) }
@@ -69,6 +71,7 @@ fun LilloAboutSheet(
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             Text(texts.body, textAlign = TextAlign.Center)
+            extra?.invoke()
             if (canPickAppLanguage && languages.size > 1) {
                 OutlinedButton(onClick = {
                     pickLanguage = true

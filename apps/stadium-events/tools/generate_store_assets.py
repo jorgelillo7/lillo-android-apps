@@ -26,6 +26,7 @@ LOCALES = {
             "02-calm": ("A quiet day?", "Just as clear"),
             "03-maybe": ("Day not fixed yet?", "It says so"),
             "04-final": ("Concerts and finals", "the biggest days"),
+            "05-widget": ("No need to open it", "the widget tells you"),
         },
     },
     "es-ES": {
@@ -36,6 +37,7 @@ LOCALES = {
             "02-calm": ("¿Día tranquilo?", "También te lo dice"),
             "03-maybe": ("¿Día sin confirmar?", "Te lo cuenta tal cual"),
             "04-final": ("Conciertos y finales", "los días más gordos"),
+            "05-widget": ("Sin abrir la app", "el widget te lo dice"),
         },
     },
 }

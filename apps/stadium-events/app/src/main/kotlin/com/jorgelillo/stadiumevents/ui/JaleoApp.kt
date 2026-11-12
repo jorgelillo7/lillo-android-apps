@@ -15,22 +15,32 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jorgelillo.core.designsystem.AboutTexts
 import com.jorgelillo.core.designsystem.LilloAboutSheet
+import com.jorgelillo.core.platform.AppWidgetPins
 import com.jorgelillo.core.platform.LilloLinks
 import com.jorgelillo.core.reminders.LilloNotifications
 import com.jorgelillo.stadiumevents.BuildConfig
 import com.jorgelillo.stadiumevents.R
 import com.jorgelillo.stadiumevents.StadiumEventsApplication
 import com.jorgelillo.stadiumevents.ui.theme.JaleoPalette
+import com.jorgelillo.stadiumevents.widget.JaleoWidgetReceiver
 
 /** The screen with its ViewModel, the About sheet, and the one-time notifications permission. */
 @Composable
 internal fun JaleoApp(app: StadiumEventsApplication, palette: JaleoPalette) {
-    val vm: JaleoViewModel = viewModel(factory = JaleoViewModel.factory(app.repository))
+    val vm: JaleoViewModel = viewModel(
+        factory = JaleoViewModel.factory(app.repository, AppWidgetPins(app, JaleoWidgetReceiver::class.java))
+    )
     val state by vm.state.collectAsStateWithLifecycle()
+    val widget by vm.widget.collectAsStateWithLifecycle()
+    LifecycleResumeEffect(Unit) {
+        vm.refreshWidget()
+        onPauseOrDispose { }
+    }
     var about by rememberSaveable { mutableStateOf(false) }
 
     // Nothing to set up: the reminder is on from the start, so the permission is asked once, at once.
@@ -48,7 +58,14 @@ internal fun JaleoApp(app: StadiumEventsApplication, palette: JaleoPalette) {
         }
     }
 
-    JaleoScreen(state, palette, onAbout = { about = true }, onRetry = vm::refresh)
+    JaleoScreen(
+        state,
+        palette,
+        onAbout = { about = true },
+        onRetry = vm::refresh,
+        widget = widget,
+        onAddWidget = vm::addWidget
+    )
     if (about) AboutSheet(onDismiss = { about = false })
 }
 

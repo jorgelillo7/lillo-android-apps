@@ -3,4 +3,8 @@
     <string name="lillo_cancel">Cancel</string>
     <string name="lillo_language">Language</string>
     <string name="lillo_language_system">Phone\'s language</string>
+    <string name="lillo_widget_title">This app has a home-screen widget</string>
+    <string name="lillo_widget_add">Add the widget</string>
+    <string name="lillo_widget_by_hand">To add it: touch and hold an empty spot on your home screen → Widgets → %1$s</string>
+    <string name="lillo_widget_by_hand_too">If nothing appears: touch and hold an empty spot on your home screen → Widgets → %1$s</string>
 </resources>

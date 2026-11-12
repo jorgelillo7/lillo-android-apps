@@ -34,7 +34,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jorgelillo.core.designsystem.LilloPage
 import com.jorgelillo.core.designsystem.LilloSectionTitle
+import com.jorgelillo.core.designsystem.LilloWidgetCard
 import com.jorgelillo.core.designsystem.accentEdge
+import com.jorgelillo.core.platform.WidgetOffer
 import com.jorgelillo.stadiumevents.R
 import com.jorgelillo.stadiumevents.domain.Level
 import com.jorgelillo.stadiumevents.domain.Tomorrow
@@ -46,7 +48,15 @@ import com.jorgelillo.stadiumevents.ui.theme.JaleoPalette
  * text on purpose: it is for people who never look at event calendars.
  */
 @Composable
-internal fun JaleoScreen(state: JaleoUiState?, palette: JaleoPalette, onAbout: () -> Unit, onRetry: () -> Unit) {
+internal fun JaleoScreen(
+    state: JaleoUiState?,
+    palette: JaleoPalette,
+    onAbout: () -> Unit,
+    onRetry: () -> Unit,
+    /** The home-screen widget card, offered until one is placed. */
+    widget: WidgetOffer = WidgetOffer(placed = true, pinnable = false),
+    onAddWidget: () -> Unit = {}
+) {
     val resources = LocalResources.current
     val texts = remember(resources, resources.configuration) { JaleoTexts(resources) }
     LilloPage(
@@ -83,6 +93,15 @@ internal fun JaleoScreen(state: JaleoUiState?, palette: JaleoPalette, onAbout: (
                 else -> {
                     AnswerCard(state.tomorrow, texts, palette)
                     Upcoming(state.upcoming, texts, palette)
+                    if (!widget.placed) {
+                        LilloWidgetCard(
+                            stringResource(R.string.app_name),
+                            widget.pinnable,
+                            onAddWidget,
+                            titleStyle = TextStyle(fontSize = 21.sp, fontWeight = FontWeight.Bold, lineHeight = 27.sp),
+                            bodyStyle = TextStyle(fontSize = 18.sp, lineHeight = 24.sp)
+                        )
+                    }
                     Footer(state, texts, palette, onRetry)
                 }
             }
