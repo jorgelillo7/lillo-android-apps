@@ -6,9 +6,11 @@ import androidx.activity.ComponentActivity
 import androidx.compose.runtime.mutableStateOf
 import com.jorgelillo.core.designsystem.installLilloWindow
 import com.jorgelillo.core.designsystem.setLilloContent
+import com.jorgelillo.core.designsystem.startsDark
 import com.jorgelillo.core.platform.sharedText
 import com.jorgelillo.whoslying.ui.WhosLyingApp
-import com.jorgelillo.whoslying.ui.theme.NeonColorScheme
+import com.jorgelillo.whoslying.ui.theme.NeonDark
+import com.jorgelillo.whoslying.ui.theme.NeonLight
 
 class MainActivity : ComponentActivity() {
 
@@ -16,11 +18,11 @@ class MainActivity : ComponentActivity() {
     private val incoming = mutableStateOf<String?>(null)
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        installLilloWindow(darkDesign = true)
+        installLilloWindow(darkDesign = startsDark())
         super.onCreate(savedInstanceState)
         if (savedInstanceState == null) handleLink(intent)
         val app = application as WhosLyingApplication
-        setLilloContent(NeonColorScheme) {
+        setLilloContent(NeonLight, NeonDark) {
             WhosLyingApp(app, incomingText = incoming.value, onConsumeIncoming = { incoming.value = null })
         }
     }

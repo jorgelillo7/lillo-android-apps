@@ -213,7 +213,7 @@ private fun PackTile(pack: WordPack, checked: Boolean, onClick: () -> Unit, onLo
                 .border(2.dp, if (checked) Neon.Turquoise else Neon.Muted, CircleShape),
             contentAlignment = Alignment.Center
         ) {
-            if (checked) Text("✓", color = Neon.Night, fontWeight = FontWeight.Black)
+            if (checked) Text("✓", color = Neon.OnFill, fontWeight = FontWeight.Black)
         }
     }
 }

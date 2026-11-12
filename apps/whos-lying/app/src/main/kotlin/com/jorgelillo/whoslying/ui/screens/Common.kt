@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jorgelillo.core.designsystem.LilloAvatar
 import com.jorgelillo.core.designsystem.LilloBigButton
+import com.jorgelillo.core.designsystem.LilloColors
 import com.jorgelillo.core.designsystem.LilloPage
 import com.jorgelillo.whoslying.R
 import com.jorgelillo.whoslying.ui.theme.Neon
@@ -48,7 +49,7 @@ internal fun Page(
     title: String?,
     onBack: (() -> Unit)?,
     modifier: Modifier = Modifier,
-    background: Brush = Neon.Backdrop,
+    background: Brush = LilloColors.current.background,
     actions: @Composable RowScope.() -> Unit = {},
     /** Short screens: actions beside the content (see [LilloPage]). */
     sideActionsWhenShort: Boolean = false,
@@ -79,7 +80,7 @@ internal fun BigButton(
 ) = LilloBigButton(text, onClick, modifier, color = color, contentColor = contentColor, enabled = enabled)
 
 /** Player colors for avatars, by position in the group. */
-val avatarColors = listOf(Neon.Pink, Neon.Turquoise, Neon.VioletLight, Neon.Amber)
+val avatarColors = listOf(Neon.Pink, Neon.Turquoise, Color(0xFF8B6EFF), Neon.Amber)
 
 /** A player's avatar in their group colour (by position in [players]). */
 @Composable
@@ -94,7 +95,7 @@ internal fun Avatar(
     avatarColors[players.indexOf(player).coerceAtLeast(0) % avatarColors.size],
     size,
     modifier,
-    contentColor = Neon.Night,
+    contentColor = Neon.OnFill,
     ring = ring
 )
 
