@@ -44,5 +44,25 @@ explicit refresh SHALL download it.
 > **GAP — unverified.** The staleness threshold for downloading again (between one hour
 > and five hours old) is not pinned: the tests use one hour (not downloaded) and five
 > hours (offline copy kept) but no test asserts that a five-hour-old copy *is* downloaded
-> when the network works. Likewise the evening-before reminder at 19:00, its scheduling and
-> its being on from the first launch have no test.
+> when the network works.
+
+### Requirement: One reminder job every evening
+
+The app SHALL keep one job for 19:00 local time every evening, planned from the first
+launch. The job SHALL notify only when tomorrow is busy, stay silent when it runs on a
+later day than planned, and always plan the next evening.
+
+#### Scenario: The job is planned for seven in the evening
+
+- **WHEN** it is before 19:00 **THEN** the job is planned for today at 19:00; **WHEN** it is 19:00 or later **THEN** for tomorrow; **WHEN** it is planned again **THEN** it replaces the pending one
+- *Verifies:* `EveningSchedulerTest.theEveningIsSevenLocalAndNextRunIsTodayOrTomorrowAccordingly`, `EveningSchedulerTest.theJobWaitsUntilSevenInTheEveningAndNoLonger`, `EveningSchedulerTest.anEveningAlreadyPastPlansTomorrowsInstead`, `EveningSchedulerTest.planningAgainReplacesTheJobInsteadOfStackingAnother`
+
+#### Scenario: The evening before a busy day
+
+- **WHEN** the job runs on its planned day and tomorrow is busy **THEN** one notification is shown and the next evening is planned; **WHEN** it runs a day late **THEN** nothing is shown and the next evening is still planned
+- *Verifies:* `EveningWorkerBusyTest.theEveningBeforeABusyDayTheReminderIsShownOnceThenTheNextEveningIsPlannedAndALateRunIsSilent`
+
+#### Scenario: A quiet tomorrow
+
+- **WHEN** the job runs and tomorrow is quiet **THEN** nothing is shown and the next evening is planned
+- *Verifies:* `EveningWorkerCalmTest.aQuietTomorrowShowsNothingButTheChainGoesOn`
