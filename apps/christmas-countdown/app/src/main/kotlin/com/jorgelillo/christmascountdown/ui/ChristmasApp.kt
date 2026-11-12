@@ -59,7 +59,8 @@ import com.jorgelillo.christmascountdown.ui.advent.AdventViewModel
 import com.jorgelillo.christmascountdown.ui.components.Snowfall
 import com.jorgelillo.christmascountdown.ui.countdown.CountdownScreen
 import com.jorgelillo.christmascountdown.ui.countdown.CountdownViewModel
-import com.jorgelillo.christmascountdown.ui.theme.ChristmasColors
+import com.jorgelillo.christmascountdown.ui.theme.ChristmasLook
+import com.jorgelillo.core.designsystem.LilloColors
 import com.jorgelillo.core.platform.shareText
 import com.jorgelillo.core.reminders.LilloNotifications
 import kotlinx.coroutines.launch
@@ -108,13 +109,14 @@ internal fun ChristmasApp(app: ChristmasCountdownApplication, openAdvent: Boolea
         onStopOrDispose { app.musicPlayer.stop() }
     }
 
-    GradientBackground(ChristmasColors.Background) {
+    val brand = LilloColors.current.brand
+    GradientBackground {
         Snowfall(Modifier.fillMaxSize())
         Scaffold(
             containerColor = Color.Transparent,
             topBar = {
                 CenterAlignedTopAppBar(
-                    title = { Text(stringResource(R.string.app_name), style = MaterialTheme.typography.titleMedium) },
+                    title = { Text(stringResource(R.string.app_name), style = MaterialTheme.typography.titleLarge) },
                     colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
                     navigationIcon = {
                         IconButton(onClick = { countdownViewModel.setMusicEnabled(!countdown.musicEnabled) }) {
@@ -126,7 +128,7 @@ internal fun ChristmasApp(app: ChristmasCountdownApplication, openAdvent: Boolea
                                     if (countdown.musicEnabled) R.string.action_music_off else R.string.action_music_on
                                 ),
                                 tint = if (countdown.musicEnabled) {
-                                    ChristmasColors.Gold
+                                    brand
                                 } else {
                                     MaterialTheme.colorScheme.onSurface
                                 }
@@ -144,7 +146,7 @@ internal fun ChristmasApp(app: ChristmasCountdownApplication, openAdvent: Boolea
                 )
             },
             bottomBar = {
-                NavigationBar(containerColor = Color.Black.copy(alpha = 0.25f)) {
+                NavigationBar(containerColor = ChristmasLook.current.navigationBar) {
                     Tab.entries.forEach { item ->
                         NavigationBarItem(
                             selected = tab == item.ordinal,
@@ -158,9 +160,9 @@ internal fun ChristmasApp(app: ChristmasCountdownApplication, openAdvent: Boolea
                             },
                             label = { Text(stringResource(item.label)) },
                             colors = NavigationBarItemDefaults.colors(
-                                selectedIconColor = MaterialTheme.colorScheme.onPrimary,
-                                selectedTextColor = ChristmasColors.Gold,
-                                indicatorColor = ChristmasColors.Gold
+                                selectedIconColor = LilloColors.current.onBrand,
+                                selectedTextColor = LilloColors.current.accentText,
+                                indicatorColor = brand
                             )
                         )
                     }
@@ -227,8 +229,8 @@ private fun ReminderPrompt(onYes: () -> Unit, onNo: () -> Unit) {
                 Button(
                     onClick = onYes,
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = ChristmasColors.Gold,
-                        contentColor = Color.Black
+                        containerColor = LilloColors.current.brand,
+                        contentColor = LilloColors.current.onBrand
                     ),
                     modifier = Modifier.testTag("reminders_yes")
                 ) { Text(stringResource(R.string.reminder_prompt_yes)) }

@@ -11,40 +11,36 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
+import com.jorgelillo.christmascountdown.ui.theme.ChristmasLook
+import com.jorgelillo.core.designsystem.LilloColors
 
-/** Translucent "frosted glass" surface for content placed over rich backgrounds. */
+/** Translucent "frosted glass" surface for content placed over the app's gradient. */
 @Composable
 internal fun GlassCard(
     modifier: Modifier = Modifier,
     shape: Shape = MaterialTheme.shapes.medium,
-    tint: Color = Color.White,
     content: @Composable BoxScope.() -> Unit
 ) {
+    val look = ChristmasLook.current
     Box(
         modifier = modifier
             .clip(shape)
-            .background(tint.copy(alpha = 0.10f))
-            .border(1.dp, tint.copy(alpha = 0.18f), shape)
+            .background(look.glass)
+            .border(1.dp, look.glassBorder, shape)
     ) {
         CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.onSurface) { content() }
     }
 }
 
-/** Full-screen vertical gradient used as the app background. */
+/** The app's background gradient ([LilloColors]), full screen. */
 @Composable
-internal fun GradientBackground(
-    colors: List<Color>,
-    modifier: Modifier = Modifier,
-    content: @Composable BoxScope.() -> Unit
-) {
+internal fun GradientBackground(modifier: Modifier = Modifier, content: @Composable BoxScope.() -> Unit) {
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(Brush.verticalGradient(colors))
+            .background(LilloColors.current.background)
     ) {
         // Content sits directly on the gradient, outside any Surface, so set its default text colour here.
         CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.onSurface) { content() }

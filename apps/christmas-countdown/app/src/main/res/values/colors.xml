@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="night_top">#FF3A0B16</color>
+    <!-- The splash and window behind the app: its background, light here and dark in values-night. -->
+    <color name="window">#FFFFF7F0</color>
     <color name="notification_accent">#FFD7263D</color>
 </resources>
