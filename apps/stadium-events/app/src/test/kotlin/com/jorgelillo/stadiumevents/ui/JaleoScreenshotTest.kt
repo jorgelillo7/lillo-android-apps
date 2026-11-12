@@ -2,9 +2,12 @@ package com.jorgelillo.stadiumevents.ui
 
 import android.app.Application
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.performScrollTo
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.takahirom.roborazzi.RobolectricDeviceQualifiers
 import com.jorgelillo.core.designsystem.LilloTheme
+import com.jorgelillo.core.platform.WidgetOffer
 import com.jorgelillo.core.screenshottesting.captureScreenshot
 import com.jorgelillo.stadiumevents.SampleFeed
 import com.jorgelillo.stadiumevents.domain.AppState
@@ -41,14 +44,44 @@ class JaleoScreenshotTest {
         offline = offline
     ).copy(zone = madrid)
 
-    private fun shot(name: String, state: JaleoUiState, dark: Boolean = false) {
+    private fun shot(name: String, state: JaleoUiState, dark: Boolean = false, widget: WidgetOffer? = null) {
         val palette: JaleoPalette = if (dark) DarkPalette else LightPalette
-        compose.captureScreenshot(name) {
+        compose.captureScreenshot(
+            name,
+            beforeCapture = {
+                if (widget != null) {
+                    // Finding a node waits for idle, which a frozen clock never reaches: run it for the scroll.
+                    mainClock.autoAdvance = true
+                    onNodeWithTag("widget_card").performScrollTo()
+                    mainClock.autoAdvance = false
+                }
+            }
+        ) {
             LilloTheme(if (dark) JaleoDarkScheme else JaleoLightScheme) {
-                JaleoScreen(state, palette, onAbout = {}, onRetry = {})
+                if (widget == null) {
+                    JaleoScreen(state, palette, onAbout = {}, onRetry = {})
+                } else {
+                    JaleoScreen(state, palette, onAbout = {}, onRetry = {}, widget = widget)
+                }
             }
         }
     }
+
+    // The launcher accepts requests: a button, and the way by hand in case it drops the request.
+    @Test fun widgetOffered() = shot("widget_offer", state(), widget = WidgetOffer(placed = false, pinnable = true))
+
+    @Test
+    @Config(qualifiers = "+land")
+    fun widgetOfferedLandscape() =
+        shot("widget_offer_landscape", state(), widget = WidgetOffer(placed = false, pinnable = true))
+
+    // MIUI and other launchers that refuse requests: only the way by hand, never nothing.
+    @Test fun widgetByHand() = shot("widget_by_hand", state(), widget = WidgetOffer(placed = false, pinnable = false))
+
+    @Test
+    @Config(qualifiers = "+land")
+    fun widgetByHandLandscape() =
+        shot("widget_by_hand_landscape", state(), widget = WidgetOffer(placed = false, pinnable = false))
 
     @Test fun busyTomorrow() = shot("busy", state())
 

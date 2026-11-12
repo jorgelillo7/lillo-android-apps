@@ -4,6 +4,9 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.jorgelillo.stadiumevents.SampleFeed
 import com.jorgelillo.stadiumevents.domain.Jaleo
+import com.jorgelillo.stadiumevents.domain.Kind
+import com.jorgelillo.stadiumevents.domain.Level
+import com.jorgelillo.stadiumevents.domain.StadiumEvent
 import com.jorgelillo.stadiumevents.domain.Tomorrow
 import java.time.LocalDate
 import java.time.ZoneId
@@ -54,5 +57,24 @@ class JaleoTextsTest {
         val at = ZonedDateTime.of(2026, 11, 24, 8, 5, 0, 0, madrid).toInstant().toEpochMilli()
         assertEquals("Revisado hoy a las 8:05", texts.checkedAt(at, today, madrid))
         assertEquals("Revisado el 24 nov a las 8:05", texts.checkedAt(at, today.plusDays(1), madrid))
+    }
+
+    @Test
+    fun aMatchWithNoTimeAndNoCompetitionReadsCleanly() {
+        // A match Atlético does not play, sold out (level max), with no kick-off or competition in the feed.
+        val national = StadiumEvent(
+            "espana-inglaterra",
+            "España vs Inglaterra",
+            Kind.MATCH,
+            Level.MAX,
+            listOf(today.plusDays(1).toString())
+        )
+        val busy = assertIs<Tomorrow.Busy>(Jaleo.tomorrow(listOf(national), today))
+        assertEquals("Partido", texts.what(national))
+        assertEquals("España – Inglaterra", texts.title(national))
+        assertEquals(
+            "Partido · España – Inglaterra. Más gente y tráfico de lo normal por la zona del estadio.",
+            texts.notification(busy)
+        )
     }
 }

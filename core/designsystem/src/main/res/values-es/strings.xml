@@ -3,4 +3,8 @@
     <string name="lillo_cancel">Cancelar</string>
     <string name="lillo_language">Idioma</string>
     <string name="lillo_language_system">Idioma del móvil</string>
+    <string name="lillo_widget_title">Esta app tiene un widget para la pantalla de inicio</string>
+    <string name="lillo_widget_add">Añadir el widget</string>
+    <string name="lillo_widget_by_hand">Para añadirlo: mantén pulsado un hueco de la pantalla de inicio → Widgets → %1$s</string>
+    <string name="lillo_widget_by_hand_too">Si no aparece nada: mantén pulsado un hueco de la pantalla de inicio → Widgets → %1$s</string>
 </resources>

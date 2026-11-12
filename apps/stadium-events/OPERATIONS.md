@@ -16,7 +16,7 @@ Package: `com.jorgelillo.stadiumevents`.
 | Install debug | `./gradlew :apps:stadium-events:app:installDebug` |
 | Smoke test (release) | `apps/stadium-events/tools/smoke_test.sh` (needs internet on the emulator) |
 | Regenerate icons | `.venv/bin/python apps/stadium-events/tools/generate_icon.py` |
-| Store screenshots | emulator running, with internet: `apps/stadium-events/tools/capture_store_screenshots.sh` (and `CAPTURE_DEVICE=tablet …`), check `store/raw*/`, then `.venv/bin/python apps/stadium-events/tools/generate_store_assets.py`. The days it moves the clock to follow the agenda of 2026-11: pick new ones when it changes |
+| Store screenshots | emulator running, with internet: `apps/stadium-events/tools/capture_store_screenshots.sh` (and `CAPTURE_DEVICE=tablet …`), check `store/raw*/`, then `.venv/bin/python apps/stadium-events/tools/generate_store_assets.py`. The widget's screenshot (`05-widget`) is drawn, not captured (a launcher can't be made to place a widget reliably): `.venv/bin/python apps/stadium-events/tools/compose_widget_screenshot.py` redraws it from the widget's layout and Android Studio's Roboto; run it when the widget's look or texts change. The days it moves the clock to follow the agenda of 2026-11: pick new ones when it changes |
 | Baseline profile | emulator running: `scripts/generate-baseline-profiles.sh stadium-events` |
 | Try the evening reminder | the day before an event in the feed, set the emulator's clock to 18:59 (`scripts/emulator.sh date MMDD1859YYYY`) and open the app once |
 

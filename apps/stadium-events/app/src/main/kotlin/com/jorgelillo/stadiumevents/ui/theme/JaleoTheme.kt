@@ -54,7 +54,8 @@ val JaleoLightScheme = lightColorScheme(
     surface = LightPalette.surface,
     onSurface = LightPalette.text,
     onSurfaceVariant = LightPalette.secondaryText,
-    surfaceContainerLow = LightPalette.surface
+    surfaceContainerLow = LightPalette.surface,
+    surfaceContainer = LightPalette.surface
 )
 
 val JaleoDarkScheme = darkColorScheme(
@@ -65,5 +66,6 @@ val JaleoDarkScheme = darkColorScheme(
     surface = DarkPalette.surface,
     onSurface = DarkPalette.text,
     onSurfaceVariant = DarkPalette.secondaryText,
-    surfaceContainerLow = DarkPalette.surface
+    surfaceContainerLow = DarkPalette.surface,
+    surfaceContainer = DarkPalette.surface
 )

@@ -112,10 +112,10 @@ Project skills are indexed in [`.claude/CLAUDE.md`](.claude/CLAUDE.md).
   more apps share: `LilloPage` (with `sideActionsWhenShort`) / `LilloBigButton` / `LilloSecondaryButton` (apps wrap them with
   their colours in `ui/…/Common.kt`), `LilloAboutSheet` (language, rate, privacy),
   `LilloLanguageDialog`, `isShortScreen()` for landscape and handhelds, `isWideScreen()` for two panes (tablets in landscape), `TestTagsAsResourceIds`,
-  `ConfettiBurst` / `ConfettiRain`, `LilloAvatar`, `LilloSummaryHero` (home screen header: gradient, state at a glance, chips), `Modifier.accentEdge` (a card's state or kind as a coloured edge), `Modifier.entrance` / `animationsEnabled()` (motion that honours "Remove animations"), `LilloSettingRow`, `LilloSectionTitle`, `LilloQrCode`. Each core component has a
+  `ConfettiBurst` / `ConfettiRain`, `LilloAvatar`, `LilloSummaryHero` (home screen header: gradient, state at a glance, chips), `Modifier.accentEdge` (a card's state or kind as a coloured edge), `Modifier.entrance` / `animationsEnabled()` (motion that honours "Remove animations"), `LilloSettingRow`, `LilloSectionTitle`, `LilloQrCode`, `LilloWidgetCard` (an app's home-screen widget: a button when the launcher accepts the request, the way by hand always). Each core component has a
   `@Preview` in `core/designsystem/.../Catalogue.kt`; `CatalogueScreenshotTest` captures every preview there
   (with the accessibility checks), so a new component needs a preview, not a hand-written screenshot test. `:core:platform` has
-  `JsonStore` (an unreadable stored document is set aside, never overwritten; each app's `StoredStateTest` pins its released format), sharing and links; `:core:reminders` has notifications (`LilloNotifications`: channels,
+  `JsonStore` (an unreadable stored document is set aside, never overwritten; each app's `StoredStateTest` pins its released format), `AppWidgetPins` (is the app's widget placed, can the launcher be asked to place it), sharing and links; `:core:reminders` has notifications (`LilloNotifications`: channels,
   permission check, tap to open) and reminder chains (`LilloSchedule.at`: one WorkManager job at a time); `:core:sharelink` (pure Kotlin) puts any serializable value in a
   `jorgelillo7.github.io/<path>/#…` link (tournaments `/t/`, impostor packs `/p/`).
 - **Reuse first; the second copy goes to core.** Every app should get what the others already

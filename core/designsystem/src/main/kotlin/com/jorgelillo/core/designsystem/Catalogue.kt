@@ -145,3 +145,17 @@ private fun PageShortPreview() = LilloTheme(CatalogueColors) { SamplePage() }
 @Preview(name = "Page, short screen, actions below", device = "spec:width=411dp,height=891dp,orientation=landscape")
 @Composable
 private fun PageShortActionsBelowPreview() = LilloTheme(CatalogueColors) { SamplePage(sideActions = false) }
+
+/** A launcher that accepts the request: the button, and the way by hand in case it drops it. */
+@Preview(name = "Widget card")
+@Composable
+private fun WidgetCardPreview() = CatalogueTheme {
+    LilloWidgetCard("¿Hay jaleo?", pinnable = true, onAdd = {})
+}
+
+/** A launcher that refuses requests (MIUI and others): only the way by hand. */
+@Preview(name = "Widget card, by hand")
+@Composable
+private fun WidgetCardByHandPreview() = CatalogueTheme {
+    LilloWidgetCard("¿Hay jaleo?", pinnable = false, onAdd = {})
+}
