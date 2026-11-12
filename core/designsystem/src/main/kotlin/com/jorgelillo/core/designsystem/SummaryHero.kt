@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -36,22 +37,24 @@ private const val CHIP_DELAY_MILLIS = 120
 data class HeroChip(val text: String, val tag: String? = null)
 
 /**
- * A home screen's header: a gradient card with the app's state at a glance (a [title], a one-line
+ * A home screen's header, for a home with real state to summarise (a live status, a record,
+ * several things in progress); a home whose list already says it all uses [LilloScreenHeader].
+ * A gradient card with the app's state at a glance (a [title], a one-line
  * [subtitle] such as "2 in progress · 1 finished", and [chips] for what matters now), a big [emoji]
  * and a few translucent circles. On short screens (landscape, handhelds) it shrinks to a strip so
  * the list below keeps the room. It fades in on first show, the chips one after another.
  *
- * [colors] is the gradient, start to end: dark enough for [contentColor] (white by default) to
- * keep 4.5:1, which the screenshot tests check.
+ * [colors] is the gradient, start to end (the app's [LilloPalette.hero] by default): dark enough
+ * for [contentColor] (white by default) to keep 4.5:1, which the screenshot tests check.
  */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun LilloSummaryHero(
     title: String,
     subtitle: String,
-    colors: List<Color>,
     emoji: String,
     modifier: Modifier = Modifier,
+    colors: List<Color> = LilloColors.current.hero,
     chips: List<HeroChip> = emptyList(),
     contentColor: Color = Color.White
 ) {
@@ -111,7 +114,14 @@ fun LilloSummaryHero(
             Column(Modifier.padding(20.dp)) {
                 // Clear of the emoji in the corner; the chips below may run under it.
                 val clear = Modifier.padding(end = 72.dp)
-                Text(title, color = contentColor, fontSize = 26.sp, fontWeight = FontWeight.Black, modifier = clear)
+                Text(
+                    title,
+                    color = contentColor,
+                    fontSize = 26.sp,
+                    fontFamily = LilloDisplayFamily,
+                    fontWeight = FontWeight.Black,
+                    modifier = clear
+                )
                 Text(
                     subtitle,
                     color = contentColor,
@@ -142,4 +152,35 @@ private fun HeroChipText(chip: HeroChip, color: Color, compact: Boolean, modifie
             .padding(horizontal = if (compact) 10.dp else 14.dp, vertical = if (compact) 4.dp else 8.dp)
             .then(if (chip.tag != null) Modifier.testTag(chip.tag) else Modifier)
     )
+}
+
+/**
+ * The light header of a screen whose content already shows its state: a big [title] in the
+ * display face and the app's accent, an optional one-line [subtitle], and an [emoji] at the end.
+ * No card and no gradient, so the list below stays the first thing the eye lands on.
+ */
+@Composable
+fun LilloScreenHeader(title: String, modifier: Modifier = Modifier, subtitle: String? = null, emoji: String? = null) {
+    Row(
+        modifier.entrance().fillMaxWidth().padding(vertical = 8.dp).testTag("screen_header"),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Column(Modifier.weight(1f)) {
+            Text(
+                title,
+                style = MaterialTheme.typography.headlineMedium,
+                color = LilloColors.current.accentText
+            )
+            if (subtitle != null) {
+                Text(
+                    subtitle,
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        }
+        if (emoji != null) {
+            Text(emoji, fontSize = 40.sp, modifier = Modifier.padding(start = 12.dp).clearAndSetSemantics {})
+        }
+    }
 }

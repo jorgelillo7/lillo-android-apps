@@ -7,4 +7,8 @@
     <string name="lillo_widget_add">Añadir el widget</string>
     <string name="lillo_widget_by_hand">Para añadirlo: mantén pulsado un hueco de la pantalla de inicio → Widgets → %1$s</string>
     <string name="lillo_widget_by_hand_too">Si no aparece nada: mantén pulsado un hueco de la pantalla de inicio → Widgets → %1$s</string>
+    <string name="lillo_theme">Apariencia</string>
+    <string name="lillo_theme_system">Auto</string>
+    <string name="lillo_theme_light">Claro</string>
+    <string name="lillo_theme_dark">Oscuro</string>
 </resources>

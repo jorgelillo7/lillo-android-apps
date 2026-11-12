@@ -60,7 +60,8 @@ import androidx.compose.ui.unit.sp
 
 /**
  * Full-screen page: background, a header with an optional back button (test tag "back"), title
- * and actions, the content, and a bottom action area. Apps wrap it with their own colours.
+ * and actions, the content, and a bottom action area. The [background] is the app's
+ * ([LilloColors]) unless a screen asks for another.
  *
  * [sideActionsWhenShort]: on short screens (landscape, handhelds) the actions go in a column beside
  * the content instead of below it, and a page with no title or back button drops its header, so
@@ -74,8 +75,8 @@ import androidx.compose.ui.unit.sp
 fun LilloPage(
     title: String?,
     onBack: (() -> Unit)?,
-    background: Brush,
     modifier: Modifier = Modifier,
+    background: Brush = LilloColors.current.background,
     contentColor: Color = MaterialTheme.colorScheme.onBackground,
     titleWeight: FontWeight = FontWeight.Bold,
     actions: @Composable RowScope.() -> Unit = {},
@@ -155,8 +156,8 @@ fun LilloBigButton(
     text: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    color: Color = MaterialTheme.colorScheme.primary,
-    contentColor: Color = MaterialTheme.colorScheme.onPrimary,
+    color: Color = LilloColors.current.brand,
+    contentColor: Color = LilloColors.current.onBrand,
     enabled: Boolean = true,
     height: Dp = 60.dp,
     fontSize: TextUnit = 20.sp,

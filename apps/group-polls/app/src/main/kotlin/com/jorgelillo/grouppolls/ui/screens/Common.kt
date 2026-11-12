@@ -55,7 +55,7 @@ internal fun Page(
 ) = LilloPage(
     title,
     onBack,
-    background,
+    background = background,
     modifier = modifier,
     titleWeight = FontWeight.Black,
     actions = actions,

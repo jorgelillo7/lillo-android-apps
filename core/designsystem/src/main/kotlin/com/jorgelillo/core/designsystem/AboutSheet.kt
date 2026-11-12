@@ -12,6 +12,9 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.SegmentedButton
+import androidx.compose.material3.SegmentedButtonDefaults
+import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -33,8 +36,9 @@ import androidx.compose.ui.unit.dp
 data class AboutTexts(val title: String, val version: String, val body: String, val rate: String?, val privacy: String)
 
 /**
- * The About sheet: app icon, name, version, a short text, the app's language (Android 13+, when it
- * ships in more than one of [languages]), and links to rate it on Google Play (left out while the
+ * The About sheet: app icon, name, version, a short text, the app's appearance (automatic, light or
+ * dark; for apps with both looks, see [LocalLilloThemeMode]), the app's language (Android 13+,
+ * when it ships in more than one of [languages]), and links to rate it on Google Play (left out while the
  * app isn't published: [playStoreUrl] null) and to the privacy policy.
  */
 @OptIn(ExperimentalMaterial3Api::class)
@@ -72,6 +76,7 @@ fun LilloAboutSheet(
             )
             Text(texts.body, textAlign = TextAlign.Center)
             extra?.invoke()
+            LocalLilloThemeMode.current?.let { mode -> ThemeModeRow(mode.value) { mode.value = it } }
             if (canPickAppLanguage && languages.size > 1) {
                 OutlinedButton(onClick = {
                     pickLanguage = true
@@ -95,5 +100,33 @@ fun LilloAboutSheet(
     }
     if (pickLanguage && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         LilloLanguageDialog(onDismiss = { pickLanguage = false }, languages = languages)
+    }
+}
+
+/** The appearance choice of [LilloAboutSheet]: automatic, light or dark. */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+internal fun ThemeModeRow(selected: LilloThemeMode, onSelect: (LilloThemeMode) -> Unit) {
+    val labels = mapOf(
+        LilloThemeMode.System to R.string.lillo_theme_system,
+        LilloThemeMode.Light to R.string.lillo_theme_light,
+        LilloThemeMode.Dark to R.string.lillo_theme_dark
+    )
+    Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+        Text(
+            stringResource(R.string.lillo_theme),
+            style = MaterialTheme.typography.labelLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+        SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth().testTag("theme_mode")) {
+            labels.entries.forEachIndexed { index, (mode, label) ->
+                SegmentedButton(
+                    selected = mode == selected,
+                    onClick = { onSelect(mode) },
+                    shape = SegmentedButtonDefaults.itemShape(index, labels.size),
+                    modifier = Modifier.testTag("theme_${mode.name.lowercase()}")
+                ) { Text(stringResource(label), maxLines = 1) }
+            }
+        }
     }
 }

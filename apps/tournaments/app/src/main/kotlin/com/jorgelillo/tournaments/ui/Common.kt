@@ -33,7 +33,7 @@ internal fun Page(
 ) = LilloPage(
     title,
     onBack,
-    Arena.Background,
+    background = Arena.Background,
     modifier = modifier,
     actions = actions,
     readable = readable,

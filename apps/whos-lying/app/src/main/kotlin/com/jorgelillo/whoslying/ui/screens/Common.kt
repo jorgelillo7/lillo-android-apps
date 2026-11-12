@@ -59,7 +59,7 @@ internal fun Page(
 ) = LilloPage(
     title,
     onBack,
-    background,
+    background = background,
     modifier = modifier,
     actions = actions,
     sideActionsWhenShort = sideActionsWhenShort,

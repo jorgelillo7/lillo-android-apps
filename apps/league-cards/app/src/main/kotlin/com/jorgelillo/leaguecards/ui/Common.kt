@@ -45,7 +45,7 @@ internal fun Page(
 ) = LilloPage(
     title,
     onBack,
-    Chat.Background,
+    background = Chat.Background,
     modifier = modifier,
     actions = actions,
     sideActionsWhenShort = sideActionsWhenShort,
