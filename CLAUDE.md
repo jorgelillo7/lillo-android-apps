@@ -74,6 +74,8 @@ Project skills are indexed in [`.claude/CLAUDE.md`](.claude/CLAUDE.md).
 - **Behaviour**: `openspec/` states what each app must keep doing (`openspec/project.md` is the
   map). A new feature is agreed in `openspec/changes/{name}/` before it is written; a change to
   behaviour updates its spec in the same PR, and each scenario names the test that proves it.
+  `python3 scripts/check_specs.py` fails when a scenario names a test that does not exist (CI's
+  Lint job runs it).
 - **Before the PR**: `./gradlew spotlessApply`, then `test verifyRoborazziDebug lintDebug`, and
   the release smoke test of every app touched. A new or changed screen gets a screenshot test,
   upright and `+land`; re-record on purpose and review the images.

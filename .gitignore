@@ -23,3 +23,6 @@ __pycache__/
 
 # Session-scoped implementation plans
 /.claude/plans/
+
+# Agent worktrees: transient checkouts, never part of a commit.
+.claude/worktrees/
