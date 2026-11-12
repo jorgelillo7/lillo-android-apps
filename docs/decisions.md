@@ -17,6 +17,7 @@ lives in the PR. Add a line when a decision is taken; change it when it is rever
 | Text contrast meets WCAG AA (4.5:1), enforced by the tests | Live apps had white on light gradients (down to 1.8:1) and an invisible hint | #60 |
 | Short screens (< 480 dp tall) get compact layouts; `LilloPage(sideActionsWhenShort)` puts actions beside the content | Landscape phones and handhelds (AYN Thor) lost results, Spin and the card below the fold | #47, #55 |
 | A stored document the app can no longer read is moved to an `unreadable.N` key in the same edit, never overwritten (`JsonStore`); each app pins its released format in a `StoredStateTest` | Falling back to the default and saving over it would silently wipe a user's data after any non-additive model change | 2026-11 |
+| Share links and downloaded feeds are untrusted input: `ShareLink` refuses codes over 32,000 chars or inflating past 256 KB, and each app validates what a link holds (sizes, texts, references) before storing it; an imported pack gets a new id; a poll's code travels in the fragment | A crafted link must not crash an app, overwrite data or reach a server log; the limits sit far above anything the apps create | 2026-11 |
 | No DI framework: app singletons on the `Application`, `viewModelFactory` | Six small apps; Hilt would cost more than it saves | 2026-10 |
 | No crash reporting SDK | Privacy: Play Console vitals cover crashes and ANRs | 2026-10 |
 

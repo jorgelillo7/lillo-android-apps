@@ -38,4 +38,27 @@ class ShareLinkTest {
         assertNull(links.fromText("https://example.com/"))
         assertNull(ShareLink(Thing.serializer(), "/y/").codeFromLink(links.link(thing)))
     }
+
+    @Test
+    fun aCodeLongerThanTheLimitIsRefusedUnread() {
+        val long = Thing("x", List(5_000) { "palabra única ${it * 7919} ${it * 104729}" })
+        val code = links.encode(long)
+        assertTrue(code.length > ShareLink.MAX_CODE_CHARS, "${code.length}")
+        assertNull(links.decode(code))
+    }
+
+    @Test
+    fun aCodeThatInflatesPastTheLimitIsRefused() {
+        // A few kilobytes that expand to megabytes: the shape of a decompression bomb.
+        val bomb = Thing("x", listOf("a".repeat(4 * 1024 * 1024)))
+        val code = links.encode(bomb)
+        assertTrue(code.length < ShareLink.MAX_CODE_CHARS, "${code.length}")
+        assertNull(links.decode(code))
+    }
+
+    @Test
+    fun aLinkJustUnderTheLimitsStillReads() {
+        val big = Thing("x", List(2_000) { "palabra $it" })
+        assertEquals(big, links.decode(links.encode(big)))
+    }
 }
