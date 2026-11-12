@@ -7,6 +7,7 @@
     <string name="challenge_banner">Challenge: beat %1$s</string>
     <string name="tap_to_jump">Tap to jump · hold to jump higher</string>
     <string name="caught">She got you!</string>
+    <string name="paused">Paused · tap to go on</string>
     <string name="your_score">%1$s points</string>
     <string name="new_record">New record! 🏆</string>
     <string name="challenge_won">You beat the challenge! 🎉</string>

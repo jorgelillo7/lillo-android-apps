@@ -31,6 +31,15 @@ object Challenges {
 
     fun link(c: Challenge): String = links.link(c)
 
-    /** The challenge in a link, a chat message containing one, or a bare code; null if none. */
-    fun fromText(text: String): Challenge? = links.codeFromLink(text)?.let(links::decode)
+    /** Higher than any run can score; a link claiming more is not a real run. */
+    const val MAX_SCORE = 10_000_000
+
+    /**
+     * The challenge in a link, a chat message containing one, or a bare code; null if none, or if
+     * its score or version is one no game could have produced. A challenge is never stored: it
+     * lives in memory until dismissed.
+     */
+    fun fromText(text: String): Challenge? = links.codeFromLink(text)?.let(links::decode)?.takeIf {
+        it.score in 0..MAX_SCORE && it.version > 0
+    }
 }

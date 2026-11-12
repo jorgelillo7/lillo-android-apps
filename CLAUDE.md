@@ -19,8 +19,10 @@ Apps today, live on Play: `christmas-countdown` ("¿Ya es Navidad?", `com.jorgel
 `com.jorgelillo.whoslying`), `tournaments` ("¿Solo quedará uno?", `com.jorgelillo.tournaments`),
 `league-cards` ("¿Quién llora esta jornada?", `com.jorgelillo.leaguecards`, a card game; its league deck
 is private and lives outside this public repo) and `slipper` ("¿Te pilla la chancla?",
-`com.jorgelillo.slipper`, a pixel-art runner). Not on Play yet: `group-polls`
-("¿Qué votáis?", `com.jorgelillo.grouppolls`, parked). `group-polls` is the only one with a backend
+`com.jorgelillo.slipper`, a pixel-art runner). Not on Play yet: `stadium-events` ("¿Hay jaleo?
+Metropolitano", `com.jorgelillo.stadiumevents`, 1.0 waiting as a production draft; it reads a static
+events feed from `jorgelillo7.github.io`) and `group-polls` ("¿Qué votáis?",
+`com.jorgelillo.grouppolls`, parked). `group-polls` is the only one with a backend
 (Firestore; its rules, tests and infra live in lillorepo `packages/group_polls`). Write code,
 docs and scripts so they work for any app.
 
@@ -115,7 +117,7 @@ Project skills are indexed in [`.claude/CLAUDE.md`](.claude/CLAUDE.md).
   `ConfettiBurst` / `ConfettiRain`, `LilloAvatar`, `LilloSummaryHero` (home screen header: gradient, state at a glance, chips), `Modifier.accentEdge` (a card's state or kind as a coloured edge), `Modifier.entrance` / `animationsEnabled()` (motion that honours "Remove animations"), `LilloSettingRow`, `LilloSectionTitle`, `LilloQrCode`. Each core component has a
   `@Preview` in `core/designsystem/.../Catalogue.kt`; `CatalogueScreenshotTest` captures every preview there
   (with the accessibility checks), so a new component needs a preview, not a hand-written screenshot test. `:core:platform` has
-  `JsonStore`, sharing and links; `:core:reminders` has notifications (`LilloNotifications`: channels,
+  `JsonStore` (an unreadable stored document is set aside, never overwritten; each app's `StoredStateTest` pins its released format), sharing and links; `:core:reminders` has notifications (`LilloNotifications`: channels,
   permission check, tap to open) and reminder chains (`LilloSchedule.at`: one WorkManager job at a time); `:core:sharelink` (pure Kotlin) puts any serializable value in a
   `jorgelillo7.github.io/<path>/#…` link (tournaments `/t/`, impostor packs `/p/`).
 - **Reuse first; the second copy goes to core.** Every app should get what the others already
@@ -125,6 +127,8 @@ Project skills are indexed in [`.claude/CLAUDE.md`](.claude/CLAUDE.md).
   apps over — never copy it. A one-off stays in the app; a second one never does.
 - Strings ship in English (`values/`) and Spanish (`values-es/`); keep both in sync, including
   plurals (Spanish needs `one`/`many`/`other`).
+- Around suspend calls, catch with `runCatchingCancellable` (`:core:platform`), never `runCatching`:
+  a cancelled coroutine must stop, not read as a failure.
 - **Screenshot tests** (Roborazzi on Robolectric, no emulator): a module applies
   `jorgelillo.android.screenshots` and writes tests with `captureScreenshot` from
   `:core:screenshot-testing` (frozen clock, shared tolerance), upright and `@Config(qualifiers = "+land")`.

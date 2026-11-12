@@ -120,6 +120,7 @@ audience, ads, privacy policy…) and the **first bundle**. A personal developer
 after November 2023 also needs a closed test (12 testers, 14 days) before production.
 
 The upload key: the user runs `scripts/new-upload-key.sh <app>` in their own terminal (never ask
-for the password in chat), backs it up off the Mac ([docs/signing.md](../../../docs/signing.md)),
+for the password in chat); it ends by backing the key and its credentials up to Google Drive
+(`scripts/backup-upload-key.sh`, checked with `--check all`; [docs/signing.md](../../../docs/signing.md)),
 then `scripts/set-release-secrets.sh <app>` so the Release workflow can sign. From the second
 release on, everything (bundles, notes, listing, promotion) goes from the Release workflow.

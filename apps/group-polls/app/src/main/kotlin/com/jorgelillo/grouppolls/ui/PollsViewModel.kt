@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import com.jorgelillo.core.platform.runCatchingCancellable
 import com.jorgelillo.grouppolls.data.LocalState
 import com.jorgelillo.grouppolls.data.LocalStore
 import com.jorgelillo.grouppolls.data.MyVote
@@ -124,7 +125,7 @@ class PollsViewModel(
             createdAt = created,
             closesAt = duration.closesAt(created)
         )
-        return runCatching { repository.create(poll) }.fold(
+        return runCatchingCancellable { repository.create(poll) }.fold(
             onSuccess = {
                 store.update { it.copy(myPolls = (listOf(poll.code) + it.myPolls).take(MAX_MY_POLLS)) }
                 poll.code
@@ -148,7 +149,7 @@ class PollsViewModel(
                 prediction,
                 now()
             )
-        runCatching { repository.vote(poll.code, vote) }
+        runCatchingCancellable { repository.vote(poll.code, vote) }
             .onSuccess {
                 store.update { s ->
                     s.copy(
@@ -167,14 +168,14 @@ class PollsViewModel(
     }
 
     fun close(code: String) = viewModelScope.launch {
-        runCatching { repository.close(code) }.onFailure {
+        runCatchingCancellable { repository.close(code) }.onFailure {
             _error.value =
                 it.message
         }
     }
 
     fun report(poll: Poll, hideCreator: Boolean) = viewModelScope.launch {
-        runCatching { repository.report(poll.code) }
+        runCatchingCancellable { repository.report(poll.code) }
         update {
             it.copy(
                 reported = it.reported + poll.code,
@@ -208,7 +209,7 @@ class PollsViewModel(
 
     /** "Delete my data": anonymise on the server, forget everything on this phone. */
     fun deleteMyData(onDone: () -> Unit) = viewModelScope.launch {
-        runCatching { repository.anonymize() }
+        runCatchingCancellable { repository.anonymize() }
             .onSuccess {
                 store.update { LocalState() }
                 onDone()

@@ -7,8 +7,8 @@ days and a support request. Treat it like a password.
 
 | Thing | Where | Secret? |
 |---|---|---|
-| `upload-<app>.jks` (the key) | `~/Projects/documentation/keys/<app>/` + an off-Mac backup | **Yes** |
-| Its password | Password manager | **Yes** |
+| `upload-<app>.jks` (the key) | `~/Projects/documentation/keys/<app>/` + Google Drive backup | **Yes** |
+| Its password | Password manager + `credentials.txt` next to the Drive backup | **Yes** |
 | `apps/<app>/keystore.properties` | Repo folder, git-ignored | **Yes** (contains the password) |
 | Certificate fingerprints (SHA-1/SHA-256, serial) | `apps/<app>/OPERATIONS.md` | No |
 
@@ -28,15 +28,15 @@ cd ~/Projects/lillo-android-apps
 scripts/new-upload-key.sh <app-folder>          # e.g. decision-wheel
 ```
 
-It creates `~/Projects/documentation/keys/<app>/upload-<app>.jks (RSA 4096, PKCS12, alias
+It creates `~/Projects/documentation/keys/<app>/upload-<app>.jks` (RSA 4096, PKCS12, alias
 `upload`, ~27 years) and `apps/<app>/keystore.properties` with the password (git-ignored,
-readable only by you), and prints the fingerprints.
+readable only by you), prints the fingerprints, and backs the key up to Google Drive (below).
 
 Then:
 
 1. Save the password in your password manager.
-2. **Back up the `.jks` off the Mac**: attach it to the password-manager entry, or copy it to an
-   encrypted disk / cloud folder. Losing the Mac must not mean losing the key.
+2. Check the closing lines say the key was backed up; if not, fix what they say and run
+   `scripts/backup-upload-key.sh <app>`.
 3. Copy the printed serial and fingerprints into `apps/<app>/OPERATIONS.md`.
 4. `git status`: neither `keystore.properties` nor the `.jks` may appear.
 5. Build and check: `./gradlew :apps:<app>:app:bundleRelease` then
@@ -45,6 +45,46 @@ Then:
 
 Android Studio can do the same (Build → Generate Signed App Bundle → Create new); the script just
 makes the location, alias and algorithm consistent.
+
+## Backup to Google Drive
+
+Losing the Mac must not mean losing the keys. `scripts/backup-upload-key.sh` copies an app's key
+(the `.jks` named in its `keystore.properties`) and a `credentials.txt` with its alias and
+passwords to Google Drive for Desktop, one folder per app:
+`…/GoogleDrive-<account>/Mi unidad/Proyectos personales/backups/android-playstore-keys/<app>/`.
+
+```bash
+scripts/backup-upload-key.sh <app>          # or: all
+scripts/backup-upload-key.sh --check all    # does Drive hold the same key for every app? writes nothing
+```
+
+- The folder is found at run time (the account is part of the path and is never written in this
+  public repo); `LILLO_KEYS_BACKUP_DIR=<folder>` picks another one. If no folder or several
+  match, it stops.
+- A copy already there with the same checksum is "already backed up"; a **different** key there
+  is never overwritten: it stops and you compare them by hand. Every copy is read back and checked.
+- Passwords are never printed.
+
+**Plain or encrypted.** By default the files go to Drive as they are, as they always have: anyone
+who gets into that Google account gets the key and its password. With `--encrypt`
+(`LILLO_KEYS_BACKUP_ENCRYPT=1` for `new-upload-key.sh`) they go as `upload-<app>.jks.enc` and
+`credentials.txt.enc` (AES-256, PBKDF2 with 600 000 iterations, macOS's own `openssl`), with one
+master passphrase kept in the Keychain item `lillo-android-keys-backup` and in your password
+manager. Create it once:
+
+```bash
+security add-generic-password -s lillo-android-keys-backup -a "$USER" -w   # asks for the passphrase
+```
+
+Restore an encrypted copy (asks for the passphrase):
+
+```bash
+openssl enc -d -aes-256-cbc -pbkdf2 -iter 600000 -md sha256 -in upload-<app>.jks.enc -out upload-<app>.jks
+```
+
+A lost passphrase means unreadable backups; a leaked plain backup means someone else holds the
+upload key. Either way an upload key can be reset through Play (below), so the damage is a few
+days without releases, not a lost app.
 
 ## First upload to Play
 

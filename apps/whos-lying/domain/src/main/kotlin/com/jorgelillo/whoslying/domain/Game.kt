@@ -2,6 +2,7 @@ package com.jorgelillo.whoslying.domain
 
 import java.text.Normalizer
 import kotlin.random.Random
+import kotlinx.serialization.Serializable
 
 object Rules {
     const val MIN_PLAYERS = 3
@@ -35,28 +36,37 @@ object Rules {
         Normalizer.normalize(text.trim().lowercase(), Normalizer.Form.NFD).replace(Regex("\\p{M}+"), "")
 }
 
+@Serializable
 sealed interface Outcome {
+    @Serializable
     data object CiviliansWin : Outcome
 
     /** Impostors and/or the drifter survived until at most one civilian was left. */
+    @Serializable
     data class InfiltratorsWin(val roles: Set<Role>) : Outcome
 
+    @Serializable
     data object DrifterGuessed : Outcome
 
     /** Chaos game where everyone was an impostor: nobody wins, the fun is finding out. */
+    @Serializable
     data object NoCivilians : Outcome
 
     /** The group ended the game before anyone won. */
+    @Serializable
     data object EndedEarly : Outcome
 }
 
 /** Result of voting someone out. */
+@Serializable
 data class Elimination(val player: String, val role: Role, val drifterMustGuess: Boolean)
 
 /**
  * A game in progress. Immutable: every move returns the next state, so the UI (and tests) always
- * hold a consistent snapshot and Compose sees each change.
+ * hold a consistent snapshot and Compose sees each change. Serializable so the app can bring a game
+ * back after Android stops it in the background; it holds every secret, so it is never shared.
  */
+@Serializable
 class Game private constructor(
     val cards: List<Card>,
     val civilianWord: String,

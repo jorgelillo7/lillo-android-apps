@@ -11,7 +11,8 @@
 A Gradle multi-project of small Android apps published on Google Play, with
 shared Compose code in `core/`. No accounts, no ads, no server — except
 `group-polls`, whose Firestore backend lives in lillorepo
-(`packages/group_polls`).
+(`packages/group_polls`). `stadium-events` downloads one static file
+(`jorgelillo7.github.io/stadium/events.json`) and needs no server of its own.
 
 ## Apps and their capabilities
 

@@ -43,7 +43,8 @@ dependencies {
 ```
 
 Release signing and R8 come from the `jorgelillo.android.application` plugin: it reads
-`apps/<app>/keystore.properties` (created by `scripts/new-upload-key.sh`) and falls back to the
+`apps/<app>/keystore.properties` (created by `scripts/new-upload-key.sh`, which also backs the key
+up to Google Drive with `scripts/backup-upload-key.sh`; see [signing.md](signing.md)) and falls back to the
 debug key without it, so the release build can be smoke tested before the app has its key. Each
 app still needs its own `proguard-rules.pro`.
 

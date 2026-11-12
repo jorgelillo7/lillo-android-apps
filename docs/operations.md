@@ -35,7 +35,8 @@ Commands shared by every app. Per-app commands (module paths, release steps, sig
 | `setup-python.sh` | Create `.venv` with Pillow/numpy |
 | `smoke_lib.sh` | Sourced by every `apps/<app>/tools/smoke_test.sh`: release build, clean install, `tap`/`shot`, crash check |
 | `store_assets.py` | Draws the Play feature graphic and framed screenshots; each app's `tools/generate_store_assets.py` passes its colours and headlines |
-| `new-upload-key.sh <app>` | Create an app's upload key + `keystore.properties` (run in your own terminal; see [signing.md](signing.md)) |
+| `new-upload-key.sh <app>` | Create an app's upload key + `keystore.properties` (run in your own terminal; then backs it up to Google Drive; see [signing.md](signing.md)) |
+| `backup-upload-key.sh [--check] [--encrypt] <app\|all>` | Copy (or check) upload keys and their credentials in Google Drive, verified by checksum ([signing.md](signing.md#backup-to-google-drive)) |
 | `set-release-secrets.sh <app> \| --play \| --approval` | Put an app's upload key (league-cards: and its private deck), the Play service account or the production approval into GitHub for the Release workflow (your own terminal) |
 
 ## Release (any app)
