@@ -4,6 +4,7 @@ import android.text.format.DateUtils
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -49,10 +50,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.jorgelillo.core.designsystem.HeroChip
-import com.jorgelillo.core.designsystem.LilloSummaryHero
+import com.jorgelillo.core.designsystem.LilloColors
 import com.jorgelillo.core.designsystem.TestTagsAsResourceIds
 import com.jorgelillo.core.designsystem.accentEdge
+import com.jorgelillo.core.designsystem.entrance
 import com.jorgelillo.core.designsystem.isShortScreen
 import com.jorgelillo.decisionwheel.R
 import com.jorgelillo.decisionwheel.domain.AppState
@@ -84,8 +85,8 @@ internal fun HomeScreen(
                     modifier = Modifier.testTag("new_wheel"),
                     icon = { Icon(Icons.Filled.Add, contentDescription = null) },
                     text = { Text(stringResource(R.string.new_wheel), fontWeight = FontWeight.Bold) },
-                    containerColor = WheelColors.Sun,
-                    contentColor = WheelColors.Night
+                    containerColor = LilloColors.current.brand,
+                    contentColor = LilloColors.current.onBrand
                 )
             }
         }
@@ -104,7 +105,7 @@ internal fun HomeScreen(
                     Text(
                         stringResource(R.string.home_title),
                         style = MaterialTheme.typography.run { if (short) headlineMedium else displaySmall },
-                        fontWeight = FontWeight.Black,
+                        color = LilloColors.current.accentText,
                         modifier = Modifier.weight(1f)
                     )
                     if (short) {
@@ -112,8 +113,8 @@ internal fun HomeScreen(
                             onClick = onNew,
                             modifier = Modifier.testTag("new_wheel"),
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = WheelColors.Sun,
-                                contentColor = WheelColors.Night
+                                containerColor = LilloColors.current.brand,
+                                contentColor = LilloColors.current.onBrand
                             )
                         ) {
                             Icon(Icons.Filled.Add, contentDescription = null)
@@ -149,9 +150,9 @@ internal fun HomeScreen(
                         }
                     }
                 }
-                Spacer(Modifier.height(16.dp))
-                Summary(state)
-                Spacer(Modifier.height(16.dp))
+                Spacer(Modifier.height(4.dp))
+                Recent(state)
+                Spacer(Modifier.height(20.dp))
             }
             items(state.sortedWheels, key = { it.id }) { wheel ->
                 WheelCard(wheel, onClick = { onOpen(wheel) }, onToggleFavorite = { onToggleFavorite(wheel) })
@@ -161,42 +162,47 @@ internal fun HomeScreen(
     }
 }
 
-/** The wheels at a glance: how many and how many decisions, the last one, the most picked option. */
+/**
+ * What the list below can't say: the last decision and the most picked option, or how to start.
+ * A light line under the title, not a card: the wheels themselves are the home screen.
+ */
 @Composable
-private fun Summary(state: AppState) {
+private fun Recent(state: AppState) {
     val context = LocalContext.current
     val last = state.history.maxByOrNull { it.atEpochMillis }
     val top = state.history.groupingBy { it.option }.eachCount().maxByOrNull { it.value }?.takeIf { it.value > 1 }
-    val chips = buildList {
+    val lines = buildList {
         if (last == null) {
-            add(HeroChip(stringResource(R.string.hero_first_spin)))
+            add(stringResource(R.string.hero_first_spin) to "hero_first_spin")
         } else {
             val day = DateUtils.formatDateTime(
                 context,
                 last.atEpochMillis,
                 DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_ABBREV_MONTH or DateUtils.FORMAT_NO_YEAR
             )
-            add(HeroChip(stringResource(R.string.hero_last, last.option, day), "hero_last"))
+            add(stringResource(R.string.hero_last, last.option, day) to "hero_last")
         }
-        top?.let { add(HeroChip(stringResource(R.string.hero_top, it.key, it.value), "hero_top")) }
+        top?.let { add(stringResource(R.string.hero_top, it.key, it.value) to "hero_top") }
     }
-    LilloSummaryHero(
-        title = stringResource(R.string.hero_title),
-        subtitle = listOf(
-            pluralStringResource(R.plurals.hero_wheels, state.wheels.size, state.wheels.size),
-            pluralStringResource(R.plurals.hero_decisions, state.history.size, state.history.size)
-        ).joinToString(" · "),
-        colors = WheelColors.Hero,
-        emoji = "🎡",
-        chips = chips
-    )
+    Column(Modifier.entrance(), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+        lines.forEach { (text, tag) ->
+            Text(
+                text,
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.testTag(tag)
+            )
+        }
+    }
 }
 
 @Composable
 private fun CheckItem(label: String, checked: Boolean, onClick: () -> Unit) {
     DropdownMenuItem(
         text = { Text(label) },
-        trailingIcon = { if (checked) Icon(Icons.Filled.Check, contentDescription = null, tint = WheelColors.Sun) },
+        trailingIcon = {
+            if (checked) Icon(Icons.Filled.Check, contentDescription = null, tint = LilloColors.current.accentText)
+        },
         onClick = onClick
     )
 }
@@ -208,14 +214,15 @@ private fun WheelCard(wheel: Wheel, onClick: () -> Unit, onToggleFavorite: () ->
         modifier = Modifier
             .fillMaxWidth()
             .clip(MaterialTheme.shapes.large)
-            .background(WheelColors.NightRaised)
+            .background(MaterialTheme.colorScheme.surfaceContainer)
             // Favourites (first in the list, launcher shortcuts) get the star's colour on their edge.
-            .then(if (wheel.favorite) Modifier.accentEdge(WheelColors.Sun) else Modifier)
+            .then(if (wheel.favorite) Modifier.accentEdge(LilloColors.current.brand) else Modifier)
             .clickable(onClick = onClick)
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         // Mini wheel preview.
+        val hole = MaterialTheme.colorScheme.surfaceContainer
         Canvas(Modifier.size(52.dp)) {
             val sweep = 360f / wheel.options.size.coerceAtLeast(1)
             colors.forEachIndexed { i, color ->
@@ -228,7 +235,7 @@ private fun WheelCard(wheel: Wheel, onClick: () -> Unit, onToggleFavorite: () ->
                     size = Size(size.width, size.height)
                 )
             }
-            drawCircle(WheelColors.NightRaised, size.minDimension * 0.16f)
+            drawCircle(hole, size.minDimension * 0.16f)
         }
         Spacer(Modifier.width(16.dp))
         Column(Modifier.weight(1f)) {
@@ -249,7 +256,7 @@ private fun WheelCard(wheel: Wheel, onClick: () -> Unit, onToggleFavorite: () ->
             Text(
                 pluralStringResource(R.plurals.options_count, wheel.options.size, wheel.options.size),
                 style = MaterialTheme.typography.labelSmall,
-                color = WheelColors.SunText
+                color = LilloColors.current.accentText
             )
         }
         FavoriteButton(wheel, onToggleFavorite)
@@ -266,7 +273,13 @@ internal fun FavoriteButton(wheel: Wheel, onToggle: () -> Unit) {
                 if (wheel.favorite) R.string.favorite_remove else R.string.favorite_add,
                 wheel.name
             ),
-            tint = if (wheel.favorite) WheelColors.Sun else WheelColors.Muted.copy(alpha = 0.45f)
+            tint = if (wheel.favorite) {
+                LilloColors.current.brand
+            } else {
+                MaterialTheme.colorScheme.onSurfaceVariant.copy(
+                    alpha = 0.45f
+                )
+            }
         )
     }
 }

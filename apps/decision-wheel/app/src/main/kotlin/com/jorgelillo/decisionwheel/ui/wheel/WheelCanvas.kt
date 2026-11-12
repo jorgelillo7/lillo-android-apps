@@ -1,6 +1,7 @@
 package com.jorgelillo.decisionwheel.ui.wheel
 
 import androidx.compose.foundation.Canvas
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -38,6 +39,7 @@ internal fun WheelCanvas(
 ) {
     val measurer = rememberTextMeasurer()
     val colors = segments.map { colorOf(it.option) }
+    val halo = MaterialTheme.colorScheme.surfaceContainer
 
     Canvas(modifier) {
         val radius = size.minDimension / 2f - 10.dp.toPx()
@@ -46,7 +48,7 @@ internal fun WheelCanvas(
         val arcSize = Size(radius * 2, radius * 2)
 
         // Soft halo behind the wheel.
-        drawCircle(WheelColors.NightRaised, radius + 8.dp.toPx(), center)
+        drawCircle(halo, radius + 8.dp.toPx(), center)
 
         rotate(rotationDegrees, pivot = center) {
             segments.forEachIndexed { i, segment ->
@@ -57,7 +59,7 @@ internal fun WheelCanvas(
                 drawArc(color, start, sweep, useCenter = true, topLeft = arcTopLeft, size = arcSize)
                 if (segments.size > 1) {
                     drawArc(
-                        WheelColors.Night,
+                        WheelColors.Ink,
                         start,
                         sweep,
                         useCenter = true,
@@ -96,7 +98,7 @@ internal fun WheelCanvas(
         }
 
         // Hub.
-        drawCircle(WheelColors.Night, 30.dp.toPx(), center)
+        drawCircle(WheelColors.Ink, 30.dp.toPx(), center)
         drawCircle(WheelColors.Cream, 22.dp.toPx(), center)
         drawCircle(WheelColors.Sun, 8.dp.toPx(), center)
 
@@ -109,7 +111,7 @@ internal fun WheelCanvas(
             close()
         }
         drawPath(pointer, WheelColors.Cream)
-        drawPath(pointer, WheelColors.Night, style = Stroke(width = 3.dp.toPx()))
+        drawPath(pointer, WheelColors.Ink, style = Stroke(width = 3.dp.toPx()))
     }
 }
 
