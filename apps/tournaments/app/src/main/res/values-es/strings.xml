@@ -33,6 +33,12 @@
     <string name="import_updated">Torneo actualizado con los últimos resultados</string>
     <string name="import_same">Ya tenías este torneo al día</string>
     <string name="import_newer_here">Tu copia tiene resultados más recientes: se queda la tuya</string>
+    <string name="replace_title">¿Sustituir tu copia de «%1$s»?</string>
+    <string name="replace_played">Partidas jugadas: %1$d en el enlace, %2$d en este móvil.</string>
+    <string name="replace_body">El enlace trae una versión más nueva. Los resultados apuntados solo en este móvil se perderán.</string>
+    <string name="replace_confirm">Sustituir</string>
+    <string name="replace_keep">Quedarme la mía</string>
+    <string name="import_kept">Se queda tu copia</string>
 
     <!-- New tournament -->
     <string name="setup_name">Nombre</string>

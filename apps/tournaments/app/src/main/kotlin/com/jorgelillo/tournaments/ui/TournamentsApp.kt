@@ -19,6 +19,7 @@ import com.jorgelillo.tournaments.domain.Library
 import com.jorgelillo.tournaments.ui.home.AboutSheet
 import com.jorgelillo.tournaments.ui.home.HomeScreen
 import com.jorgelillo.tournaments.ui.home.ImportDialog
+import com.jorgelillo.tournaments.ui.home.ReplaceDialog
 import com.jorgelillo.tournaments.ui.setup.NewTournamentScreen
 import com.jorgelillo.tournaments.ui.stats.StatsScreen
 import com.jorgelillo.tournaments.ui.tournament.TournamentScreen
@@ -44,6 +45,7 @@ internal data object Stats
 @Composable
 internal fun TournamentsApp(vm: TournamentsViewModel) {
     val library by vm.library.collectAsStateWithLifecycle()
+    val pendingReplace by vm.pendingReplace.collectAsStateWithLifecycle()
     val current = library ?: return // first disk read in progress (a few ms)
     val nav = rememberNavController()
     val context = LocalContext.current
@@ -53,6 +55,7 @@ internal fun TournamentsApp(vm: TournamentsViewModel) {
     LaunchedEffect(Unit) {
         vm.imports.collect { event ->
             val message = when (event.result) {
+                null if event.keptHere -> R.string.import_kept
                 null -> R.string.import_invalid
                 Library.ImportResult.ADDED -> R.string.import_added
                 Library.ImportResult.UPDATED -> R.string.import_updated
@@ -120,5 +123,6 @@ internal fun TournamentsApp(vm: TournamentsViewModel) {
     }
 
     if (showImport) ImportDialog(onImport = vm::importText, onDismiss = { showImport = false })
+    pendingReplace?.let { ReplaceDialog(it, onReplace = vm::replace, onKeep = vm::keepHere) }
     if (showAbout) AboutSheet(onDismiss = { showAbout = false })
 }

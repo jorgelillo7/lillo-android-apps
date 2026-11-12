@@ -45,6 +45,24 @@ to it, a change to a deleted one SHALL be ignored, and delete SHALL remove it.
 - *Verifies:* `aSharedLinkIsImportedOnceThenUpdated`, `aBrokenLinkSaysSo`,
   `importKeepsTheNewestCopy`, `newIdsAreShortAndDistinct`, `aChangeAppliesToTheStoredCopy`
 
+### Requirement: A newer copy replaces the one here only when the user says so
+
+Revisions are counted on each phone, so a link's "newer" copy can lack results entered only on
+this one. A link carrying a higher revision of a tournament already stored SHALL NOT be stored
+at once: it SHALL wait while a dialog shows the matches played in the link and on the phone,
+and SHALL replace the stored copy only on "Replace". "Keep mine" SHALL leave the stored copy
+exactly as it was and open it.
+
+#### Scenario: asking before replacing
+- **WHEN** only a newer copy of a stored tournament is offered **THEN** it is the one reported as replacing something; an equal or older copy, or an unknown tournament, replaces nothing
+- **WHEN** a newer copy is imported **THEN** nothing is stored or announced until the user answers; "Replace" stores it and reports UPDATED
+- **WHEN** the user keeps the copy here **THEN** the stored tournament is unchanged and the event opens it
+- **WHEN** a newer link is opened while the app runs and turned down, then opened again and accepted **THEN** the stored copy stays, then is replaced
+- **WHEN** the dialog is shown upright and in landscape **THEN** it passes the accessibility checks
+- *Verifies:* `onlyANewerCopyReplacesWhatIsHere`, `aSharedLinkIsImportedOnceThenUpdated`,
+  `aNewerCopyCanBeTurnedDown`, `aKnockoutFromNewTournamentToChampion`, `replaceDialog`,
+  `replaceDialogLandscape`
+
 ### Requirement: Stats match players by name, and every match exports as CSV
 
 Across tournaments a player SHALL be matched by name ignoring case and surrounding

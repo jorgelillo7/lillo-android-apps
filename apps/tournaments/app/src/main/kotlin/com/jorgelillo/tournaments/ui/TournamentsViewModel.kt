@@ -12,20 +12,34 @@ import com.jorgelillo.tournaments.domain.Tournament
 import kotlin.random.Random
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-/** Outcome of opening a shared link: [id] is the tournament to show, null if the link was broken. */
-data class ImportEvent(val result: Library.ImportResult?, val id: String?)
+/**
+ * Outcome of opening a shared link: [id] is the tournament to show, null if the link was broken.
+ * [keptHere]: a newer copy was offered and the user kept the one on the phone.
+ */
+data class ImportEvent(val result: Library.ImportResult?, val id: String?, val keptHere: Boolean = false)
+
+/** A link with a newer copy of a tournament on the phone, waiting for the user to say replace or keep. */
+data class PendingReplace(val incoming: Tournament, val here: Tournament)
 
 /** Single ViewModel for the whole (small) app: exposes the library and every change. */
 class TournamentsViewModel(private val repository: LibraryRepository) : ViewModel() {
 
     /** Null until the first read from disk, so screens don't flash empty. */
     val library: StateFlow<Library?> = repository.state.stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
+    private val pending = MutableStateFlow<PendingReplace?>(null)
+
+    /** Set while a newer copy waits for [replace] or [keepHere]. */
+    val pendingReplace: StateFlow<PendingReplace?> = pending.asStateFlow()
 
     private val importEvents = Channel<ImportEvent>(Channel.BUFFERED)
     val imports: Flow<ImportEvent> = importEvents.receiveAsFlow()
@@ -43,7 +57,11 @@ class TournamentsViewModel(private val repository: LibraryRepository) : ViewMode
 
     fun delete(id: String) = launchUpdate { it.delete(id) }
 
-    /** A link, a bare code or a chat message containing a link. */
+    /**
+     * A link, a bare code or a chat message containing a link. A newer copy of a tournament already
+     * here is not stored yet: it waits in [pendingReplace], since it would overwrite results that
+     * may have been entered only on this phone.
+     */
     fun importText(text: String) {
         val tournament = Share.codeFromLink(text)?.let(Share::decode)
         viewModelScope.launch {
@@ -51,9 +69,31 @@ class TournamentsViewModel(private val repository: LibraryRepository) : ViewMode
                 importEvents.send(ImportEvent(null, null))
                 return@launch
             }
+            val here = repository.state.first().replacedBy(tournament)
+            if (here != null) {
+                pending.value = PendingReplace(tournament, here)
+                return@launch
+            }
             val result = repository.updateAndGet { it.import(tournament) }
             importEvents.send(ImportEvent(result, tournament.id))
         }
+    }
+
+    /** Stores the waiting newer copy in place of the one here. */
+    fun replace() {
+        val waiting = pending.value ?: return
+        pending.value = null
+        viewModelScope.launch {
+            val result = repository.updateAndGet { it.import(waiting.incoming) }
+            importEvents.send(ImportEvent(result, waiting.incoming.id))
+        }
+    }
+
+    /** Drops the waiting newer copy and opens the one here. */
+    fun keepHere() {
+        val waiting = pending.value ?: return
+        pending.value = null
+        viewModelScope.launch { importEvents.send(ImportEvent(null, waiting.here.id, keptHere = true)) }
     }
 
     private fun launchUpdate(then: () -> Unit = {}, transform: (Library) -> Library) {

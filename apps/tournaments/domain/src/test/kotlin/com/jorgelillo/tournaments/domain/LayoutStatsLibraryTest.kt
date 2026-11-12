@@ -72,4 +72,21 @@ class LayoutStatsLibraryTest {
         assertEquals(Library.ImportResult.ALREADY_UP_TO_DATE, updated.import(played).second)
         assertEquals(listOf("Pepe", "Luis"), updated.knownNames.sorted().reversed())
     }
+
+    /**
+     * Only a newer copy of a tournament already here replaces something, so only that one is
+     * asked about: a phone's own results could be in the copy it would overwrite.
+     */
+    @Test
+    fun onlyANewerCopyReplacesWhatIsHere() {
+        val t = Tournaments.create("t", "Cup", 0, listOf("Pepe", "Luis"), Format.ELIMINATION)
+        val played = Tournaments.record(t, t.matches.single(), 2, 0)
+        val lib = Library().save(t)
+        assertEquals(t, lib.replacedBy(played))
+        assertEquals(null, lib.replacedBy(t))
+        assertEquals(null, lib.save(played).replacedBy(t))
+        assertEquals(null, Library().replacedBy(played))
+        assertEquals(0, t.playedMatches)
+        assertEquals(1, played.playedMatches)
+    }
 }

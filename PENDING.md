@@ -39,7 +39,6 @@ Lines are pruned as items ship. What has **shipped** lives in `apps/<app>/releas
 | | What is missing | Waiting on |
 |---|---|---|
 | ⏳ | Double elimination and round robin | Feedback after real use |
-| 🔨 | A link carrying a newer revision of a tournament already on the phone replaces it without asking: confirm first (pending state in the ViewModel, a dialog in en and es, screenshot and flow tests) | Pick up · about half a day |
 
 ## league-cards (new game, live with the private deck)
 

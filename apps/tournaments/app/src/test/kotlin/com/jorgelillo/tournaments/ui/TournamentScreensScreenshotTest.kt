@@ -12,6 +12,7 @@ import com.jorgelillo.tournaments.domain.Library
 import com.jorgelillo.tournaments.domain.Tournament
 import com.jorgelillo.tournaments.domain.Tournaments
 import com.jorgelillo.tournaments.ui.home.HomeScreen
+import com.jorgelillo.tournaments.ui.home.ReplaceCard
 import com.jorgelillo.tournaments.ui.stats.StatsScreen
 import com.jorgelillo.tournaments.ui.theme.ArenaColorScheme
 import com.jorgelillo.tournaments.ui.tournament.TournamentScreen
@@ -95,6 +96,22 @@ class TournamentScreensScreenshotTest {
     @Test
     @Config(qualifiers = "+land")
     fun statsLandscape() = stats("stats_landscape")
+
+    /** A link with a newer copy of the cup: played in the link against played on this phone. */
+    private fun replace(name: String) = shot(name) {
+        val here = cup.copy(
+            matches = cup.matches.map { if (it.isBye) it else it.copy(winsA = 0, winsB = 0, draw = false) },
+            revision = 0
+        )
+        ReplaceCard(PendingReplace(cup, here), {}, {})
+    }
+
+    @Test
+    fun replaceDialog() = replace("replace_dialog")
+
+    @Test
+    @Config(qualifiers = "+land")
+    fun replaceDialogLandscape() = replace("replace_dialog_landscape")
 }
 
 /** A 10-inch tablet held upright (800dp wide: below the two-pane width). */
