@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -50,9 +49,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jorgelillo.christmascountdown.R
 import com.jorgelillo.christmascountdown.domain.AdventDoor
-import com.jorgelillo.christmascountdown.ui.GlassCard
 import com.jorgelillo.christmascountdown.ui.about.PLAY_STORE_URL
 import com.jorgelillo.christmascountdown.ui.theme.ChristmasColors
+import com.jorgelillo.christmascountdown.ui.theme.ChristmasLook
+import com.jorgelillo.core.designsystem.LilloScreenHeader
 import com.jorgelillo.core.designsystem.TestTagsAsResourceIds
 import com.jorgelillo.core.designsystem.isShortScreen
 import com.jorgelillo.core.designsystem.isWideScreen
@@ -87,18 +87,14 @@ internal fun AdventScreen(
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         item(span = { GridItemSpan(maxLineSpan) }) {
-            GlassCard(Modifier.fillMaxWidth().padding(bottom = 6.dp)) {
-                Column(Modifier.padding(20.dp)) {
-                    Text(stringResource(R.string.advent_title), style = MaterialTheme.typography.titleLarge)
-                    Text(
-                        text = stringResource(
-                            if (state.isSeason) R.string.advent_subtitle_season else R.string.advent_subtitle_locked
-                        ),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
-            }
+            LilloScreenHeader(
+                title = stringResource(R.string.advent_title),
+                subtitle = stringResource(
+                    if (state.isSeason) R.string.advent_subtitle_season else R.string.advent_subtitle_locked
+                ),
+                emoji = "🎄",
+                modifier = Modifier.padding(horizontal = 4.dp)
+            )
         }
         items(state.doorOrder, key = { it }) { door ->
             val doorState = when {
@@ -186,15 +182,18 @@ private fun Door(number: Int, state: DoorState, onClick: () -> Unit) {
         number
     )
     val shape = MaterialTheme.shapes.small
-    val background = when (state) {
-        DoorState.Openable -> Brush.linearGradient(listOf(ChristmasColors.Berry, Color(0xFF9B1B30)))
-        DoorState.Opened -> Brush.linearGradient(listOf(Color(0x332A9D5C), Color(0x222A9D5C)))
-        DoorState.Locked -> Brush.linearGradient(listOf(Color(0x14FFFFFF), Color(0x0AFFFFFF)))
-    }
+    val look = ChristmasLook.current
+    val background = Brush.linearGradient(
+        when (state) {
+            DoorState.Openable -> ChristmasColors.DoorOpenable
+            DoorState.Opened -> look.doorOpened
+            DoorState.Locked -> look.doorLocked
+        }
+    )
     val borderColor = when (state) {
         DoorState.Openable -> ChristmasColors.Gold
-        DoorState.Opened -> ChristmasColors.Pine
-        DoorState.Locked -> Color(0x22FFFFFF)
+        DoorState.Opened -> look.doorOpenedBorder
+        DoorState.Locked -> look.doorLockedBorder
     }
     Box(
         modifier = Modifier
@@ -212,14 +211,14 @@ private fun Door(number: Int, state: DoorState, onClick: () -> Unit) {
             else -> Text(
                 text = number.toString(),
                 style = MaterialTheme.typography.headlineMedium,
-                color = if (state == DoorState.Locked) Color(0x88FFFFFF) else Color.White
+                color = if (state == DoorState.Locked) look.doorLockedText else Color.White
             )
         }
         if (state == DoorState.Locked) {
             Icon(
                 imageVector = Icons.Filled.Lock,
                 contentDescription = null,
-                tint = Color(0x55FFFFFF),
+                tint = look.doorLockIcon,
                 modifier = Modifier.align(Alignment.TopEnd).padding(6.dp).size(12.dp)
             )
         }

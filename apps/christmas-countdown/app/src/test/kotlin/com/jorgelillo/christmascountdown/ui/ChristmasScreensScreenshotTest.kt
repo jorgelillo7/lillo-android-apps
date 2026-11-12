@@ -12,8 +12,8 @@ import com.jorgelillo.christmascountdown.ui.advent.AdventScreen
 import com.jorgelillo.christmascountdown.ui.advent.AdventUiState
 import com.jorgelillo.christmascountdown.ui.countdown.CountdownScreen
 import com.jorgelillo.christmascountdown.ui.countdown.CountdownUiState
-import com.jorgelillo.christmascountdown.ui.theme.ChristmasColorScheme
-import com.jorgelillo.christmascountdown.ui.theme.ChristmasColors
+import com.jorgelillo.christmascountdown.ui.theme.ChristmasDark
+import com.jorgelillo.christmascountdown.ui.theme.ChristmasLight
 import com.jorgelillo.core.designsystem.LilloTheme
 import com.jorgelillo.core.screenshottesting.captureScreenshot
 import java.time.LocalDate
@@ -37,22 +37,20 @@ class ChristmasScreensScreenshotTest {
     private val october = ZonedDateTime.of(2026, 10, 21, 18, 30, 0, 0, ZoneId.of("Europe/Madrid"))
     private val december18 = LocalDate.of(2026, 12, 18)
 
-    private fun shot(name: String, content: @Composable () -> Unit) = compose.captureScreenshot(name) {
-        LilloTheme(ChristmasColorScheme) { GradientBackground(ChristmasColors.Background) { content() } }
-    }
+    /** Each screen in the dark look under its name, and in the light look with `_light` added. */
+    private fun shot(name: String, dark: Boolean, content: @Composable () -> Unit) =
+        compose.captureScreenshot(if (dark) name else "${name}_light") {
+            LilloTheme(if (dark) ChristmasDark else ChristmasLight) { GradientBackground { content() } }
+        }
 
-    private fun countdown(name: String, sleeps: Boolean = false) = shot(name) {
+    private fun countdown(name: String, dark: Boolean = true, sleeps: Boolean = false) = shot(name, dark) {
         CountdownScreen(
-            CountdownUiState(
-                ChristmasCountdown.stateAt(october),
-                sleepsMode = sleeps
-            ),
-            onSleepsModeChange = {
-            }
+            CountdownUiState(ChristmasCountdown.stateAt(october), sleepsMode = sleeps),
+            onSleepsModeChange = {}
         )
     }
 
-    private fun advent(name: String) = shot(name) {
+    private fun advent(name: String, dark: Boolean = true) = shot(name, dark) {
         val state = AdventUiState(
             unlockedDoors = AdventCalendar.unlockedDoors(december18),
             doorOrder = AdventCalendar.doorOrder(2026),
@@ -62,17 +60,46 @@ class ChristmasScreensScreenshotTest {
         AdventScreen(state, canOpen = { it <= 18 }, onOpen = {})
     }
 
-    @Test fun countdownPortrait() = countdown("countdown")
+    @Test
+    fun countdownPortrait() = countdown("countdown")
 
-    @Test fun sleepsPortrait() = countdown("sleeps", sleeps = true)
+    @Test
+    fun countdownPortraitLight() = countdown("countdown", dark = false)
+
+    @Test
+    fun sleepsPortrait() = countdown("sleeps", sleeps = true)
+
+    @Test
+    fun sleepsPortraitLight() = countdown("sleeps", dark = false, sleeps = true)
 
     @Test
     @Config(qualifiers = "+land")
     fun countdownLandscape() = countdown("countdown_landscape")
 
-    @Test fun adventPortrait() = advent("advent")
+    @Test
+    @Config(qualifiers = "+land")
+    fun countdownLandscapeLight() = countdown("countdown_landscape", dark = false)
+
+    // The countdown is the screen people open the app for: it must still read with the largest text.
+    @Test
+    @Config(fontScale = 2f)
+    fun countdownLargestFont() = countdown("countdown_large_font", dark = false)
+
+    @Test
+    @Config(qualifiers = "+land", fontScale = 2f)
+    fun countdownLandscapeLargestFont() = countdown("countdown_landscape_large_font", dark = false)
+
+    @Test
+    fun adventPortrait() = advent("advent")
+
+    @Test
+    fun adventPortraitLight() = advent("advent", dark = false)
 
     @Test
     @Config(qualifiers = "+land")
     fun adventLandscape() = advent("advent_landscape")
+
+    @Test
+    @Config(qualifiers = "+land")
+    fun adventLandscapeLight() = advent("advent_landscape", dark = false)
 }

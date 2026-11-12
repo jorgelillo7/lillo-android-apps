@@ -10,8 +10,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.jorgelillo.christmascountdown.ui.theme.ChristmasLook
 import kotlin.math.PI
 import kotlin.math.sin
 import kotlin.random.Random
@@ -21,6 +21,7 @@ private class Flake(val x: Float, val y: Float, val radius: Float, val speed: Fl
 /** Gently falling snow. Only the draw phase reads the clock, so it never triggers recomposition. */
 @Composable
 internal fun Snowfall(modifier: Modifier = Modifier, flakeCount: Int = 70) {
+    val snow = ChristmasLook.current.snow
     val flakes = remember {
         List(flakeCount) {
             val depth = Random.nextFloat()
@@ -49,7 +50,7 @@ internal fun Snowfall(modifier: Modifier = Modifier, flakeCount: Int = 70) {
             val y = ((flake.y + time * flake.speed) % 1f) * size.height
             val x = flake.x * size.width + sin(time * 0.7f + flake.phase) * sway
             drawCircle(
-                color = Color.White.copy(alpha = 0.25f + flake.radius * 0.12f),
+                color = snow.copy(alpha = 0.25f + flake.radius * 0.12f),
                 radius = flake.radius.dp.toPx(),
                 center = Offset(x, y)
             )

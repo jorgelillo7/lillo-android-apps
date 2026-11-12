@@ -35,8 +35,8 @@ import com.jorgelillo.christmascountdown.R
 import com.jorgelillo.christmascountdown.domain.CountdownState
 import com.jorgelillo.christmascountdown.domain.TimeLeft
 import com.jorgelillo.christmascountdown.ui.GlassCard
-import com.jorgelillo.christmascountdown.ui.theme.ChristmasColorScheme
-import com.jorgelillo.christmascountdown.ui.theme.ChristmasColors
+import com.jorgelillo.christmascountdown.ui.theme.ChristmasLight
+import com.jorgelillo.core.designsystem.LilloColors
 import com.jorgelillo.core.designsystem.LilloSectionTitle
 import com.jorgelillo.core.designsystem.LilloTheme
 import com.jorgelillo.core.designsystem.isShortScreen
@@ -113,7 +113,7 @@ private fun TimeContent(timeLeft: TimeLeft) {
         Text(
             text = stringResource(R.string.unit_days),
             style = MaterialTheme.typography.titleLarge,
-            color = ChristmasColors.GoldText
+            color = LilloColors.current.accentText
         )
         Spacer(Modifier.height(24.dp))
         Row(
@@ -135,7 +135,7 @@ private fun SleepsContent(sleeps: Long) {
         Text(
             text = pluralStringResource(R.plurals.sleeps_left, sleeps.toInt(), sleeps),
             style = MaterialTheme.typography.titleLarge,
-            color = ChristmasColors.GoldText
+            color = LilloColors.current.accentText
         )
         Spacer(Modifier.height(24.dp))
         // A row of moons, one per night, for the last two weeks.
@@ -155,7 +155,7 @@ private fun ChristmasDayContent() {
         Text(
             text = stringResource(R.string.christmas_day_title),
             style = MaterialTheme.typography.displayMedium,
-            color = ChristmasColors.GoldText,
+            color = LilloColors.current.accentText,
             textAlign = TextAlign.Center
         )
         Spacer(Modifier.height(12.dp))
@@ -207,8 +207,8 @@ private fun ModeSelector(sleepsMode: Boolean, onChange: (Boolean) -> Unit) {
                 onClick = { onChange(index == 1) },
                 shape = SegmentedButtonDefaults.itemShape(index, options.size),
                 colors = SegmentedButtonDefaults.colors(
-                    activeContainerColor = ChristmasColors.Gold,
-                    activeContentColor = MaterialTheme.colorScheme.onPrimary,
+                    activeContainerColor = LilloColors.current.brand,
+                    activeContentColor = LilloColors.current.onBrand,
                     inactiveContainerColor = androidx.compose.ui.graphics.Color.Transparent
                 )
             ) { Text(label) }
@@ -225,7 +225,7 @@ private fun LocalDate.formatted(): String {
 @Preview
 @Composable
 private fun CountdownScreenPreview() {
-    LilloTheme(ChristmasColorScheme) {
+    LilloTheme(ChristmasLight) {
         CountdownScreen(
             state = CountdownUiState(CountdownState.Counting(TimeLeft(83, 5, 42, 7), 84, LocalDate.of(2026, 12, 25))),
             onSleepsModeChange = {}
