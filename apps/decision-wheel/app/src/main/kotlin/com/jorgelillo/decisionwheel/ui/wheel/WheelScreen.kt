@@ -36,6 +36,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -82,9 +83,11 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jorgelillo.core.designsystem.ConfettiBurst
+import com.jorgelillo.core.designsystem.LilloColors
 import com.jorgelillo.core.designsystem.isShortScreen
 import com.jorgelillo.decisionwheel.R
 import com.jorgelillo.decisionwheel.domain.AppState
@@ -200,7 +203,15 @@ internal fun WheelScreen(
         snackbarHost = { SnackbarHost(snackbar) },
         topBar = {
             TopAppBar(
-                title = { Text(wheel.name, maxLines = 1) },
+                title = {
+                    // The name is the user's: it shrinks to fit, then ends in an ellipsis.
+                    Text(
+                        wheel.name,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        autoSize = TextAutoSize.StepBased(minFontSize = 16.sp, maxFontSize = 22.sp)
+                    )
+                },
                 navigationIcon = {
                     IconButton(onClick = onBack, modifier = Modifier.testTag("back")) {
                         Icon(
@@ -259,8 +270,9 @@ internal fun WheelScreen(
                     },
                 contentAlignment = Alignment.Center
             ) {
+                val unknown = MaterialTheme.colorScheme.onSurfaceVariant
                 WheelCanvas(segments, {
-                    colorByOption[it] ?: WheelColors.Muted
+                    colorByOption[it] ?: unknown
                 }, rotation.value, winner, Modifier.fillMaxSize().semantics { wheelDegrees = rotation.value })
                 ConfettiBurst(celebration, WheelColors.Segments, Modifier.fillMaxSize())
             }
@@ -274,8 +286,8 @@ internal fun WheelScreen(
                     enabled = canSpin,
                     modifier = Modifier.widthIn(min = 200.dp).height(56.dp).testTag("spin"),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = WheelColors.Sun,
-                        contentColor = WheelColors.Night
+                        containerColor = LilloColors.current.brand,
+                        contentColor = LilloColors.current.onBrand
                     )
                 ) {
                     Text(
@@ -404,14 +416,14 @@ private fun ResultCard(winner: String, onAccept: () -> Unit, onAgain: () -> Unit
         modifier = Modifier
             .fillMaxWidth()
             .clip(MaterialTheme.shapes.large)
-            .background(WheelColors.NightRaised)
-            .border(1.dp, WheelColors.Sun.copy(alpha = 0.5f), MaterialTheme.shapes.large)
+            .background(MaterialTheme.colorScheme.surfaceContainer)
+            .border(1.dp, LilloColors.current.brand.copy(alpha = 0.5f), MaterialTheme.shapes.large)
             .padding(20.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
             stringResource(R.string.result_title),
-            color = WheelColors.SunText,
+            color = LilloColors.current.accentText,
             style = MaterialTheme.typography.labelLarge
         )
         Text(
@@ -428,7 +440,10 @@ private fun ResultCard(winner: String, onAccept: () -> Unit, onAgain: () -> Unit
             Button(
                 onClick = onAccept,
                 modifier = Modifier.testTag("accept"),
-                colors = ButtonDefaults.buttonColors(containerColor = WheelColors.Sun, contentColor = WheelColors.Night)
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = LilloColors.current.brand,
+                    contentColor = LilloColors.current.onBrand
+                )
             ) { Text(stringResource(R.string.result_accept), fontWeight = FontWeight.Bold) }
         }
     }
@@ -448,7 +463,11 @@ private fun OptionChip(
             .minimumInteractiveComponentSize() // 48 dp to tap, whatever the chip's drawn height
             .clip(CircleShape)
             .background(if (vetoed) Color.Transparent else color.copy(alpha = 0.18f))
-            .border(1.dp, if (vetoed) WheelColors.Muted.copy(alpha = 0.4f) else color.copy(alpha = 0.7f), CircleShape)
+            .border(
+                1.dp,
+                if (vetoed) MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f) else color.copy(alpha = 0.7f),
+                CircleShape
+            )
             .clickable(enabled = enabled, onClick = onClick)
             .padding(horizontal = 12.dp, vertical = 7.dp),
         verticalAlignment = Alignment.CenterVertically
@@ -456,12 +475,14 @@ private fun OptionChip(
         Box(
             Modifier.size(
                 8.dp
-            ).clip(CircleShape).background(if (vetoed) WheelColors.Muted.copy(alpha = 0.4f) else color)
+            ).clip(
+                CircleShape
+            ).background(if (vetoed) MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f) else color)
         )
         Spacer(Modifier.size(6.dp))
         Text(
             text = if (recent) "$label ⏱" else label,
-            color = if (vetoed) WheelColors.Muted.copy(alpha = 0.6f) else WheelColors.Cream,
+            color = if (vetoed) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.onSurface,
             textDecoration = if (vetoed) TextDecoration.LineThrough else null,
             style = MaterialTheme.typography.labelLarge
         )
@@ -471,7 +492,7 @@ private fun OptionChip(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun HistorySheet(entries: List<Pair<String, Long>>, onClear: () -> Unit, onDismiss: () -> Unit) {
-    ModalBottomSheet(onDismissRequest = onDismiss, containerColor = WheelColors.NightRaised) {
+    ModalBottomSheet(onDismissRequest = onDismiss, containerColor = MaterialTheme.colorScheme.surfaceContainer) {
         Column(Modifier.padding(horizontal = 24.dp).padding(bottom = 24.dp)) {
             Text(stringResource(R.string.history_title), style = MaterialTheme.typography.titleLarge)
             Spacer(Modifier.height(12.dp))

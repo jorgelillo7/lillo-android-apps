@@ -119,8 +119,8 @@ internal fun EditScreen(
                     onClick = { addDraft() },
                     enabled = draft.isNotBlank(),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = WheelColors.Teal,
-                        contentColor = WheelColors.Night
+                        containerColor = MaterialTheme.colorScheme.secondary,
+                        contentColor = MaterialTheme.colorScheme.onSecondary
                     )
                 ) { Text(stringResource(R.string.edit_add)) }
             }
@@ -151,7 +151,7 @@ internal fun EditScreen(
                 if (!isNew) {
                     item {
                         TextButton(onClick = { confirmDelete = true }, modifier = Modifier.padding(top = 16.dp)) {
-                            Text(stringResource(R.string.edit_delete), color = WheelColors.CoralText)
+                            Text(stringResource(R.string.edit_delete), color = MaterialTheme.colorScheme.error)
                         }
                     }
                 }
@@ -165,7 +165,7 @@ internal fun EditScreen(
             text = { Text(stringResource(R.string.edit_delete_confirm)) },
             confirmButton = {
                 TextButton(onClick = onDelete) {
-                    Text(stringResource(R.string.edit_delete), color = WheelColors.CoralText)
+                    Text(stringResource(R.string.edit_delete), color = MaterialTheme.colorScheme.error)
                 }
             },
             dismissButton = {

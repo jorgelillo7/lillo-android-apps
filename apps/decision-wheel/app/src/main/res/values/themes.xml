@@ -1,11 +1,11 @@
 <resources>
     <style name="Theme.DecisionWheel.Starting" parent="Theme.SplashScreen">
-        <item name="windowSplashScreenBackground">@color/night</item>
+        <item name="windowSplashScreenBackground">@color/window</item>
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
         <item name="postSplashScreenTheme">@style/Theme.DecisionWheel</item>
     </style>
 
     <style name="Theme.DecisionWheel" parent="android:Theme.Material.NoActionBar">
-        <item name="android:windowBackground">@color/night</item>
+        <item name="android:windowBackground">@color/window</item>
     </style>
 </resources>

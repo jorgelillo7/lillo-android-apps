@@ -1,5 +1,6 @@
 package com.jorgelillo.decisionwheel.ui.about
 
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -16,8 +17,8 @@ val PLAY_STORE_URL = LilloLinks.playStore(BuildConfig.APPLICATION_ID)
 @Composable
 internal fun AboutSheet(onDismiss: () -> Unit) = LilloAboutSheet(
     icon = painterResource(R.drawable.ic_launcher_foreground),
-    iconBackground = WheelColors.Night,
-    containerColor = WheelColors.NightRaised,
+    iconBackground = WheelColors.IconBackground,
+    containerColor = MaterialTheme.colorScheme.surfaceContainer,
     texts = AboutTexts(
         title = stringResource(R.string.app_name),
         version = stringResource(R.string.about_version, BuildConfig.VERSION_NAME),
