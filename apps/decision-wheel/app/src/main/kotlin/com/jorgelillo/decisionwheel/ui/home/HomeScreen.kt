@@ -1,6 +1,10 @@
 package com.jorgelillo.decisionwheel.ui.home
 
-import android.text.format.DateUtils
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -18,6 +22,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
@@ -34,6 +39,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -43,7 +49,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
@@ -53,6 +59,7 @@ import androidx.compose.ui.unit.dp
 import com.jorgelillo.core.designsystem.LilloColors
 import com.jorgelillo.core.designsystem.TestTagsAsResourceIds
 import com.jorgelillo.core.designsystem.accentEdge
+import com.jorgelillo.core.designsystem.animationsEnabled
 import com.jorgelillo.core.designsystem.entrance
 import com.jorgelillo.core.designsystem.isShortScreen
 import com.jorgelillo.decisionwheel.R
@@ -91,108 +98,120 @@ internal fun HomeScreen(
             }
         }
     ) { padding ->
-        LazyColumn(
-            modifier = Modifier.fillMaxSize().padding(padding),
-            contentPadding = PaddingValues(
-                start = 20.dp,
-                end = 20.dp,
-                top = 16.dp,
-                bottom = if (short) 16.dp else 96.dp
-            )
-        ) {
-            item {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(
-                        stringResource(R.string.home_title),
-                        style = MaterialTheme.typography.run { if (short) headlineMedium else displaySmall },
-                        color = LilloColors.current.accentText,
-                        modifier = Modifier.weight(1f)
-                    )
-                    if (short) {
-                        Button(
-                            onClick = onNew,
-                            modifier = Modifier.testTag("new_wheel"),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = LilloColors.current.brand,
-                                contentColor = LilloColors.current.onBrand
-                            )
-                        ) {
-                            Icon(Icons.Filled.Add, contentDescription = null)
-                            Spacer(Modifier.width(8.dp))
-                            Text(stringResource(R.string.new_wheel), fontWeight = FontWeight.Bold)
-                        }
-                    }
-                    Box {
-                        IconButton(onClick = { menu = true }, modifier = Modifier.testTag("more")) {
-                            Icon(Icons.Filled.MoreVert, contentDescription = stringResource(R.string.action_more))
-                        }
-                        DropdownMenu(expanded = menu, onDismissRequest = {
-                            menu = false
-                        }, modifier = TestTagsAsResourceIds) {
-                            CheckItem(stringResource(R.string.settings_avoid_repeats), state.avoidRepeats) {
-                                onAvoidRepeats(!state.avoidRepeats)
-                            }
-                            CheckItem(stringResource(R.string.settings_sound), state.soundOn) {
-                                onSound(!state.soundOn)
-                            }
-                            DropdownMenuItem(
-                                text = { Text(stringResource(R.string.restore_presets)) },
-                                onClick = {
-                                    menu = false
-                                    onRestorePresets()
-                                },
-                                modifier = Modifier.testTag("restore_presets")
-                            )
-                            DropdownMenuItem(text = { Text(stringResource(R.string.action_about)) }, onClick = {
-                                menu = false
-                                onAbout()
-                            })
-                        }
-                    }
-                }
-                Spacer(Modifier.height(4.dp))
-                Recent(state)
-                Spacer(Modifier.height(20.dp))
+        val list = rememberLazyListState()
+        val minFree = with(LocalDensity.current) { LAST_RESULT_MIN_FREE.roundToPx() }
+        // The last result only where the list leaves the room: never on short screens, never over
+        // wheels, and gone as soon as the list is scrolled.
+        val showLast by remember(short, minFree) {
+            derivedStateOf {
+                val info = list.layoutInfo
+                val lastItem = info.visibleItemsInfo.lastOrNull()
+                !short && lastItem != null && lastItem.index == info.totalItemsCount - 1 &&
+                    list.firstVisibleItemIndex == 0 && list.firstVisibleItemScrollOffset == 0 &&
+                    info.viewportEndOffset - info.afterContentPadding - (lastItem.offset + lastItem.size) >= minFree
             }
-            items(state.sortedWheels, key = { it.id }) { wheel ->
-                WheelCard(wheel, onClick = { onOpen(wheel) }, onToggleFavorite = { onToggleFavorite(wheel) })
-                Spacer(Modifier.height(12.dp))
+        }
+        Box(Modifier.fillMaxSize().padding(padding)) {
+            LazyColumn(
+                state = list,
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(
+                    start = 20.dp,
+                    end = 20.dp,
+                    top = 16.dp,
+                    bottom = if (short) 16.dp else 96.dp
+                )
+            ) {
+                item {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            stringResource(R.string.home_title),
+                            style = MaterialTheme.typography.run { if (short) headlineMedium else displaySmall },
+                            color = LilloColors.current.accentText,
+                            modifier = Modifier.weight(1f)
+                        )
+                        if (short) {
+                            Button(
+                                onClick = onNew,
+                                modifier = Modifier.testTag("new_wheel"),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = LilloColors.current.brand,
+                                    contentColor = LilloColors.current.onBrand
+                                )
+                            ) {
+                                Icon(Icons.Filled.Add, contentDescription = null)
+                                Spacer(Modifier.width(8.dp))
+                                Text(stringResource(R.string.new_wheel), fontWeight = FontWeight.Bold)
+                            }
+                        }
+                        Box {
+                            IconButton(onClick = { menu = true }, modifier = Modifier.testTag("more")) {
+                                Icon(Icons.Filled.MoreVert, contentDescription = stringResource(R.string.action_more))
+                            }
+                            DropdownMenu(expanded = menu, onDismissRequest = {
+                                menu = false
+                            }, modifier = TestTagsAsResourceIds) {
+                                CheckItem(stringResource(R.string.settings_avoid_repeats), state.avoidRepeats) {
+                                    onAvoidRepeats(!state.avoidRepeats)
+                                }
+                                CheckItem(stringResource(R.string.settings_sound), state.soundOn) {
+                                    onSound(!state.soundOn)
+                                }
+                                DropdownMenuItem(
+                                    text = { Text(stringResource(R.string.restore_presets)) },
+                                    onClick = {
+                                        menu = false
+                                        onRestorePresets()
+                                    },
+                                    modifier = Modifier.testTag("restore_presets")
+                                )
+                                DropdownMenuItem(text = { Text(stringResource(R.string.action_about)) }, onClick = {
+                                    menu = false
+                                    onAbout()
+                                })
+                            }
+                        }
+                    }
+                    Spacer(Modifier.height(4.dp))
+                    Recent(state)
+                    Spacer(Modifier.height(20.dp))
+                }
+                items(state.sortedWheels, key = { it.id }) { wheel ->
+                    WheelCard(wheel, onClick = { onOpen(wheel) }, onToggleFavorite = { onToggleFavorite(wheel) })
+                    Spacer(Modifier.height(12.dp))
+                }
+            }
+            val animate = animationsEnabled()
+            AnimatedVisibility(
+                visible = showLast,
+                enter = if (animate) fadeIn() else EnterTransition.None,
+                exit = if (animate) fadeOut() else ExitTransition.None,
+                // Above the "New wheel" button.
+                modifier = Modifier.align(Alignment.BottomCenter).padding(start = 20.dp, end = 20.dp, bottom = 88.dp)
+            ) {
+                LastResultCard(state, onOpen)
             }
         }
     }
 }
 
+/** The free height under the wheels that the last result needs before it shows. */
+private val LAST_RESULT_MIN_FREE = 240.dp
+
 /**
- * What the list below can't say: the last decision and the most picked option, or how to start.
- * A light line under the title, not a card: the wheels themselves are the home screen.
+ * What the list below can't say: the most picked option. A light line under the title, not a
+ * card: the wheels themselves are the home screen; the last result has its own card below them.
  */
 @Composable
 private fun Recent(state: AppState) {
-    val context = LocalContext.current
-    val last = state.history.maxByOrNull { it.atEpochMillis }
     val top = state.history.groupingBy { it.option }.eachCount().maxByOrNull { it.value }?.takeIf { it.value > 1 }
-    val lines = buildList {
-        if (last == null) {
-            add(stringResource(R.string.hero_first_spin) to "hero_first_spin")
-        } else {
-            val day = DateUtils.formatDateTime(
-                context,
-                last.atEpochMillis,
-                DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_ABBREV_MONTH or DateUtils.FORMAT_NO_YEAR
-            )
-            add(stringResource(R.string.hero_last, last.option, day) to "hero_last")
-        }
-        top?.let { add(stringResource(R.string.hero_top, it.key, it.value) to "hero_top") }
-    }
-    Column(Modifier.entrance(), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-        lines.forEach { (text, tag) ->
-            Text(
-                text,
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.testTag(tag)
-            )
-        }
+    if (top != null) {
+        Text(
+            stringResource(R.string.hero_top, top.key, top.value),
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.entrance().testTag("hero_top")
+        )
     }
 }
 

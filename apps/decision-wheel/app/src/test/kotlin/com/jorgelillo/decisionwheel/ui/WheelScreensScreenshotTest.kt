@@ -3,6 +3,7 @@ package com.jorgelillo.decisionwheel.ui
 import android.app.Application
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.takahirom.roborazzi.RobolectricDeviceQualifiers
 import com.jorgelillo.core.designsystem.LilloTheme
@@ -54,6 +55,10 @@ class WheelScreensScreenshotTest {
     private fun home(name: String, dark: Boolean = true) =
         shot(name, dark) { HomeScreen(state, {}, {}, {}, {}, {}, {}, {}) }
 
+    /** No decision yet: the card under the wheels offers a first spin on the favourite. */
+    private fun firstSpin(name: String, dark: Boolean = true) =
+        shot(name, dark) { HomeScreen(state.copy(history = emptyList()), {}, {}, {}, {}, {}, {}, {}) }
+
     private fun wheel(name: String, dark: Boolean = true) =
         shot(name, dark) { WheelScreen(food, state, {}, {}, {}, {}, {}, {}) }
 
@@ -68,6 +73,22 @@ class WheelScreensScreenshotTest {
     @Test
     @Config(qualifiers = "+land")
     fun homeLandscapeLight() = home("home_landscape", dark = false)
+
+    @Test
+    fun homeFirstSpin() = firstSpin("home_first_spin")
+
+    @Test
+    fun homeFirstSpinLight() = firstSpin("home_first_spin", dark = false)
+
+    /** Wheels down to the bottom of the screen leave no room: the last result stays away. */
+    @Test
+    fun theLastResultNeedsRoom() {
+        val many = (1..8).map { Wheel("w$it", "Wheel $it", listOf("A", "B")) }
+        compose.setContent {
+            LilloTheme(WheelLight) { HomeScreen(state.copy(wheels = many + state.wheels), {}, {}, {}, {}, {}, {}, {}) }
+        }
+        compose.onNodeWithTag("last_result").assertDoesNotExist()
+    }
 
     @Test fun wheelPortrait() = wheel("wheel")
 

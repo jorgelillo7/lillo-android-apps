@@ -89,7 +89,12 @@
         <item>Sí</item>
         <item>No</item>
     </string-array>
-    <string name="hero_last">🎯 Última: %1$s · %2$s</string>
     <string name="hero_top">🏅 La más elegida: %1$s (%2$d)</string>
-    <string name="hero_first_spin">🎲 Gira una y decide</string>
+    <string name="last_result_label">🎯 Última decisión</string>
+    <string name="last_result_detail">%1$s · %2$s</string>
+    <string name="last_result_again">Girar otra vez</string>
+    <string name="first_spin_label">🎲 Cuando quieras</string>
+    <string name="first_spin_title">Tu primera decisión</string>
+    <string name="first_spin_detail">Un giro a «%1$s» y decidido.</string>
+    <string name="first_spin_action">Girarla</string>
 </resources>
