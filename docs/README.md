@@ -9,7 +9,7 @@ One entry per document. Runbooks first, then setup, then reference.
 | [`operations.md`](operations.md) | Repo-wide runbook: prerequisites, build/test, shared scripts, release steps. Per-app commands live in `apps/<app>/OPERATIONS.md` |
 | [`publishing-on-google-play.md`](publishing-on-google-play.md) | End-to-end Play checklist: account, signing, App content declarations, store listing, release tracks, review |
 | [`adding-a-new-app.md`](adding-a-new-app.md) | Folder layout, Gradle setup, icon, privacy policy and store assets for a new app |
-| [`signing.md`](signing.md) | Upload keys: create one per app (`scripts/new-upload-key.sh`), where it lives, backup, lost key |
+| [`signing.md`](signing.md) | Upload keys: create one per app (`scripts/new-upload-key.sh`), where it lives, Google Drive backup (`scripts/backup-upload-key.sh`), lost key |
 
 ## Setup
 
@@ -46,4 +46,4 @@ Design decisions of apps that needed a plan before coding:
 [`plans/stadium-events.md`](plans/stadium-events.md).
 
 Shared scripts: [`scripts/`](../scripts). Branding: [`branding/`](../branding).
-Claude Code skills: [`.claude/skills/`](../.claude/skills) — `new-android-app`, `upgrade-android-deps`, `check-android-env`, `release-android-app`.
+Claude Code skills: [`.claude/skills/`](../.claude/skills) — `new-android-app`, `release-android-app`, `upgrade-android-deps`, `check-android-env`, `play-status`.

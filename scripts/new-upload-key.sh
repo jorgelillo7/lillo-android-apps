@@ -8,7 +8,9 @@
 #   app-folder  folder under apps/, e.g. decision-wheel
 #   keys-dir    where the .jks goes (default: ~/Projects/documentation/keys/<app-folder>)
 #
-# See docs/signing.md for the whole process (backup, Play App Signing, lost key).
+# At the end it backs the key up to Google Drive with scripts/backup-upload-key.sh (encrypted when
+# LILLO_KEYS_BACKUP_ENCRYPT=1). See docs/signing.md for the whole process (backup, Play App
+# Signing, lost key).
 set -euo pipefail
 source "$(dirname "$0")/env.sh"
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -55,8 +57,17 @@ echo "Certificate (copy into apps/$app/OPERATIONS.md, it is not secret):"
 "$JAVA_HOME/bin/keytool" -J-Duser.language=en -list -v -keystore "$jks" -alias "$alias" -storepass:env KEY_PASSWORD \
   | grep -E 'Serial number|SHA1:|SHA256:|Valid from'
 unset KEY_PASSWORD again
+
+echo
+echo "Backing up the key and its credentials to Google Drive (scripts/backup-upload-key.sh):"
+if "$ROOT/scripts/backup-upload-key.sh" ${LILLO_KEYS_BACKUP_ENCRYPT:+--encrypt} "$app"; then
+  backed_up="  2. Backed up to Google Drive and verified."
+else
+  backed_up="  2. NOT backed up: fix the problem above, then run scripts/backup-upload-key.sh $app"
+fi
 echo
 echo "Done. Next:"
 echo "  1. Password saved in your password manager? (it is also in $props)"
-echo "  2. Back up $jks off this Mac (see docs/signing.md)."
-echo "  3. git status must NOT list keystore.properties or the .jks."
+echo "$backed_up"
+echo "  3. Copy the certificate lines above into apps/$app/OPERATIONS.md."
+echo "  4. git status must NOT list keystore.properties or the .jks."

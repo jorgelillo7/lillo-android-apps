@@ -7,7 +7,7 @@
 # Usage: apps/group-polls/tools/capture_store_screenshots.sh   (LOCALES="es-ES" for one)
 set -euo pipefail
 source "$(dirname "$0")/../../../scripts/capture_lib.sh"
-PRIVATE_LINK="https://jorgelillo7.github.io/q/?c=DemPrivateX2" # FakePollRepository.SAMPLE_PRIVATE
+PRIVATE_LINK="https://jorgelillo7.github.io/q/#DemPrivateX2" # FakePollRepository.SAMPLE_PRIVATE
 
 
 first_poll() {

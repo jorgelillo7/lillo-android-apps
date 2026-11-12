@@ -1,6 +1,7 @@
 package com.jorgelillo.stadiumevents.data
 
 import com.jorgelillo.core.platform.JsonStore
+import com.jorgelillo.core.platform.runCatchingCancellable
 import com.jorgelillo.stadiumevents.domain.AppState
 import com.jorgelillo.stadiumevents.domain.EventFeed
 import java.net.HttpURLConnection
@@ -23,7 +24,17 @@ class HttpFeedFetcher(private val userAgent: String) : FeedFetcher {
             connection.readTimeout = TIMEOUT_MILLIS
             connection.setRequestProperty("User-Agent", userAgent)
             check(connection.responseCode == HttpURLConnection.HTTP_OK) { "HTTP ${connection.responseCode}" }
-            connection.inputStream.bufferedReader().use { it.readText() }
+            // Read at most one char past the limit: EventFeed.parse refuses the oversized file.
+            connection.inputStream.bufferedReader().use { reader ->
+                val buffer = CharArray(EventFeed.MAX_CHARS + 1)
+                var read = 0
+                while (read < buffer.size) {
+                    val n = reader.read(buffer, read, buffer.size - read)
+                    if (n < 0) break
+                    read += n
+                }
+                String(buffer, 0, read)
+            }
         } finally {
             connection.disconnect()
         }
@@ -47,7 +58,7 @@ class FeedRepository(
 
     /** True if the download worked. */
     suspend fun refresh(now: Long = System.currentTimeMillis()): Boolean {
-        val feed = runCatching { EventFeed.parse(fetcher.fetch()) }.getOrNull() ?: return false
+        val feed = runCatchingCancellable { EventFeed.parse(fetcher.fetch()) }.getOrNull() ?: return false
         store.update { it.copy(feed = feed, fetchedAt = now) }
         onUpdated()
         return true

@@ -42,7 +42,7 @@ in debug builds (register the debug token printed in logcat in the Firebase cons
 
 ## Invite links (App Links)
 
-`https://jorgelillo7.github.io/q/?c=CODE` opens the poll. Verified by
+`https://jorgelillo7.github.io/q/#CODE` opens the poll. Verified by
 `jorgelillo7.github.io/.well-known/assetlinks.json`, which must list the SHA-256 of **every**
 certificate that signs an installed build:
 

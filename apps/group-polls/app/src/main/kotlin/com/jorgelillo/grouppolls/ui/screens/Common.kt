@@ -29,11 +29,11 @@ import com.jorgelillo.core.platform.LilloLinks
 import com.jorgelillo.core.platform.shareText
 import com.jorgelillo.grouppolls.BuildConfig
 import com.jorgelillo.grouppolls.R
+import com.jorgelillo.grouppolls.domain.InviteCodes
 import com.jorgelillo.grouppolls.domain.Poll
 import com.jorgelillo.grouppolls.domain.Split
 import com.jorgelillo.grouppolls.ui.theme.Polls
 
-const val LINK_BASE = "https://jorgelillo7.github.io/q/?c="
 val PRIVACY_POLICY_URL = LilloLinks.privacyPolicy("group-polls")
 val PLAY_STORE_URL = LilloLinks.playStore(BuildConfig.APPLICATION_ID)
 
@@ -94,7 +94,7 @@ internal fun SplitBar(poll: Poll, modifier: Modifier = Modifier, height: Int = 1
 }
 
 /** Opens the share sheet with the poll's link. */
-fun sharePoll(context: Context, poll: Poll, text: String) = context.shareText("$text\n$LINK_BASE${poll.code}")
+fun sharePoll(context: Context, poll: Poll, text: String) = context.shareText("$text\n${InviteCodes.link(poll.code)}")
 
 /** "2 h", "3 d"… for the feed cards. */
 @Composable

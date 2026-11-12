@@ -28,12 +28,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.compose.LifecycleEventEffect
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jorgelillo.core.designsystem.isShortScreen
 import com.jorgelillo.slipper.R
 import com.jorgelillo.slipper.domain.Engine
@@ -53,6 +58,15 @@ private class Finger {
     var holding = false
 
     fun take(): Input = Input(tapped, holding).also { tapped = false }
+}
+
+/**
+ * A run outlives the composition: turning the phone recreates the screen, not the run. Scoped to
+ * the run's back stack entry, so a new run starts fresh.
+ */
+internal class RunState : ViewModel() {
+    var world: World? = null
+    var paused = false
 }
 
 /** How long the caught moment stays on screen before the result. */
@@ -94,9 +108,24 @@ internal fun GameScreen(
     val sprites = rememberGameSprites()
     val haptics = LocalHapticFeedback.current
     val finger = remember { Finger() }
-    var world by remember(seed) { mutableStateOf(Engine.start(seed)) }
+    val run: RunState = viewModel(key = "run-$seed")
+    var world by remember(seed) { mutableStateOf(run.world ?: Engine.start(seed)) }
+    var paused by remember(seed) { mutableStateOf(run.paused) }
     val caught by rememberUpdatedState(onCatch)
     val quiet by rememberUpdatedState(muted)
+
+    // Leaving the app, a call, the notification shade: the run waits for a tap instead of going on unseen.
+    LifecycleEventEffect(Lifecycle.Event.ON_PAUSE) {
+        if (!world.over) paused = true
+        run.paused = paused
+    }
+    val focused = LocalWindowInfo.current.isWindowFocused
+    var wasFocused by remember { mutableStateOf(focused) }
+    LaunchedEffect(focused) {
+        if (wasFocused && !focused && !world.over) paused = true
+        wasFocused = focused
+        run.paused = paused
+    }
 
     LaunchedEffect(seed) {
         var last = 0L
@@ -104,6 +133,10 @@ internal fun GameScreen(
         var frozenUntil = 0L
         while (!world.over) {
             withFrameNanos { now ->
+                if (paused) {
+                    last = 0L
+                    return@withFrameNanos
+                }
                 if (last != 0L && now >= frozenUntil) pending += min(0.1, (now - last) / 1e9)
                 last = now
                 var w = world
@@ -129,6 +162,7 @@ internal fun GameScreen(
                     if (now < frozenUntil) pending = 0.0
                 }
                 world = w
+                run.world = w
             }
         }
         delay(CAUGHT_PAUSE_MS)
@@ -142,8 +176,15 @@ internal fun GameScreen(
             .pointerInput(Unit) {
                 awaitEachGesture {
                     awaitFirstDown()
-                    finger.tapped = true
-                    finger.holding = true
+                    // The tap that resumes a paused run is not a jump.
+                    val resuming = paused
+                    if (resuming) {
+                        paused = false
+                        run.paused = false
+                    } else {
+                        finger.tapped = true
+                        finger.holding = true
+                    }
                     do {
                         val event = awaitPointerEvent()
                     } while (event.changes.any { it.pressed })
@@ -152,7 +193,7 @@ internal fun GameScreen(
             }
     ) {
         GameScene(world, sprites, Modifier.fillMaxSize(), skin = skin, labels = sceneLabels())
-        Hud(world, target, daily, sprites)
+        Hud(world, target, daily, sprites, paused)
     }
 }
 
@@ -161,7 +202,7 @@ internal fun GameScreen(
  * short screens (landscape, handhelds) it all goes in one row: the jumps reach the top of the screen.
  */
 @Composable
-internal fun Hud(world: World, target: Int?, daily: Boolean, sprites: GameSprites) {
+internal fun Hud(world: World, target: Int?, daily: Boolean, sprites: GameSprites, paused: Boolean = false) {
     val banner = when {
         target != null -> stringResource(R.string.challenge_banner, formatScore(target))
         daily -> stringResource(R.string.daily_banner)
@@ -210,6 +251,15 @@ internal fun Hud(world: World, target: Int?, daily: Boolean, sprites: GameSprite
                 color = Kitchen.Shout,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(top = 32.dp).fillMaxWidth().panel()
+            )
+        } else if (paused) {
+            Text(
+                stringResource(R.string.paused),
+                style = MaterialTheme.typography.headlineMedium,
+                fontWeight = FontWeight.Black,
+                color = Kitchen.Ink,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(top = 32.dp).fillMaxWidth().panel().testTag("paused")
             )
         } else if (world.time < HINT_SECONDS) {
             Text(
