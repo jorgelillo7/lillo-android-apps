@@ -80,6 +80,11 @@ class WheelScreensScreenshotTest {
     @Test
     fun homeFirstSpinLight() = firstSpin("home_first_spin", dark = false)
 
+    // With the largest text the card needs more room: it shows only where it still fits.
+    @Test
+    @Config(fontScale = 2f)
+    fun homeLargestFont() = home("home_large_font", dark = false)
+
     /** Wheels down to the bottom of the screen leave no room: the last result stays away. */
     @Test
     fun theLastResultNeedsRoom() {

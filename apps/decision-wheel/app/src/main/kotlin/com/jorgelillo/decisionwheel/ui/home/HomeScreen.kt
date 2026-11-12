@@ -99,7 +99,8 @@ internal fun HomeScreen(
         }
     ) { padding ->
         val list = rememberLazyListState()
-        val minFree = with(LocalDensity.current) { LAST_RESULT_MIN_FREE.roundToPx() }
+        // The card grows with the font size, so the room it needs does too.
+        val minFree = with(LocalDensity.current) { (LAST_RESULT_MIN_FREE * fontScale.coerceAtLeast(1f)).roundToPx() }
         // The last result only where the list leaves the room: never on short screens, never over
         // wheels, and gone as soon as the list is scrolled.
         val showLast by remember(short, minFree) {
