@@ -7,6 +7,8 @@
 #                                          app's language back to the phone's, demo off, clock back
 #                                          (CAPTURE_GRADLE_ARGS: extra arguments for that build)
 #   capture_date MMDDhhmmYYYY              optional: a fixed date (scripts/emulator.sh date)
+#   look dark|light                        the phone's look; captures start in the light one and
+#                                          go back to it on exit
 #   for locale in $CAPTURE_LOCALES; do     en-US es-ES, or LOCALES="es-ES" to redo one
 #     capture_open "$locale" [wait] [keep] clean data (not with keep), the locale, launch
 #     ... tap / type_in / swipe_up / back / shot "$locale" <name>, the app's own steps ...
@@ -40,6 +42,13 @@ capture_start() {
   (cd "$ROOT" && ./gradlew -q ":apps:$APP:app:installDebug" ${CAPTURE_GRADLE_ARGS:-})
   trap capture_finish EXIT
   "$ROOT/scripts/emulator.sh" demo on
+  look light
+}
+
+# look dark|light: the phone's dark theme off or on; the app follows it (activity recreated).
+look() {
+  if [ "$1" = dark ]; then "$ADB" shell cmd uimode night yes >/dev/null; else "$ADB" shell cmd uimode night no >/dev/null; fi
+  sleep 3
 }
 
 capture_date() {
@@ -59,6 +68,7 @@ capture_open() {
 capture_finish() {
   if [ "$CAPTURE_DEVICE" = tablet ]; then "$ADB" shell wm size reset; "$ADB" shell wm density reset; fi
   "$ADB" shell cmd locale set-app-locales "$PKG" --locales ""
+  look light
   "$ROOT/scripts/emulator.sh" demo off
   if [ -n "${CAPTURE_DATE_SET:-}" ]; then "$ROOT/scripts/emulator.sh" date auto; fi
   echo "Raw screenshots in $RAW. Check them before generating the store graphics."
