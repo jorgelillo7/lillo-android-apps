@@ -82,7 +82,9 @@ internal fun ShareContent(t: Tournament, modifier: Modifier = Modifier) {
                 )
             }
             val message = stringResource(R.string.share_message, t.name, link)
-            LilloBigButton(stringResource(R.string.share_send_link), { context.shareText(message) }, modifier = Modifier.testTag("send_link"))
+            LilloBigButton(stringResource(R.string.share_send_link), {
+                context.shareText(message)
+            }, modifier = Modifier.testTag("send_link"))
         }
         Row(horizontalArrangement = Arrangement.spacedBy(10.dp), modifier = Modifier.fillMaxWidth()) {
             OutlinedButton(onClick = {
