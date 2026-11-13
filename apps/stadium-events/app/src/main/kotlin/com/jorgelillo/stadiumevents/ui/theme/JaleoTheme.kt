@@ -2,12 +2,15 @@ package com.jorgelillo.stadiumevents.ui.theme
 
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
+import com.jorgelillo.core.designsystem.LilloStyle
+import com.jorgelillo.core.designsystem.lilloIsDark
 
 /**
  * Light by default (dark text on cream reads best for the 50–70 year olds the app is for); the dark
- * variant only when the phone is in dark mode. The answer cards keep dark text in both.
+ * look when the phone is in dark mode or the user picks it. The answer cards keep dark text in both.
  */
 @Immutable
 data class JaleoPalette(
@@ -69,3 +72,13 @@ val JaleoDarkScheme = darkColorScheme(
     surfaceContainerLow = DarkPalette.surface,
     surfaceContainer = DarkPalette.surface
 )
+
+/** The light look: cream, ink, the accent blue as the brand. */
+val JaleoLight = LilloStyle(JaleoLightScheme)
+
+/** The dark look: night blue, the accent's light tone as the brand. */
+val JaleoDark = LilloStyle(JaleoDarkScheme)
+
+/** The answer and list colours of the look on screen. */
+@Composable
+internal fun jaleoPalette(): JaleoPalette = if (lilloIsDark()) DarkPalette else LightPalette

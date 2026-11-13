@@ -12,8 +12,8 @@ import com.jorgelillo.core.screenshottesting.captureScreenshot
 import com.jorgelillo.stadiumevents.SampleFeed
 import com.jorgelillo.stadiumevents.domain.AppState
 import com.jorgelillo.stadiumevents.ui.theme.DarkPalette
-import com.jorgelillo.stadiumevents.ui.theme.JaleoDarkScheme
-import com.jorgelillo.stadiumevents.ui.theme.JaleoLightScheme
+import com.jorgelillo.stadiumevents.ui.theme.JaleoDark
+import com.jorgelillo.stadiumevents.ui.theme.JaleoLight
 import com.jorgelillo.stadiumevents.ui.theme.JaleoPalette
 import com.jorgelillo.stadiumevents.ui.theme.LightPalette
 import java.time.LocalDate
@@ -57,7 +57,7 @@ class JaleoScreenshotTest {
                 }
             }
         ) {
-            LilloTheme(if (dark) JaleoDarkScheme else JaleoLightScheme) {
+            LilloTheme(if (dark) JaleoDark else JaleoLight) {
                 if (widget == null) {
                     JaleoScreen(state, palette, onAbout = {}, onRetry = {})
                 } else {

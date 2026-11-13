@@ -68,3 +68,14 @@ and "el 24 nov a las 8:05" later.
 #### Scenario: the first open
 - **WHEN** the app is opened for the first time **THEN** it shows the busy answer, the Viking match, the Betis match and the Champions League final rows, stores the fetch time, and the about screen opens and closes back to the answer
 - *Verifies:* `firstOpenAnswersTomorrowAndShowsWhatsNext`
+
+### Requirement: The look follows the phone unless the user picks one
+
+The app SHALL show its light look on a phone in light mode and its dark look in dark mode, and
+the look picked in About → Appearance SHALL win over the phone's mode, the answer and list
+colours included. The home-screen widget SHALL follow the phone's mode.
+
+#### Scenario: the look
+- **WHEN** the phone is light and nothing is picked **THEN** the light colours show
+- **WHEN** the phone is light and "Dark" is picked **THEN** the dark colours show
+- *Verifies:* `aLightPhoneShowsTheLightLookByDefault`, `theChosenDarkLookWinsOverALightPhone`
