@@ -5,7 +5,7 @@ Newest first. User-facing notes per language are in
 
 | versionCode | Version | Date | Notes |
 |---|---|---|---|
-| 5 | 1.4 | 2026-11 (production) | Light and dark looks (a trophy room by day, a floodlit stadium by night, Appearance in About); the bracket round by round on a phone; a link with a newer copy asks before replacing; imported tournaments validated; stored data set aside, never overwritten, when unreadable; targetSdk 37; baseline profile, new store screenshots |
+| 5 | 1.4 | 2026-11-13 (production) | Light and dark looks (a trophy room by day, a floodlit stadium by night, Appearance in About); the bracket round by round on a phone; a link with a newer copy asks before replacing; imported tournaments validated; stored data set aside, never overwritten, when unreadable; targetSdk 37; baseline profile, new store screenshots |
 | 4 | 1.3 | 2026-11-03 (production) | Haptic when the champion is decided; ⚔️/🏆 header; spring press; baseline profile |
 | 3 | 1.2 | 2026-10-31 (production) | New palette from seed #2B3FD8 (Vibrant): indigo surfaces, lilac accent, gold for winners; status edges; summary hero on the empty home; baseline profile, new store screenshots |
 | 2 | 1.1 | 2026-10-30 (production) | Home summary header (LilloSummaryHero): in progress / finished, next matches, last champion; two panes on tablets in landscape; rate link; baseline profile |
