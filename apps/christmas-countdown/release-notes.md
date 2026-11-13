@@ -5,7 +5,7 @@ Newest first. User-facing notes per language (as uploaded to Play) are in
 
 | versionCode | Version | Date | Notes |
 |---|---|---|---|
-| 9 | 4.5 | 2026-11 (production) | Light and dark looks (a snowy morning by day, the midnight sky by night, Appearance in About); the widget offered in About; targetSdk 37; baseline profile, new store screenshots |
+| 9 | 4.5 | 2026-11-13 (production) | Light and dark looks (a snowy morning by day, the midnight sky by night, Appearance in About); the widget offered in About; targetSdk 37; baseline profile, new store screenshots |
 | 8 | 4.4 | 2026-11-03 (production) | Spring press and haptic tick on buttons (core); baseline profile |
 | 7 | 4.3 | 2026-10-31 (production) | Softer accents as text (GoldText), Neutral off-white body text; baseline profile, new store screenshots |
 | 6 | 4.2 | 2026-10-26 (production) | minSdk 23 → 24 (Android 6 phones keep 4.1), WorkManager 2.12 and dependencies 2026-10, cutout-safe pages, predictive back |
