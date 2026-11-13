@@ -48,13 +48,12 @@ aid; the cap and the window stop an old result from haunting an option forever.
 - **WHEN** three results were accepted, one 1 day ago, one 3 and one 6 days ago **THEN** the newest weighs 0.25, the next 0.5, the third 0.75 and an unused option 1.0
 - **WHEN** the only result is 40 days old, or the setting is off **THEN** nothing is penalised
 - **WHEN** an option is vetoed **THEN** it is out and the others keep their order
+- **WHEN** four distinct results were accepted, the newest twice **THEN** the three newest distinct ones weigh 0.25, 0.5 and 0.75 and the fourth 1.0
+- **WHEN** a spin's result is turned down with "Spin again" **THEN** nothing enters the history until a result is accepted
 - *Verifies:* `everyOptionHasTheSameWeightWithoutHistory`,
   `recentResultsGetLessChanceNewestFirst`, `oldHistoryAndDisabledSettingDoNotPenalise`,
-  `vetoedOptionsAreOutAndOrderIsKept`
-
-> **GAP — unverified.** No test records more than three distinct results to show the cap,
-> or shows that only accepted results (not spins) enter the history. A test would feed
-> four distinct accepted results and assert the oldest keeps weight 1.0.
+  `vetoedOptionsAreOutAndOrderIsKept`, `onlyTheThreeNewestDistinctResultsArePenalised`,
+  `spinAcceptAndCreateAWheel`
 
 ### Requirement: The wheel reads well and clicks as it turns
 
