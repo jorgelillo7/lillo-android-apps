@@ -1,4 +1,5 @@
 A new look 🎄
 - A snowy morning by day, the midnight sky by night: follows your phone, or pick one in About → Appearance
+- In About, a button to add the widget to your home screen
 - Ready for Android 17
 Happy Advent!
