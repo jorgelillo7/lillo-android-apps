@@ -225,7 +225,7 @@ private fun Pill(text: String, selected: Boolean, onClick: () -> Unit, modifier:
             .border(1.dp, if (selected) Polls.Ink else Polls.Line, CircleShape)
             .clickable(onClick = onClick)
             .padding(vertical = 10.dp),
-        color = if (selected) Color.White else Polls.Ink,
+        color = if (selected) Polls.Paper else Polls.Ink,
         fontWeight = FontWeight.Bold,
         textAlign = TextAlign.Center
     )

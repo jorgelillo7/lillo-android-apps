@@ -13,7 +13,8 @@ import com.jorgelillo.grouppolls.ui.screens.HomeScreen
 import com.jorgelillo.grouppolls.ui.screens.PollScreen
 import com.jorgelillo.grouppolls.ui.screens.SettingsScreen
 import com.jorgelillo.grouppolls.ui.screens.WelcomeScreen
-import com.jorgelillo.grouppolls.ui.theme.PollsColorScheme
+import com.jorgelillo.grouppolls.ui.theme.PollsDark
+import com.jorgelillo.grouppolls.ui.theme.PollsLight
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
@@ -42,34 +43,56 @@ class PollScreensScreenshotTest {
     private val votes = runBlocking { repository.votes(FakePollRepository.SAMPLE_PRIVATE).first() }
     private val local = LocalState(name = "Alex", acceptedTerms = true)
 
-    private fun shot(name: String, content: @Composable () -> Unit) = compose.captureScreenshot(name) {
-        LilloTheme(PollsColorScheme) { content() }
-    }
+    /** Each screen at night under its name, and by day with `_light` added. */
+    private fun shot(name: String, dark: Boolean = true, content: @Composable () -> Unit) =
+        compose.captureScreenshot(if (dark) name else "${name}_light") {
+            LilloTheme(if (dark) PollsDark else PollsLight) { content() }
+        }
 
-    private fun home(name: String) = shot(name) {
+    private fun home(name: String, dark: Boolean = true) = shot(name, dark) {
         HomeScreen(feed, local, pollFlow = { code ->
             flowOf(feed.flatMap { it.second }.firstOrNull { it.code == code })
         }, {}, {}, {}, clock = { now })
     }
 
-    private fun poll(name: String) = shot(name) {
+    private fun poll(name: String, dark: Boolean = true) = shot(name, dark) {
         PollScreen(private, votes, local, "local-user", shareOnOpen = false, { _, _, _ ->
         }, {}, { _, _ -> }, {}, {}, clock = { now })
     }
 
-    @Test fun welcomePortrait() = shot("welcome") { WelcomeScreen {} }
+    private fun welcome(name: String, dark: Boolean = true) = shot(name, dark) { WelcomeScreen {} }
+
+    private fun settings(name: String, dark: Boolean = true) = shot(name, dark) { SettingsScreen(local, {}, {}, {}) }
+
+    @Test fun welcomePortrait() = welcome("welcome")
+
+    @Test fun welcomePortraitLight() = welcome("welcome", dark = false)
 
     @Test fun homePortrait() = home("home")
+
+    @Test fun homePortraitLight() = home("home", dark = false)
 
     @Test
     @Config(qualifiers = "+land")
     fun homeLandscape() = home("home_landscape")
 
+    @Test
+    @Config(qualifiers = "+land")
+    fun homeLandscapeLight() = home("home_landscape", dark = false)
+
     @Test fun pollPortrait() = poll("poll")
+
+    @Test fun pollPortraitLight() = poll("poll", dark = false)
 
     @Test
     @Config(qualifiers = "+land")
     fun pollLandscape() = poll("poll_landscape")
 
-    @Test fun settingsPortrait() = shot("settings") { SettingsScreen(local, {}, {}, {}) }
+    @Test
+    @Config(qualifiers = "+land")
+    fun pollLandscapeLight() = poll("poll_landscape", dark = false)
+
+    @Test fun settingsPortrait() = settings("settings")
+
+    @Test fun settingsPortraitLight() = settings("settings", dark = false)
 }
