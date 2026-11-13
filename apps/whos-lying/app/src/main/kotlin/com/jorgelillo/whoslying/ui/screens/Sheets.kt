@@ -32,6 +32,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.jorgelillo.core.designsystem.LilloBigButton
 import com.jorgelillo.core.designsystem.LilloLanguageDialog
 import com.jorgelillo.core.designsystem.LilloSettingRow
 import com.jorgelillo.core.designsystem.LilloThemeModeChoice
@@ -228,15 +229,10 @@ internal fun ReportSheet(word: String, decoy: String?, pack: String, language: S
                 color = Neon.Muted,
                 style = MaterialTheme.typography.bodySmall
             )
-            BigButton(
-                stringResource(R.string.report_send),
-                {
-                    uriHandler.openUri(WordReport.url(word, decoy, pack, language, chosen, comment).toString())
-                    onDismiss()
-                },
-                Modifier.testTag("report_send"),
-                enabled = chosen.isNotEmpty() || comment.isNotBlank()
-            )
+            LilloBigButton(stringResource(R.string.report_send), {
+                uriHandler.openUri(WordReport.url(word, decoy, pack, language, chosen, comment).toString())
+                onDismiss()
+            }, modifier = Modifier.testTag("report_send"), enabled = chosen.isNotEmpty() || comment.isNotBlank())
         }
     }
 }

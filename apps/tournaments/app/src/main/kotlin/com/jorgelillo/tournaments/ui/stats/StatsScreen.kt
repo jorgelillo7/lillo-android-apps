@@ -32,10 +32,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.jorgelillo.core.designsystem.LilloPage
 import com.jorgelillo.tournaments.R
 import com.jorgelillo.tournaments.domain.Library
 import com.jorgelillo.tournaments.domain.Stats
-import com.jorgelillo.tournaments.ui.Page
 import com.jorgelillo.tournaments.ui.theme.Arena
 import kotlin.math.roundToInt
 
@@ -45,7 +45,7 @@ internal fun StatsScreen(library: Library, onBack: () -> Unit) {
     var game by rememberSaveable { mutableStateOf<String?>(null) }
     val rows = Stats.of(library.tournaments, game)
     val played = library.tournaments.count { game == null || it.game.equals(game, ignoreCase = true) }
-    Page(title = stringResource(R.string.stats_title), onBack = onBack) {
+    LilloPage(title = stringResource(R.string.stats_title), onBack = onBack, readable = true) {
         if (library.knownGames.isNotEmpty()) {
             Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                 FilterChip(selected = game == null, onClick = {

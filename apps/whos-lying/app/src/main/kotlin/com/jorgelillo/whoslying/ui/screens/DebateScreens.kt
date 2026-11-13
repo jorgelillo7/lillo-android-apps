@@ -49,6 +49,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.jorgelillo.core.designsystem.LilloBigButton
+import com.jorgelillo.core.designsystem.LilloPage
 import com.jorgelillo.core.designsystem.isShortScreen
 import com.jorgelillo.whoslying.R
 import com.jorgelillo.whoslying.domain.Game
@@ -70,15 +72,15 @@ internal fun DebateScreen(
     onQuit: () -> Unit
 ) {
     NightStage {
-        Page(
+        LilloPage(
             title = null,
             onBack = onQuit,
             background = Neon.RevealBackdrop,
             bottom = {
-                BigButton(
+                LilloBigButton(
                     stringResource(R.string.vote_button),
                     onVote,
-                    Modifier.testTag("go_vote"),
+                    modifier = Modifier.testTag("go_vote"),
                     color = Neon.Go,
                     contentColor = Neon.OnFill
                 )
@@ -88,7 +90,8 @@ internal fun DebateScreen(
                 ) {
                     Text(stringResource(R.string.vote_reveal_all), color = Color.White.copy(alpha = 0.75f))
                 }
-            }
+            },
+            readable = true
         ) {
             Column(
                 Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState()),
@@ -239,7 +242,7 @@ internal fun TimeUpScreen(onDone: () -> Unit) {
             done()
         }
         BackHandler {}
-        Page(title = null, onBack = null, background = Neon.ImpostorsBackdrop) {
+        LilloPage(title = null, onBack = null, background = Neon.ImpostorsBackdrop, readable = true) {
             val short = isShortScreen()
             Column(
                 Modifier.weight(1f).fillMaxWidth(),

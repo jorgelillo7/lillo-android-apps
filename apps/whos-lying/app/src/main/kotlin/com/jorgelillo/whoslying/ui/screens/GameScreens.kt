@@ -56,6 +56,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.jorgelillo.core.designsystem.LilloBigButton
+import com.jorgelillo.core.designsystem.LilloPage
 import com.jorgelillo.core.designsystem.TestTagsAsResourceIds
 import com.jorgelillo.whoslying.R
 import com.jorgelillo.whoslying.domain.Card
@@ -85,20 +87,21 @@ internal fun RevealScreen(game: Game, onDone: () -> Unit, onQuit: () -> Unit) {
         val lift = remember(index) { Animatable(0f) }
         val scope = rememberCoroutineScope()
 
-        Page(
+        LilloPage(
             title = stringResource(R.string.reveal_counter, index + 1, game.cards.size),
             onBack = onQuit,
             background = Neon.RevealBackdrop,
             bottom = {
                 if (peeked) {
-                    BigButton(stringResource(R.string.reveal_hide), {
+                    LilloBigButton(stringResource(R.string.reveal_hide), {
                         peeked = false
                         if (index == game.cards.lastIndex) onDone() else index++
                     }, color = Neon.Go, contentColor = Neon.OnFill, modifier = Modifier.testTag("hide"))
                 } else {
                     Spacer(Modifier.height(60.dp))
                 }
-            }
+            },
+            readable = true
         ) {
             // Clipped so the lifted curtain never covers the header.
             BoxWithConstraints(Modifier.weight(1f).fillMaxWidth().clipToBounds()) {
@@ -286,7 +289,7 @@ internal fun CountdownScreen(starter: String, onDone: () -> Unit) {
             }
             done()
         }
-        Page(title = null, onBack = null, background = Neon.RevealBackdrop) {
+        LilloPage(title = null, onBack = null, background = Neon.RevealBackdrop, readable = true) {
             Spacer(Modifier.weight(1f))
             Text(
                 stringResource(R.string.countdown_starts, starter),

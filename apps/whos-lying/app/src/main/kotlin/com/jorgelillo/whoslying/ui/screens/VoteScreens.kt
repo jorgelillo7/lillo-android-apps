@@ -47,6 +47,8 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.jorgelillo.core.designsystem.LilloBigButton
+import com.jorgelillo.core.designsystem.LilloPage
 import com.jorgelillo.core.designsystem.isShortScreen
 import com.jorgelillo.whoslying.R
 import com.jorgelillo.whoslying.domain.Card
@@ -71,16 +73,19 @@ internal fun VotingScreen(
         var chosen by rememberSaveable { mutableStateOf<String?>(null) }
         val short = isShortScreen()
         BackHandler(enabled = forced) {}
-        Page(
+        LilloPage(
             title = null,
             onBack = onBack.takeUnless { forced },
             background = Neon.RevealBackdrop,
             bottom = {
-                BigButton(
+                LilloBigButton(
                     stringResource(R.string.voting_confirm),
-                    { chosen?.let(onConfirm) },
-                    Modifier.testTag("confirm_vote"),
-                    enabled = chosen != null,
+                    {
+                        chosen?.let(onConfirm)
+                    },
+                    modifier = Modifier.testTag("confirm_vote"),
+                    enabled =
+                        chosen != null,
                     color = Neon.Go,
                     contentColor = Neon.OnFill
                 )
@@ -92,7 +97,8 @@ internal fun VotingScreen(
                         Text(stringResource(R.string.voting_back), color = Color.White.copy(alpha = 0.8f))
                     }
                 }
-            }
+            },
+            readable = true
         ) {
             Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
                 // Short screens keep only the question, so the players stay visible.
@@ -202,21 +208,22 @@ internal fun ExposeScreen(
             card.role == Role.DRIFTER -> Neon.DrifterBackdrop
             else -> Neon.CiviliansBackdrop
         }
-        Page(
+        LilloPage(
             title = null,
             onBack = null,
             background = background,
             bottom = {
                 if (count == 0 && !guessing && !game.isOver) {
-                    BigButton(
+                    LilloBigButton(
                         stringResource(R.string.next_vote),
                         onContinue,
-                        Modifier.testTag("keep_playing"),
+                        modifier = Modifier.testTag("keep_playing"),
                         color = Color.White,
                         contentColor = Neon.OnFill
                     )
                 }
-            }
+            },
+            readable = true
         ) {
             Column(
                 Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState()),
@@ -353,7 +360,16 @@ private fun ColumnScope.GuessInput(onGuess: (String) -> Unit) {
         modifier = Modifier.fillMaxWidth().padding(top = 16.dp).testTag("guess_text")
     )
     Spacer(Modifier.height(12.dp))
-    BigButton(stringResource(R.string.guess_go), {
-        onGuess(text)
-    }, Modifier.testTag("guess"), enabled = text.isNotBlank(), color = Color.White, contentColor = Neon.OnFill)
+    LilloBigButton(
+        stringResource(R.string.guess_go),
+        {
+            onGuess(text)
+        },
+        modifier = Modifier.testTag(
+            "guess"
+        ),
+        enabled = text.isNotBlank(),
+        color = Color.White,
+        contentColor = Neon.OnFill
+    )
 }

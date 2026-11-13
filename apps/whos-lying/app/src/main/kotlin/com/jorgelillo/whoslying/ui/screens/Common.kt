@@ -43,42 +43,6 @@ import com.jorgelillo.core.designsystem.LilloPage
 import com.jorgelillo.whoslying.R
 import com.jorgelillo.whoslying.ui.theme.Neon
 
-/** Full-screen page with the neon backdrop, an optional back button and a bottom action area. */
-@Composable
-internal fun Page(
-    title: String?,
-    onBack: (() -> Unit)?,
-    modifier: Modifier = Modifier,
-    background: Brush = LilloColors.current.background,
-    actions: @Composable RowScope.() -> Unit = {},
-    /** Short screens: actions beside the content (see [LilloPage]). */
-    sideActionsWhenShort: Boolean = false,
-    /** Lists and text keep a readable width on tablets (see [LilloPage]); off for brackets and canvases. */
-    readable: Boolean = true,
-    bottom: @Composable ColumnScope.() -> Unit = {},
-    content: @Composable ColumnScope.() -> Unit
-) = LilloPage(
-    title,
-    onBack,
-    background = background,
-    modifier = modifier,
-    actions = actions,
-    sideActionsWhenShort = sideActionsWhenShort,
-    readable = readable,
-    bottom = bottom,
-    content = content
-)
-
-@Composable
-internal fun BigButton(
-    text: String,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-    enabled: Boolean = true,
-    color: Color = MaterialTheme.colorScheme.primary,
-    contentColor: Color = MaterialTheme.colorScheme.onPrimary
-) = LilloBigButton(text, onClick, modifier, color = color, contentColor = contentColor, enabled = enabled)
-
 /** Player colors for avatars, by position in the group. */
 val avatarColors = listOf(Neon.Pink, Neon.Turquoise, Color(0xFF8B6EFF), Neon.Amber)
 
