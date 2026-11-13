@@ -1,7 +1,7 @@
 ---
 name: ¿Hay jaleo? Metropolitano (stadium-events)
 description: Busy days around the stadium, for neighbours aged 50–70 — light, big text, one answer
-colors:            # ui/theme/JaleoTheme.kt (LightPalette, DarkPalette)
+colors:            # ui/theme/JaleoTheme.kt (LightPalette, DarkPalette; JaleoLight / JaleoDark)
   Background: "#FBF7F1"   # cream (dark: #141B2D)
   Surface: "#FFFFFF"      # list rows (dark: #1F2940)
   Text: "#1E1B18"         # ink, also on every answer card in both themes
@@ -19,9 +19,10 @@ components:
 
 ## Overview
 
-The opposite of the other apps' dark night designs: **light by default**, because dark text on a
-light background reads best for the people it is for, outdoors and with tired eyes. The dark variant
-is only used when the phone is in dark mode (some people choose it on purpose).
+**Light by default**, because dark text on a light background reads best for the people it is for,
+outdoors and with tired eyes. The dark look follows the phone's dark mode, or the choice in About →
+Appearance, like every app with two looks (`JaleoLight` / `JaleoDark`, `LilloStyle`). The home-screen
+widget follows the phone's mode only: a widget can't read the in-app choice.
 
 One screen, one question. The answer card's colour is the answer: amber for a match, coral for the
 biggest days (concerts, finals, Champions League nights, Real Madrid and Barcelona), green for a quiet day. Text never sits in a light grey: secondary

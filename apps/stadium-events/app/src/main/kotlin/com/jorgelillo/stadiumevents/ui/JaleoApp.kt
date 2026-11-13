@@ -26,12 +26,12 @@ import com.jorgelillo.core.reminders.LilloNotifications
 import com.jorgelillo.stadiumevents.BuildConfig
 import com.jorgelillo.stadiumevents.R
 import com.jorgelillo.stadiumevents.StadiumEventsApplication
-import com.jorgelillo.stadiumevents.ui.theme.JaleoPalette
+import com.jorgelillo.stadiumevents.ui.theme.jaleoPalette
 import com.jorgelillo.stadiumevents.widget.JaleoWidgetReceiver
 
 /** The screen with its ViewModel, the About sheet, and the one-time notifications permission. */
 @Composable
-internal fun JaleoApp(app: StadiumEventsApplication, palette: JaleoPalette) {
+internal fun JaleoApp(app: StadiumEventsApplication) {
     val vm: JaleoViewModel = viewModel(
         factory = JaleoViewModel.factory(app.repository, AppWidgetPins(app, JaleoWidgetReceiver::class.java))
     )
@@ -60,7 +60,7 @@ internal fun JaleoApp(app: StadiumEventsApplication, palette: JaleoPalette) {
 
     JaleoScreen(
         state,
-        palette,
+        jaleoPalette(),
         onAbout = { about = true },
         onRetry = vm::refresh,
         widget = widget,
