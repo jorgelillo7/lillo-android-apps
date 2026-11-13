@@ -12,8 +12,9 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT.parent.parent / "scripts"))
 from store_assets import Style, build  # noqa: E402
 
-NIGHT_TOP, NIGHT = (48, 25, 79), (21, 5, 43)
-GOLD, SNOW = (255, 217, 61), (239, 223, 255)
+# The dark look (DESIGN.md): wine from #2A0F25 to #1E0A1B, cream text, sun yellow.
+NIGHT_TOP, NIGHT = (42, 15, 37), (30, 10, 27)
+GOLD, SNOW = (255, 217, 61), (251, 234, 242)
 ACCENTS = [(255, 107, 107), (255, 179, 71), (255, 217, 61), (78, 205, 196), (108, 142, 245), (199, 146, 234)]
 
 LOCALES = {
@@ -44,7 +45,7 @@ STYLE = Style(
     bottom=NIGHT,
     headline=SNOW,
     highlight=GOLD,
-    tagline=(183, 162, 209),
+    tagline=(212, 182, 200),
     accents=ACCENTS,
 )
 
