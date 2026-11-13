@@ -29,7 +29,6 @@ Lines are pruned as items ship. What has **shipped** lives in `apps/<app>/releas
 
 | | What is missing | Waiting on |
 |---|---|---|
-| 👤 | 1.0 is live on Play. Check Play Console → Android developer verification lists `com.jorgelillo.stadiumevents` (Play registers most apps itself); if not, *Register package name* with the app signing key | You |
 | ⏳ | Try it with the family for a couple of weeks: does the evening reminder arrive, is the widget clear? | Real use |
 
 ## tournaments (new app)
