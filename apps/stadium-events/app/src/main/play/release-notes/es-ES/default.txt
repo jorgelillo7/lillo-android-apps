@@ -1,1 +1,3 @@
-Primera versión: ¿mañana hay partido, concierto o final en el Metropolitano? Respuesta en grande, aviso la víspera y widget.
+El widget, más fácil de encontrar 🏟️
+- La app te ofrece añadir el widget a la pantalla de inicio, y explica cómo hacerlo a mano en cualquier móvil
+- Los datos de eventos se comprueban antes de guardarse
