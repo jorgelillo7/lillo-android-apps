@@ -4,6 +4,7 @@ Newest first. User-facing notes are in `app/src/main/play/release-notes/es-ES/de
 
 | versionCode | Version | Date | Notes |
 |---|---|---|---|
+| 7 | 1.5 | 2026-11 (production) | Stored season set aside, never overwritten, when unreadable; targetSdk 37; baseline profile |
 | 6 | 1.4 | 2026-11-03 (production) | Header face reacts to the season (😎/🙂/😭); haptic on answering a card; spring press; baseline profile |
 | 5 | 1.3 | 2026-10-31 (production) | New palette from seed #00A884 (Vibrant): pitch-green surfaces, near-white text; gold edges for unlocked trophies and won leagues; baseline profile, new store screenshots |
 | 4 | 1.2 | 2026-10-30 (production) | Home summary header (LilloSummaryHero): league, seasons, titles, season in progress, best finish; rate link in About; baseline profile |
