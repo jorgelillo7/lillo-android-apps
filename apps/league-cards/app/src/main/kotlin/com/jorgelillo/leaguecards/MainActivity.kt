@@ -5,9 +5,11 @@ import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
 import com.jorgelillo.core.designsystem.installLilloWindow
 import com.jorgelillo.core.designsystem.setLilloContent
+import com.jorgelillo.core.designsystem.startsDark
 import com.jorgelillo.leaguecards.ui.LeagueApp
 import com.jorgelillo.leaguecards.ui.LeagueViewModel
-import com.jorgelillo.leaguecards.ui.theme.ChatColorScheme
+import com.jorgelillo.leaguecards.ui.theme.ChatDark
+import com.jorgelillo.leaguecards.ui.theme.ChatLight
 
 class MainActivity : ComponentActivity() {
 
@@ -17,8 +19,8 @@ class MainActivity : ComponentActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        installLilloWindow(darkDesign = true)
+        installLilloWindow(darkDesign = startsDark())
         super.onCreate(savedInstanceState)
-        setLilloContent(ChatColorScheme) { LeagueApp(vm) }
+        setLilloContent(ChatLight, ChatDark) { LeagueApp(vm) }
     }
 }

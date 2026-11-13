@@ -29,6 +29,9 @@ data class Saved(
     /** Newest first, at most [HISTORY]. */
     val history: List<SeasonRecord> = emptyList()
 ) {
+    /** Nothing played yet with [league]: no season finished and none to resume. */
+    fun isFirstTime(league: League): Boolean = seasonsPlayed == 0 && seasonFor(league) == null
+
     /** The season to resume with [league], if any. */
     fun seasonFor(league: League): Season? = season?.takeIf { deck == league.name && !it.over }
 

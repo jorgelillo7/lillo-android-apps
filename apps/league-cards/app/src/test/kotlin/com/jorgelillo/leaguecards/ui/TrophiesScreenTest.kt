@@ -9,7 +9,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.jorgelillo.core.designsystem.LilloTheme
 import com.jorgelillo.leaguecards.domain.League
 import com.jorgelillo.leaguecards.domain.Saved
-import com.jorgelillo.leaguecards.ui.theme.ChatColorScheme
+import com.jorgelillo.leaguecards.ui.theme.ChatDark
 import java.io.File
 import org.junit.Rule
 import org.junit.Test
@@ -29,7 +29,7 @@ class TrophiesScreenTest {
     fun anEndingStaysLockedUntilSeen() {
         val (seen, unseen) = league.endings.keys.toList().let { it[0] to it[1] }
         compose.setContent {
-            LilloTheme(ChatColorScheme) { TrophiesScreen(league, Saved(endingsSeen = setOf(seen))) {} }
+            LilloTheme(ChatDark) { TrophiesScreen(league, Saved(endingsSeen = setOf(seen))) {} }
         }
         compose.onNode(hasTestTag("ending_$seen") and hasAnyDescendant(hasText("🔒"))).assertDoesNotExist()
         compose.onNode(hasTestTag("ending_$unseen") and hasAnyDescendant(hasText("🔒"))).assertExists()

@@ -29,41 +29,10 @@ import com.jorgelillo.leaguecards.domain.Achievement
 import com.jorgelillo.leaguecards.domain.League
 import com.jorgelillo.leaguecards.domain.YOU
 import com.jorgelillo.leaguecards.ui.theme.Chat
+import com.jorgelillo.leaguecards.ui.theme.readableOn
 
+/** A member's colour (avatar ring, card border); the player is always green, like your own messages. */
 @Composable
-internal fun Page(
-    title: String?,
-    onBack: (() -> Unit)?,
-    modifier: Modifier = Modifier,
-    actions: @Composable RowScope.() -> Unit = {},
-    /** Short screens: actions beside the content (see LilloPage). */
-    sideActionsWhenShort: Boolean = false,
-    /** Lists and text keep a readable width on tablets (see [LilloPage]); off for brackets and canvases. */
-    readable: Boolean = true,
-    bottom: @Composable ColumnScope.() -> Unit = {},
-    content: @Composable ColumnScope.() -> Unit
-) = LilloPage(
-    title,
-    onBack,
-    background = Chat.Background,
-    modifier = modifier,
-    actions = actions,
-    sideActionsWhenShort = sideActionsWhenShort,
-    readable = readable,
-    bottom = bottom,
-    content = content
-)
-
-@Composable
-internal fun BigButton(
-    text: String,
-    onClick: () -> Unit,
-    tag: String,
-    modifier: Modifier = Modifier,
-    color: Color = Chat.Green
-) = LilloBigButton(text, onClick, modifier.testTag(tag), color = color)
-
-/** A member's name colour; the player is always green, like your own messages. */
 fun League.colorOf(id: String): Color = if (id ==
     YOU
 ) {
@@ -71,6 +40,10 @@ fun League.colorOf(id: String): Color = if (id ==
 } else {
     character(id)?.color?.let { runCatching { Color(it.toColorInt()) }.getOrNull() } ?: Chat.Muted
 }
+
+/** A member's name colour as text on [surface] (the chat's bubbles): their colour, darkened by day if it must. */
+@Composable
+fun League.nameColorOf(id: String, surface: Color = Chat.Bubble): Color = readableOn(colorOf(id), surface)
 
 @Composable
 fun League.nameOf(id: String): String = if (id == YOU) stringResource(R.string.you) else character(id)?.name ?: id
@@ -98,7 +71,7 @@ internal fun ChatBubble(
         if (from.isNotEmpty()) {
             Text(
                 league.nameOf(from),
-                color = league.colorOf(from),
+                color = league.nameColorOf(from),
                 fontWeight = FontWeight.Bold,
                 style = MaterialTheme.typography.labelLarge
             )

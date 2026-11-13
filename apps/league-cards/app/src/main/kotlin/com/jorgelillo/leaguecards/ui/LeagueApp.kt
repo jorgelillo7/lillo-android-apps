@@ -44,6 +44,8 @@ import com.jorgelillo.core.designsystem.AboutTexts
 import com.jorgelillo.core.designsystem.ConfettiBurst
 import com.jorgelillo.core.designsystem.HeroChip
 import com.jorgelillo.core.designsystem.LilloAboutSheet
+import com.jorgelillo.core.designsystem.LilloBigButton
+import com.jorgelillo.core.designsystem.LilloPage
 import com.jorgelillo.core.designsystem.LilloSecondaryButton
 import com.jorgelillo.core.designsystem.LilloSummaryHero
 import com.jorgelillo.core.designsystem.TestTagsAsResourceIds
@@ -140,7 +142,7 @@ internal fun HomeScreen(
 ) {
     var about by rememberSaveable { mutableStateOf(false) }
     val inProgress = saved.seasonFor(league)
-    Page(
+    LilloPage(
         title = null,
         onBack = null,
         sideActionsWhenShort = true,
@@ -151,7 +153,11 @@ internal fun HomeScreen(
             val full = pluralStringResource(R.plurals.new_season_length, league.matchdays, league.matchdays)
             val short = Game.shortLength(league).let { pluralStringResource(R.plurals.short_season, it, it) }
             if (inProgress != null) {
-                BigButton(stringResource(R.string.continue_season, inProgress.matchday), onContinue, "continue")
+                LilloBigButton(
+                    stringResource(R.string.continue_season, inProgress.matchday),
+                    onContinue,
+                    modifier = Modifier.testTag("continue")
+                )
                 Text(
                     stringResource(R.string.autosave),
                     color = Chat.Muted,
@@ -161,11 +167,12 @@ internal fun HomeScreen(
                 )
                 SecondaryButton(full, "new_season") { onNew(false) }
             } else {
-                BigButton(full, { onNew(false) }, "new_season")
+                LilloBigButton(full, { onNew(false) }, modifier = Modifier.testTag("new_season"))
                 Spacer(Modifier.height(12.dp))
             }
             SecondaryButton(short, "new_short_season") { onNew(true) }
-        }
+        },
+        readable = true
     ) {
         Column(
             Modifier.fillMaxWidth().verticalScroll(rememberScrollState()),
@@ -180,7 +187,15 @@ internal fun HomeScreen(
             Spacer(Modifier.height(12.dp))
             Summary(league, saved, inProgress)
             Spacer(Modifier.height(16.dp))
-            ChatBubble(league, "", stringResource(R.string.how_to_play))
+            // A returning player knows the rules: they stay folded behind one line until asked for.
+            var rules by rememberSaveable { mutableStateOf(saved.isFirstTime(league)) }
+            if (rules) {
+                ChatBubble(league, "", stringResource(R.string.how_to_play), Modifier.testTag("how_to_play"))
+            } else {
+                TextButton(onClick = { rules = true }, modifier = Modifier.testTag("show_rules")) {
+                    Text(stringResource(R.string.how_to_play_show), color = Chat.Muted)
+                }
+            }
             Spacer(Modifier.height(12.dp))
             OutlinedButton(onClick = onTrophies, modifier = Modifier.testTag("trophies")) {
                 Text(
@@ -202,7 +217,7 @@ internal fun HomeScreen(
                     Avatar(c.emoji.ifBlank { c.name }, league.colorOf(c.id), size = 36)
                     Spacer(Modifier.width(12.dp))
                     Column {
-                        Text(c.name, color = league.colorOf(c.id), fontWeight = FontWeight.Bold)
+                        Text(c.name, color = league.nameColorOf(c.id, surface = Chat.Ink), fontWeight = FontWeight.Bold)
                         if (c.tagline.isNotBlank()) {
                             Text(
                                 c.tagline,
@@ -218,7 +233,7 @@ internal fun HomeScreen(
     if (about) {
         LilloAboutSheet(
             icon = painterResource(R.drawable.ic_launcher_foreground),
-            iconBackground = Chat.InkTop,
+            iconBackground = Chat.Night.inkTop,
             containerColor = Chat.Raised,
             texts = AboutTexts(
                 title = stringResource(R.string.app_name),
@@ -292,11 +307,11 @@ private fun EndScreen(
     val resources = LocalResources.current
     val position = Game.position(season)
     Box(Modifier.fillMaxSize()) {
-        Page(
+        LilloPage(
             title = null,
             onBack = onHome,
             bottom = {
-                BigButton(stringResource(R.string.new_season), onNew, "new_season")
+                LilloBigButton(stringResource(R.string.new_season), onNew, modifier = Modifier.testTag("new_season"))
                 Spacer(Modifier.height(8.dp))
                 OutlinedButton(
                     onClick = {
@@ -319,7 +334,8 @@ private fun EndScreen(
                     },
                     modifier = Modifier.fillMaxWidth().height(52.dp).testTag("share")
                 ) { Text(stringResource(R.string.share), color = Chat.Text) }
-            }
+            },
+            readable = true
         ) {
             Column(
                 Modifier.fillMaxWidth().verticalScroll(rememberScrollState()),
@@ -426,7 +442,7 @@ internal fun Standings(league: League, season: Season) {
                         team.ifBlank {
                             league.nameOf(id)
                         },
-                        color = if (mine) Chat.Text else league.colorOf(id),
+                        color = if (mine) Chat.Text else league.nameColorOf(id),
                         fontWeight = FontWeight.Bold
                     )
                     if (team.isNotBlank()) {
