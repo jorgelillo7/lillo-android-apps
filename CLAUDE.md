@@ -112,8 +112,7 @@ Project skills are indexed in [`.claude/CLAUDE.md`](.claude/CLAUDE.md).
   `Application` subclass and reach ViewModels through `viewModelFactory` companions.
 - `:core:designsystem` holds `LilloTheme` (an app passes a light and a dark `LilloStyle`, each a
   `ColorScheme` plus a `LilloPalette` read through `LilloColors.current`: background, hero, brand,
-  accent text; the look follows the phone unless the user picks one, `LilloThemeMode`; apps not yet
-  moved pass one `ColorScheme`), the display face (`LilloDisplayFamily`, Figtree, in the display,
+  accent text; the look follows the phone unless the user picks one, `LilloThemeMode`), the display face (`LilloDisplayFamily`, Figtree, in the display,
   headline and `titleLarge` styles) and what two or
   more apps share: `LilloPage` (with `sideActionsWhenShort`) / `LilloBigButton` / `LilloSecondaryButton` (they take the
   app's background and brand from `LilloColors`), `LilloAboutSheet` (appearance, language, rate, privacy),
