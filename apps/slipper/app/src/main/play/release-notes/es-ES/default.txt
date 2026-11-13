@@ -1,4 +1,5 @@
-Chanclas más fáciles de encontrar 🩴
-- Al desbloquear una chancla, póntela al momento
-- En horizontal y en consolas, el selector de chanclas se ve sin desplazarse
-- Botones con un pequeño rebote
+Carreras que no se pierden 🩴
+- Si giras el móvil en plena carrera, sigues donde ibas
+- Si sales de la app o bajas las notificaciones, la carrera se pausa: toca para seguir
+- Los retos que llegan por enlace se comprueban
+- Tu récord y tus chanclas nunca se pierden aunque algo falle al leerlos

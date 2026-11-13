@@ -1,4 +1,5 @@
-Slippers easier to find 🩴
-- Unlock a slipper and wear it right away
-- In landscape and on handhelds, the slipper picker shows without scrolling
-- Buttons with a little bounce
+Runs that are not lost 🩴
+- Turn the phone mid-run and you carry on where you were
+- Leave the app or pull down the notifications and the run pauses: tap to go on
+- Challenges from a link are checked
+- Your best score and slippers are never lost, even if reading them fails
