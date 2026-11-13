@@ -29,8 +29,9 @@ class JaleoThemeTest {
 
     private fun paletteWith(mode: LilloThemeMode): JaleoPalette? {
         var palette: JaleoPalette? = null
+        val chosen = mutableStateOf(mode)
         compose.setContent {
-            CompositionLocalProvider(LocalLilloThemeMode provides mutableStateOf(mode)) {
+            CompositionLocalProvider(LocalLilloThemeMode provides chosen) {
                 LilloTheme(JaleoLight, JaleoDark) { palette = jaleoPalette() }
             }
         }
