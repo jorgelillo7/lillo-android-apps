@@ -6,10 +6,13 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import com.jorgelillo.slipper.domain.SlipperSkin
 import com.jorgelillo.slipper.domain.Sprite
 import com.jorgelillo.slipper.domain.Sprites
+import com.jorgelillo.slipper.ui.theme.Kitchen
+import com.jorgelillo.slipper.ui.theme.KitchenLook
 
 /**
  * A sprite as horizontal runs of one colour: a few dozen rectangles to draw instead of every pixel.
@@ -65,8 +68,20 @@ internal class GameSprites(all: Map<String, Sprite>) {
 
     operator fun get(name: String): PixelSprite = sprites.getValue(name)
 
+    /** Wall decoration in [look]: the windows show that look's sky. */
+    fun scenery(name: String, look: KitchenLook): PixelSprite =
+        if (name == "window") windows.getValue(look) else get(name)
+
+    private val windows = listOf(Kitchen.Day, Kitchen.Night).associateWith { look ->
+        val sky = look.sky.toArgb()
+        PixelSprite(all.getValue("window")) { argb -> if (argb == SKY) sky else argb }
+    }
+
     fun slipper(skin: SlipperSkin): PixelSprite = slippers.getValue(skin)
 }
+
+/** The window's sky in assets/sprites.txt (palette U), repainted per look. */
+private const val SKY = 0xFF9FD3F0.toInt()
 
 /** The slipper's red, its shadow and the strap, repainted per skin. */
 private const val RED = 0xFFE5465A.toInt()

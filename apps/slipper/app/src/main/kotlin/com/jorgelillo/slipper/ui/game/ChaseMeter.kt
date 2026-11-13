@@ -24,12 +24,13 @@ private const val DANGER_GAP = 10.0
  */
 @Composable
 internal fun ChaseMeter(gap: Double, sprites: GameSprites, description: String, modifier: Modifier = Modifier) {
+    val k = Kitchen.look
     Canvas(modifier.fillMaxWidth().height(34.dp).testTag("chase").semantics { contentDescription = description }) {
         val track = size.height * 0.35f
         val top = (size.height - track) / 2
         val close = gap < DANGER_GAP
         drawRoundRect(
-            if (close) Kitchen.Shout.copy(alpha = 0.35f) else Kitchen.Grout,
+            if (close) k.shout.copy(alpha = 0.35f) else k.grout,
             Offset(0f, top),
             Size(size.width, track),
             CornerRadius(track / 2)

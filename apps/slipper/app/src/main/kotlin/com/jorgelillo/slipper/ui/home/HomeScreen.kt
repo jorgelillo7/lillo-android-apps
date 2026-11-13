@@ -43,6 +43,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.jorgelillo.core.designsystem.AboutTexts
 import com.jorgelillo.core.designsystem.LilloAboutSheet
+import com.jorgelillo.core.designsystem.LilloBigButton
+import com.jorgelillo.core.designsystem.LilloPage
 import com.jorgelillo.core.designsystem.LilloSecondaryButton
 import com.jorgelillo.core.designsystem.isShortScreen
 import com.jorgelillo.core.platform.LilloLinks
@@ -63,8 +65,6 @@ import com.jorgelillo.slipper.domain.Slipper
 import com.jorgelillo.slipper.domain.SlipperKind
 import com.jorgelillo.slipper.domain.SlipperSkin
 import com.jorgelillo.slipper.domain.World
-import com.jorgelillo.slipper.ui.BigButton
-import com.jorgelillo.slipper.ui.Page
 import com.jorgelillo.slipper.ui.formatScore
 import com.jorgelillo.slipper.ui.game.GameScene
 import com.jorgelillo.slipper.ui.game.GameSprites
@@ -101,7 +101,11 @@ internal fun HomeScreen(
     challengeSameRun: Boolean = true
 ) {
     val sprites = rememberGameSprites()
-    Page(
+    LilloPage(
+        title = null,
+        onBack = null,
+        sideActionsWhenShort = true,
+        readable = true,
         actions = {
             val sound = stringResource(if (saved.muted) R.string.sound_off else R.string.sound_on)
             TextButton(
@@ -115,7 +119,7 @@ internal fun HomeScreen(
             }
         },
         bottom = {
-            BigButton(stringResource(R.string.play), onPlay, "play")
+            LilloBigButton(stringResource(R.string.play), onPlay, modifier = Modifier.testTag("play"))
             val best = saved.dailyBest(today)
             LilloSecondaryButton(
                 "📅 " + stringResource(R.string.daily) +
@@ -259,7 +263,7 @@ internal val SlipperSkin.label: Int get() = when (this) {
 @Composable
 internal fun AboutSheet(onDismiss: () -> Unit) = LilloAboutSheet(
     icon = painterResource(R.drawable.ic_launcher_foreground),
-    iconBackground = Kitchen.Tile,
+    iconBackground = Kitchen.Day.tile,
     containerColor = Kitchen.Raised,
     texts = AboutTexts(
         title = stringResource(R.string.app_name),

@@ -23,6 +23,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.jorgelillo.core.designsystem.LilloBigButton
+import com.jorgelillo.core.designsystem.LilloPage
 import com.jorgelillo.core.designsystem.LilloSecondaryButton
 import com.jorgelillo.core.designsystem.isShortScreen
 import com.jorgelillo.slipper.R
@@ -32,8 +34,6 @@ import com.jorgelillo.slipper.domain.FurnitureKind
 import com.jorgelillo.slipper.domain.Room
 import com.jorgelillo.slipper.domain.SlipperSkin
 import com.jorgelillo.slipper.domain.World
-import com.jorgelillo.slipper.ui.BigButton
-import com.jorgelillo.slipper.ui.Page
 import com.jorgelillo.slipper.ui.formatScore
 import com.jorgelillo.slipper.ui.game.GameScene
 import com.jorgelillo.slipper.ui.game.rememberGameSprites
@@ -77,9 +77,13 @@ internal fun GameOverScreen(
     /** Wear the slipper this run unlocked, right away. */
     onWear: (SlipperSkin) -> Unit = {}
 ) {
-    Page(
+    LilloPage(
+        title = null,
+        onBack = null,
+        sideActionsWhenShort = true,
+        readable = true,
         bottom = {
-            BigButton(stringResource(R.string.retry), onRetry, "retry")
+            LilloBigButton(stringResource(R.string.retry), onRetry, modifier = Modifier.testTag("retry"))
             LilloSecondaryButton(
                 stringResource(R.string.challenge_friend),
                 onChallengeFriend,

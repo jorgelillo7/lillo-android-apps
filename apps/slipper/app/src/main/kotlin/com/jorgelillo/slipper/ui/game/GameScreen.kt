@@ -319,5 +319,6 @@ private fun Counts(world: World, modifier: Modifier = Modifier) {
 }
 
 /** HUD text sits on a cream panel: in landscape the tiled wall reaches the top of the screen. */
+@Composable
 private fun Modifier.panel() = background(Kitchen.Raised.copy(alpha = 0.92f), RoundedCornerShape(20.dp))
     .padding(horizontal = 16.dp, vertical = 6.dp)

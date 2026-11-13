@@ -34,7 +34,8 @@ import com.jorgelillo.slipper.ui.game.sceneLabels
 import com.jorgelillo.slipper.ui.home.HomeScreen
 import com.jorgelillo.slipper.ui.over.GameOverScreen
 import com.jorgelillo.slipper.ui.over.RunResult
-import com.jorgelillo.slipper.ui.theme.KitchenColorScheme
+import com.jorgelillo.slipper.ui.theme.KitchenDark
+import com.jorgelillo.slipper.ui.theme.KitchenLight
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -50,19 +51,21 @@ class SlipperScreensScreenshotTest {
     @get:Rule
     val compose = createComposeRule()
 
-    private fun shot(name: String, content: @Composable () -> Unit) = compose.captureScreenshot(name) {
-        LilloTheme(KitchenColorScheme) { content() }
-    }
+    /** Each screen in the night look under its name, and in the day look with `_light` added. */
+    private fun shot(name: String, dark: Boolean, content: @Composable () -> Unit) =
+        compose.captureScreenshot(if (dark) name else "${name}_light") {
+            LilloTheme(if (dark) KitchenDark else KitchenLight) { content() }
+        }
 
     private val saved =
         Saved(best = 1240, croquetas = 210, dailyDay = 20_000, dailyBest = 860, skin = SlipperSkin.CHECKED)
 
-    private fun home(name: String) = shot(name) {
+    private fun home(name: String, dark: Boolean = true) = shot(name, dark) {
         HomeScreen(saved, today = 20_000, challenge = 980, {}, {}, {}, {}, {}, {}, challengeSameRun = false)
     }
 
     /** The first frame of a run: the kitchen, the HUD and the tap hint. */
-    private fun run(name: String) = shot(name) {
+    private fun run(name: String, dark: Boolean = true) = shot(name, dark) {
         GameScreen(seed = 1, target = null, daily = false, skin = SlipperSkin.CLASSIC, muted = true, sounds = null) {}
     }
 
@@ -95,7 +98,7 @@ class SlipperScreensScreenshotTest {
         )
     )
 
-    private fun action(name: String) = shot(name) {
+    private fun action(name: String, dark: Boolean = true) = shot(name, dark) {
         val sprites = rememberGameSprites()
         Box(Modifier.fillMaxSize()) {
             GameScene(action, sprites, Modifier.fillMaxSize(), skin = SlipperSkin.CLASSIC, labels = sceneLabels())
@@ -104,7 +107,7 @@ class SlipperScreensScreenshotTest {
     }
 
     /** She is off screen, about to throw a high one: the warning at the left edge. */
-    private fun warning(name: String) = shot(name) {
+    private fun warning(name: String, dark: Boolean = true) = shot(name, dark) {
         val sprites = rememberGameSprites()
         val w = action.copy(gap = 26.0, events = emptyList(), slippers = emptyList(), combo = 0)
         Box(Modifier.fillMaxSize()) {
@@ -123,7 +126,7 @@ class SlipperScreensScreenshotTest {
         croquetasToNext = 167
     )
 
-    private fun record(name: String) = shot(name) {
+    private fun record(name: String, dark: Boolean = true) = shot(name, dark) {
         GameOverScreen(
             result(
                 SlipperSkin.CHECKED,
@@ -140,49 +143,88 @@ class SlipperScreensScreenshotTest {
     }
 
     /** A run that unlocked a slipper still not worn: "Wear it now" and where to change it. */
-    @Test
-    fun unlockedNotWorn() = shot("over_unlocked") {
+    @Test fun unlockedNotWornLight() = unlocked("over_unlocked", dark = false)
+
+    @Test fun unlockedNotWorn() = unlocked("over_unlocked")
+
+    private fun unlocked(name: String, dark: Boolean = true) = shot(name, dark) {
         GameOverScreen(result(SlipperSkin.CHECKED, previousBest = 2000, daily = false), SlipperSkin.CLASSIC, null, {
         }, {}, {})
     }
 
-    private fun challengeWon(name: String) = shot(name) {
+    private fun challengeWon(name: String, dark: Boolean = true) = shot(name, dark) {
         GameOverScreen(result(null, previousBest = 2000, daily = false), SlipperSkin.BUNNY, challenge = 980, {}, {}, {})
     }
 
     @Test fun actionPortrait() = action("action")
 
+    @Test fun actionPortraitLight() = action("action", dark = false)
+
     @Test
     @Config(qualifiers = "+land")
     fun actionLandscape() = action("action_land")
 
+    @Test
+    @Config(qualifiers = "+land")
+    fun actionLandscapeLight() = action("action_land", dark = false)
+
     @Test fun warningPortrait() = warning("warning")
+
+    @Test fun warningPortraitLight() = warning("warning", dark = false)
 
     @Test
     @Config(qualifiers = "+land")
     fun warningLandscape() = warning("warning_land")
 
+    @Test
+    @Config(qualifiers = "+land")
+    fun warningLandscapeLight() = warning("warning_land", dark = false)
+
     @Test fun homePortrait() = home("home")
+
+    @Test fun homePortraitLight() = home("home", dark = false)
 
     @Test
     @Config(qualifiers = "+land")
     fun homeLandscape() = home("home_land")
 
+    @Test
+    @Config(qualifiers = "+land")
+    fun homeLandscapeLight() = home("home_land", dark = false)
+
     @Test fun runPortrait() = run("run")
+
+    @Test fun runPortraitLight() = run("run", dark = false)
 
     @Test
     @Config(qualifiers = "+land")
     fun runLandscape() = run("run_land")
 
+    @Test
+    @Config(qualifiers = "+land")
+    fun runLandscapeLight() = run("run_land", dark = false)
+
     @Test fun newRecord() = record("result_record")
+
+    @Test fun newRecordLight() = record("result_record", dark = false)
 
     @Test
     @Config(qualifiers = "+land")
     fun newRecordLandscape() = record("result_record_land")
 
+    @Test
+    @Config(qualifiers = "+land")
+    fun newRecordLandscapeLight() = record("result_record_land", dark = false)
+
     @Test fun challengeBeaten() = challengeWon("result_challenge_won")
+
+    @Test fun challengeBeatenLight() = challengeWon("result_challenge_won", dark = false)
 
     @Test
     @Config(qualifiers = "+land")
     fun challengeBeatenLandscape() = challengeWon("result_challenge_won_land")
+
+    @Test
+    @Config(qualifiers = "+land")
+    fun challengeBeatenLandscapeLight() = challengeWon("result_challenge_won_land", dark = false)
 }

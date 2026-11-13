@@ -30,6 +30,7 @@ import com.jorgelillo.slipper.domain.SlipperKind
 import com.jorgelillo.slipper.domain.SlipperSkin
 import com.jorgelillo.slipper.domain.World
 import com.jorgelillo.slipper.ui.theme.Kitchen
+import com.jorgelillo.slipper.ui.theme.KitchenLook
 import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.cos
@@ -93,24 +94,25 @@ internal fun GameScene(
     labels: SceneLabels? = null
 ) {
     val text = rememberTextMeasurer()
+    val k = Kitchen.look
     Canvas(modifier.clipToBounds()) {
         val floorPx = size.height * if (size.width > size.height) FLOOR_AT_WIDE else FLOOR_AT
         val unit = max(size.width / MAX_VIEW_W, min(size.width / VIEW_W, floorPx * 0.9 / ACTION_H)).toFloat()
         val view = size.width / unit
         val cam = Camera(unit, world.distance - view * KID_AT, floorPx)
 
-        drawRect(Kitchen.Background, size = size)
+        drawRect(k.background, size = size)
         val (dx, dy) = shake(world)
         translate(dx * unit, dy * unit) {
-            for (chunk in world.chunks) drawRoom(chunk, cam, sprites)
-            drawRect(Kitchen.Beam, Offset(0f, cam.y(ROOM_H) - unit * 2), Size(size.width, unit * 2))
+            for (chunk in world.chunks) drawRoom(k, chunk, cam, sprites)
+            drawRect(k.beam, Offset(0f, cam.y(ROOM_H) - unit * 2), Size(size.width, unit * 2))
             drawThings(world, cam, sprites)
-            drawGrandma(world, cam, sprites)
-            drawKid(world, cam, sprites)
+            drawGrandma(k, world, cam, sprites)
+            drawKid(k, world, cam, sprites)
             drawSlippers(world, cam, sprites, skin)
-            drawEffects(world, cam, text, labels)
+            drawEffects(k, world, cam, text, labels)
         }
-        drawWarning(world, cam, sprites, skin)
+        drawWarning(k, world, cam, sprites, skin)
     }
 }
 
@@ -195,7 +197,7 @@ private fun DrawScope.drawShadow(centreX: Float, floor: Float, halfWidth: Float,
 }
 
 /** The grandma: running, or winding up with the slipper raised (and a "!" over her head). */
-private fun DrawScope.drawGrandma(w: World, cam: Camera, sprites: GameSprites) {
+private fun DrawScope.drawGrandma(k: KitchenLook, w: World, cam: Camera, sprites: GameSprites) {
     val stride = (w.distance / 7).toInt() % 2
     val throwing = w.windingUp || w.slippers.any { it.x < w.grandmaX + 10 }
     val grandma = sprites[
@@ -216,25 +218,25 @@ private fun DrawScope.drawGrandma(w: World, cam: Camera, sprites: GameSprites) {
     grandma.draw(this, left, cam.y(0.0) - hop, pixel)
     if (w.windingUp) {
         val top = cam.y(0.0) - grandma.height * pixel - cam.unit * 2
-        drawBubble(Offset(left + grandma.width * pixel / 2, top), cam.unit)
+        drawBubble(k, Offset(left + grandma.width * pixel / 2, top), cam.unit)
     }
 }
 
 /** A red "!" in a white bubble. */
-private fun DrawScope.drawBubble(centre: Offset, unit: Float) {
+private fun DrawScope.drawBubble(k: KitchenLook, centre: Offset, unit: Float) {
     drawCircle(Color.White, radius = unit * 2.2f, center = centre)
     drawCircle(
-        Kitchen.Shout,
+        k.shout,
         radius = unit * 2.2f,
         center = centre,
         style = androidx.compose.ui.graphics.drawscope.Stroke(unit * 0.4f)
     )
-    drawRect(Kitchen.Shout, Offset(centre.x - unit * 0.35f, centre.y - unit * 1.3f), Size(unit * 0.7f, unit * 1.6f))
-    drawRect(Kitchen.Shout, Offset(centre.x - unit * 0.35f, centre.y + unit * 0.6f), Size(unit * 0.7f, unit * 0.7f))
+    drawRect(k.shout, Offset(centre.x - unit * 0.35f, centre.y - unit * 1.3f), Size(unit * 0.7f, unit * 1.6f))
+    drawRect(k.shout, Offset(centre.x - unit * 0.35f, centre.y + unit * 0.6f), Size(unit * 0.7f, unit * 0.7f))
 }
 
 /** The kid: running, jumping, squashed for a moment on landing, blinking while he stumbles. */
-private fun DrawScope.drawKid(w: World, cam: Camera, sprites: GameSprites) {
+private fun DrawScope.drawKid(k: KitchenLook, w: World, cam: Camera, sprites: GameSprites) {
     val stride = (w.distance / 7).toInt() % 2
     val kid = sprites[
         if (!w.kid.standing) {
@@ -257,7 +259,7 @@ private fun DrawScope.drawKid(w: World, cam: Camera, sprites: GameSprites) {
         for (i in 0..2) {
             val phase = ((w.distance * 0.6 + i / 3.0) % 1.0).toFloat()
             drawCircle(
-                Kitchen.Grout.copy(alpha = 0.7f * (1 - phase)),
+                k.grout.copy(alpha = 0.7f * (1 - phase)),
                 radius = cam.unit * (0.5f + phase),
                 center = Offset(centreX - cam.unit * (3 + phase * 6), cam.y(ground + 0.6 + phase))
             )
@@ -321,7 +323,7 @@ private fun DrawScope.drawSlippers(w: World, cam: Camera, sprites: GameSprites, 
 }
 
 /** Crumbs, stars and the words that pop up where something happened. */
-private fun DrawScope.drawEffects(w: World, cam: Camera, text: TextMeasurer, labels: SceneLabels?) {
+private fun DrawScope.drawEffects(k: KitchenLook, w: World, cam: Camera, text: TextMeasurer, labels: SceneLabels?) {
     // Words that pop up close together stack instead of overlapping.
     var stacked = 0
     for (e in w.events) {
@@ -332,24 +334,25 @@ private fun DrawScope.drawEffects(w: World, cam: Camera, text: TextMeasurer, lab
         when (e.kind) {
             EventKind.CROQUETA -> {
                 burst(at, age, cam.unit, Kitchen.Croqueta, count = 6, fade = fade)
-                pop(text, "+${e.value}", at, age, cam.unit, Kitchen.GreenText, fade, big = e.value >= 30)
+                pop(k, text, "+${e.value}", at, age, cam.unit, k.greenText, fade, big = e.value >= 30)
             }
 
             EventKind.NEAR_MISS -> labels?.let {
-                pop(text, "${it.nearMiss} +${e.value}", at, age, cam.unit, Kitchen.Shout, fade)
+                pop(k, text, "${it.nearMiss} +${e.value}", at, age, cam.unit, k.shout, fade)
             }
 
             EventKind.HIT, EventKind.STUMBLE -> {
                 burst(at, age, cam.unit, Color(0xFFFFD54A), count = 5, fade = fade)
-                if (e.kind == EventKind.HIT) labels?.let { pop(text, it.ouch, at, age, cam.unit, Kitchen.Shout, fade) }
+                if (e.kind == EventKind.HIT) labels?.let { pop(k, text, it.ouch, at, age, cam.unit, k.shout, fade) }
             }
 
-            EventKind.BLOCKED -> labels?.let { pop(text, it.blocked, at, age, cam.unit, Kitchen.GreenText, fade) }
+            EventKind.BLOCKED -> labels?.let { pop(k, text, it.blocked, at, age, cam.unit, k.greenText, fade) }
 
             EventKind.POWER -> {
                 burst(at, age, cam.unit, Color.White, count = 8, fade = fade)
                 labels?.let {
                     pop(
+                        k,
                         text,
                         if (w.skates >
                             0
@@ -361,7 +364,7 @@ private fun DrawScope.drawEffects(w: World, cam: Camera, text: TextMeasurer, lab
                         at,
                         age,
                         cam.unit,
-                        Kitchen.GreenText,
+                        k.greenText,
                         fade,
                         big = true
                     )
@@ -369,8 +372,8 @@ private fun DrawScope.drawEffects(w: World, cam: Camera, text: TextMeasurer, lab
             }
 
             EventKind.CRASH -> {
-                burst(at, age, cam.unit, Kitchen.Beam, count = 6, fade = fade)
-                labels?.let { pop(text, it.crash, at, age, cam.unit, Kitchen.Shout, fade) }
+                burst(at, age, cam.unit, k.beam, count = 6, fade = fade)
+                labels?.let { pop(k, text, it.crash, at, age, cam.unit, k.shout, fade) }
             }
 
             else -> Unit
@@ -390,6 +393,7 @@ private fun DrawScope.burst(at: Offset, age: Float, unit: Float, color: Color, c
 
 /** A word that rises and fades. */
 private fun DrawScope.pop(
+    k: KitchenLook,
     text: TextMeasurer,
     word: String,
     at: Offset,
@@ -407,7 +411,7 @@ private fun DrawScope.pop(
     val layout = text.measure(word, style)
     val topLeft = Offset(at.x - layout.size.width / 2, at.y - layout.size.height - age * unit * 8)
     drawRoundRect(
-        Color.White.copy(alpha = 0.85f * fade),
+        k.popBubble.copy(alpha = 0.85f * fade),
         topLeft - Offset(unit * 0.6f, unit * 0.2f),
         Size(layout.size.width + unit * 1.2f, layout.size.height + unit * 0.4f),
         CornerRadius(unit)
@@ -419,7 +423,7 @@ private fun DrawScope.pop(
  * She is off screen and about to throw: a blinking warning at the left edge, at the height the
  * slipper will fly (jump the low ones, stay down for the high ones).
  */
-private fun DrawScope.drawWarning(w: World, cam: Camera, sprites: GameSprites, skin: SlipperSkin) {
+private fun DrawScope.drawWarning(k: KitchenLook, w: World, cam: Camera, sprites: GameSprites, skin: SlipperSkin) {
     if (!w.windingUp || cam.x(w.grandmaX) > 0) return
     if ((w.time * 10).toInt() % 2 == 1) return
     val y = cam.y(if (w.nextKind == SlipperKind.LOW) C.LOW_Y + 1.5 else C.HIGH_Y + 1.5)
@@ -430,7 +434,7 @@ private fun DrawScope.drawWarning(w: World, cam: Camera, sprites: GameSprites, s
         lineTo(u * 3.5f, y + u * 2.5f)
         close()
     }
-    drawPath(path, Kitchen.Shout)
+    drawPath(path, k.shout)
     val slipper = sprites.slipper(skin)
     val pixel = (4.5 * u / slipper.width).toFloat()
     drawRoundRect(Color.White, Offset(u * 4f, y - u * 2.2f), Size(u * 5.5f, u * 4.4f), CornerRadius(u))
@@ -438,7 +442,7 @@ private fun DrawScope.drawWarning(w: World, cam: Camera, sprites: GameSprites, s
 }
 
 /** One chunk of a room: wall, its decoration and the floor, across the chunk's width. */
-private fun DrawScope.drawRoom(chunk: Chunk, cam: Camera, sprites: GameSprites) {
+private fun DrawScope.drawRoom(k: KitchenLook, chunk: Chunk, cam: Camera, sprites: GameSprites) {
     val left = cam.x(chunk.start)
     val right = cam.x(chunk.end)
     if (right < 0 || left > size.width) return
@@ -446,27 +450,27 @@ private fun DrawScope.drawRoom(chunk: Chunk, cam: Camera, sprites: GameSprites) 
     // A pixel wider than the chunk: no hairline where two chunks meet.
     val width = right - left + 1f
     val wall = when (chunk.room) {
-        Room.KITCHEN -> Kitchen.Cream
-        Room.HALL -> Kitchen.HallPaper
-        Room.LIVING_ROOM -> Kitchen.LivingPaper
+        Room.KITCHEN -> k.kitchenWall
+        Room.HALL -> k.hallPaper
+        Room.LIVING_ROOM -> k.livingPaper
     }
     // The wall from the top of the screen: above the ceiling beam is the floor upstairs, darker.
-    drawRect(Kitchen.Upstairs, Offset(left, 0f), Size(width, ceiling))
+    drawRect(k.upstairs, Offset(left, 0f), Size(width, ceiling))
     drawRect(wall, Offset(left, ceiling), Size(width, cam.floor - ceiling))
     when (chunk.room) {
-        Room.KITCHEN -> drawTiles(chunk, cam)
+        Room.KITCHEN -> drawTiles(k, chunk, cam)
 
         Room.HALL -> {
             var x = floor(chunk.start / 4) * 4
             while (x < chunk.end) {
-                drawRect(Kitchen.HallStripe, Offset(cam.x(x), ceiling), Size(cam.unit * 1.2f, cam.floor - ceiling))
+                drawRect(k.hallStripe, Offset(cam.x(x), ceiling), Size(cam.unit * 1.2f, cam.floor - ceiling))
                 x += 4
             }
         }
 
         Room.LIVING_ROOM -> {
-            drawRect(Kitchen.Wainscot, Offset(left, cam.y(12.0)), Size(width, cam.unit * 12f))
-            drawRect(Kitchen.WainscotEdge, Offset(left, cam.y(12.0)), Size(width, cam.unit * 1f))
+            drawRect(k.wainscot, Offset(left, cam.y(12.0)), Size(width, cam.unit * 12f))
+            drawRect(k.wainscotEdge, Offset(left, cam.y(12.0)), Size(width, cam.unit * 1f))
         }
     }
     // Decoration chosen from the chunk's index: always the same house for a seed. One low piece
@@ -477,27 +481,36 @@ private fun DrawScope.drawRoom(chunk: Chunk, cam: Camera, sprites: GameSprites) 
         Room.HALL -> listOf("frame", "clock")[chunk.index % 2] to "frame"
         Room.LIVING_ROOM -> listOf("window", "plant")[chunk.index % 2] to "frame"
     }
-    val lowSprite = sprites[low]
+    val lowSprite = sprites.scenery(low, k)
     val lowBottom = if (low == "plant") cam.floor else cam.y(if (low == "shelf") 38.0 else 34.0)
     lowSprite.draw(this, left + width * 0.45f, lowBottom, pixel)
-    sprites[high].draw(this, left + width * 0.1f, cam.y(47.0), pixel)
+    sprites.scenery(high, k).draw(this, left + width * 0.1f, cam.y(47.0), pixel)
     val lamp = sprites["lamp"]
-    lamp.draw(this, left + width * 0.75f, ceiling + lamp.height * pixel * 1.2f, pixel * 1.2f)
+    val lampLeft = left + width * 0.75f
+    val lampBottom = ceiling + lamp.height * pixel * 1.2f
+    if (k.lampGlow.alpha > 0f) {
+        drawCircle(
+            k.lampGlow,
+            radius = cam.unit * 16f,
+            center = Offset(lampLeft + lamp.width * pixel * 0.6f, lampBottom)
+        )
+    }
+    lamp.draw(this, lampLeft, lampBottom, pixel * 1.2f)
     // Upstairs (upright screens show it under the score): its skirting and a window per chunk, so
     // the band above the ceiling isn't empty either.
-    drawRect(Kitchen.UpstairsLine, Offset(left, ceiling - cam.unit * 3), Size(width, cam.unit * 0.8f))
+    drawRect(k.upstairsLine, Offset(left, ceiling - cam.unit * 3), Size(width, cam.unit * 0.8f))
     if (ceiling > cam.unit * 16) {
-        val upstairs = sprites[if (chunk.index % 3 == 0) "frame" else "window"]
+        val upstairs = sprites.scenery(if (chunk.index % 3 == 0) "frame" else "window", k)
         upstairs.draw(this, left + width * 0.35f, ceiling - cam.unit * 5, pixel)
     }
 
     val floorColor = when (chunk.room) {
-        Room.KITCHEN -> Kitchen.Floor
-        Room.HALL -> Kitchen.HallFloor
-        Room.LIVING_ROOM -> Kitchen.LivingFloor
+        Room.KITCHEN -> k.floor
+        Room.HALL -> k.hallFloor
+        Room.LIVING_ROOM -> k.livingFloor
     }
     drawRect(floorColor, Offset(left, cam.floor), Size(width, size.height - cam.floor))
-    drawRect(Kitchen.FloorEdge, Offset(left, cam.floor), Size(width, cam.unit * 1.2f))
+    drawRect(k.floorEdge, Offset(left, cam.floor), Size(width, cam.unit * 1.2f))
     // Floor tiles in rows, offset like real ones: the floor reads as a floor, not a slab.
     val rowH = cam.unit * 4
     var row = 0
@@ -505,19 +518,19 @@ private fun DrawScope.drawRoom(chunk: Chunk, cam: Camera, sprites: GameSprites) 
     while (top < size.height) {
         var x = floor(chunk.start / 12) * 12 + if (row % 2 == 0) 0.0 else 6.0
         while (x < chunk.end) {
-            drawRect(Kitchen.Plank, Offset(cam.x(x), top), Size(cam.unit * 0.5f, rowH))
+            drawRect(k.plank, Offset(cam.x(x), top), Size(cam.unit * 0.5f, rowH))
             x += 12
         }
-        drawRect(Kitchen.Plank, Offset(left, top + rowH - cam.unit * 0.25f), Size(width, cam.unit * 0.5f))
+        drawRect(k.plank, Offset(left, top + rowH - cam.unit * 0.25f), Size(width, cam.unit * 0.5f))
         top += rowH
         row++
     }
 }
 
 /** Blue and white tiles from the floor up to [TILE_BAND], anchored to the world (they scroll with it). */
-private fun DrawScope.drawTiles(chunk: Chunk, cam: Camera) {
+private fun DrawScope.drawTiles(k: KitchenLook, chunk: Chunk, cam: Camera) {
     drawRect(
-        Kitchen.Grout,
+        k.grout,
         Offset(cam.x(chunk.start), cam.y(TILE_BAND)),
         Size(cam.x(chunk.end) - cam.x(chunk.start), cam.unit * TILE_BAND.toFloat())
     )
@@ -526,7 +539,7 @@ private fun DrawScope.drawTiles(chunk: Chunk, cam: Camera) {
     while (col * TILE < chunk.end) {
         var row = 0
         while (row * TILE < TILE_BAND) {
-            val color: Color = if ((row + col) % 2 == 0) Kitchen.Tile else Kitchen.TileWhite
+            val color: Color = if ((row + col) % 2 == 0) k.tile else k.tileWhite
             // Clipped to the chunk, but the grout only on the tile's own edges: two chunks meeting
             // mid-tile draw one tile, not two halves with a seam.
             val tileLeft = cam.x(col * TILE)
