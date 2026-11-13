@@ -59,17 +59,14 @@ of a calm run.
 - **WHEN** a high slipper passes over a standing kid **THEN** there is one near miss worth `NEAR_MISS_POINTS` bonus and the gap is above `START_GAP` − 1
 - **WHEN** a sandwich is picked up and two chairs follow **THEN** the first is blocked with no stumble and the shield is gone, and the second trips him
 - **WHEN** skates are picked up before a chair **THEN** the chair is crashed through with no stumble and the gap ends above `START_GAP`
+- **WHEN** the kid runs 2 s on skates and 2 s on foot from the same start **THEN** on skates he covers `SKATES_SPEED` (1.35) times the ground
 - **WHEN** a cat is ahead **THEN** it runs away (`fled`) and the kid stumbles
 - **WHEN** she throws from a full gap over 40 s **THEN** the kind warned is the kind thrown, every throw not close behind another is preceded by about a wind-up, and more than ten throws are made
 - **WHEN** 90 s are played with a full gap **THEN** some throw follows the previous within `DOUBLE_GAP`
 - *Verifies:* `aHighSlipperOverAStandingKidIsANearMissAndOpensTheGap`,
-  `theSandwichBlocksOneHit`, `skatesAreFasterAndCrashThroughFurniture`,
+  `theSandwichBlocksOneHit`, `skatesAreFasterAndCrashThroughFurniture`, `onSkatesHeCoversMoreGround`,
   `theCatWalksTowardsTheKidAndTripsHim`,
   `sheWindsUpBeforeEachThrowAndTheNextKindIsKnown`, `laterSomeThrowsComeInPairs`
-
-> **GAP — unverified.** That skates make the kid *faster* is not asserted (only that the
-> gap opens and the chair is crashed through). A test would compare the distance run with
-> and without skates.
 
 ### Requirement: Croquetas score and chain into a combo
 
