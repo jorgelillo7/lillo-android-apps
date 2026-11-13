@@ -118,7 +118,7 @@ internal fun HomeScreen(
             icon = { Icon(Icons.Filled.Add, contentDescription = null) },
             text = { Text(stringResource(R.string.create_title), fontWeight = FontWeight.Bold) },
             containerColor = Polls.Ink,
-            contentColor = Color.White,
+            contentColor = Polls.Paper,
             modifier = Modifier.align(Alignment.BottomEnd).padding(24.dp).testTag("create")
         )
     }
@@ -133,7 +133,7 @@ private fun Tab(text: String, selected: Boolean, onClick: () -> Unit, modifier: 
             .background(if (selected) Polls.Ink else Color.Transparent)
             .clickable(onClick = onClick)
             .padding(vertical = 10.dp),
-        color = if (selected) Color.White else Polls.Muted,
+        color = if (selected) Polls.Paper else Polls.Muted,
         fontWeight = FontWeight.Bold,
         textAlign = TextAlign.Center
     )

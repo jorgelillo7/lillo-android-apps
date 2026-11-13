@@ -5,7 +5,7 @@
         <item name="postSplashScreenTheme">@style/Theme.GroupPolls</item>
     </style>
 
-    <style name="Theme.GroupPolls" parent="android:Theme.Material.Light.NoActionBar">
+    <style name="Theme.GroupPolls" parent="android:Theme.Material.NoActionBar">
         <item name="android:windowBackground">@color/paper</item>
     </style>
 </resources>

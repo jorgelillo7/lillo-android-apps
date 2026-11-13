@@ -70,7 +70,7 @@ internal fun BigButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    color: Color = Polls.Blue
+    color: Color = Polls.Brand
 ) = LilloBigButton(
     text,
     onClick,
@@ -88,8 +88,12 @@ internal fun SplitBar(poll: Poll, modifier: Modifier = Modifier, height: Int = 1
     val split = Split.of(poll.redVotes, poll.blueVotes)
     val red = if (poll.totalVotes == 0) 0.5f else split.red / 100f
     Row(modifier.fillMaxWidth().height(height.dp).clip(CircleShape)) {
-        if (red > 0f) Box(Modifier.weight(red.coerceAtLeast(0.001f)).fillMaxHeight().background(Polls.Red))
-        if (red < 1f) Box(Modifier.weight((1 - red).coerceAtLeast(0.001f)).fillMaxHeight().background(Polls.Blue))
+        if (red > 0f) Box(Modifier.weight(red.coerceAtLeast(0.001f)).fillMaxHeight().background(Polls.RedFillColor))
+        if (red <
+            1f
+        ) {
+            Box(Modifier.weight((1 - red).coerceAtLeast(0.001f)).fillMaxHeight().background(Polls.BlueFillColor))
+        }
     }
 }
 

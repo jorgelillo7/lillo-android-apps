@@ -6,9 +6,11 @@ import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
 import com.jorgelillo.core.designsystem.installLilloWindow
 import com.jorgelillo.core.designsystem.setLilloContent
+import com.jorgelillo.core.designsystem.startsDark
 import com.jorgelillo.grouppolls.ui.GroupPollsApp
 import com.jorgelillo.grouppolls.ui.PollsViewModel
-import com.jorgelillo.grouppolls.ui.theme.PollsColorScheme
+import com.jorgelillo.grouppolls.ui.theme.PollsDark
+import com.jorgelillo.grouppolls.ui.theme.PollsLight
 
 class MainActivity : ComponentActivity() {
 
@@ -18,10 +20,10 @@ class MainActivity : ComponentActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        installLilloWindow(darkDesign = false)
+        installLilloWindow(darkDesign = startsDark())
         super.onCreate(savedInstanceState)
         if (savedInstanceState == null) handleLink(intent)
-        setLilloContent(PollsColorScheme) {
+        setLilloContent(PollsLight, PollsDark) {
             GroupPollsApp(vm)
         }
     }

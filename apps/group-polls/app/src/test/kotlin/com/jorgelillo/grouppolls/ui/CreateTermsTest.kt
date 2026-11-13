@@ -13,7 +13,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.jorgelillo.core.designsystem.LilloTheme
 import com.jorgelillo.grouppolls.domain.Visibility
 import com.jorgelillo.grouppolls.ui.screens.CreateScreen
-import com.jorgelillo.grouppolls.ui.theme.PollsColorScheme
+import com.jorgelillo.grouppolls.ui.theme.PollsLight
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
@@ -32,7 +32,7 @@ class CreateTermsTest {
 
     private fun draft(visibility: String) {
         compose.setContent {
-            LilloTheme(PollsColorScheme) {
+            LilloTheme(PollsLight) {
                 CreateScreen(
                     acceptedTerms = accepted,
                     onAcceptTerms = { accepted = true },
