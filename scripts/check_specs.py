@@ -33,6 +33,17 @@ SPECS = REPO_ROOT / "openspec" / "specs"
 # A test function is the `fun` that follows an annotation containing "Test"
 # (`@Test`, `@ParameterizedTest`, `@RepeatedTest`).
 _FUN = re.compile(r"^\s*(?:private\s+|internal\s+)?fun\s+(?:`([^`]+)`|([A-Za-z_]\w*))\s*\(")
+# Leading annotations on the line, as in `@Test fun x()` or `@Test @Config(...) fun x()`.
+_ANNOTATION = re.compile(r"\s*@([\w.:]+)(?:\([^()]*\))?")
+
+
+def split_annotations(line: str) -> tuple[list[str], str]:
+    """The names of the annotations that open the line, and what follows them."""
+    names = []
+    while (match := _ANNOTATION.match(line)) is not None:
+        names.append(match.group(1))
+        line = line[match.end():]
+    return names, line
 
 
 def known_tests() -> dict[str, set[str]]:
@@ -46,10 +57,13 @@ def known_tests() -> dict[str, set[str]]:
         names = classes.setdefault(Path(path).stem, set())
         annotated = False
         for line in lines:
+            annotations, rest = split_annotations(line)
+            if annotations:
+                annotated = annotated or any("Test" in name for name in annotations)
+                if not rest.strip():
+                    continue
+                line = rest
             stripped = line.strip()
-            if stripped.startswith("@"):
-                annotated = annotated or "Test" in stripped
-                continue
             match = _FUN.match(line)
             if match and annotated:
                 names.add(match.group(1) or match.group(2))

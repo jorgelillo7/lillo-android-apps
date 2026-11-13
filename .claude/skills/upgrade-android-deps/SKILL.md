@@ -72,8 +72,10 @@ aar androidx/compose/foundation foundation-android 1.12.1
    `$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "platforms;android-<N>.0" "build-tools;<N>.0.0"`
    (check disk space first: `df -h ~`).
 3. Gradle wrapper: edit `distributionUrl` **by hand first** (the `wrapper` task fails if the old
-   Gradle can't load the new AGP), then run `./gradlew wrapper --gradle-version <X>` to refresh
-   `gradlew`, `gradlew.bat` and the jar.
+   Gradle can't load the new AGP), then refresh `gradlew`, `gradlew.bat`, the jar and the
+   checksum with Gradle's published one:
+   `./gradlew wrapper --gradle-version <X> --gradle-distribution-sha256-sum "$(curl -sL https://services.gradle.org/distributions/gradle-<X>-bin.zip.sha256)"`.
+   Check `distributionSha256Sum` is still in `gradle/wrapper/gradle-wrapper.properties`.
 4. Fix `build-logic/` for API changes (e.g. AGP 9: no `org.jetbrains.kotlin.android`,
    non-generic `CommonExtension`).
 5. Bump each app's `versionCode`/`versionName` only if the user wants to ship this as a release.

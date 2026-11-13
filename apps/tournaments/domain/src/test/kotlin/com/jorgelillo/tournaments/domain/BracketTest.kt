@@ -90,6 +90,30 @@ class BracketTest {
         assertNull(t.champion)
     }
 
+    /** Every change bumps the version, so the newest copy wins an import; the day and champion travel. */
+    @Test
+    fun everyChangeBumpsTheRevision() {
+        var t = elimination(4)
+        val created = t.revision
+        t = Tournaments.record(t, t.round(Stage.ELIMINATION, 1)[0], 2, 0)
+        assertEquals(created + 1, t.revision)
+        t = Tournaments.clear(t, t.round(Stage.ELIMINATION, 1)[0])
+        assertEquals(created + 2, t.revision)
+        while (Tournaments.pending(t).isNotEmpty()) t = Tournaments.record(t, Tournaments.pending(t).first(), 2, 1)
+        assertEquals(created + 5, t.revision)
+
+        var league = Tournaments.create("s", "League", 20_000, names(4), Format.SWISS, random = Random(1))
+        val before = league.revision
+        Tournaments.pending(league).forEach { league = Tournaments.record(league, it, 2, 0) }
+        league = Tournaments.pairNextRound(league, Random(1))
+        assertEquals(before + 3, league.revision)
+
+        val back = Share.decode(Share.encode(t))!!
+        assertEquals(20_000L, back.epochDay)
+        assertEquals(t.revision, back.revision)
+        assertEquals(t.champion, back.champion)
+    }
+
     @Test
     fun redrawOnlyBeforeResults() {
         val t = elimination(8)

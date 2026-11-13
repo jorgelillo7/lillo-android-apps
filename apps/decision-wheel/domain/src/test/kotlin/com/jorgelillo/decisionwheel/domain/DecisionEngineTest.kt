@@ -27,6 +27,20 @@ class DecisionEngineTest {
         assertEquals(mapOf("VIPS" to 0.25, "Goiko" to 0.5, "Ginos" to 0.75, "Sushi" to 1.0), weights)
     }
 
+    /** Only the three newest distinct results are penalised: a fourth, older one weighs 1.0 again. */
+    @Test
+    fun onlyTheThreeNewestDistinctResultsArePenalised() {
+        val history = listOf(
+            decided("Sushi", 9),
+            decided("VIPS", 1),
+            decided("VIPS", 2),
+            decided("Goiko", 3),
+            decided("Ginos", 6)
+        )
+        val weights = DecisionEngine.weights(options, emptySet(), history, now, avoidRepeats = true)
+        assertEquals(mapOf("VIPS" to 0.25, "Goiko" to 0.5, "Ginos" to 0.75, "Sushi" to 1.0), weights)
+    }
+
     @Test
     fun oldHistoryAndDisabledSettingDoNotPenalise() {
         val old = listOf(decided("VIPS", 40))

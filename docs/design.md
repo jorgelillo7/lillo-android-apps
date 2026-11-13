@@ -58,10 +58,10 @@ violet for the impostor, red and gold for Christmas…), and every app builds it
 way** from it: same recipe for surfaces and text, same components from `:core:designsystem`, same
 rules for contrast and motion. Every app is moving to a light and a dark look that follow the
 phone, with a choice in the About sheet (`LilloTheme(light, dark)`); until an app moves, it keeps
-its single look. Five apps are dark only today. Three are light on purpose and documented
-as such: the slipper game (a warm pixel-art kitchen), group-polls (paper-like) and stadium-events,
-which is light by default for its older readers and the only app that follows the phone's dark mode
-(`JaleoLightScheme` / `JaleoDarkScheme`).
+its single look. Four apps have both looks today: christmas-countdown, decision-wheel, whos-lying
+and tournaments. league-cards is still dark only; slipper (a warm pixel-art kitchen) and
+group-polls (paper-like) are still light only; stadium-events follows the phone's dark mode with
+its own schemes (`JaleoLightScheme` / `JaleoDarkScheme`) and no choice in About yet.
 
 The goal is not award-winning flash but **comfortable and usable**: calm tinted backgrounds, one
 vivid colour where it matters, text that reads at a glance on a handheld in the sun.
@@ -113,7 +113,9 @@ user-made or unbounded (cards, labels), down to a readable minimum, then scrolls
 ## Components
 
 All in `:core:designsystem`, each with a preview in `Catalogue.kt` (captured with accessibility
-checks). Apps wrap them with their colours in `ui/Common.kt`; they never copy them.
+checks). Apps call them directly and never copy them: colours come from the app's `LilloStyle`
+(`LilloColors`) and Material colour roles. Apps not yet moved to the two looks still wrap a few
+of them in `ui/Common.kt`.
 
 ### Summary hero (`LilloSummaryHero`)
 
