@@ -26,13 +26,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.jorgelillo.core.designsystem.LilloBigButton
 import com.jorgelillo.core.designsystem.LilloQrCode
 import com.jorgelillo.core.designsystem.TestTagsAsResourceIds
 import com.jorgelillo.core.platform.shareText
 import com.jorgelillo.tournaments.R
 import com.jorgelillo.tournaments.domain.Share
 import com.jorgelillo.tournaments.domain.Tournament
-import com.jorgelillo.tournaments.ui.BigButton
 import com.jorgelillo.tournaments.ui.theme.Arena
 
 /**
@@ -82,7 +82,7 @@ internal fun ShareContent(t: Tournament, modifier: Modifier = Modifier) {
                 )
             }
             val message = stringResource(R.string.share_message, t.name, link)
-            BigButton(stringResource(R.string.share_send_link), { context.shareText(message) }, "send_link")
+            LilloBigButton(stringResource(R.string.share_send_link), { context.shareText(message) }, modifier = Modifier.testTag("send_link"))
         }
         Row(horizontalArrangement = Arrangement.spacedBy(10.dp), modifier = Modifier.fillMaxWidth()) {
             OutlinedButton(onClick = {

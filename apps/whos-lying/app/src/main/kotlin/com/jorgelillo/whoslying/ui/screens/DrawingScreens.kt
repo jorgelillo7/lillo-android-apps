@@ -59,7 +59,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.jorgelillo.core.designsystem.LilloBigButton
 import com.jorgelillo.core.designsystem.LilloColors
+import com.jorgelillo.core.designsystem.LilloPage
 import com.jorgelillo.whoslying.R
 import com.jorgelillo.whoslying.domain.Game
 import com.jorgelillo.whoslying.domain.Match
@@ -89,10 +91,10 @@ internal fun DrawingScreen(
     val starter =
         game.starter.takeIf { it in alive } ?: game.cards.first { it.player in alive && it.role != Role.DRIFTER }.player
     val voteButtons: @Composable ColumnScope.() -> Unit = {
-        BigButton(
+        LilloBigButton(
             stringResource(R.string.vote_button),
             onVote,
-            Modifier.testTag("go_vote"),
+            modifier = Modifier.testTag("go_vote"),
             color = Neon.Go,
             contentColor = Neon.OnFill
         )
@@ -115,7 +117,7 @@ internal fun DrawingScreen(
     BoxWithConstraints(Modifier.fillMaxSize()) {
         if (maxWidth > maxHeight) {
             // Landscape (and wide handhelds): the canvas takes the full height, controls go to the side.
-            Page(title = null, onBack = onQuit, background = LilloColors.current.background, readable = false) {
+            LilloPage(title = null, onBack = onQuit, background = LilloColors.current.background, readable = false) {
                 Row(
                     Modifier.weight(1f).fillMaxWidth().padding(bottom = 12.dp),
                     horizontalArrangement = Arrangement.spacedBy(20.dp)
@@ -140,7 +142,13 @@ internal fun DrawingScreen(
                 }
             }
         } else {
-            Page(title = null, onBack = onQuit, background = LilloColors.current.background, bottom = voteButtons) {
+            LilloPage(
+                title = null,
+                onBack = onQuit,
+                background = LilloColors.current.background,
+                bottom = voteButtons,
+                readable = true
+            ) {
                 turns()
                 if (discussionSeconds > 0) {
                     Spacer(Modifier.height(8.dp))

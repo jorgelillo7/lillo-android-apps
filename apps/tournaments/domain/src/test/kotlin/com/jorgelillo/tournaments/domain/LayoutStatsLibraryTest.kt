@@ -36,7 +36,10 @@ class LayoutStatsLibraryTest {
     @Test
     fun championPathEndsAtTheFinal() {
         val t = played((1..8).map { "P$it" })
-        assertEquals(3, BracketLayout.pathOf(t, t.champion!!).size)
+        val path = BracketLayout.pathOf(t, t.champion!!).sortedBy { it.round }
+        assertEquals(3, path.size)
+        assertEquals(listOf(1, 2, 3), path.map { it.round })
+        assertEquals(t.round(Stage.ELIMINATION, t.eliminationRounds).single(), path.last())
     }
 
     @Test
@@ -49,6 +52,55 @@ class LayoutStatsLibraryTest {
         assertEquals(2, all.sumOf { it.titles })
         assertEquals(1, Stats.of(listOf(a, b), game = "pokémon").sumOf { it.titles })
         assertTrue(all.first().titles >= 1)
+    }
+
+    /** Titles first, then finals, then match win rate; each column counted per player. */
+    @Test
+    fun theHallOfFameRanksByTitlesThenFinalsThenWinRate() {
+        fun players(vararg names: String) = names.mapIndexed { i, n -> Player(i + 1, n) }
+        fun m(stage: Stage, round: Int, slot: Int, a: Int, b: Int, winsA: Int, winsB: Int) =
+            Match(stage, round, slot, a, b, winsA, winsB)
+        val e = Stage.ELIMINATION
+        // X beats P and then Y in the final; Y beat Q to get there.
+        val cup = Tournament(
+            "cup",
+            "Cup",
+            epochDay = 0,
+            players = players("X", "Y", "P", "Q"),
+            matches = listOf(m(e, 1, 0, 1, 3, 2, 0), m(e, 1, 1, 2, 4, 2, 1), m(e, 2, 0, 1, 2, 2, 0))
+        )
+        // Three Swiss rounds, no cut: Lead wins all (the title), W wins two, L1 one, L2 none.
+        val s = Stage.SWISS
+        val league = Tournament(
+            "league",
+            "League",
+            epochDay = 0,
+            format = Format.SWISS,
+            swissRounds = 3,
+            players = players("Lead", "W", "L1", "L2"),
+            matches = listOf(
+                m(s, 1, 0, 1, 2, 2, 0),
+                m(s, 1, 1, 3, 4, 2, 0),
+                m(s, 2, 0, 2, 3, 2, 0),
+                m(s, 2, 1, 1, 4, 2, 0),
+                m(s, 3, 0, 2, 4, 2, 0),
+                m(s, 3, 1, 1, 3, 2, 0)
+            )
+        )
+        val rows = Stats.of(listOf(cup, league))
+        fun row(name: String) = rows.single { it.name == name }
+
+        assertEquals(1, row("X").titles)
+        assertEquals(1, row("Lead").titles)
+        assertEquals(1, row("X").finals)
+        assertEquals(1, row("Y").finals)
+        assertEquals(0, row("Lead").finals)
+        assertEquals(0.5, row("Y").winRate)
+        assertEquals(2.0 / 3, row("W").winRate)
+        // X before Lead: same titles, more finals. Lead before Y: a title beats a final.
+        // Y before W: a final beats a better win rate. W before L1: the win rate decides.
+        assertEquals(listOf("X", "Lead", "Y", "W", "L1"), rows.take(5).map { it.name })
+        assertEquals(setOf("P", "Q", "L2"), rows.drop(5).map { it.name }.toSet())
     }
 
     @Test

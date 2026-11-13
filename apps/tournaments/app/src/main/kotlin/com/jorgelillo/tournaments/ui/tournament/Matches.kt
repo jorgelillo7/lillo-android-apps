@@ -53,12 +53,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.jorgelillo.core.designsystem.LilloBigButton
 import com.jorgelillo.core.designsystem.TestTagsAsResourceIds
 import com.jorgelillo.tournaments.R
 import com.jorgelillo.tournaments.domain.Match
 import com.jorgelillo.tournaments.domain.Stage
 import com.jorgelillo.tournaments.domain.Tournament
-import com.jorgelillo.tournaments.ui.BigButton
 import com.jorgelillo.tournaments.ui.resultSentence
 import com.jorgelillo.tournaments.ui.roundName
 import com.jorgelillo.tournaments.ui.theme.Arena
@@ -344,15 +344,9 @@ internal fun ResultSheet(
                     fontSize = 13.sp
                 )
             }
-            BigButton(
-                stringResource(R.string.result_save),
-                {
-                    onSave(winsA, winsB, outcome == 2, comment)
-                },
-                "save",
-                enabled =
-                    outcome >= 0
-            )
+            LilloBigButton(stringResource(R.string.result_save), {
+                onSave(winsA, winsB, outcome == 2, comment)
+            }, enabled = outcome >= 0, modifier = Modifier.testTag("save"))
             if (match.isDone(t.bestOf)) {
                 TextButton(
                     onClick = onClear,
