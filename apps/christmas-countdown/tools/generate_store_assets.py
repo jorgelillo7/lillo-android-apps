@@ -21,6 +21,7 @@ LOCALES = {
         "tagline": "Days left · Advent calendar · Widget · Carols",
         "headlines": {
             "01-countdown": ("Every second", "until Christmas"),
+            "01b-night": ("A snowy morning", "or a starry night"),
             "02-sleeps": ("Count the sleeps,", "just like kids do"),
             "03-advent": ("A surprise every day", "of December"),
             "04-plan": ("A family plan", "every day"),
@@ -33,6 +34,7 @@ LOCALES = {
         "tagline": "Días que faltan · Adviento · Widget · Villancicos",
         "headlines": {
             "01-countdown": ("Cada segundo", "hasta Navidad"),
+            "01b-night": ("Una mañana nevada", "o una noche estrellada"),
             "02-sleeps": ("Cuenta las noches,", "como los peques"),
             "03-advent": ("Una sorpresa cada día", "de diciembre"),
             "04-plan": ("Un plan en familia", "cada día"),

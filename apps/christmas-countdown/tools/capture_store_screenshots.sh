@@ -27,6 +27,7 @@ for locale in $CAPTURE_LOCALES; do
   capture_open "$locale" 30 keep
 
   tap "$(label "$locale" time)";   shot "$locale" 01-countdown
+  look dark; shot "$locale" 01b-night; look light   # the same screen in the night look
   tap "$(label "$locale" sleeps)"; shot "$locale" 02-sleeps
   tap "$(label "$locale" advent)" 6
   if [ "$first" = 1 ]; then

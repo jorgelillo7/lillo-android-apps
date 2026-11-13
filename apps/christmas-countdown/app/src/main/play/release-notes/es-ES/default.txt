@@ -1,2 +1,5 @@
-Más agradable al tacto 🎄
-- Los botones responden con un pequeño rebote y una vibración suave
+Nuevo aspecto 🎄
+- De día, una mañana nevada; de noche, el cielo de medianoche: sigue al móvil o elige en Información → Apariencia
+- En Información, un botón para añadir el widget a la pantalla de inicio
+- Lista para Android 17
+¡Feliz Adviento!
