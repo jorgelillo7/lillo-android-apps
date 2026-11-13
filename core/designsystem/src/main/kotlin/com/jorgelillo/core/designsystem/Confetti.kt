@@ -23,10 +23,13 @@ import kotlin.random.Random
 
 private class Piece(val angle: Float, val speed: Float, val spin: Float, val colorIndex: Int, val wide: Boolean)
 
-/** A short burst of confetti from the centre of [modifier]'s area, replayed whenever [key] changes. */
+/**
+ * A short burst of confetti from the centre of [modifier]'s area, replayed whenever [key] changes.
+ * Nothing with the phone's "Remove animations" on.
+ */
 @Composable
 fun ConfettiBurst(key: Any?, colors: List<Color>, modifier: Modifier = Modifier) {
-    if (key == null) return
+    if (key == null || !animationsEnabled()) return
     val progress = remember(key) { Animatable(0f) }
     val pieces = remember(key) {
         List(48) {
@@ -76,9 +79,13 @@ private class RainPiece(
     val delay: Float
 )
 
-/** A few seconds of confetti falling over [modifier]'s area (a win that fills the screen). */
+/**
+ * A few seconds of confetti falling over [modifier]'s area (a win that fills the screen). Nothing
+ * with the phone's "Remove animations" on.
+ */
 @Composable
 fun ConfettiRain(colors: List<Color>, modifier: Modifier = Modifier) {
+    if (!animationsEnabled()) return
     val pieces = remember {
         val random = Random(System.nanoTime())
         List(90) {
