@@ -29,9 +29,9 @@ decode to nothing.
 
 ### Requirement: Importing keeps the newest copy
 
-A tournament arriving from a link SHALL be added if new, SHALL replace the local copy only
-when its `revision` (bumped on every change) is higher, SHALL be reported as already up to
-date when equal and as "newer here" when older. Opening the same link twice SHALL
+A tournament arriving from a link SHALL be added if new, SHALL be offered as an update only
+when its `revision` (bumped on every change) is higher (the user then decides, see below),
+SHALL be reported as already up to date when equal and as "newer here" when older. Opening the same link twice SHALL
 update, not duplicate, and a broken link SHALL produce an event with no result and no id.
 New ids SHALL be 10 characters and distinct, a change to a stored tournament SHALL apply
 to it, a change to a deleted one SHALL be ignored, and delete SHALL remove it.
