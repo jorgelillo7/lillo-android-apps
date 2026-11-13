@@ -87,10 +87,6 @@ between 5 and 120.
   `the last matchday ends with the final position`,
   `a careful player usually finishes the season, a random one sometimes`
 
-> **GAP — unverified.** `a gamble that always goes wrong…` asserts its outcome only when the
-> gamble card is dealt first (`if (first == "x")`); with the other card first it asserts
-> nothing. A test would fix the seed so the gamble is first, or assert for both orders.
-
 ### Requirement: Chat lines do not repeat until they run out
 
 The league's chat after a matchday SHALL not repeat a line within a season until the pool

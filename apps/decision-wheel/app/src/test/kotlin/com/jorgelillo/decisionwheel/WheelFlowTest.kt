@@ -13,6 +13,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.takahirom.roborazzi.RobolectricDeviceQualifiers
 import com.jorgelillo.decisionwheel.domain.AppState
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.junit.Rule
@@ -46,8 +47,12 @@ class WheelFlowTest {
         compose.waitUntilExactlyOneExists(hasText(eatOut), TIMEOUT)
         compose.onNodeWithText(eatOut).performClick()
 
-        // The spin takes a few seconds of animation; the result card offers to accept it.
+        // The spin takes a few seconds of animation; the result card offers to accept it. A spin
+        // turned down with "Spin again" is not history: only an accepted result is.
         tap("spin")
+        tap("again")
+        compose.waitUntilExactlyOneExists(hasTestTag("accept"), TIMEOUT)
+        assertTrue(saved().history.isEmpty())
         tap("accept")
         compose.waitUntil(TIMEOUT) { saved().history.isNotEmpty() }
         val decision = saved().history.single()

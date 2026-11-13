@@ -70,6 +70,48 @@ class SwissTest {
         assertTrue(table.first().gameWinRate > 0.6)
     }
 
+    /**
+     * Level on points, the opponents' match-win rate decides before the game-win rate, which
+     * decides before the opponents' game-win rate; a winless opponent counts as one third.
+     */
+    @Test
+    fun tieBreakersInOrderWithAOneThirdFloor() {
+        fun m(round: Int, slot: Int, a: Int, b: Int, winsA: Int, winsB: Int) =
+            Match(Stage.SWISS, round, slot, a, b, winsA, winsB)
+        val t = Tournament(
+            "t",
+            "League",
+            epochDay = 0,
+            format = Format.SWISS,
+            swissRounds = 2,
+            players = (1..6).map { Player(it, "P$it") },
+            matches = listOf(
+                m(1, 0, 1, 2, 2, 1),
+                m(1, 1, 3, 4, 2, 0),
+                m(1, 2, 5, 6, 2, 0),
+                m(2, 0, 3, 1, 2, 0),
+                m(2, 1, 2, 6, 2, 0),
+                m(2, 2, 4, 5, 2, 0)
+            )
+        )
+        val table = Standings.of(t)
+        fun row(p: Int) = table.single { it.player == p }
+        fun place(p: Int) = table.indexOfFirst { it.player == p }
+
+        // 1, 2, 4 and 5 all have 3 points (one win, one loss).
+        assertEquals(setOf(3), listOf(1, 2, 4, 5).map { row(it).points }.toSet())
+        // Player 6 lost both: floored at one third, so 2's opponents average (1/2 + 1/3) / 2.
+        assertEquals((0.5 + 1.0 / 3) / 2, row(2).opponentsWinRate, 1e-9)
+        // 1 beats 2 on the opponents' match-win rate although 2 won more of its games.
+        assertTrue(row(2).gameWinRate > row(1).gameWinRate)
+        assertTrue(place(1) < place(2))
+        // 4 and 1 have the same opponents' match-win rate: 4's better game-win rate decides,
+        // although 1's opponents won more of their games.
+        assertEquals(row(1).opponentsWinRate, row(4).opponentsWinRate, 1e-9)
+        assertTrue(row(1).opponentsGameWinRate > row(4).opponentsGameWinRate)
+        assertTrue(place(4) < place(1))
+    }
+
     @Test
     fun swissWithoutCutEndsWithTheLeader() {
         var t = swiss(4)

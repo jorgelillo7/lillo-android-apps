@@ -51,6 +51,8 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.jorgelillo.core.designsystem.HeroChip
+import com.jorgelillo.core.designsystem.LilloBigButton
+import com.jorgelillo.core.designsystem.LilloPage
 import com.jorgelillo.core.designsystem.LilloSettingRow
 import com.jorgelillo.core.designsystem.LilloSummaryHero
 import com.jorgelillo.core.designsystem.isShortScreen
@@ -72,8 +74,8 @@ internal fun HomeScreen(
     onPacks: () -> Unit,
     onAbout: () -> Unit
 ) {
-    Page(title = null, onBack = null, bottom = {
-        BigButton(stringResource(R.string.play), onPlay, Modifier.testTag("play"))
+    LilloPage(title = null, onBack = null, bottom = {
+        LilloBigButton(stringResource(R.string.play), onPlay, modifier = Modifier.testTag("play"))
         Spacer(Modifier.height(12.dp))
         Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
             HomeChip("📖", stringResource(R.string.rules_short), onHowTo, Modifier.weight(1f).testTag("how_to"))
@@ -83,7 +85,7 @@ internal fun HomeScreen(
         TextButton(onClick = onAbout, modifier = Modifier.align(Alignment.CenterHorizontally).testTag("about")) {
             Text("⚙️  " + stringResource(R.string.action_about), color = Neon.Muted)
         }
-    }) {
+    }, readable = true) {
         val summary = group?.takeIf { it.players.isNotEmpty() }
         if (summary != null && isShortScreen()) {
             // Landscape and handhelds: the group's summary is worth more than the big detective.
@@ -180,7 +182,7 @@ internal fun PlayersScreen(
         if (draft.isNotBlank()) onAdd(draft)
         draft = ""
     }
-    Page(
+    LilloPage(
         title = stringResource(R.string.players_title),
         onBack = onBack,
         modifier = Modifier.imePadding(),
@@ -215,13 +217,14 @@ internal fun PlayersScreen(
                 }
             }
             Spacer(Modifier.height(12.dp))
-            BigButton(
+            LilloBigButton(
                 stringResource(R.string.continue_),
                 onContinue,
                 enabled = players.size >= Rules.MIN_PLAYERS,
                 modifier = Modifier.testTag("continue")
             )
-        }
+        },
+        readable = true
     ) {
         Text(
             if (players.size < Rules.MIN_PLAYERS) {
@@ -274,17 +277,18 @@ internal fun SetupScreen(
     // On short screens a fixed button would leave almost no room to scroll: it goes at the end of the list.
     val short = isShortScreen()
     val startButton: @Composable () -> Unit = {
-        BigButton(
+        LilloBigButton(
             stringResource(R.string.start),
             onStart,
             enabled = Rules.canStart(playerCount, settings),
             modifier = Modifier.testTag("start")
         )
     }
-    Page(
+    LilloPage(
         title = stringResource(R.string.setup_title),
         onBack = onBack,
-        bottom = { if (!short) startButton() }
+        bottom = { if (!short) startButton() },
+        readable = true
     ) {
         Column(Modifier.verticalScroll(rememberScrollState())) {
             TextButton(onClick = onModesInfo, modifier = Modifier.align(Alignment.End).testTag("modes_info")) {

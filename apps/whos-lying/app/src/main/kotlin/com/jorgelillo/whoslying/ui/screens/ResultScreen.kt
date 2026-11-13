@@ -32,6 +32,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jorgelillo.core.designsystem.ConfettiRain
+import com.jorgelillo.core.designsystem.LilloBigButton
+import com.jorgelillo.core.designsystem.LilloPage
 import com.jorgelillo.whoslying.R
 import com.jorgelillo.whoslying.domain.Elimination
 import com.jorgelillo.whoslying.domain.Game
@@ -119,25 +121,25 @@ internal fun ResultScreen(
             else -> Neon.RevealBackdrop
         }
         Box(Modifier.fillMaxSize()) {
-            Page(
+            LilloPage(
                 title = null,
                 onBack = null,
                 sideActionsWhenShort = true,
                 background = background,
                 bottom = {
                     if (roundsLeft == 0) {
-                        BigButton(
+                        LilloBigButton(
                             stringResource(R.string.result_see_winner),
                             onSeeWinner,
-                            Modifier.testTag("see_winner"),
+                            modifier = Modifier.testTag("see_winner"),
                             color = Neon.Amber,
                             contentColor = Neon.OnFill
                         )
                     } else {
-                        BigButton(
+                        LilloBigButton(
                             stringResource(R.string.continue_),
                             onContinue,
-                            Modifier.testTag("play_again"),
+                            modifier = Modifier.testTag("play_again"),
                             color = Neon.Go,
                             contentColor = Neon.OnFill
                         )
@@ -148,7 +150,8 @@ internal fun ResultScreen(
                     ) {
                         Text(stringResource(R.string.home), color = Color.White.copy(alpha = 0.85f))
                     }
-                }
+                },
+                readable = true
             ) {
                 Column(
                     Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState()),

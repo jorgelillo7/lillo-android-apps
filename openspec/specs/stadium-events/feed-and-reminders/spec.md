@@ -25,26 +25,23 @@ newer app does not break an older one.
 
 The first open SHALL download the events, answer tomorrow, list the upcoming events and
 store the fetch time. A failed download SHALL keep the saved copy and its fetch time and
-mark the state offline. A copy fetched an hour ago SHALL NOT be downloaded on opening; an
-explicit refresh SHALL download it.
+mark the state offline. Opening SHALL download again only a copy older than three hours
+(`STALE_MILLIS`); an explicit refresh SHALL always download.
 
 #### Scenario: downloading
 - **WHEN** the app opens with nothing saved **THEN** it answers busy with the Viking match, lists Betis, the Champions League final and Karol G, and stores the fetch time
 - **WHEN** the download throws and a copy from five hours ago is saved **THEN** the state is offline, tomorrow is still answered and the fetch time is unchanged
 - **WHEN** the copy is an hour old **THEN** opening downloads nothing, and refreshing downloads once and updates the fetch time
+- **WHEN** the copy is just over three hours old (`STALE_MILLIS`) **THEN** opening downloads it again once
 - *Verifies:* `firstOpenDownloadsTheEventsAndAnswersTomorrow`,
-  `aFailedDownloadKeepsTheLastCopyAndSaysSo`, `aRecentCopyIsNotDownloadedAgain`
+  `aFailedDownloadKeepsTheLastCopyAndSaysSo`, `aRecentCopyIsNotDownloadedAgain`,
+  `aCopyOverThreeHoursOldIsDownloadedAgain`
 
 ### Requirement: The notifications question is asked once
 
 #### Scenario: permission
 - **WHEN** the question has not been asked and the app records that it was **THEN** the state starts false and is stored true
 - *Verifies:* `theNotificationsQuestionIsAskedOnce`
-
-> **GAP — unverified.** The staleness threshold for downloading again (between one hour
-> and five hours old) is not pinned: the tests use one hour (not downloaded) and five
-> hours (offline copy kept) but no test asserts that a five-hour-old copy *is* downloaded
-> when the network works.
 
 ### Requirement: One reminder job every evening
 

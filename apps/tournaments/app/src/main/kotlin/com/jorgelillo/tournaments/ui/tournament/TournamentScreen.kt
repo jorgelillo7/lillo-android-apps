@@ -45,6 +45,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jorgelillo.core.designsystem.ConfettiBurst
+import com.jorgelillo.core.designsystem.LilloBigButton
+import com.jorgelillo.core.designsystem.LilloPage
 import com.jorgelillo.core.designsystem.TestTagsAsResourceIds
 import com.jorgelillo.core.designsystem.isShortScreen
 import com.jorgelillo.core.designsystem.isWideScreen
@@ -54,7 +56,6 @@ import com.jorgelillo.tournaments.domain.Match
 import com.jorgelillo.tournaments.domain.Stage
 import com.jorgelillo.tournaments.domain.Tournament
 import com.jorgelillo.tournaments.domain.Tournaments
-import com.jorgelillo.tournaments.ui.Page
 import com.jorgelillo.tournaments.ui.bestOfLabel
 import com.jorgelillo.tournaments.ui.formatDay
 import com.jorgelillo.tournaments.ui.theme.Arena
@@ -96,7 +97,7 @@ internal fun TournamentScreen(
     LaunchedEffect(celebrate) { if (celebrate != null) haptics.performHapticFeedback(HapticFeedbackType.LongPress) }
 
     Box(Modifier.fillMaxSize()) {
-        Page(
+        LilloPage(
             readable = false, // the bracket uses all the width it gets
             title = t.name,
             onBack = onBack,
@@ -283,17 +284,20 @@ private fun TabContent(t: Tournament, tab: Tab, onEdit: (Match) -> Unit) = when 
 @Composable
 private fun NextStep(t: Tournament, onChange: ((Tournament) -> Tournament) -> Unit) {
     when {
-        Tournaments.canPairNextRound(t) -> com.jorgelillo.tournaments.ui.BigButton(
-            stringResource(R.string.action_pair_round, Tournaments.currentSwissRound(t) + 1),
-            { onChange { Tournaments.pairNextRound(it) } },
-            "next_round"
+        Tournaments.canPairNextRound(t) -> LilloBigButton(
+            stringResource(
+                R.string.action_pair_round,
+                Tournaments.currentSwissRound(t) + 1
+            ),
+            {
+                onChange { Tournaments.pairNextRound(it) }
+            },
+            modifier = Modifier.testTag("next_round")
         )
 
-        Tournaments.canStartTopCut(t) -> com.jorgelillo.tournaments.ui.BigButton(
-            stringResource(R.string.action_start_top_cut, t.topCut),
-            { onChange(Tournaments::startTopCut) },
-            "top_cut"
-        )
+        Tournaments.canStartTopCut(t) -> LilloBigButton(stringResource(R.string.action_start_top_cut, t.topCut), {
+            onChange(Tournaments::startTopCut)
+        }, modifier = Modifier.testTag("top_cut"))
     }
 }
 

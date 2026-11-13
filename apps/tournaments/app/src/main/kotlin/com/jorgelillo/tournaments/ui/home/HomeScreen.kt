@@ -47,6 +47,8 @@ import androidx.compose.ui.unit.sp
 import com.jorgelillo.core.designsystem.AboutTexts
 import com.jorgelillo.core.designsystem.HeroChip
 import com.jorgelillo.core.designsystem.LilloAboutSheet
+import com.jorgelillo.core.designsystem.LilloBigButton
+import com.jorgelillo.core.designsystem.LilloPage
 import com.jorgelillo.core.designsystem.LilloSummaryHero
 import com.jorgelillo.core.designsystem.TestTagsAsResourceIds
 import com.jorgelillo.core.designsystem.accentEdge
@@ -58,8 +60,6 @@ import com.jorgelillo.tournaments.domain.Format
 import com.jorgelillo.tournaments.domain.Library
 import com.jorgelillo.tournaments.domain.Tournament
 import com.jorgelillo.tournaments.domain.Tournaments
-import com.jorgelillo.tournaments.ui.BigButton
-import com.jorgelillo.tournaments.ui.Page
 import com.jorgelillo.tournaments.ui.formatDay
 import com.jorgelillo.tournaments.ui.theme.Arena
 import com.jorgelillo.tournaments.ui.theme.ArenaNight
@@ -74,7 +74,7 @@ internal fun HomeScreen(
     onAbout: () -> Unit
 ) {
     val short = isShortScreen()
-    Page(
+    LilloPage(
         title = stringResource(R.string.app_name),
         onBack = null,
         actions = {
@@ -90,17 +90,36 @@ internal fun HomeScreen(
                 Icon(Icons.Filled.Info, contentDescription = stringResource(R.string.action_about))
             }
         },
-        bottom = { if (!short) BigButton(stringResource(R.string.new_tournament), onNew, "new") }
+        bottom = {
+            if (!short) {
+                LilloBigButton(
+                    stringResource(R.string.new_tournament),
+                    onNew,
+                    modifier = Modifier.testTag("new")
+                )
+            }
+        },
+        readable = true
     ) {
         if (library.tournaments.isEmpty()) {
             Summary(library)
             Spacer(Modifier.weight(1f))
-            if (short) BigButton(stringResource(R.string.new_tournament), onNew, "new")
-            return@Page
+            if (short) {
+                LilloBigButton(
+                    stringResource(R.string.new_tournament),
+                    onNew,
+                    modifier = Modifier.testTag("new")
+                )
+            }
+            return@LilloPage
         }
         LazyColumn(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(10.dp)) {
             item { Summary(library) }
-            if (short) item { BigButton(stringResource(R.string.new_tournament), onNew, "new") }
+            if (short) {
+                item {
+                    LilloBigButton(stringResource(R.string.new_tournament), onNew, modifier = Modifier.testTag("new"))
+                }
+            }
             items(library.sorted, key = { it.id }) { TournamentCard(it, onClick = { onOpen(it) }) }
             item { Spacer(Modifier.height(4.dp)) }
         }
