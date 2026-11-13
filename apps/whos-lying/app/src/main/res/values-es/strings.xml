@@ -100,6 +100,7 @@
     <string name="pack_share">Compartir paquete</string>
     <string name="pack_share_qr_help">Escanéalo con la cámara del otro móvil. El paquete entero va dentro del código: no hace falta internet ni cuenta.</string>
     <string name="pack_share_send">Enviar enlace</string>
+    <string name="pack_share_too_big">Este paquete es demasiado grande para enviarlo: déjalo en %1$d palabras como mucho y acorta las palabras, las parecidas y el nombre.</string>
     <string name="pack_share_message">%1$s Paquete de palabras «%2$s» para ¿Quién miente?: %3$s</string>
     <string name="pack_copy_title">¿Editar «%1$s»?</string>
     <string name="pack_copy_body">Los paquetes incluidos no se pueden cambiar, pero puedes hacer una copia tuya y editarla como quieras. El original sigue disponible; puedes desmarcarlo al elegir los paquetes de la partida.</string>

@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.mutableStateListOf
@@ -88,6 +89,34 @@ class RoundScreensScreenshotTest {
     fun homeWithGroupLandscape() = home("home_group_landscape", group)
 
     @Test fun homeFirstLaunch() = home("home", null)
+
+    /** A pack the other phone would refuse: the share sheet says so instead of offering a link. */
+    private val oversized =
+        WordPack("custom-big", "Everything", "🍕", (1..501).map { Entry("Word $it") }, custom = true)
+
+    private fun packTooBig(name: String) = shot(name) { Surface(color = Neon.Card) { PackShareContent(oversized) } }
+
+    @Test
+    fun packShareTooBig() {
+        packTooBig("pack_share_too_big")
+        compose.onNodeWithTag("pack_too_big").assertExists()
+        compose.onNodeWithTag("pack_send").assertDoesNotExist()
+        compose.onNodeWithTag("pack_qr").assertDoesNotExist()
+    }
+
+    @Test
+    @Config(qualifiers = "+land")
+    fun packShareTooBigLandscape() = packTooBig("pack_share_too_big_landscape")
+
+    @Test
+    fun aSendablePackOffersItsLinkAndQr() {
+        compose.setContent {
+            LilloTheme(NeonDark) { PackShareContent(pack.copy(entries = List(3) { Entry("Beach $it") })) }
+        }
+        compose.onNodeWithTag("pack_send").assertExists()
+        compose.onNodeWithTag("pack_qr").assertExists()
+        compose.onNodeWithTag("pack_too_big").assertDoesNotExist()
+    }
 
     @Test
     fun homeWithGroupLight() = home("home_group", group, dark = false)

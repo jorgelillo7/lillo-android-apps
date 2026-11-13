@@ -52,13 +52,17 @@ as nothing.
 A pack SHALL be shareable as a link `https://jorgelillo7.github.io/p/#1…` shorter than 300
 characters, read back equal even from a chat message that holds it. A link SHALL be
 ignored when its pack has fewer than `PackShare.MIN_WORDS` = 3 words, a blank name, when
-it belongs to another page (the tournaments page), or when the text is not a link.
+it belongs to another page (the tournaments page), or when the text is not a link. A pack
+SHALL be offered for sending only when this app reads its own link back; otherwise the share
+sheet SHALL say it is too big (at most `PackShare.MAX_WORDS` words, short texts) and offer
+neither the link nor a QR code.
 
 #### Scenario: sharing
 - **WHEN** a pack is shared **THEN** the link starts with the p-page prefix, is under 300 characters and the pack is read back from a message containing it
 - **WHEN** a link holds two words or a blank name, points at the tournaments page, or the text is "hola" **THEN** nothing is read
-- *Verifies:* `aPackTravelsInAShortLink`, `unplayableOrForeignLinksAreIgnored`
-
-> **GAP — unverified.** `PackShare.QR_MAX_CHARS` (the QR size limit) has no test in this
-> app; `core/sharelink` tests the codec, not this pack's fit. A test would build the
-> largest allowed pack and assert its link is within the limit.
+- **WHEN** any built-in pack is shared **THEN** its link fits `PackShare.QR_MAX_CHARS`, so the share sheet shows its QR code
+- **WHEN** a pack with the most words a link may carry (500) is shared **THEN** its link is over the QR limit (the sheet offers the link alone) and still reads back whole
+- **WHEN** a pack has 501 words, a 41-character name, or so many long words and decoys that its code passes the codec's limit **THEN** no link is offered and the share sheet shows the too-big note, with no send button and no QR; every built-in pack and a 500-word pack can be sent
+- *Verifies:* `aPackTravelsInAShortLink`, `unplayableOrForeignLinksAreIgnored`, `builtInPacksFitInAQrCode`,
+  `aFullPackTravelsByLinkOnly`, `onlyAPackTheOtherPhoneAcceptsCanBeSent`, `packShareTooBig`,
+  `packShareTooBigLandscape`, `aSendablePackOffersItsLinkAndQr`

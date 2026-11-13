@@ -106,6 +106,7 @@
     <string name="pack_share">Share pack</string>
     <string name="pack_share_qr_help">Scan it with the other phone\'s camera. The whole pack is inside the code: no internet or account needed.</string>
     <string name="pack_share_send">Send link</string>
+    <string name="pack_share_too_big">This pack is too big to send: keep it to %1$d words at most, and keep the words, similar words and name short.</string>
     <string name="pack_share_message">%1$s Word pack “%2$s” for Who\'s lying?: %3$s</string>
     <string name="pack_copy_title">Edit “%1$s”?</string>
     <string name="pack_copy_body">The included packs can\'t be changed, but you can make a copy of your own and edit it as you like. The original stays available; you can untick it when picking the packs for a game.</string>
