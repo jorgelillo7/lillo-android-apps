@@ -1,3 +1,5 @@
-Más vivo 🕵️
-- Una vibración bajo el dedo cuando ves tu palabra
-- Botones con un pequeño rebote
+Nuevo aspecto 🕵️
+- Menús lavanda de día y neón violeta de noche: sigue al móvil o elige en Acerca de → Apariencia
+- La ronda en curso sigue ahí aunque el móvil cierre la app (una llamada, la cámara…)
+- Los packs que llegan por enlace se comprueban antes de guardarse
+- Tus packs nunca se pierden aunque algo falle al leerlos
