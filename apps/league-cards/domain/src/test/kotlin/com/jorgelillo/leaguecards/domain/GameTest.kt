@@ -173,12 +173,11 @@ class GameTest {
     @Test
     fun `a gamble that always goes wrong applies its own effects and outcome`() {
         val risky = Choice("Corazonada", Effects(points = 20), risk = Risk(1.0, Effects(points = -16), "‑16"))
-        val l = league(listOf(card("x", right = risky), card("y")))
-        var s = Game.newSeason(l, 3)
-        val first = s.hand[0]
-        s = Game.choose(l, s, right = true)
-        if (first == "x") {
-            assertEquals(-16, s.matchdayPoints)
+        // Both cards carry the gamble, so the first card dealt is always one: no order goes unchecked.
+        val l = league(listOf(card("x", right = risky), card("y", right = risky)))
+        for (seed in 1L..6L) {
+            val s = Game.choose(l, Game.newSeason(l, seed), right = true)
+            assertEquals(-16, s.matchdayPoints, "seed $seed")
             assertEquals("‑16", s.lastOutcome?.text)
         }
     }
@@ -285,6 +284,22 @@ class GameTest {
         assertEquals(1, saved.history.size)
         assertEquals(setOf(s.ending!!.key), saved.endingsSeen)
         assertEquals(3, saved.history.single().matchdaysPlayed)
+    }
+
+    @Test
+    fun `the history keeps the last 30 seasons, newest first`() {
+        val l = league(listOf(card("x"), card("y")))
+        var saved = Saved()
+        for (day in 1L..31L) {
+            var s = Game.newSeason(l, day)
+            while (!s.over) {
+                s = if (s.reportPending) Game.dismissReport(s) else Game.choose(l, s, false)
+                saved = saved.with(l, s, today = day)
+            }
+        }
+        assertEquals(31, saved.seasonsPlayed)
+        assertEquals(Saved.HISTORY, saved.history.size)
+        assertEquals((31L downTo 2L).toList(), saved.history.map { it.day })
     }
 
     @Test
