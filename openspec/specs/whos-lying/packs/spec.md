@@ -57,8 +57,7 @@ it belongs to another page (the tournaments page), or when the text is not a lin
 #### Scenario: sharing
 - **WHEN** a pack is shared **THEN** the link starts with the p-page prefix, is under 300 characters and the pack is read back from a message containing it
 - **WHEN** a link holds two words or a blank name, points at the tournaments page, or the text is "hola" **THEN** nothing is read
-- *Verifies:* `aPackTravelsInAShortLink`, `unplayableOrForeignLinksAreIgnored`
-
-> **GAP — unverified.** `PackShare.QR_MAX_CHARS` (the QR size limit) has no test in this
-> app; `core/sharelink` tests the codec, not this pack's fit. A test would build the
-> largest allowed pack and assert its link is within the limit.
+- **WHEN** any built-in pack is shared **THEN** its link fits `PackShare.QR_MAX_CHARS`, so the share sheet shows its QR code
+- **WHEN** a pack with the most words a link may carry (500) is shared **THEN** its link is over the QR limit (the sheet offers the link alone) and still reads back whole
+- *Verifies:* `aPackTravelsInAShortLink`, `unplayableOrForeignLinksAreIgnored`, `builtInPacksFitInAQrCode`,
+  `aFullPackTravelsByLinkOnly`
