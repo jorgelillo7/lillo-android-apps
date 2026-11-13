@@ -56,6 +56,7 @@ for locale in $CAPTURE_LOCALES; do
   tap save 4
   swipe_in matches 150 900
   shot "$locale" 01-champion
+  look dark; shot "$locale" 01b-night; look light   # the same screen in the night look
   # Phones: zoom in twice (semifinals, final and part of the quarters fill the width), centre on
   # the final. Tablets show the whole bracket at full size: no zoom buttons, nothing to do.
   tap tab_bracket 2
