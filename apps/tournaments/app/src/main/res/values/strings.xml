@@ -113,6 +113,7 @@
     <string name="share_title">Take it to another phone</string>
     <string name="share_qr_help">Scan it with the other phone\'s camera. The whole tournament is inside the code: no internet or account needed.</string>
     <string name="share_send_link">Send link</string>
+    <string name="share_too_big">This tournament is too big for a link. Send the image or the CSV instead.</string>
     <string name="share_message">🏆 %1$s\n%2$s</string>
     <string name="share_snapshot_note">It\'s a snapshot: share again after new results. Whoever opens a newer link gets the latest results.</string>
 

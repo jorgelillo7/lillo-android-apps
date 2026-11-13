@@ -60,6 +60,9 @@ object Share {
 
     fun link(t: Tournament): String = links.link(t)
 
+    /** The link to send, or null when the other phone would refuse it: offered only if this app reads it back. */
+    fun sendableLink(t: Tournament): String? = link(t).takeIf { link -> codeFromLink(link)?.let(::decode) != null }
+
     /** The code in a shared link, the website's `?d=` link, a chat message or a bare code. */
     fun codeFromLink(link: String): String? = links.codeFromLink(link)
 }

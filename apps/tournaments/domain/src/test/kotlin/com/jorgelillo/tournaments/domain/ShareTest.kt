@@ -35,6 +35,15 @@ class ShareTest {
         assertEquals(t, Share.decode(Share.encode(t)))
     }
 
+    /** A link is offered only when this app reads it back; one the other phone would refuse gets none. */
+    @Test
+    fun onlyATournamentTheOtherPhoneAcceptsCanBeSent() {
+        val t = played()
+        assertEquals(t, Share.decode(Share.codeFromLink(Share.sendableLink(t)!!)!!))
+        val tooLong = t.copy(matches = t.matches.map { it.copy(comment = "x".repeat(Share.MAX_COMMENT + 1)) })
+        assertEquals(null, Share.sendableLink(tooLong))
+    }
+
     @Test
     fun smallEnoughForAQrCode() {
         val link = Share.link(played())

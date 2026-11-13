@@ -17,15 +17,18 @@ data is never sent to a server, decodable back to an equal tournament from the l
 bare code, or the website's `?d=` form. A link for a played tournament SHALL be under 1,000
 characters, and a played 64-player knockout SHALL stay under `Share.QR_MAX_CHARS`. Empty
 text, text that is not valid base64, a truncated code and a link to another site SHALL
-decode to nothing.
+decode to nothing. A link SHALL be offered only when this app reads it back; otherwise the
+share sheet SHALL say the tournament is too big for a link and offer only the image and CSV.
 
 #### Scenario: the codec
 - **WHEN** a played tournament is encoded and decoded **THEN** it is equal
 - **WHEN** its link is made **THEN** it is under 1,000 characters, and a played 64-player knockout stays under `QR_MAX_CHARS`
 - **WHEN** the code is taken from the link, from the bare code and from a `?d=` website link **THEN** each decodes to the same tournament
 - **WHEN** the text is empty, `1notbase64!!`, a code with its last 20 characters dropped, or an `example.com` link **THEN** the result is null
+- **WHEN** a tournament carries a comment longer than the app allows **THEN** no link is offered, and the share sheet shows the too-big note with no send button and no QR, keeping the image; a played tournament offers both
 - *Verifies:* `roundTrip`, `smallEnoughForAQrCode`, `sixtyFourPlayersStillFitAQrCode`,
-  `linkAndBareCode`, `garbageIsNull`
+  `linkAndBareCode`, `garbageIsNull`, `onlyATournamentTheOtherPhoneAcceptsCanBeSent`,
+  `shareTooBigPortrait`, `shareTooBigLandscape`, `aSendableTournamentOffersItsLinkAndQr`
 
 ### Requirement: Importing keeps the newest copy
 

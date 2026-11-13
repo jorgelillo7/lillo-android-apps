@@ -116,6 +116,7 @@
     <string name="share_title">Llévalo a otro móvil</string>
     <string name="share_qr_help">Escanéalo con la cámara del otro móvil. El torneo entero va dentro del código: no hace falta internet ni cuenta.</string>
     <string name="share_send_link">Enviar enlace</string>
+    <string name="share_too_big">Este torneo es demasiado grande para enviarlo por enlace. Envía la imagen o el CSV.</string>
     <string name="share_message">🏆 %1$s\n%2$s</string>
     <string name="share_snapshot_note">Es una foto del momento: vuelve a compartir tras nuevos resultados. Quien abra un enlace más reciente recibe lo último.</string>
 

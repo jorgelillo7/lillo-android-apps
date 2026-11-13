@@ -1,8 +1,10 @@
 package com.jorgelillo.tournaments.ui
 
 import android.app.Application
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.takahirom.roborazzi.RobolectricDeviceQualifiers
 import com.jorgelillo.core.designsystem.LilloTheme
@@ -14,8 +16,10 @@ import com.jorgelillo.tournaments.domain.Tournaments
 import com.jorgelillo.tournaments.ui.home.HomeScreen
 import com.jorgelillo.tournaments.ui.home.ReplaceCard
 import com.jorgelillo.tournaments.ui.stats.StatsScreen
+import com.jorgelillo.tournaments.ui.theme.Arena
 import com.jorgelillo.tournaments.ui.theme.ArenaDark
 import com.jorgelillo.tournaments.ui.theme.ArenaLight
+import com.jorgelillo.tournaments.ui.tournament.ShareContent
 import com.jorgelillo.tournaments.ui.tournament.TournamentScreen
 import kotlin.random.Random
 import org.junit.Rule
@@ -64,6 +68,32 @@ class TournamentScreensScreenshotTest {
         }
 
     private fun home(name: String, dark: Boolean = true) = shot(name, dark) { HomeScreen(library, {}, {}, {}, {}, {}) }
+
+    /** A tournament the other phone would refuse: the sheet says so and keeps the image and CSV. */
+    private val unsendable = cup.copy(matches = cup.matches.map { it.copy(comment = "x".repeat(81)) })
+
+    private fun shareTooBig(name: String) = shot(name) { Surface(color = Arena.Raised) { ShareContent(unsendable) } }
+
+    @Test
+    fun shareTooBigPortrait() {
+        shareTooBig("share_too_big")
+        compose.onNodeWithTag("share_too_big").assertExists()
+        compose.onNodeWithTag("send_link").assertDoesNotExist()
+        compose.onNodeWithTag("qr").assertDoesNotExist()
+        compose.onNodeWithTag("share_image").assertExists()
+    }
+
+    @Test
+    @Config(qualifiers = "+land")
+    fun shareTooBigLandscape() = shareTooBig("share_too_big_landscape")
+
+    @Test
+    fun aSendableTournamentOffersItsLinkAndQr() {
+        compose.setContent { LilloTheme(ArenaDark) { ShareContent(cup) } }
+        compose.onNodeWithTag("send_link").assertExists()
+        compose.onNodeWithTag("qr").assertExists()
+        compose.onNodeWithTag("share_too_big").assertDoesNotExist()
+    }
 
     private fun tournament(name: String, dark: Boolean = true, t: Tournament = cup) =
         shot(name, dark) { TournamentScreen(t, {}, {}, {}) }
