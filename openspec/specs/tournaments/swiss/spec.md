@@ -39,10 +39,6 @@ semifinals of a top four, and the bracket's winner is champion.
 - **WHEN** a four-player round has one draw and one 2–1 result **THEN** the standings read 3, 1, 1, 0 with the 2–1 winner first and a game-win rate above 0.6
 - **WHEN** a four-player Swiss without a cut plays its two rounds **THEN** there is no champion after the first, no further round can be paired after the second, and the leader is champion
 - **WHEN** an eight-player Swiss with a top cut of four finishes **THEN** the top cut can start, seeds the first and fourth into the same semifinal, and the cut's winner is champion
+- **WHEN** players are level on points **THEN** the opponents' match-win percentage decides before the game-win percentage, which decides before the opponents' game-win percentage, and a winless opponent counts as one third
 - *Verifies:* `drawsAndTieBreakers`, `swissWithoutCutEndsWithTheLeader`,
-  `topCutSeedsTheBestIntoABracket`
-
-> **GAP — unverified.** The order of the three tie-breakers and the one-third floor
-> (`FLOOR` in `Swiss.kt`) are not asserted by any test: the draw test only checks points
-> and one game-win rate. A test would build two players level on points and assert the
-> opponents' match-win percentage decides, and a winless player's percentage is 1/3.
+  `topCutSeedsTheBestIntoABracket`, `tieBreakersInOrderWithAOneThirdFloor`
