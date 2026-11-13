@@ -28,16 +28,12 @@ stated rather than hidden.
 - **WHEN** the date is the 25th and nothing is on the 26th **THEN** the answer is calm, dated the 26th
 - **WHEN** only an unfixed Betis match is on 4 or 5 December and it is 4 December **THEN** the answer is busy and a maybe
 - **WHEN** a maybe, a match and a concert fall on the same day **THEN** the concert is the busy event
+- **WHEN** only a maybe and a match fall on the same day, in either order **THEN** the match is the busy event and the answer is not a maybe
 - **WHEN** it is the day before the second night of a tour **THEN** the answer is busy
 - **WHEN** the start is "21:00", "18:30", null or "por confirmar" **THEN** busy-from is "19:00", "16:30", none and none
 - *Verifies:* `aMatchTomorrowIsABusyDay`, `nothingTomorrowIsACalmDay`,
-  `anUnfixedDayIsAMaybe`, `aFixedEventBeatsAMaybeAndTheBiggestWins`,
+  `anUnfixedDayIsAMaybe`, `aFixedEventBeatsAMaybeAndTheBiggestWins`, `aFixedMatchBeatsAMaybeOnItsOwn`,
   `everyNightOfATourIsBusy`, `busyFromIsTwoHoursBeforeTheStart`
-
-> **GAP — unverified.** That a fixed event beats a maybe *when the concert is absent* is not
-> separately asserted: the test's winning event is the concert, so the fixed-beats-maybe
-> half of its name is covered only by the concert outranking both. A test would put only
-> a maybe and a match on a day and assert the match.
 
 ### Requirement: The next busy days are few and skip tomorrow and the past
 

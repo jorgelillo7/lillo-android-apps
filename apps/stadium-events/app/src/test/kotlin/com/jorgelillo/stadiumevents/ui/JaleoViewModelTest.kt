@@ -110,6 +110,18 @@ class JaleoViewModelTest {
         }
     }
 
+    /** A copy older than `STALE_MILLIS` (three hours) is downloaded again on open. */
+    @Test
+    fun aCopyOverThreeHoursOldIsDownloadedAgain() = runTest {
+        val saved = store(AppState(SampleFeed.feed(today), fetchedAt = now - JaleoViewModel.STALE_MILLIS - 60_000L))
+        val vm = viewModel(saved)
+        vm.state.filterNotNull().test(timeout = StoreTimeout) {
+            awaitMatching { it.fetchedAt == now }
+            assertEquals(1, downloads)
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
     @Test
     fun theNotificationsQuestionIsAskedOnce() = runTest {
         val saved = store()

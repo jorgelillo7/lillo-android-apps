@@ -4,6 +4,7 @@ import java.time.LocalDate
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertFalse
 import kotlin.test.assertIs
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
@@ -48,6 +49,19 @@ class JaleoTest {
         val match = event("match", "2027-06-24")
         val answer = assertIs<Tomorrow.Busy>(Jaleo.tomorrow(listOf(maybe, match, concert), LocalDate.of(2027, 6, 23)))
         assertEquals(concert, answer.event)
+    }
+
+    /** With no concert that day, the fixed match still wins over the maybe, in either order. */
+    @Test
+    fun aFixedMatchBeatsAMaybeOnItsOwn() {
+        val maybe = event("maybe", "2027-06-24", "2027-06-25", either = true)
+        val match = event("match", "2027-06-24")
+        val day = LocalDate.of(2027, 6, 23)
+        listOf(listOf(maybe, match), listOf(match, maybe)).forEach { events ->
+            val answer = assertIs<Tomorrow.Busy>(Jaleo.tomorrow(events, day))
+            assertEquals(match, answer.event)
+            assertFalse(answer.maybe)
+        }
     }
 
     @Test
