@@ -23,6 +23,7 @@ LOCALES = {
         "tagline": "Avoids repeats · Vetoes · History · No ads",
         "headlines": {
             "01-wheel": ("Can't decide?", "Spin it."),
+            "01b-night": ("By day or by night,", "as you like"),
             "02-result": ("The wheel decides,", "you just go"),
             "03-repeats-vetoes": ("No repeats.", "Veto what you don't fancy"),
             "04-home": ("Ready-made wheels", "or your own"),
@@ -33,6 +34,7 @@ LOCALES = {
         "tagline": "No repite · Vetos · Historial · Sin anuncios",
         "headlines": {
             "01-wheel": ("¿No os decidís?", "Gira la ruleta"),
+            "01b-night": ("De día o de noche,", "como prefieras"),
             "02-result": ("La ruleta decide,", "vosotros vais"),
             "03-repeats-vetoes": ("No repite lo de ayer", "y puedes vetar"),
             "04-home": ("Ruletas preparadas", "o las tuyas"),
