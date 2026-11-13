@@ -6,10 +6,12 @@ import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
 import com.jorgelillo.core.designsystem.installLilloWindow
 import com.jorgelillo.core.designsystem.setLilloContent
+import com.jorgelillo.core.designsystem.startsDark
 import com.jorgelillo.core.platform.sharedText
 import com.jorgelillo.slipper.ui.SlipperApp
 import com.jorgelillo.slipper.ui.SlipperViewModel
-import com.jorgelillo.slipper.ui.theme.KitchenColorScheme
+import com.jorgelillo.slipper.ui.theme.KitchenDark
+import com.jorgelillo.slipper.ui.theme.KitchenLight
 
 class MainActivity : ComponentActivity() {
 
@@ -18,10 +20,10 @@ class MainActivity : ComponentActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        installLilloWindow(darkDesign = false)
+        installLilloWindow(darkDesign = startsDark())
         super.onCreate(savedInstanceState)
         if (savedInstanceState == null) handleLink(intent)
-        setLilloContent(KitchenColorScheme) {
+        setLilloContent(KitchenLight, KitchenDark) {
             SlipperApp(vm)
         }
     }
