@@ -85,7 +85,7 @@ class WheelScreensScreenshotTest {
     @Config(fontScale = 2f)
     fun homeLargestFont() = home("home_large_font", dark = false)
 
-    /** Wheels down to the bottom of the screen leave no room: the last result stays away. */
+    /** Wheels down to the bottom of the screen leave no room: the last result is a line under the title. */
     @Test
     fun theLastResultNeedsRoom() {
         val many = (1..8).map { Wheel("w$it", "Wheel $it", listOf("A", "B")) }
@@ -93,6 +93,15 @@ class WheelScreensScreenshotTest {
             LilloTheme(WheelLight) { HomeScreen(state.copy(wheels = many + state.wheels), {}, {}, {}, {}, {}, {}, {}) }
         }
         compose.onNodeWithTag("last_result").assertDoesNotExist()
+        compose.onNodeWithTag("hero_last").assertExists()
+    }
+
+    /** With room for the card, the last result is said once: no line under the title. */
+    @Test
+    fun theLastResultIsSaidOnce() {
+        compose.setContent { LilloTheme(WheelLight) { HomeScreen(state, {}, {}, {}, {}, {}, {}, {}) } }
+        compose.onNodeWithTag("last_result").assertExists()
+        compose.onNodeWithTag("hero_last").assertDoesNotExist()
     }
 
     @Test fun wheelPortrait() = wheel("wheel")

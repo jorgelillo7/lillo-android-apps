@@ -1,3 +1,5 @@
-Más agradable al tacto 🎡
-- Los botones responden con un pequeño rebote y una vibración suave
-- La noria del inicio flota suavemente
+Nuevo aspecto 🎡
+- Un atardecer de día y otro de noche: sigue al móvil o elige en Información → Apariencia
+- Tu última decisión, en grande bajo las ruletas, con «Girar otra vez»
+- Si giras el móvil en plena tirada, la ruleta acaba donde iba
+- Tus ruletas nunca se pierden aunque algo falle al leerlas

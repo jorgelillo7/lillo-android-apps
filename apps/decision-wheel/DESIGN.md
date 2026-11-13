@@ -29,7 +29,7 @@ wheel:             # WheelColors, the same in both looks
 hero: ["#C2185B", "#7B1FA2"]   # palette hero (raspberry into grape, white text); the home doesn't use it
 components:
   home: "the title in the display face and accent colour, then a light line (most picked) and the wheels; no summary card: the wheels are the home"
-  last-result: "a card under the wheels: the last decision in the display face and accent colour, its wheel and day, Spin again (outlined); with no decision yet, an invitation to spin the favourite. Only when the list leaves 240dp free; never on short screens or once the list scrolls"
+  last-result: "a card under the wheels: the last decision in the display face and accent colour, its wheel and day, Spin again (outlined); with no decision yet, an invitation to spin the favourite. Only when the list leaves 240dp free; never on short screens or once the list scrolls; then a compact \"Last:\" line under the title instead"
   wheel-card: "Card, mini wheel, accentEdge(brand) for favourites only"
   wheel: "Segments in order; label in Ink or Cream, whichever contrasts (onSegment)"
   wheel-title: "the wheel's name shrinks to fit (16–22sp), then ends in an ellipsis"
@@ -49,7 +49,8 @@ by night**, so the app no longer shares the violet night of whos-lying and tourn
   accent tone.
 - The home doesn't restate its list: no "2 wheels · 4 decisions" card, only what the list can't
   say: the most picked option under the title, and the last decision, large, in a card under
-  the wheels when there is room for it (said once: no "Last:" line as well).
+  the wheels when there is room for it, else a compact "Last:" line under the title (said once,
+  never both).
 - On short screens "New wheel" sits in the title row (a floating button covered the last star).
 - Screenshots: home and wheel in both looks, upright and landscape; the home before any decision
   in both looks; the wheel at twice the font

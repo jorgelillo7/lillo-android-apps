@@ -25,6 +25,7 @@ for locale in $CAPTURE_LOCALES; do
   shot "$locale" 04-home
   tap "$WHEEL" 5
   shot "$locale" 01-wheel
+  look dark; shot "$locale" 01b-night; look light   # the same wheel in the night look
   tap spin 7                                                   # spin lasts ~5 s
   shot "$locale" 02-result
   tap accept 3                                                 # winner now has a smaller slice
