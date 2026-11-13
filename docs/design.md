@@ -56,12 +56,10 @@ motion:
 Eight apps, one family. Each app has **its own colour** (gold for tournaments, green for the league,
 violet for the impostor, red and gold for Christmas…), and every app builds its screens **the same
 way** from it: same recipe for surfaces and text, same components from `:core:designsystem`, same
-rules for contrast and motion. Every app is moving to a light and a dark look that follow the
-phone, with a choice in the About sheet (`LilloTheme(light, dark)`); until an app moves, it keeps
-its single look. Four apps have both looks today: christmas-countdown, decision-wheel, whos-lying
-and tournaments. league-cards is still dark only; slipper (a warm pixel-art kitchen) and
-group-polls (paper-like) are still light only; stadium-events follows the phone's dark mode with
-its own schemes (`JaleoLightScheme` / `JaleoDarkScheme`) and no choice in About yet.
+rules for contrast and motion. Every app has a light and a dark look that follow the phone, with
+a choice in the About sheet (`LilloTheme(light, dark)`); each app's DESIGN.md says what its two
+looks are (slipper's night is the same house with the lamps on, league-cards' day is the chat in
+daylight, stadium-events stays light by default for its older readers).
 
 The goal is not award-winning flash but **comfortable and usable**: calm tinted backgrounds, one
 vivid colour where it matters, text that reads at a glance on a handheld in the sun.
@@ -114,8 +112,8 @@ user-made or unbounded (cards, labels), down to a readable minimum, then scrolls
 
 All in `:core:designsystem`, each with a preview in `Catalogue.kt` (captured with accessibility
 checks). Apps call them directly and never copy them: colours come from the app's `LilloStyle`
-(`LilloColors`) and Material colour roles. Apps not yet moved to the two looks still wrap a few
-of them in `ui/Common.kt`.
+(`LilloColors`) and Material colour roles. A wrapper in an app's `ui/Common.kt` is only for that
+app's own style (group-polls' black titles and round 56 dp button), never a plain pass-through.
 
 ### Summary hero (`LilloSummaryHero`)
 
