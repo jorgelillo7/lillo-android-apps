@@ -13,7 +13,7 @@ sys.path.insert(0, str(ROOT.parent.parent / "scripts"))
 from store_assets import Style, build  # noqa: E402
 
 # The app's "Neon" palette.
-NIGHT_TOP, NIGHT = (47, 26, 80), (20, 5, 43)
+NIGHT_TOP, NIGHT = (43, 27, 107), (20, 5, 43)
 GOLD, SNOW = (255, 201, 77), (238, 224, 255)
 ACCENTS = [(124, 92, 255), (0, 224, 184), (255, 77, 148), (255, 201, 77)]
 
@@ -28,6 +28,7 @@ LOCALES = {
             "04-result": ("Caught them…", "or got fooled?"),
             "05-drawing": ("Drawing mode:", "no talking allowed"),
             "06-packs": ("21 packs, 600+ words", "all free"),
+            "06b-night": ("Lavender by day,", "neon by night"),
             "07-home": ("Free. No ads.", "No catch."),
         },
     },
@@ -41,6 +42,7 @@ LOCALES = {
             "04-result": ("¿Pilláis al impostor…", "u os la cuela?"),
             "05-drawing": ("Modo dibujo:", "prohibido hablar"),
             "06-packs": ("21 paquetes, +600 palabras", "todos gratis"),
+            "06b-night": ("Lavanda de día,", "neón de noche"),
             "07-home": ("Gratis. Sin anuncios.", "Sin trampas."),
         },
     },

@@ -109,6 +109,7 @@ for locale in $CAPTURE_LOCALES; do
   for _ in 1 2 3 4 5; do tap timer_plus 1; done      # 5 min, the recommendation for 5 players
   tap choose_packs 2
   shot "$locale" 06-packs
+  look dark; shot "$locale" 06b-night; look light   # the same menu in the night look
   tap packs_done 2
 
   # Classic game: reveal, debate, vote the impostor out, result.
