@@ -149,7 +149,8 @@ internal fun CreateScreen(
                 TextButton(onClick = {
                     showTerms = false
                     onAcceptTerms()
-                    submit()
+                    // Not submit(): its acceptedTerms is still this composition's false.
+                    onCreate(question, red, blue, visibility, duration)
                 }, modifier = Modifier.testTag("accept_terms")) {
                     Text(stringResource(R.string.terms_accept), fontWeight = FontWeight.Bold)
                 }

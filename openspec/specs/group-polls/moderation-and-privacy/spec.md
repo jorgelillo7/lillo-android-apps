@@ -43,7 +43,16 @@ accepted terms, and call its completion.
 - **WHEN** a user with a name, accepted terms and a poll deletes their data **THEN** the completion runs, the local state equals a fresh one and the terms are no longer accepted
 - *Verifies:* `namesAreTidied`, `deletingMyDataForgetsEverythingHere`
 
-> **GAP — unverified.** That reporting a poll *three times* hides it for everyone, and the
+### Requirement: The terms are asked before the first public poll
+
+Creating a public poll before the terms are accepted SHALL show them first; accepting SHALL
+record it and create that poll in the same step. A private poll SHALL ask nothing.
+
+#### Scenario: terms
+- **WHEN** a valid public poll is submitted before the terms are accepted **THEN** nothing is created until "Accept", which records the acceptance and creates the public poll once, with no second dialog
+- **WHEN** a valid private poll is submitted **THEN** it is created with no terms asked
+- *Verifies:* `aPublicPollAsksForTheTermsOnceThenIsCreated`, `aPrivatePollAsksNothing`
+
+> **Tested elsewhere.** That reporting a poll *three times* hides it for everyone, and the
 > blanking of the user's name on the server with their votes still counted, are server
-> behaviours tested in lillorepo (`poll-rules`), not here; the terms being asked before the
-> first public poll is not asserted by any test in this repository.
+> behaviours tested in lillorepo (`poll-rules`), not here.
