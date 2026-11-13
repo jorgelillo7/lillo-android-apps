@@ -66,16 +66,13 @@ exactly as it was and open it.
 ### Requirement: Stats match players by name, and every match exports as CSV
 
 Across tournaments a player SHALL be matched by name ignoring case and surrounding
-spaces (ids are per tournament), and stats SHALL be filterable by game, ignoring case. The
+spaces (ids are per tournament), and stats SHALL be filterable by game, ignoring case. Players
+SHALL rank by titles, then finals played, then match win rate. The
 CSV SHALL carry one row per match with a field holding a comma quoted and an inner quote
 doubled.
 
 #### Scenario: stats and CSV
 - **WHEN** " pepe " in one tournament and "Pepe" in another are combined with three other names **THEN** there are four players, Pepe has two tournaments, the titles add up to two, and filtering by "pokémon" in lower case leaves one title
 - **WHEN** a tournament named `Cup, 2026` has a comment `20 vidas a 0, "fácil"` **THEN** the first data row starts with `"Cup, 2026"` and ends with the comment quoted with its inner quotes doubled
-- *Verifies:* `statsMatchPlayersByName`, `csvQuotesCommas`
-
-> **GAP — unverified.** The ranking order (titles, then finals, then match win rate) and
-> the finals and win-rate columns are not asserted; `statsMatchPlayersByName` only checks
-> the first row has a title. A test would build players with equal titles and different
-> finals and assert the order.
+- **WHEN** one player has a title and a final, another a title only, another a final only, another a better win rate and no final **THEN** they rank in that order, with titles, finals and win rate counted per player
+- *Verifies:* `statsMatchPlayersByName`, `csvQuotesCommas`, `theHallOfFameRanksByTitlesThenFinalsThenWinRate`

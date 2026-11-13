@@ -44,13 +44,12 @@ A result edited under later rounds would leave a bracket nobody actually played.
 - **WHEN** a four-player bracket is played to its champion and a semifinal result is then reversed **THEN** the final holds the other semifinalist with 0–0, no comment and no champion
 - **WHEN** a best-of-1 match is recorded 1–0, a best-of-5 match 2–1 and then 2–3 **THEN** the first has a champion, the best-of-5 has none after 2–1 and the second player after 2–3
 - **WHEN** a tournament has no results **THEN** it can be redrawn, which changes the matches; after one result it cannot
+- **WHEN** a result is entered **THEN** best of 1 offers no score, best of 3 offers 2–0 and 2–1, best of 5 offers 3–0, 3–1 and 3–2 (never 3–3), and a Swiss draw in best of 3 offers 0–0 and 1–1
+- **WHEN** a tournament is changed (a result, a cleared result, a new Swiss round) **THEN** its revision goes up by one each time, and a shared copy keeps its day, revision and champion
 - *Verifies:* `playingItOutCrownsAChampion`, `changingAnEarlierResultClearsWhatFollowed`,
-  `bestOfOneAndFive`, `redrawOnlyBeforeResults`
-
-> **GAP — unverified.** That only valid scores are offered for a best-of length (no 3–3
-> in best of 5) lives in the screens and no test names it; a test would list the offered
-> scores for each best-of.
-
+  `bestOfOneAndFive`, `redrawOnlyBeforeResults`, `theScoresOfferedFollowTheBestOf`,
+  `bestOfThreeOffersTwoScores`, `bestOfOneHasNoScoreToPick`, `aSwissDrawOffersLevelScoresOnly`,
+  `everyChangeBumpsTheRevision`
 ### Requirement: The two-sided layout and the champion's path
 
 For three rounds the layout SHALL have 5 columns and 2 rows with 7 cells, the first-round
@@ -62,13 +61,9 @@ three of them in an eight-player bracket.
 #### Scenario: layout
 - **WHEN** three rounds are laid out **THEN** there are 5 columns, 2 rows and 7 cells, with left and right sides, semifinals in columns 1 and 3 and the final in column 2
 - **WHEN** only a final exists **THEN** the layout has one column
-- **WHEN** an eight-player bracket is played out **THEN** the champion's path has three matches
+- **WHEN** an eight-player bracket is played out **THEN** the champion's path has three matches, one per round, the last being the final
 - *Verifies:* `twoSidedLayoutForEightPlayers`, `aFinalAloneIsCentred`,
   `championPathEndsAtTheFinal`
-
-> **GAP — unverified.** `championPathEndsAtTheFinal` only counts the path (3 matches);
-> that the last of them is the final is not asserted.
-
 ### Requirement: A phone upright reads the bracket one round at a time
 
 On a window narrower than 600dp that is neither short nor wide (a phone held upright), the bracket SHALL
@@ -88,7 +83,3 @@ keep the whole two-sided bracket, fitted, with zoom.
 #### Scenario: the flow
 - **WHEN** a user creates "Smoke cup" with Ann, Bob, Cat and Dan, starts it and records the three matches in the matches tab **THEN** the champion is shown and one tournament named "Smoke cup" is stored
 - *Verifies:* `aKnockoutFromNewTournamentToChampion`
-
-> **GAP — unverified.** The tournament's own bookkeeping — the version bump on every
-> change (`revision`), days-since-1970 dates, the champion field's persistence —
-> has no test of its own; a test would edit a result and assert the version increased.
