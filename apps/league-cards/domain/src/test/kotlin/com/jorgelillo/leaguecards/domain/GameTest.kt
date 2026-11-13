@@ -303,6 +303,15 @@ class GameTest {
     }
 
     @Test
+    fun `a player is new until a season is under way or played`() {
+        val l = league(listOf(card("x"), card("y")))
+        assertTrue(Saved().isFirstTime(l))
+        val started = Saved().with(l, Game.newSeason(l, 1), today = 1)
+        assertFalse(started.isFirstTime(l))
+        assertFalse(Saved(seasonsPlayed = 1).isFirstTime(l))
+    }
+
+    @Test
     fun `every ending key has a text`() {
         assertEquals(10, sample.endings.keys.size)
         sample.endings.keys.forEach { assertTrue(sample.endings.text(it).isNotBlank(), it) }

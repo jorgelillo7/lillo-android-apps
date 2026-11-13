@@ -22,6 +22,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.jorgelillo.core.designsystem.LilloBigButton
+import com.jorgelillo.core.designsystem.LilloPage
 import com.jorgelillo.leaguecards.R
 import com.jorgelillo.leaguecards.domain.League
 import com.jorgelillo.leaguecards.domain.Report
@@ -66,7 +68,7 @@ internal fun ReportScreen(
             shown++
         }
     }
-    Page(
+    LilloPage(
         title = league.name,
         onBack = onBack,
         sideActionsWhenShort = true,
@@ -76,8 +78,13 @@ internal fun ReportScreen(
             }
         },
         bottom = {
-            BigButton(stringResource(if (seasonOver) R.string.see_ending else R.string.next_matchday), onNext, "next")
-        }
+            LilloBigButton(
+                stringResource(if (seasonOver) R.string.see_ending else R.string.next_matchday),
+                onNext,
+                modifier = Modifier.testTag("next")
+            )
+        },
+        readable = true
     ) {
         Text(
             stringResource(R.string.report_title, report.matchday),

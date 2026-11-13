@@ -101,3 +101,14 @@ is used up, and placeholders `{leader}`, `{position}` and `{last}` SHALL be fill
 #### Scenario: the flow
 - **WHEN** a season is played in the app by tapping choices and the joker until the ending shows **THEN** one season is recorded with one history entry, and the trophies screen shows that entry's ending
 - *Verifies:* `aWholeSeasonEndsAndIsRecorded`
+
+### Requirement: The rules are open for a new player, folded for a returning one
+
+The home SHALL show the rules to a player with no season played or under way, and fold them
+behind "¿Cómo se juega?" for a returning player, opening them when it is tapped.
+
+#### Scenario: the rules
+- **WHEN** nothing has been played, a season is under way, or one was played **THEN** the player is new only in the first case
+- **WHEN** a new player opens the home **THEN** the rules show; a returning player sees only "¿Cómo se juega?" until it is tapped, then the rules
+- *Verifies:* `a player is new until a season is under way or played`, `aNewPlayerSeesTheRules`,
+  `aReturningPlayerOpensTheRulesWhenAsked`, `homeFirstTime`, `homeFirstTimeLight`

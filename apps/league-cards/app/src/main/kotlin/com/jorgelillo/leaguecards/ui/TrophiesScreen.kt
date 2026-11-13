@@ -22,6 +22,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.jorgelillo.core.designsystem.LilloPage
 import com.jorgelillo.core.designsystem.LilloSectionTitle
 import com.jorgelillo.core.designsystem.accentEdge
 import com.jorgelillo.leaguecards.R
@@ -36,7 +37,7 @@ import java.time.format.FormatStyle
 /** Endings discovered (the rest locked), achievements, and the last seasons played. */
 @Composable
 internal fun TrophiesScreen(league: League, saved: Saved, onBack: () -> Unit) {
-    Page(title = stringResource(R.string.trophies), onBack = onBack) {
+    LilloPage(title = stringResource(R.string.trophies), onBack = onBack, readable = true) {
         Column(Modifier.fillMaxWidth().verticalScroll(rememberScrollState()).padding(bottom = 24.dp)) {
             val endings = league.endings.keys
             Section(stringResource(R.string.endings_count, endings.count { it in saved.endingsSeen }, endings.size))

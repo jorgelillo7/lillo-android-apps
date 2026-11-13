@@ -56,6 +56,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jorgelillo.core.designsystem.AvatarStyle
 import com.jorgelillo.core.designsystem.LilloAvatar
+import com.jorgelillo.core.designsystem.LilloPage
 import com.jorgelillo.core.designsystem.isShortScreen
 import com.jorgelillo.core.designsystem.isWideScreen
 import com.jorgelillo.leaguecards.R
@@ -66,6 +67,7 @@ import com.jorgelillo.leaguecards.domain.League
 import com.jorgelillo.leaguecards.domain.Meter
 import com.jorgelillo.leaguecards.domain.Season
 import com.jorgelillo.leaguecards.ui.theme.Chat
+import com.jorgelillo.leaguecards.ui.theme.readableOn
 import kotlin.math.abs
 import kotlin.math.roundToInt
 import kotlinx.coroutines.launch
@@ -94,7 +96,7 @@ internal fun PlayScreen(
             // One line at most: on small phones every line taken here is one the card loses.
             Text(
                 stringResource(R.string.card_points, "%+d".format(season.matchdayPoints)),
-                color = if (season.matchdayPoints > 0) Chat.GreenText else Chat.Red,
+                color = if (season.matchdayPoints > 0) Chat.GreenText else Chat.RedText,
                 modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
                 textAlign = TextAlign.Center,
                 maxLines = 1,
@@ -135,7 +137,7 @@ internal fun PlayScreen(
             }
         }
     }
-    Page(
+    LilloPage(
         title = stringResource(R.string.matchday_of, season.matchday, season.matchdays(league)),
         onBack = onBack,
         actions = {
@@ -210,12 +212,14 @@ private fun ChoiceButton(text: String, tag: String, onClick: () -> Unit, modifie
 }
 
 private val MeterIcons = mapOf(Meter.MONEY to "💰", Meter.SQUAD to "💪", Meter.PATIENCE to "🙄", Meter.TEARS to "😭")
-private val MeterColors = mapOf(
-    Meter.MONEY to Chat.Gold,
-    Meter.SQUAD to Chat.Green,
-    Meter.PATIENCE to Color(0xFFA791F5),
-    Meter.TEARS to Chat.Tear
-)
+
+@Composable
+private fun meterColor(meter: Meter): Color = when (meter) {
+    Meter.MONEY -> Chat.Gold
+    Meter.SQUAD -> Chat.Green
+    Meter.PATIENCE -> Color(0xFFA791F5)
+    Meter.TEARS -> Chat.Tear
+}
 
 /**
  * The four meters as tiles that fill up from the bottom (like Reigns), red near either end; while
@@ -246,10 +250,10 @@ private fun MetersRow(season: Season, preview: Effects?) {
                     )
                 }
                 val value = season.meters[meter]
-                MeterTile(MeterIcons.getValue(meter), value, MeterColors.getValue(meter))
+                MeterTile(MeterIcons.getValue(meter), value, meterColor(meter))
                 Text(
                     value.toString(),
-                    color = if (value.inDanger()) Chat.Red else Chat.Text,
+                    color = if (value.inDanger()) Chat.RedText else Chat.Text,
                     fontWeight = FontWeight.Black,
                     style = MaterialTheme.typography.titleSmall,
                     modifier = Modifier.padding(top = 4.dp)
@@ -330,6 +334,7 @@ private fun SwipeCard(
     val scope = rememberCoroutineScope()
     val haptics = LocalHapticFeedback.current
     val color = league.colorOf(card.character)
+    val nameColor = readableOn(color, Chat.Raised)
     val character = league.character(card.character)
     BoxWithConstraints(modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
         val threshold = with(LocalDensity.current) { maxWidth.toPx() } * 0.28f
@@ -393,7 +398,7 @@ private fun SwipeCard(
                         Spacer(Modifier.size(10.dp))
                         Text(
                             name,
-                            color = color,
+                            color = nameColor,
                             fontWeight = FontWeight.Bold,
                             style = MaterialTheme.typography.titleMedium
                         )
@@ -404,7 +409,7 @@ private fun SwipeCard(
                 leaning(Modifier)
                 Avatar(emoji, color, size = if (isShortScreen()) 48 else 72)
                 Spacer(Modifier.height(10.dp))
-                Text(name, color = color, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleLarge)
+                Text(name, color = nameColor, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleLarge)
                 character?.tagline?.takeIf { it.isNotBlank() }?.let {
                     Text(
                         it,

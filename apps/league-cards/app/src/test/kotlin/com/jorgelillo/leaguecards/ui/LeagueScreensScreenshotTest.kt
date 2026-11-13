@@ -14,7 +14,8 @@ import com.jorgelillo.leaguecards.domain.Outcome
 import com.jorgelillo.leaguecards.domain.Saved
 import com.jorgelillo.leaguecards.domain.Season
 import com.jorgelillo.leaguecards.domain.SeasonRecord
-import com.jorgelillo.leaguecards.ui.theme.ChatColorScheme
+import com.jorgelillo.leaguecards.ui.theme.ChatDark
+import com.jorgelillo.leaguecards.ui.theme.ChatLight
 import java.io.File
 import org.junit.Rule
 import org.junit.Test
@@ -39,15 +40,22 @@ class LeagueScreensScreenshotTest {
         Game.choose(league, it, right = true)
     }.first { it.reportPending }
 
-    private fun shot(name: String, content: @Composable () -> Unit) = compose.captureScreenshot(name) {
-        LilloTheme(ChatColorScheme) { content() }
+    /** Each screen in the night look under its name, and in the day look with `_light` added. */
+    private fun shot(name: String, dark: Boolean = true, content: @Composable () -> Unit) =
+        compose.captureScreenshot(if (dark) name else "${name}_light") {
+            LilloTheme(if (dark) ChatDark else ChatLight) { content() }
+        }
+
+    private fun play(name: String, dark: Boolean = true) = shot(name, dark) {
+        PlayScreen(league, season, {}, {}, {}, {})
     }
 
-    private fun play(name: String) = shot(name) { PlayScreen(league, season, {}, {}, {}, {}) }
-
     // The chat messages come in one by one (700 ms apart): capture once they are all there.
-    private fun report(name: String) = compose.captureScreenshot(name, { mainClock.advanceTimeBy(15_000) }) {
-        LilloTheme(ChatColorScheme) {
+    private fun report(name: String, dark: Boolean = true) = compose.captureScreenshot(
+        if (dark) name else "${name}_light",
+        { mainClock.advanceTimeBy(15_000) }
+    ) {
+        LilloTheme(if (dark) ChatDark else ChatLight) {
             ReportScreen(league, firstReport.report!!, unlocked = emptyList(), seasonOver = false, onNext = {
             }, onTable = {}, onBack = {})
         }
@@ -68,7 +76,7 @@ class LeagueScreensScreenshotTest {
      * A tester's phone mid-season: a card as long as the league's longest (~140 characters; the
      * sample deck's are shorter) under a chat message. The card's text must show whole.
      */
-    private fun playLongCardWithChat(name: String) = shot(name) {
+    private fun playLongCardWithChat(name: String, dark: Boolean = true) = shot(name, dark) {
         val card = league.cards.first { !it.followUpOnly }.copy(
             text = "Soy huevito, es mi primera temporada: no me líes. ¿Me vendes a tu portero titular por " +
                 "lo que vale en el mercado o me lo quitas de las manos?"
@@ -91,7 +99,7 @@ class LeagueScreensScreenshotTest {
     fun playLongCardWithChat() = playLongCardWithChat("play_long_card_chat")
 
     /** Home with a season in progress: continue, the autosave note, a full or a short season. */
-    private fun home(name: String) = shot(name) {
+    private fun home(name: String, dark: Boolean = true) = shot(name, dark) {
         HomeScreen(league, Saved().with(league, season, today = 0), onContinue = {}, onNew = {}, onTrophies = {})
     }
 
@@ -135,9 +143,12 @@ class LeagueScreensScreenshotTest {
 
     @Test fun trophiesPortrait() = shot("trophies") { TrophiesScreen(league, Saved()) {} }
 
+    @Test fun trophiesSomeUnlocked() = trophiesUnlocked("trophies_unlocked")
+
+    @Test fun trophiesSomeUnlockedLight() = trophiesUnlocked("trophies_unlocked", dark = false)
+
     /** Some unlocked (gold edge) next to locked ones; a won league in the history. */
-    @Test
-    fun trophiesSomeUnlocked() = shot("trophies_unlocked") {
+    private fun trophiesUnlocked(name: String, dark: Boolean = true) = shot(name, dark) {
         val saved = Saved(
             seasonsPlayed = 2,
             titles = 1,
@@ -148,4 +159,36 @@ class LeagueScreensScreenshotTest {
         )
         TrophiesScreen(league, saved) {}
     }
+
+    // The day look: the same screens on the light chat.
+    @Test fun homePortraitLight() = home("home", dark = false)
+
+    @Test
+    @Config(qualifiers = "+land")
+    fun homeLandscapeLight() = home("home_landscape", dark = false)
+
+    @Test fun playPortraitLight() = play("play", dark = false)
+
+    @Test
+    @Config(qualifiers = "+land")
+    fun playLandscapeLight() = play("play_landscape", dark = false)
+
+    @Test fun reportPortraitLight() = report("report", dark = false)
+
+    @Test
+    @Config(qualifiers = "+land")
+    fun reportLandscapeLight() = report("report_landscape", dark = false)
+
+    @Test
+    @Config(qualifiers = "w360dp-h700dp-xxhdpi", fontScale = 1.3f)
+    fun playLongCardWithChatLight() = playLongCardWithChat("play_long_card_chat", dark = false)
+
+    /** A first launch: no season yet, the rules open. */
+    private fun homeFirstTime(name: String, dark: Boolean = true) = shot(name, dark) {
+        HomeScreen(league, Saved(), onContinue = {}, onNew = {}, onTrophies = {})
+    }
+
+    @Test fun homeFirstTime() = homeFirstTime("home_first")
+
+    @Test fun homeFirstTimeLight() = homeFirstTime("home_first", dark = false)
 }
