@@ -1,1 +1,3 @@
-First version: a match, concert or final at the Metropolitano tomorrow? The answer in big letters, a reminder the evening before and a widget.
+The widget, easier to find 🏟️
+- The app offers to add the widget to your home screen, and says how to do it by hand on any phone
+- Event data is checked before it is saved
