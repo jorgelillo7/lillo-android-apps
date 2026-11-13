@@ -113,15 +113,17 @@ with that wheel's name and day and a "Spin again" button that opens the wheel; w
 yet, the card SHALL offer a first spin on the first favourite, else the first wheel. The card
 SHALL show only while the list is unscrolled and leaves at least 240dp free under the wheels
 (more as the font grows),
-and never on short screens. The last decision SHALL NOT also be repeated under the title.
+and never on short screens. Where the card does not show, the last decision SHALL be a compact
+line under the title instead; it SHALL never be said in both places.
 
 #### Scenario: the last result card
 - **WHEN** the history holds a decision for a deleted wheel and older ones **THEN** the last result is the newest decision whose wheel exists; with no history the first spin is offered on the favourite
 - **WHEN** the home has two wheels and decisions, or none, in either look **THEN** the card shows the last result, or the first-spin invitation
-- **WHEN** ten wheels fill the screen **THEN** no card shows; at twice the font size the card shows only where it fits
+- **WHEN** ten wheels fill the screen **THEN** no card shows and the last decision is a line under the title; at twice the font size the card shows only where it fits
+- **WHEN** the card shows **THEN** no line under the title repeats it
 - **WHEN** a result was just accepted and the user goes back home and taps "Spin again" **THEN** that wheel opens
 - *Verifies:* `theHomeOffersTheLastResultElseAFirstSpinOnTheFavourite`, `homeFirstSpin`,
-  `homeFirstSpinLight`, `theLastResultNeedsRoom`, `homeLargestFont`, `spinAcceptAndCreateAWheel`
+  `homeFirstSpinLight`, `theLastResultNeedsRoom`, `theLastResultIsSaidOnce`, `homeLargestFont`, `spinAcceptAndCreateAWheel`
 
 ### Requirement: Spinning, accepting and creating works end to end
 

@@ -174,7 +174,7 @@ internal fun HomeScreen(
                         }
                     }
                     Spacer(Modifier.height(4.dp))
-                    Recent(state)
+                    Recent(state, showLastLine = !showLast)
                     Spacer(Modifier.height(20.dp))
                 }
                 items(state.sortedWheels, key = { it.id }) { wheel ->
@@ -200,19 +200,32 @@ internal fun HomeScreen(
 private val LAST_RESULT_MIN_FREE = 240.dp
 
 /**
- * What the list below can't say: the most picked option. A light line under the title, not a
- * card: the wheels themselves are the home screen; the last result has its own card below them.
+ * What the list below can't say, as light lines under the title: the last decision when its card
+ * has no room below the wheels ([showLastLine]), and the most picked option.
  */
 @Composable
-private fun Recent(state: AppState) {
-    val top = state.history.groupingBy { it.option }.eachCount().maxByOrNull { it.value }?.takeIf { it.value > 1 }
-    if (top != null) {
-        Text(
-            stringResource(R.string.hero_top, top.key, top.value),
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.entrance().testTag("hero_top")
-        )
+private fun Recent(state: AppState, showLastLine: Boolean) {
+    Column {
+        val last = state.lastResult?.takeIf { showLastLine }
+        if (last != null) {
+            Text(
+                stringResource(R.string.hero_last, last.first.option, last.second.name),
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.entrance().testTag("hero_last")
+            )
+        }
+        val top = state.history.groupingBy { it.option }.eachCount().maxByOrNull { it.value }?.takeIf { it.value > 1 }
+        if (top != null) {
+            Text(
+                stringResource(R.string.hero_top, top.key, top.value),
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.entrance().testTag("hero_top")
+            )
+        }
     }
 }
 

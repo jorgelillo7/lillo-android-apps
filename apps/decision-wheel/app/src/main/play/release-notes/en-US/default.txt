@@ -1,3 +1,5 @@
-Nicer to the touch 🎡
-- Buttons answer with a little bounce and a soft tick
-- The ferris wheel on the home screen floats gently
+A new look 🎡
+- A sunset by day and another by night: follows your phone, or pick one in About → Appearance
+- Your last decision, large, under the wheels, with "Spin again"
+- Turn the phone mid-spin and the wheel still lands where it was going
+- Your wheels are never lost, even if reading them fails
