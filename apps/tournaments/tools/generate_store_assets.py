@@ -13,8 +13,9 @@ sys.path.insert(0, str(ROOT.parent.parent / "scripts"))
 from store_assets import Style, build  # noqa: E402
 
 # The app's "Arena" palette: deep blue night, cream text, gold for winners.
-INK_TOP, INK = (30, 24, 74), (12, 7, 46)
-GOLD, CREAM = (255, 200, 61), (231, 226, 255)
+# The dark look (DESIGN.md): navy from #18213F to #0A1024, cream text, gold.
+INK_TOP, INK = (24, 33, 63), (10, 16, 36)
+GOLD, CREAM = (255, 200, 61), (228, 232, 255)
 ACCENTS = [(255, 200, 61), (157, 167, 255), (255, 107, 107), (108, 142, 245)]
 
 LOCALES = {
@@ -23,8 +24,9 @@ LOCALES = {
         "tagline": "Knockout · Swiss · No accounts · No ads",
         "headlines": {
             "01-champion": ("Only one", "takes the crown"),
+            "01b-night": ("A trophy room by day,", "a stadium by night"),
             "02-result": ("Results in", "one tap"),
-            "03-bracket": ("A two-sided bracket", "with the victory line"),
+            "03-bracket": ("The bracket,", "round after round"),
             "04-standings": ("Swiss with", "proper tie-breakers"),
             "05-share": ("To another phone", "with a QR code"),
             "06-stats": ("Your league's", "hall of fame"),
@@ -35,8 +37,9 @@ LOCALES = {
         "tagline": "Eliminatoria · Suizo · Sin cuentas · Sin anuncios",
         "headlines": {
             "01-champion": ("Solo uno", "se lleva la corona"),
+            "01b-night": ("Sala de trofeos de día,", "estadio de noche"),
             "02-result": ("Resultados", "en un toque"),
-            "03-bracket": ("Cuadro a dos lados", "con la línea de victoria"),
+            "03-bracket": ("El cuadro,", "ronda a ronda"),
             "04-standings": ("Suizo con", "desempates de verdad"),
             "05-share": ("A otro móvil", "con un QR"),
             "06-stats": ("El salón de la fama", "de vuestra liga"),
@@ -49,7 +52,7 @@ STYLE = Style(
     bottom=INK,
     headline=CREAM,
     highlight=GOLD,
-    tagline=(171, 166, 213),
+    tagline=(166, 174, 207),
     accents=ACCENTS,
 )
 

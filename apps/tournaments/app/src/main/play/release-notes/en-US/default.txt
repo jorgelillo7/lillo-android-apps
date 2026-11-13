@@ -1,4 +1,5 @@
-More alive 👑
-- A buzz when the champion is crowned
-- The home shows ⚔️ while something is being played, 🏆 once all is decided
-- Buttons with a little bounce
+A new look 👑
+- A trophy room by day, a floodlit stadium by night: follows your phone, or pick one in About → Appearance
+- On a phone, the bracket shows round by round
+- A link with a newer copy of your tournament asks before replacing it
+- Your tournaments are never lost, even if reading them fails
