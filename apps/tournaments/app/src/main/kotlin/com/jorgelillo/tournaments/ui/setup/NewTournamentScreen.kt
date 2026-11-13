@@ -54,6 +54,8 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.jorgelillo.core.designsystem.LilloBigButton
+import com.jorgelillo.core.designsystem.LilloPage
 import com.jorgelillo.core.designsystem.LilloSectionTitle
 import com.jorgelillo.core.designsystem.TestTagsAsResourceIds
 import com.jorgelillo.core.designsystem.isShortScreen
@@ -65,8 +67,6 @@ import com.jorgelillo.tournaments.domain.Stats
 import com.jorgelillo.tournaments.domain.Swiss
 import com.jorgelillo.tournaments.domain.Tournament
 import com.jorgelillo.tournaments.domain.Tournaments
-import com.jorgelillo.tournaments.ui.BigButton
-import com.jorgelillo.tournaments.ui.Page
 import com.jorgelillo.tournaments.ui.bestOfLabel
 import com.jorgelillo.tournaments.ui.formatDay
 import com.jorgelillo.tournaments.ui.theme.Arena
@@ -129,13 +129,19 @@ internal fun NewTournamentScreen(
         )
     }
     val startButton = @Composable {
-        BigButton(stringResource(R.string.setup_start), start, "start", enabled = canStart)
+        LilloBigButton(
+            stringResource(R.string.setup_start),
+            start,
+            enabled = canStart,
+            modifier = Modifier.testTag("start")
+        )
     }
 
-    Page(
+    LilloPage(
         title = stringResource(R.string.new_tournament),
         onBack = onBack,
-        bottom = { if (!short) startButton() }
+        bottom = { if (!short) startButton() },
+        readable = true
     ) {
         LazyColumn(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(14.dp)) {
             item {

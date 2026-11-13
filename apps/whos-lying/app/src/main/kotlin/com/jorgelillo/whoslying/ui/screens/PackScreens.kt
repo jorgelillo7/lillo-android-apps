@@ -56,6 +56,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.jorgelillo.core.designsystem.LilloBigButton
+import com.jorgelillo.core.designsystem.LilloPage
 import com.jorgelillo.core.designsystem.LilloQrCode
 import com.jorgelillo.core.designsystem.LilloSectionTitle
 import com.jorgelillo.core.designsystem.TestTagsAsResourceIds
@@ -94,17 +96,15 @@ internal fun PackPickerScreen(
         }
     }
     BackHandler { onDone(result()) }
-    Page(
+    LilloPage(
         title = stringResource(R.string.pick_packs_title),
         onBack = { onDone(result()) },
         bottom = {
-            BigButton(
-                stringResource(R.string.continue_),
-                { onDone(result()) },
-                Modifier.testTag("packs_done"),
-                enabled = chosen.isNotEmpty()
-            )
-        }
+            LilloBigButton(stringResource(R.string.continue_), {
+                onDone(result())
+            }, modifier = Modifier.testTag("packs_done"), enabled = chosen.isNotEmpty())
+        },
+        readable = true
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
@@ -230,7 +230,7 @@ internal fun PacksScreen(
     var sharing by remember { mutableStateOf<WordPack?>(null) }
     var copying by remember { mutableStateOf<WordPack?>(null) }
     var importing by rememberSaveable { mutableStateOf(false) }
-    Page(
+    LilloPage(
         title = stringResource(R.string.packs),
         onBack = onBack,
         actions = {
@@ -239,8 +239,11 @@ internal fun PacksScreen(
             }
         },
         bottom = {
-            BigButton("＋ " + stringResource(R.string.packs_new), { onEdit(null) }, Modifier.testTag("new_pack"))
-        }
+            LilloBigButton("＋ " + stringResource(R.string.packs_new), {
+                onEdit(null)
+            }, modifier = Modifier.testTag("new_pack"))
+        },
+        readable = true
     ) {
         LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             if (custom.isNotEmpty()) {
@@ -343,9 +346,9 @@ private fun PackShareSheet(pack: WordPack, onDismiss: () -> Unit) {
                 LilloQrCode(link, Modifier.testTag("pack_qr"))
                 Text(stringResource(R.string.pack_share_qr_help), color = Neon.Muted, textAlign = TextAlign.Center)
             }
-            BigButton(stringResource(R.string.pack_share_send), {
+            LilloBigButton(stringResource(R.string.pack_share_send), {
                 context.shareText(message)
-            }, Modifier.testTag("pack_send"))
+            }, modifier = Modifier.testTag("pack_send"))
             Spacer(Modifier.height(12.dp))
         }
     }
@@ -399,12 +402,12 @@ internal fun PackEditScreen(
     val entries = WordPacks.parseEntries(text)
     val valid = name.isNotBlank() && entries.size >= 3
 
-    Page(
+    LilloPage(
         title = stringResource(if (isNew) R.string.packs_new else R.string.packs),
         onBack = onBack,
         modifier = Modifier.imePadding(),
         bottom = {
-            BigButton(stringResource(R.string.pack_save), {
+            LilloBigButton(stringResource(R.string.pack_save), {
                 onSave(initial.copy(name = name.trim(), entries = entries))
             }, enabled = valid, modifier = Modifier.testTag("save_pack"))
             if (!isNew) {
@@ -412,7 +415,8 @@ internal fun PackEditScreen(
                     Text(stringResource(R.string.pack_delete), color = Neon.PinkText)
                 }
             }
-        }
+        },
+        readable = true
     ) {
         OutlinedTextField(
             value = name,

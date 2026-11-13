@@ -35,6 +35,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jorgelillo.core.designsystem.ConfettiRain
+import com.jorgelillo.core.designsystem.LilloBigButton
+import com.jorgelillo.core.designsystem.LilloPage
 import com.jorgelillo.core.designsystem.isShortScreen
 import com.jorgelillo.whoslying.R
 import com.jorgelillo.whoslying.domain.Match
@@ -96,16 +98,16 @@ internal fun RankingScreen(
 ) {
     NightStage {
         var confirmReset by rememberSaveable { mutableStateOf(false) }
-        Page(
+        LilloPage(
             title = null,
             onBack = onBack,
             sideActionsWhenShort = true,
             background = Neon.RevealBackdrop,
             bottom = {
-                BigButton(
+                LilloBigButton(
                     stringResource(R.string.continue_),
                     onNextRound,
-                    Modifier.testTag("next_round"),
+                    modifier = Modifier.testTag("next_round"),
                     color = Neon.Go,
                     contentColor = Neon.OnFill
                 )
@@ -125,7 +127,8 @@ internal fun RankingScreen(
                         color = Color.White.copy(alpha = 0.75f)
                     )
                 }
-            }
+            },
+            readable = true
         ) {
             Column(
                 Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState()),
@@ -169,16 +172,16 @@ internal fun PodiumScreen(players: List<String>, scores: Map<String, Int>, onNew
     NightStage {
         val leaders = Match.leaders(scores)
         Box(Modifier.fillMaxSize()) {
-            Page(
+            LilloPage(
                 title = null,
                 onBack = null,
                 sideActionsWhenShort = true,
                 background = Neon.RevealBackdrop,
                 bottom = {
-                    BigButton(
+                    LilloBigButton(
                         stringResource(R.string.podium_new_match),
                         onNewMatch,
-                        Modifier.testTag("new_match"),
+                        modifier = Modifier.testTag("new_match"),
                         color = Neon.Go,
                         contentColor = Neon.OnFill
                     )
@@ -188,7 +191,8 @@ internal fun PodiumScreen(players: List<String>, scores: Map<String, Int>, onNew
                     ) {
                         Text(stringResource(R.string.home), color = Color.White.copy(alpha = 0.85f))
                     }
-                }
+                },
+                readable = true
             ) {
                 val short = isShortScreen()
                 val winnerBlock = @Composable {
