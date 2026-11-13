@@ -85,6 +85,15 @@ class FeaturesTest {
         assertTrue(w.gap > C.START_GAP, "she falls behind while he skates (${w.gap})")
     }
 
+    /** On skates the kid covers `SKATES_SPEED` times the ground he would on foot. */
+    @Test
+    fun onSkatesHeCoversMoreGround() {
+        val onFoot = run(bare(), 2.0)
+        val onSkates = run(bare().copy(skates = C.SKATES_TIME), 2.0)
+        assertEquals(C.SKATES_SPEED, onSkates.distance / onFoot.distance, 1e-6)
+        assertTrue(C.SKATES_SPEED > 1.0)
+    }
+
     @Test
     fun theCatWalksTowardsTheKidAndTripsHim() {
         val w = run(bare(cats = listOf(Cat(40.0))), 1.5)
