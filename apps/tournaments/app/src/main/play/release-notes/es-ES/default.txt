@@ -1,5 +1,5 @@
 Nuevo aspecto 👑
-- Una sala de trofeos de día y un estadio con focos de noche: sigue al móvil o elige en Acerca de → Apariencia
+- Una sala de trofeos de día y un estadio con focos de noche: sigue al móvil o elige en Información → Apariencia
 - En el móvil, el cuadro se ve ronda a ronda
 - Si un enlace trae una copia más nueva de tu torneo, te pregunta antes de sustituirla
 - Tus torneos nunca se pierden aunque algo falle al leerlos
