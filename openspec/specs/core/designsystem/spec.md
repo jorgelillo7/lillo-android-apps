@@ -22,5 +22,20 @@ accented letters and ñ), a question mark for an empty or blank name, and a whol
 - *Verifies:* `aLetterUpperCased`, `aBlankNameIsAQuestionMark`,
   `aWholeEmojiNeverHalfOfOne`
 
-> **GAP — unverified.** Motion, confetti, the About sheet and the language helper have
-> no behaviour tests, only the catalogue screenshots.
+### Requirement: Motion honours "Remove animations"; About and language do what they say
+
+`animationsEnabled()` SHALL be false when the phone's animator duration scale is 0 and true
+otherwise, and `ConfettiBurst` and `ConfettiRain` SHALL draw nothing while it is false. The
+About sheet SHALL open the privacy policy, SHALL offer "Rate" only when the app has a Play
+Store link, and SHALL offer the language choice; the language dialog SHALL set the app's
+language, or clear it back to the phone's, and close.
+
+#### Scenario: behaviour
+- **WHEN** "Remove animations" is on, or off **THEN** `animationsEnabled()` is false, or true
+- **WHEN** a burst and a rain of confetti start with "Remove animations" on **THEN** neither is drawn; with it off both are
+- **WHEN** the About sheet of an unpublished app is shown and "Privacy" is tapped **THEN** there is no "Rate", the language button is there, and the privacy URL is opened; a published app's "Rate" opens its Play Store link
+- **WHEN** "Español" and then "System" are picked in the language dialog **THEN** the app's locales are `es` and then empty, and the dialog closes
+- *Verifies:* `animationsFollowThePhonesSetting`, `animationsAreOnByDefault`,
+  `noConfettiWithAnimationsRemoved`, `confettiWithAnimationsOn`,
+  `theAboutSheetOpensThePrivacyPolicyAndRatesOnlyOncePublished`, `aPublishedAppOffersToRateIt`,
+  `theLanguageDialogSetsTheAppsLanguageOrGoesBackToThePhones`

@@ -10,7 +10,12 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.job
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerializationException
@@ -69,6 +74,26 @@ class JsonStoreTest {
         val size = store.updateAndGet { notes -> (notes.copy(items = listOf("a", "b"))).let { it to it.items.size } }
         assertEquals(2, size)
         assertEquals(listOf("a", "b"), store.state.first().items)
+    }
+
+    /** What was written is on disk: a store opened afresh over the same file, as after a restart, reads it. */
+    @Test
+    fun theStateSurvivesARestart() = runTest {
+        val name = "restart"
+        fun open(scope: CoroutineScope) = JsonStore(
+            PreferenceDataStoreFactory.create(scope = scope) { context.preferencesDataStoreFile(name) },
+            Notes.serializer()
+        ) { Notes() }
+
+        val before = CoroutineScope(Dispatchers.IO + SupervisorJob())
+        open(before).update { it.copy(items = listOf("milk"), kind = Kind.Shopping) }
+        // The first "process" ends: its DataStore is gone, only the file is left.
+        before.coroutineContext.job.cancelAndJoin()
+        assertTrue(context.preferencesDataStoreFile(name).length() > 0)
+
+        val after = CoroutineScope(Dispatchers.IO + SupervisorJob())
+        assertEquals(Notes(items = listOf("milk"), kind = Kind.Shopping), open(after).state.first())
+        after.coroutineContext.job.cancelAndJoin()
     }
 
     @Test

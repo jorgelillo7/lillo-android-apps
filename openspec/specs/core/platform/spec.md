@@ -17,11 +17,9 @@ return the value the edit computed alongside the new state.
 - **WHEN** a store with nothing saved is read **THEN** its state is the default
 - **WHEN** "milk" and then "eggs" are appended by two updates **THEN** the state holds milk then eggs
 - **WHEN** `updateAndGet` replaces the items with two and returns their count **THEN** it returns 2 and the state holds those two items
+- **WHEN** a state is written, its store's DataStore is shut down, and a new one opens the same file **THEN** the new store reads that state
 - *Verifies:* `startsFromTheDefault`, `anUpdateIsReadBack`,
-  `updateAndGetReturnsWhatTheEditComputed`
-
-> **GAP — unverified.** That the state survives a restart of the process (the file on disk)
-> is not asserted: the tests read the state from the same store object.
+  `updateAndGetReturnsWhatTheEditComputed`, `theStateSurvivesARestart`
 
 ### Requirement: Shared text and opened links are told apart
 
