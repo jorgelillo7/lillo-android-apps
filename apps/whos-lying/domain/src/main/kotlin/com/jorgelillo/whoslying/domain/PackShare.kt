@@ -16,6 +16,12 @@ object PackShare {
     fun link(pack: WordPack): String = links.link(pack.copy(custom = false))
 
     /**
+     * The link to send, or null when the receiving phone would refuse it (too many or too long
+     * words, decoys or name): a link is offered only if this app reads it back.
+     */
+    fun sendableLink(pack: WordPack): String? = link(pack).takeIf { fromText(it) != null }
+
+    /**
      * The pack in a link, a chat message with one, or a bare code, ready to save as one of the
      * user's packs under a new id of its own (a link can't overwrite a pack the user has); null if
      * there is none, it isn't playable (no name, fewer than 3 words) or it is larger than any pack

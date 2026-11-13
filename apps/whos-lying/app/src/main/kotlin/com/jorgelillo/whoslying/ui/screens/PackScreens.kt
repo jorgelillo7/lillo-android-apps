@@ -323,31 +323,46 @@ private fun PackRow(pack: WordPack, onClick: (() -> Unit)?, onShare: (() -> Unit
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun PackShareSheet(pack: WordPack, onDismiss: () -> Unit) {
-    val context = LocalContext.current
-    val link = remember(pack) { PackShare.link(pack) }
-    val message = stringResource(R.string.pack_share_message, pack.emoji, pack.name, link)
     ModalBottomSheet(onDismissRequest = onDismiss, containerColor = Neon.Card) {
-        Column(
-            TestTagsAsResourceIds.verticalScroll(
-                rememberScrollState()
-            ).padding(horizontal = 20.dp).navigationBarsPadding(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
+        PackShareContent(pack)
+    }
+}
+
+/** The share sheet's content: the link and its QR code, or why this pack can't be sent. */
+@Composable
+internal fun PackShareContent(pack: WordPack, modifier: Modifier = Modifier) {
+    val context = LocalContext.current
+    val link = remember(pack) { PackShare.sendableLink(pack) }
+    Column(
+        modifier.then(TestTagsAsResourceIds).verticalScroll(
+            rememberScrollState()
+        ).padding(horizontal = 20.dp).navigationBarsPadding(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        Text(
+            "${pack.emoji} ${pack.name}",
+            style = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.Black
+        )
+        if (link == null) {
             Text(
-                "${pack.emoji} ${pack.name}",
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Black
+                stringResource(R.string.pack_share_too_big, PackShare.MAX_WORDS),
+                color = Neon.Muted,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.testTag("pack_too_big")
             )
+        } else {
             if (link.length <= PackShare.QR_MAX_CHARS) {
                 LilloQrCode(link, Modifier.testTag("pack_qr"))
                 Text(stringResource(R.string.pack_share_qr_help), color = Neon.Muted, textAlign = TextAlign.Center)
             }
+            val message = stringResource(R.string.pack_share_message, pack.emoji, pack.name, link)
             BigButton(stringResource(R.string.pack_share_send), {
                 context.shareText(message)
             }, Modifier.testTag("pack_send"))
-            Spacer(Modifier.height(12.dp))
         }
+        Spacer(Modifier.height(12.dp))
     }
 }
 

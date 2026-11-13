@@ -51,6 +51,39 @@ class PackShareTest {
         assertEquals(full.entries, back.entries)
     }
 
+    /** Only a link this app reads back is offered: a pack past any limit gets none. */
+    @Test
+    fun onlyAPackTheOtherPhoneAcceptsCanBeSent() {
+        (WordPacks.builtIn("es") + WordPacks.builtIn("en")).forEach { assertNotNull(PackShare.sendableLink(it), it.id) }
+        assertNotNull(
+            PackShare.sendableLink(
+                pack.copy(
+                    entries = (1..PackShare.MAX_WORDS).map {
+                        Entry("Palabra $it")
+                    }
+                )
+            )
+        )
+        assertNull(
+            PackShare.sendableLink(
+                pack.copy(
+                    entries = (1..PackShare.MAX_WORDS + 1).map {
+                        Entry("Palabra $it")
+                    }
+                )
+            )
+        )
+        assertNull(PackShare.sendableLink(pack.copy(name = "N".repeat(PackShare.MAX_NAME + 1))))
+        // Within every count limit, but the code is past what a phone accepts (ShareLink.MAX_CODE_CHARS).
+        val dense = (1..PackShare.MAX_WORDS).map { i ->
+            Entry(
+                "w$i-" + "x".repeat(PackShare.MAX_WORD - 10 - i.toString().length) + i.toString(36).padStart(4, 'z'),
+                (1..PackShare.MAX_DECOYS).map { d -> "d$i.$d-${(i * 31 + d * 17).toString(36)}" }
+            )
+        }
+        assertNull(PackShare.sendableLink(pack.copy(entries = dense)))
+    }
+
     @Test
     fun unplayableOrForeignLinksAreIgnored() {
         assertNull(PackShare.fromText(PackShare.link(pack.copy(entries = pack.entries.take(2)))))
