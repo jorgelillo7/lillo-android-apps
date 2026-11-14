@@ -47,7 +47,7 @@ object LilloNotifications {
 
     /**
      * Shows [title] and [text] (expanded when long) on [channel]; tapping it starts [open]. A new one
-     * with the same [id] replaces the previous. Does nothing without the permission.
+     * with the same [id] replaces the previous. Does nothing without the permission. True if it was posted.
      */
     fun show(
         context: Context,
@@ -57,8 +57,8 @@ object LilloNotifications {
         title: String,
         text: String,
         open: Intent
-    ) {
-        if (!canNotify(context)) return
+    ): Boolean {
+        if (!canNotify(context)) return false
         val pending = PendingIntent.getActivity(
             context,
             id,
@@ -74,10 +74,12 @@ object LilloNotifications {
             .setContentIntent(pending)
             .setAutoCancel(true)
             .build()
-        try {
+        return try {
             NotificationManagerCompat.from(context).notify(id, notification)
+            true
         } catch (_: SecurityException) {
             // Permission revoked between the check and now: nothing to show.
+            false
         }
     }
 }

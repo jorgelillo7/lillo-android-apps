@@ -20,15 +20,17 @@ object EveningScheduler {
         return if (now < today) today else today.plusDays(1)
     }
 
+    /** From the job itself: replaces the pending one, so the chain moves on. */
     fun scheduleNext(context: Context, now: LocalDateTime = LocalDateTime.now()) {
         val at = nextRun(now)
-        LilloSchedule.at(
-            context,
-            WORK,
-            EveningWorker::class.java,
-            at,
-            workDataOf(KEY_DATE to at.toLocalDate().toString()),
-            now
-        )
+        LilloSchedule.at(context, WORK, EveningWorker::class.java, at, input(at), now)
     }
+
+    /** From the app's start: keeps a job that is running, due or planned for the next evening. */
+    fun ensureNext(context: Context, now: LocalDateTime = LocalDateTime.now()) {
+        val at = nextRun(now)
+        LilloSchedule.ensure(context, WORK, EveningWorker::class.java, at, input(at), now)
+    }
+
+    private fun input(at: LocalDateTime) = workDataOf(KEY_DATE to at.toLocalDate().toString())
 }

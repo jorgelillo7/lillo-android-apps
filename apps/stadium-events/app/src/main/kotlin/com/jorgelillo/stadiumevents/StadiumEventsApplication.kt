@@ -30,7 +30,8 @@ open class StadiumEventsApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         JaleoNotifications.createChannel(this)
-        // Re-plans on every start (cheap, idempotent): covers updates, time changes and the first run.
-        EveningScheduler.scheduleNext(this)
+        // On every start (cheap, idempotent): covers updates, time changes and the first run, and
+        // keeps the job WorkManager may have started this process to run.
+        EveningScheduler.ensureNext(this)
     }
 }

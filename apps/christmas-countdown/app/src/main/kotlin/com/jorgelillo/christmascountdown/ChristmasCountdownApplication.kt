@@ -20,7 +20,8 @@ open class ChristmasCountdownApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         SeasonNotifications.createChannels(this)
-        // Re-plans on every start (cheap, idempotent): covers updates, time changes and the first run.
-        ReminderScheduler.scheduleNext(this)
+        // On every start (cheap, idempotent): covers updates, time changes and the first run, and
+        // keeps the job WorkManager may have started this process to run.
+        ReminderScheduler.ensureNext(this)
     }
 }
