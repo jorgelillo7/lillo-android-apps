@@ -25,17 +25,18 @@ import androidx.glance.unit.ColorProvider
 import com.jorgelillo.stadiumevents.MainActivity
 import com.jorgelillo.stadiumevents.R
 import com.jorgelillo.stadiumevents.StadiumEventsApplication
+import com.jorgelillo.stadiumevents.domain.Day
 import com.jorgelillo.stadiumevents.domain.Jaleo
 import com.jorgelillo.stadiumevents.domain.Level
-import com.jorgelillo.stadiumevents.domain.Tomorrow
 import com.jorgelillo.stadiumevents.ui.JaleoTexts
 import com.jorgelillo.stadiumevents.ui.theme.Ink
 import java.time.LocalDate
 import kotlinx.coroutines.flow.first
 
 /**
- * Home-screen widget with tomorrow's answer, for people who never open the app. Recomputed every
- * 30 minutes from the copy on the phone (so it moves on at midnight) and after every download.
+ * Home-screen widget with tomorrow's answer (today's on an event day), for people who never open the
+ * app. Recomputed every 30 minutes from the copy on the phone (so it moves on at midnight) and after
+ * every download.
  */
 class JaleoWidget : GlanceAppWidget() {
 
@@ -43,7 +44,9 @@ class JaleoWidget : GlanceAppWidget() {
         val app = context.applicationContext as StadiumEventsApplication
         val state = app.repository.state.first()
         val texts = JaleoTexts(context.resources)
-        val answer = Jaleo.tomorrow(state.feed.events, LocalDate.now())
+        val today = LocalDate.now()
+        val answer = Jaleo.headline(state.feed.events, today)
+        val label = context.getString(if (answer.date == today) R.string.widget_today else R.string.widget_tomorrow)
         val content = when {
             state.fetchedAt == null -> WidgetText(
                 context.getString(R.string.widget_name),
@@ -52,15 +55,15 @@ class JaleoWidget : GlanceAppWidget() {
                 R.drawable.widget_calm
             )
 
-            answer is Tomorrow.Calm -> WidgetText(
-                context.getString(R.string.widget_tomorrow),
+            answer is Day.Calm -> WidgetText(
+                label,
                 context.getString(R.string.widget_calm),
                 context.getString(R.string.widget_calm_line),
                 R.drawable.widget_calm
             )
 
-            answer is Tomorrow.Busy -> WidgetText(
-                context.getString(R.string.widget_tomorrow),
+            answer is Day.Busy -> WidgetText(
+                label,
                 if (answer.maybe) {
                     context.getString(R.string.widget_maybe, texts.kind(answer.event).lowercase())
                 } else {

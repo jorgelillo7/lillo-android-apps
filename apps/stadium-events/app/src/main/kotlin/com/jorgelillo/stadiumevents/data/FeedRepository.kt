@@ -6,6 +6,7 @@ import com.jorgelillo.stadiumevents.domain.AppState
 import com.jorgelillo.stadiumevents.domain.EventFeed
 import java.net.HttpURLConnection
 import java.net.URL
+import java.time.LocalDate
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
@@ -65,4 +66,7 @@ class FeedRepository(
     }
 
     suspend fun markNotificationsAsked() = store.update { it.copy(notificationsAsked = true) }
+
+    /** A reminder was shown for [date]: that day's other slot stays silent. */
+    suspend fun markReminded(date: LocalDate) = store.update { it.copy(remindedFor = date) }
 }

@@ -1,8 +1,13 @@
 package com.jorgelillo.stadiumevents.domain
 
 import java.time.LocalDate
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.descriptors.PrimitiveKind
+import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.json.Json
 
 /**
@@ -103,5 +108,17 @@ data class AppState(
     /** Epoch millis of the last successful download; null before the first one. */
     val fetchedAt: Long? = null,
     /** The notifications permission was asked once at first launch: never ask again. */
-    val notificationsAsked: Boolean = false
+    val notificationsAsked: Boolean = false,
+    /** The busy day the last reminder was shown for: the morning stays silent if the evening spoke. */
+    @Serializable(with = IsoDateSerializer::class)
+    val remindedFor: LocalDate? = null
 )
+
+/** A date stored as "2026-11-25". */
+object IsoDateSerializer : KSerializer<LocalDate> {
+    override val descriptor = PrimitiveSerialDescriptor("IsoDate", PrimitiveKind.STRING)
+
+    override fun serialize(encoder: Encoder, value: LocalDate) = encoder.encodeString(value.toString())
+
+    override fun deserialize(decoder: Decoder): LocalDate = LocalDate.parse(decoder.decodeString())
+}

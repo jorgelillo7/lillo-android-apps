@@ -10,7 +10,6 @@ import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import androidx.work.testing.TestListenableWorkerBuilder
 import androidx.work.testing.WorkManagerTestInitHelper
-import androidx.work.workDataOf
 import com.jorgelillo.stadiumevents.StadiumEventsApplication
 import com.jorgelillo.stadiumevents.data.FeedFetcher
 import com.jorgelillo.stadiumevents.domain.EventFeed
@@ -57,10 +56,7 @@ class EveningWorkerCalmTest {
         shadowOf(app).grantPermissions(Manifest.permission.POST_NOTIFICATIONS)
         WorkManager.getInstance(app).cancelUniqueWork("evening_reminder").result.get()
         val result = runBlocking {
-            TestListenableWorkerBuilder<EveningWorker>(app)
-                .setInputData(workDataOf(EveningScheduler.KEY_DATE to LocalDate.now().toString()))
-                .build()
-                .doWork()
+            TestListenableWorkerBuilder<EveningWorker>(app).build().doWork()
         }
         assertEquals(ListenableWorker.Result.success(), result)
         assertEquals(0, shadowOf(app.getSystemService(NotificationManager::class.java)).size())

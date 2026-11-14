@@ -9,12 +9,17 @@ import com.jorgelillo.stadiumevents.domain.AppState
 import com.jorgelillo.stadiumevents.evening.EveningScheduler
 import com.jorgelillo.stadiumevents.evening.JaleoNotifications
 import com.jorgelillo.stadiumevents.widget.updateJaleoWidgets
+import java.time.Clock
+import java.time.LocalDateTime
 
 /**
- * Holds the app-wide singletons (manual DI). Open for the JVM tests' subclass, which starts a test
- * WorkManager first and swaps the download for a fake.
+ * Holds the app-wide singletons (manual DI). Open for the JVM tests' subclasses, which start a test
+ * WorkManager first and swap the download for a fake and the clock for a fixed one.
  */
 open class StadiumEventsApplication : Application() {
+    /** The reminder job's clock: a fixed time in the JVM tests. */
+    open val clock: Clock get() = Clock.systemDefaultZone()
+
     open val fetcher: FeedFetcher by lazy {
         HttpFeedFetcher("StadiumEvents/${BuildConfig.VERSION_NAME} (Android; +https://jorgelillo7.github.io/)")
     }
@@ -32,6 +37,6 @@ open class StadiumEventsApplication : Application() {
         JaleoNotifications.createChannel(this)
         // On every start (cheap, idempotent): covers updates, time changes and the first run, and
         // keeps the job WorkManager may have started this process to run.
-        EveningScheduler.ensureNext(this)
+        EveningScheduler.ensureNext(this, LocalDateTime.now(clock))
     }
 }

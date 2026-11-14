@@ -1,11 +1,13 @@
 package com.jorgelillo.stadiumevents.domain
 
 import java.time.LocalDate
+import java.time.LocalDateTime
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertIs
+import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
@@ -26,7 +28,7 @@ class JaleoTest {
 
     @Test
     fun aMatchTomorrowIsABusyDay() {
-        val answer = assertIs<Tomorrow.Busy>(Jaleo.tomorrow(listOf(viking, betis), today))
+        val answer = assertIs<Day.Busy>(Jaleo.tomorrow(listOf(viking, betis), today))
         assertEquals(viking, answer.event)
         assertEquals(LocalDate.of(2026, 11, 25), answer.date)
         assertEquals(false, answer.maybe)
@@ -34,12 +36,12 @@ class JaleoTest {
 
     @Test
     fun nothingTomorrowIsACalmDay() {
-        assertEquals(Tomorrow.Calm(LocalDate.of(2026, 11, 26)), Jaleo.tomorrow(listOf(viking), today.plusDays(1)))
+        assertEquals(Day.Calm(LocalDate.of(2026, 11, 26)), Jaleo.tomorrow(listOf(viking), today.plusDays(1)))
     }
 
     @Test
     fun anUnfixedDayIsAMaybe() {
-        val answer = assertIs<Tomorrow.Busy>(Jaleo.tomorrow(listOf(betis), LocalDate.of(2026, 12, 4)))
+        val answer = assertIs<Day.Busy>(Jaleo.tomorrow(listOf(betis), LocalDate.of(2026, 12, 4)))
         assertTrue(answer.maybe)
     }
 
@@ -47,7 +49,7 @@ class JaleoTest {
     fun aFixedEventBeatsAMaybeAndTheBiggestWins() {
         val maybe = event("maybe", "2027-06-24", "2027-06-25", either = true)
         val match = event("match", "2027-06-24")
-        val answer = assertIs<Tomorrow.Busy>(Jaleo.tomorrow(listOf(maybe, match, concert), LocalDate.of(2027, 6, 23)))
+        val answer = assertIs<Day.Busy>(Jaleo.tomorrow(listOf(maybe, match, concert), LocalDate.of(2027, 6, 23)))
         assertEquals(concert, answer.event)
     }
 
@@ -58,7 +60,7 @@ class JaleoTest {
         val match = event("match", "2027-06-24")
         val day = LocalDate.of(2027, 6, 23)
         listOf(listOf(maybe, match), listOf(match, maybe)).forEach { events ->
-            val answer = assertIs<Tomorrow.Busy>(Jaleo.tomorrow(events, day))
+            val answer = assertIs<Day.Busy>(Jaleo.tomorrow(events, day))
             assertEquals(match, answer.event)
             assertFalse(answer.maybe)
         }
@@ -66,7 +68,82 @@ class JaleoTest {
 
     @Test
     fun everyNightOfATourIsBusy() {
-        assertIs<Tomorrow.Busy>(Jaleo.tomorrow(listOf(concert), LocalDate.of(2027, 6, 24)))
+        assertIs<Day.Busy>(Jaleo.tomorrow(listOf(concert), LocalDate.of(2027, 6, 24)))
+    }
+
+    @Test
+    fun todayAndTomorrowAreAnsweredByTheSameRule() {
+        val eventDay = LocalDate.of(2026, 11, 25)
+        assertEquals(Jaleo.tomorrow(listOf(viking), today), Jaleo.on(listOf(viking), eventDay))
+        assertEquals(Day.Calm(today), Jaleo.on(listOf(viking), today))
+    }
+
+    @Test
+    fun theWidgetAnswersTodayWhileTodayIsBusyElseTomorrow() {
+        val eventDay = LocalDate.of(2026, 11, 25)
+        assertEquals(eventDay, Jaleo.headline(listOf(viking), eventDay).date)
+        assertIs<Day.Busy>(Jaleo.headline(listOf(viking), eventDay))
+        assertEquals(eventDay, Jaleo.headline(listOf(viking), today).date)
+        assertEquals(Day.Calm(eventDay.plusDays(2)), Jaleo.headline(listOf(viking), eventDay.plusDays(1)))
+    }
+
+    @Test
+    fun theJobRunsAtNineAndAtSeven() {
+        val day = today.atStartOfDay()
+        assertEquals(day.withHour(9), Jaleo.nextSlot(day))
+        assertEquals(day.withHour(9), Jaleo.nextSlot(day.withHour(8).withMinute(59)))
+        assertEquals(day.withHour(19), Jaleo.nextSlot(day.withHour(9)))
+        assertEquals(day.withHour(19), Jaleo.nextSlot(day.withHour(18).withMinute(59)))
+        assertEquals(day.plusDays(1).withHour(9), Jaleo.nextSlot(day.withHour(19)))
+        assertEquals(day.plusDays(1).withHour(9), Jaleo.nextSlot(day.withHour(23).withMinute(30)))
+    }
+
+    private fun at(date: String, time: String) = LocalDateTime.parse("${date}T$time")
+
+    @Test
+    fun theEveningBeforeABusyDayRemindsTomorrowOnce() {
+        val reminder = assertNotNull(Jaleo.reminder(listOf(viking), at("2026-11-24", "19:00"), remindedFor = null))
+        assertFalse(reminder.today)
+        assertEquals(LocalDate.of(2026, 11, 25), reminder.day.date)
+        assertNotNull(
+            Jaleo.reminder(listOf(viking), at("2026-11-24", "23:50"), remindedFor = null),
+            "a late evening run"
+        )
+        assertNull(Jaleo.reminder(listOf(viking), at("2026-11-24", "19:05"), remindedFor = LocalDate.of(2026, 11, 25)))
+        assertNull(
+            Jaleo.reminder(listOf(viking), at("2026-11-23", "19:00"), remindedFor = null),
+            "the day after is calm"
+        )
+    }
+
+    @Test
+    fun theMorningOfABusyDayCatchesUpOnlyWhenTheEveningSaidNothing() {
+        val reminder = assertNotNull(Jaleo.reminder(listOf(viking), at("2026-11-25", "09:00"), remindedFor = null))
+        assertTrue(reminder.today)
+        assertEquals(viking, reminder.day.event)
+        assertNotNull(Jaleo.reminder(listOf(viking), at("2026-11-25", "09:00"), remindedFor = today), "an older day")
+        assertNull(Jaleo.reminder(listOf(viking), at("2026-11-25", "09:00"), remindedFor = LocalDate.of(2026, 11, 25)))
+        assertNull(Jaleo.reminder(listOf(viking), at("2026-11-24", "09:00"), remindedFor = null), "a calm day")
+    }
+
+    @Test
+    fun nothingSoundsAtNightOrAfterTheStart() {
+        listOf("00:00", "03:00", "08:59").forEach {
+            assertNull(Jaleo.reminder(listOf(viking), at("2026-11-25", it), remindedFor = null), "at $it")
+        }
+        val lunch = event("lunch", "2026-11-25", time = "13:00")
+        assertNotNull(Jaleo.reminder(listOf(lunch), at("2026-11-25", "12:59"), remindedFor = null))
+        assertNull(Jaleo.reminder(listOf(lunch), at("2026-11-25", "13:00"), remindedFor = null))
+        val noTime = event("concert", "2026-11-25")
+        assertNotNull(Jaleo.reminder(listOf(noTime), at("2026-11-25", "18:30"), remindedFor = null))
+    }
+
+    @Test
+    fun anUnfixedDayRemindsAsAMaybeInTheMorningToo() {
+        val reminder = assertNotNull(Jaleo.reminder(listOf(betis), at("2026-12-05", "09:00"), remindedFor = null))
+        assertTrue(reminder.today)
+        assertTrue(reminder.day.maybe)
+        assertTrue(assertNotNull(Jaleo.reminder(listOf(betis), at("2026-12-04", "19:00"), null)).day.maybe)
     }
 
     @Test

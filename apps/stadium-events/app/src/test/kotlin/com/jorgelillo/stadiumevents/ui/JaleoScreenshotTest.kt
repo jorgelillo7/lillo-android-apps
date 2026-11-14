@@ -95,6 +95,13 @@ class JaleoScreenshotTest {
     @Config(qualifiers = "+land")
     fun quietTomorrowLandscape() = shot("calm_landscape", state(day = today.plusDays(3)))
 
+    /** The event day: today's answer first, then tomorrow's. */
+    @Test fun busyToday() = shot("today", state(day = today.plusDays(1)))
+
+    @Test
+    @Config(qualifiers = "+land")
+    fun busyTodayLandscape() = shot("today_landscape", state(day = today.plusDays(1)))
+
     @Test fun maybeTomorrow() = shot("maybe", state(day = today.plusDays(10)))
 
     @Test fun biggestDay() = shot("final", state(day = today.plusDays(192)))

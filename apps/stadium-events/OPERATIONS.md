@@ -18,9 +18,9 @@ Package: `com.jorgelillo.stadiumevents`.
 | Regenerate icons | `.venv/bin/python apps/stadium-events/tools/generate_icon.py` |
 | Store screenshots | emulator running, with internet: `apps/stadium-events/tools/capture_store_screenshots.sh` (and `CAPTURE_DEVICE=tablet …`), check `store/raw*/`, then `.venv/bin/python apps/stadium-events/tools/generate_store_assets.py`. The widget's screenshot (`05-widget`) is drawn, not captured (a launcher can't be made to place a widget reliably): `.venv/bin/python apps/stadium-events/tools/compose_widget_screenshot.py` redraws it from the widget's layout and Android Studio's Roboto; run it when the widget's look or texts change. The days it moves the clock to follow the agenda of 2026-11: pick new ones when it changes |
 | Baseline profile | emulator running: `scripts/generate-baseline-profiles.sh stadium-events` |
-| Try the evening reminder | the day before an event in the feed, set the emulator's clock to 18:59 (`scripts/emulator.sh date MMDD1859YYYY`) and open the app once |
+| Try the reminders | the day before an event in the feed, set the emulator's clock to 18:57 (`scripts/emulator.sh date MMDD1857YYYY`), open the app once, press HOME and kill its process (`$ADB shell am kill com.jorgelillo.stadiumevents`, never `force-stop`, which drops the job): the evening reminder arrives at 19:00. For the morning one, the event day at 08:57 with nothing shown the evening before (clear the app's data first). Change the clock before the app's process starts: a running process keeps the job it planned |
 
-UI test tags (`scripts/tap-text.sh`): `answer`, `loading`, `upcoming_<event id>`, `retry`, `about`.
+UI test tags (`scripts/tap-text.sh`): `answer`, `today` (on an event day), `loading`, `upcoming_<event id>`, `retry`, `about`.
 
 ## The feed
 
@@ -54,7 +54,7 @@ Play Console answers:
 |---|---|
 | Category | App · Maps & navigation (or Lifestyle) |
 | Data safety | **No data collected, no data shared.** The app downloads a public file; no account, no location, no analytics |
-| Permissions | INTERNET (the events file), POST_NOTIFICATIONS (the evening reminder); WorkManager adds ACCESS_NETWORK_STATE, RECEIVE_BOOT_COMPLETED, WAKE_LOCK and FOREGROUND_SERVICE (its own service, not used to show anything), like Christmas Countdown |
+| Permissions | INTERNET (the events file), POST_NOTIFICATIONS (the reminders); WorkManager adds ACCESS_NETWORK_STATE, RECEIVE_BOOT_COMPLETED, WAKE_LOCK and FOREGROUND_SERVICE (its own service, not used to show anything), like Christmas Countdown |
 | Ads | No |
 | Target audience | 18+ |
 | Privacy policy | `https://jorgelillo7.github.io/privacy/stadium-events/` |

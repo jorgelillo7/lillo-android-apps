@@ -1,9 +1,11 @@
 <resources>
     <string name="app_name">¿Hay jaleo?</string>
     <string name="question">¿Hay jaleo mañana?</string>
+    <string name="question_today">¿Hay jaleo?</string>
     <string name="place">Alrededores del Riyadh Air Metropolitano</string>
 
     <string name="tomorrow_label">Mañana, %1$s</string>
+    <string name="today_label">Hoy, %1$s</string>
     <string name="answer_busy">SÍ, hay jaleo</string>
     <string name="answer_maybe">PUEDE haber jaleo</string>
     <string name="answer_calm">NO, día tranquilo</string>
@@ -36,15 +38,18 @@
     <string name="checked_today">Revisado hoy a las %1$s</string>
     <string name="checked_on">Revisado el %1$s a las %2$s</string>
 
-    <string name="channel_tomorrow">Mañana hay jaleo</string>
-    <string name="channel_tomorrow_desc">La víspera de un partido, concierto o final en el estadio</string>
-    <string name="notification_title">Mañana hay jaleo en el Metropolitano</string>
-    <string name="notification_maybe_title">Mañana puede haber jaleo en el Metropolitano</string>
+    <string name="channel_tomorrow">Avisos de jaleo</string>
+    <string name="channel_tomorrow_desc">La víspera de un partido, concierto o final en el estadio, o esa misma mañana si el aviso de la víspera no llegó</string>
+    <string name="notification_title">Mañana, %1$s, hay jaleo en el Metropolitano</string>
+    <string name="notification_maybe_title">Mañana, %1$s, puede haber jaleo en el Metropolitano</string>
+    <string name="notification_today_title">Hoy hay jaleo en el Metropolitano</string>
+    <string name="notification_today_maybe_title">Hoy puede haber jaleo en el Metropolitano</string>
     <string name="notification_text">%1$s · %2$s. %3$s.</string>
 
     <string name="widget_name">¿Hay jaleo mañana?</string>
     <string name="widget_description">Si mañana hay algo en el estadio</string>
     <string name="widget_tomorrow">Mañana</string>
+    <string name="widget_today">Hoy</string>
     <string name="widget_calm">Día tranquilo</string>
     <string name="widget_calm_line">Nada en el estadio</string>
     <string name="widget_maybe">Puede haber %1$s</string>
@@ -53,7 +58,7 @@
     <string name="action_about">Acerca de</string>
     <string name="about_title">¿Hay jaleo? Metropolitano</string>
     <string name="about_version">Versión %1$s</string>
-    <string name="about_body">Avisa a los vecinos de los alrededores del Riyadh Air Metropolitano de si mañana hay partido, concierto o final, con un aviso la víspera. Los datos salen de la agenda oficial del estadio y del calendario del Atlético de Madrid, revisados cada día. App independiente: sin relación con el estadio, el club ni los organizadores. Sin anuncios, sin cuentas y sin ubicación.</string>
+    <string name="about_body">Avisa a los vecinos de los alrededores del Riyadh Air Metropolitano de si mañana hay partido, concierto o final, con un aviso la víspera (o esa misma mañana, si el de la víspera no llegó). Los datos salen de la agenda oficial del estadio y del calendario del Atlético de Madrid, revisados cada día. App independiente: sin relación con el estadio, el club ni los organizadores. Sin anuncios, sin cuentas y sin ubicación.</string>
     <string name="about_rate">Valorar en Google Play</string>
     <string name="about_privacy">Política de privacidad</string>
 </resources>
