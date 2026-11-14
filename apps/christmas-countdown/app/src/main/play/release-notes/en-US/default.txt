@@ -1,5 +1,3 @@
-A new look 🎄
-- A snowy morning by day, the midnight sky by night: follows your phone, or pick one in About → Appearance
-- In About, a button to add the widget to your home screen
-- Ready for Android 17
+More reliable reminders 🎄
+- Reminders (one month to go, Advent, the door of the day, Christmas) arrive even when the app has been closed for a while
 Happy Advent!

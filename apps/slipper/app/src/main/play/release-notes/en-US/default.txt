@@ -1,5 +1,3 @@
-Runs that are not lost 🩴
-- Turn the phone mid-run and you carry on where you were
-- Leave the app or pull down the notifications and the run pauses: tap to go on
-- Challenges from a link are checked
-- Your best score and slippers are never lost, even if reading them fails
+By day or by night 🩴
+- Grandma's house by day and by night, with the lamps on: follows your phone, or pick one in About → Appearance
+- About (language, look, rating, privacy), now behind the ⓘ icon and in landscape too

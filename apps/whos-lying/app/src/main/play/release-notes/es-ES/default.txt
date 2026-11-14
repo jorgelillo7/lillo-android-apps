@@ -1,5 +1,3 @@
-Nuevo aspecto 🕵️
-- Menús lavanda de día y neón violeta de noche: sigue al móvil o elige en Ajustes e información → Apariencia
-- La ronda en curso sigue ahí aunque el móvil cierre la app (una llamada, la cámara…)
-- Los packs que llegan por enlace se comprueban antes de guardarse
-- Tus packs nunca se pierden aunque algo falle al leerlos
+Compartir sin sorpresas 🕵️
+- Si un pack es demasiado grande para enviarlo por enlace o QR, la app te lo dice
+- El confeti se queda quieto si tu móvil tiene «Quitar animaciones»

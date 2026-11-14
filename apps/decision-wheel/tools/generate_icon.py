@@ -14,8 +14,8 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT.parent.parent / "scripts"))
 from icon_lib import circle_path, f, fill, poly_path, write_icon  # noqa: E402
 
-NIGHT_TOP, NIGHT_BOTTOM = "#2E2747", "#1F1B2E"
-CREAM, NIGHT = "#F7F3EE", "#1F1B2E"
+NIGHT_TOP, NIGHT_BOTTOM = "#2A0F25", "#1E0A1B"  # the dark look's wine (DESIGN.md)
+CREAM, NIGHT = "#FBEAF2", "#1E0A1B"
 SEGMENTS = ["#FF6B6B", "#FFB347", "#FFD93D", "#4ECDC4", "#6C8EF5", "#C792EA"]
 
 # Geometry in the 108x108 adaptive viewport (safe zone: radius 33 around the centre).

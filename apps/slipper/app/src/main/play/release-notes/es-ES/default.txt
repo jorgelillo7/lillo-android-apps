@@ -1,5 +1,3 @@
-Carreras que no se pierden 🩴
-- Si giras el móvil en plena carrera, sigues donde ibas
-- Si sales de la app o bajas las notificaciones, la carrera se pausa: toca para seguir
-- Los retos que llegan por enlace se comprueban
-- Tu récord y tus chanclas nunca se pierden aunque algo falle al leerlos
+De día o de noche 🩴
+- La casa de la abuela de día y de noche, con las lámparas encendidas: sigue al móvil o elige en Acerca de → Apariencia
+- Acerca de (idioma, aspecto, valorar, privacidad), ahora con el icono ⓘ y también en horizontal

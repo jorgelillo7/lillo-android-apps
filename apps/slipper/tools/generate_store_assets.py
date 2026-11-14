@@ -22,6 +22,7 @@ LOCALES = {
         "tagline": "Huye de la abuela · Un dedo · Sin anuncios",
         "headlines": {
             "01-home": ("Huye de la abuela", "y de su chancla"),
+            "01b-night": ("De día o de noche,", "como prefieras"),
             "02-run": ("Salta sus chanclas", "y róbale las croquetas"),
             "03-run": ("Combos, bocatas", "y ¡por los pelos!"),
             "04-result": ("¿Te superan?", "Reta con un enlace"),
@@ -33,6 +34,7 @@ LOCALES = {
         "tagline": "Run from grandma · One finger · No ads",
         "headlines": {
             "01-home": ("Run from grandma", "and her slipper"),
+            "01b-night": ("By day or by night,", "as you like"),
             "02-run": ("Jump her slippers", "steal her croquetas"),
             "03-run": ("Combos, sandwiches", "and close calls"),
             "04-result": ("Can they beat you?", "Challenge by link"),

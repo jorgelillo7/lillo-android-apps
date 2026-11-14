@@ -13054,7 +13054,7 @@ SPLandroidx/emoji2/text/flatbuffer/Table;->__indirect(I)I
 SPLandroidx/emoji2/text/flatbuffer/Table;->__offset(I)I
 SPLandroidx/emoji2/text/flatbuffer/Table;->__reset(ILjava/nio/ByteBuffer;)V
 SPLandroidx/emoji2/text/flatbuffer/Table;->__vector(I)I
-SPLandroidx/emoji2/text/flatbuffer/Table;->__vector_len(I)I
+HSPLandroidx/emoji2/text/flatbuffer/Table;->__vector_len(I)I
 Landroidx/emoji2/text/flatbuffer/Utf8;
 SPLandroidx/emoji2/text/flatbuffer/Utf8;-><init>()V
 SPLandroidx/emoji2/text/flatbuffer/Utf8;->getDefault()Landroidx/emoji2/text/flatbuffer/Utf8;

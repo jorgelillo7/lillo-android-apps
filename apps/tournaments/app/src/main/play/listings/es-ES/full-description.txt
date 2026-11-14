@@ -18,5 +18,8 @@ El torneo entero viaja en un enlace o un código QR: escanéalo con la cámara d
 📊 SALÓN DE LA FAMA
 Títulos, finales y porcentaje de victorias de cada jugador en todos vuestros torneos. Exporta el cuadro como imagen o los resultados en CSV.
 
+🌗 DE DÍA O DE NOCHE
+Una sala de trofeos de día y un estadio con focos de noche: sigue a tu móvil, o elige claro u oscuro en «Apariencia».
+
 🚫 SIN ANUNCIOS, SIN CUENTAS, SIN PERMISOS
 No pide ningún permiso ni internet. Todo se queda en tu móvil.

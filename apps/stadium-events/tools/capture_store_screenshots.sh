@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Captures the raw Play Store screenshots (store/raw/<locale>/) for every locale, from the real
-# feed: a match tomorrow, a quiet day, a LaLiga match with its day not fixed yet, and the 2027
+# feed: a match tomorrow (also in the dark look, and on the day itself), a quiet day, a LaLiga match with its day not fixed yet, and the 2027
 # Champions League final. The app downloads the events once at the real date; then the emulator's
 # clock is moved to each day (moving it first would break HTTPS with a far-off date). Needs a
 # running emulator with internet; taps go by test tag. Then run:
@@ -40,6 +40,8 @@ for locale in $CAPTURE_LOCALES; do
     capture_open "$locale" 4 keep    # same downloaded events, another language
   fi
   shot_on 112410002026 "$locale" 01-busy      # tomorrow: Atlético – Viking, Champions, 21:00
+  look dark; shot "$locale" 01b-night; look light   # the same answer in the dark look
+  shot_on 112510002026 "$locale" 01c-today     # the match day: today first, then tomorrow
   shot_on 112610002026 "$locale" 02-calm      # tomorrow: nothing at the stadium
   shot_on 120410002026 "$locale" 03-maybe     # Betis: Saturday 5 or Sunday 6, not fixed yet
   shot_on 060410002027 "$locale" 04-final     # tomorrow: the Champions League final
