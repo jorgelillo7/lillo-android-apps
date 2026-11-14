@@ -20,6 +20,7 @@ for locale in $CAPTURE_LOCALES; do
   capture_open "$locale" 4
   tap sound 1 # silent emulator
   shot "$locale" 01-home
+  look dark; shot "$locale" 01b-night; look light   # grandma's house with the lamps on
   tap play 1
   play_for 4
   shot "$locale" 02-run

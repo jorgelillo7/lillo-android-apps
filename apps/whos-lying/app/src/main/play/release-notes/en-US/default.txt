@@ -1,5 +1,3 @@
-A new look 🕵️
-- Lavender menus by day, violet neon at night: follows your phone, or pick one in Settings & info → Appearance
-- A round in progress stays even if the phone closes the app (a call, the camera…)
-- Packs from a link are checked before they are saved
-- Your packs are never lost, even if reading them fails
+Sharing without surprises 🕵️
+- If a pack is too big to send by link or QR, the app says so
+- Confetti stays still if your phone has "Remove animations" on

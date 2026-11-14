@@ -18,5 +18,8 @@ The whole tournament travels in a link or a QR code: scan it with the other phon
 📊 HALL OF FAME
 Titles, finals and win rate of every player across all your tournaments. Export the bracket as an image or the results as CSV.
 
+🌗 BY DAY OR BY NIGHT
+A trophy room by day, a floodlit stadium by night: it follows your phone, or pick light or dark under Appearance.
+
 🚫 NO ADS, NO ACCOUNTS, NO PERMISSIONS
 It asks for no permissions and no internet. Everything stays on your phone.

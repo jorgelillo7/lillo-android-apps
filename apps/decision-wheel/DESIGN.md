@@ -27,6 +27,7 @@ wheel:             # WheelColors, the same in both looks
   Ink: "#1E0A1B"          # hub, pointer outline, labels on light segments
   Cream: "#FBEAF2"        # pointer, labels on dark segments
 hero: ["#C2185B", "#7B1FA2"]   # palette hero (raspberry into grape, white text); the home doesn't use it
+icon: "the six-colour wheel on the dark look's wine (#2A0F25 → #1E0A1B), as the store graphics; the first icon's indigo was left over from the old violet palette"
 components:
   home: "the title in the display face and accent colour, then a light line (most picked) and the wheels; no summary card: the wheels are the home"
   last-result: "a card under the wheels: the last decision in the display face and accent colour, its wheel and day, Spin again (outlined); with no decision yet, an invitation to spin the favourite. Only when the list leaves 240dp free; never on short screens or once the list scrolls; then a compact \"Last:\" line under the title instead"

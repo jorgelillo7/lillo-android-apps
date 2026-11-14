@@ -4789,7 +4789,7 @@ SPLandroidx/compose/runtime/snapshots/SnapshotKt;->createTransparentSnapshotWith
 SPLandroidx/compose/runtime/snapshots/SnapshotKt;->createTransparentSnapshotWithNoParentReadObserver(Landroidx/compose/runtime/snapshots/Snapshot;Lkotlin/jvm/functions/Function1;Z)Landroidx/compose/runtime/snapshots/Snapshot;
 SPLandroidx/compose/runtime/snapshots/SnapshotKt;->current(Landroidx/compose/runtime/snapshots/StateRecord;)Landroidx/compose/runtime/snapshots/StateRecord;
 SPLandroidx/compose/runtime/snapshots/SnapshotKt;->current(Landroidx/compose/runtime/snapshots/StateRecord;Landroidx/compose/runtime/snapshots/Snapshot;)Landroidx/compose/runtime/snapshots/StateRecord;
-SPLandroidx/compose/runtime/snapshots/SnapshotKt;->currentSnapshot()Landroidx/compose/runtime/snapshots/Snapshot;
+HSPLandroidx/compose/runtime/snapshots/SnapshotKt;->currentSnapshot()Landroidx/compose/runtime/snapshots/Snapshot;
 SPLandroidx/compose/runtime/snapshots/SnapshotKt;->emptyLambda$lambda$0(Landroidx/compose/runtime/snapshots/SnapshotIdSet;)Lkotlin/Unit;
 SPLandroidx/compose/runtime/snapshots/SnapshotKt;->getLock()Ljava/lang/Object;
 SPLandroidx/compose/runtime/snapshots/SnapshotKt;->mergedReadObserver$default(Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;ZILjava/lang/Object;)Lkotlin/jvm/functions/Function1;
@@ -11229,7 +11229,7 @@ SPLandroidx/emoji2/text/flatbuffer/Table;->__indirect(I)I
 SPLandroidx/emoji2/text/flatbuffer/Table;->__offset(I)I
 SPLandroidx/emoji2/text/flatbuffer/Table;->__reset(ILjava/nio/ByteBuffer;)V
 SPLandroidx/emoji2/text/flatbuffer/Table;->__vector(I)I
-HSPLandroidx/emoji2/text/flatbuffer/Table;->__vector_len(I)I
+SPLandroidx/emoji2/text/flatbuffer/Table;->__vector_len(I)I
 Landroidx/emoji2/text/flatbuffer/Utf8;
 SPLandroidx/emoji2/text/flatbuffer/Utf8;-><init>()V
 SPLandroidx/emoji2/text/flatbuffer/Utf8;->getDefault()Landroidx/emoji2/text/flatbuffer/Utf8;
@@ -12996,9 +12996,6 @@ SPLcom/jorgelillo/tournaments/domain/Library$special$$inlined$thenByDescending$1
 Lcom/jorgelillo/tournaments/domain/Library$special$$inlined$thenByDescending$2;
 SPLcom/jorgelillo/tournaments/domain/Library$special$$inlined$thenByDescending$2;-><init>(Ljava/util/Comparator;)V
 Lcom/jorgelillo/tournaments/domain/Tournament;
-Lcom/jorgelillo/tournaments/ui/CommonKt;
-SPLcom/jorgelillo/tournaments/ui/CommonKt;->BigButton(Ljava/lang/String;Lkotlin/jvm/functions/Function0;Ljava/lang/String;Landroidx/compose/ui/Modifier;ZLandroidx/compose/runtime/Composer;II)V
-SPLcom/jorgelillo/tournaments/ui/CommonKt;->Page(Ljava/lang/String;Lkotlin/jvm/functions/Function0;Landroidx/compose/ui/Modifier;Lkotlin/jvm/functions/Function3;ZLkotlin/jvm/functions/Function3;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;II)V
 Lcom/jorgelillo/tournaments/ui/Home;
 SPLcom/jorgelillo/tournaments/ui/Home;->$r8$lambda$AvL_h03Zr1dt4ZG5_PCy9pHixB4()Lkotlinx/serialization/KSerializer;
 SPLcom/jorgelillo/tournaments/ui/Home;-><clinit>()V
@@ -13113,10 +13110,10 @@ SPLcom/jorgelillo/tournaments/ui/TournamentsViewModel$Companion$$ExternalSynthet
 Lcom/jorgelillo/tournaments/ui/home/ComposableSingletons$HomeScreenKt;
 SPLcom/jorgelillo/tournaments/ui/home/ComposableSingletons$HomeScreenKt;-><clinit>()V
 SPLcom/jorgelillo/tournaments/ui/home/ComposableSingletons$HomeScreenKt;-><init>()V
-SPLcom/jorgelillo/tournaments/ui/home/ComposableSingletons$HomeScreenKt;->getLambda$-1918767284$app()Lkotlin/jvm/functions/Function2;
-SPLcom/jorgelillo/tournaments/ui/home/ComposableSingletons$HomeScreenKt;->getLambda$972654861$app()Lkotlin/jvm/functions/Function3;
-SPLcom/jorgelillo/tournaments/ui/home/ComposableSingletons$HomeScreenKt;->lambda_972654861$lambda$0(Landroidx/compose/foundation/layout/RowScope;Landroidx/compose/runtime/Composer;I)Lkotlin/Unit;
-SPLcom/jorgelillo/tournaments/ui/home/ComposableSingletons$HomeScreenKt;->lambda__1918767284$lambda$0(Landroidx/compose/runtime/Composer;I)Lkotlin/Unit;
+SPLcom/jorgelillo/tournaments/ui/home/ComposableSingletons$HomeScreenKt;->getLambda$-680018040$app()Lkotlin/jvm/functions/Function3;
+SPLcom/jorgelillo/tournaments/ui/home/ComposableSingletons$HomeScreenKt;->getLambda$111175849$app()Lkotlin/jvm/functions/Function2;
+SPLcom/jorgelillo/tournaments/ui/home/ComposableSingletons$HomeScreenKt;->lambda_111175849$lambda$0(Landroidx/compose/runtime/Composer;I)Lkotlin/Unit;
+SPLcom/jorgelillo/tournaments/ui/home/ComposableSingletons$HomeScreenKt;->lambda__680018040$lambda$0(Landroidx/compose/foundation/layout/RowScope;Landroidx/compose/runtime/Composer;I)Lkotlin/Unit;
 Lcom/jorgelillo/tournaments/ui/home/ComposableSingletons$HomeScreenKt$$ExternalSyntheticLambda0;
 SPLcom/jorgelillo/tournaments/ui/home/ComposableSingletons$HomeScreenKt$$ExternalSyntheticLambda0;-><init>()V
 SPLcom/jorgelillo/tournaments/ui/home/ComposableSingletons$HomeScreenKt$$ExternalSyntheticLambda0;->invoke(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
@@ -13960,7 +13957,7 @@ SPLkotlinx/coroutines/CancellableContinuationImpl;->dispatchResume(I)V
 SPLkotlinx/coroutines/CancellableContinuationImpl;->getContext()Lkotlin/coroutines/CoroutineContext;
 SPLkotlinx/coroutines/CancellableContinuationImpl;->getDelegate$kotlinx_coroutines_core()Lkotlin/coroutines/Continuation;
 SPLkotlinx/coroutines/CancellableContinuationImpl;->getExceptionalResult$kotlinx_coroutines_core(Ljava/lang/Object;)Ljava/lang/Throwable;
-HSPLkotlinx/coroutines/CancellableContinuationImpl;->getParentHandle()Lkotlinx/coroutines/DisposableHandle;
+SPLkotlinx/coroutines/CancellableContinuationImpl;->getParentHandle()Lkotlinx/coroutines/DisposableHandle;
 HSPLkotlinx/coroutines/CancellableContinuationImpl;->getResult()Ljava/lang/Object;
 SPLkotlinx/coroutines/CancellableContinuationImpl;->getState$kotlinx_coroutines_core()Ljava/lang/Object;
 SPLkotlinx/coroutines/CancellableContinuationImpl;->getSuccessfulResult$kotlinx_coroutines_core(Ljava/lang/Object;)Ljava/lang/Object;
@@ -13985,7 +13982,7 @@ SPLkotlinx/coroutines/CancellableContinuationImpl;->takeState$kotlinx_coroutines
 SPLkotlinx/coroutines/CancellableContinuationImpl;->tryResume()Z
 SPLkotlinx/coroutines/CancellableContinuationImpl;->tryResume(Ljava/lang/Object;Ljava/lang/Object;Lkotlin/jvm/functions/Function3;)Ljava/lang/Object;
 SPLkotlinx/coroutines/CancellableContinuationImpl;->tryResumeImpl(Ljava/lang/Object;Ljava/lang/Object;Lkotlin/jvm/functions/Function3;)Lkotlinx/coroutines/internal/Symbol;
-SPLkotlinx/coroutines/CancellableContinuationImpl;->trySuspend()Z
+HSPLkotlinx/coroutines/CancellableContinuationImpl;->trySuspend()Z
 Lkotlinx/coroutines/CancellableContinuationImplKt;
 SPLkotlinx/coroutines/CancellableContinuationImplKt;-><clinit>()V
 Lkotlinx/coroutines/CancellableContinuationKt;
@@ -14219,7 +14216,7 @@ SPLkotlinx/coroutines/JobSupport;->onCancelling(Ljava/lang/Throwable;)V
 SPLkotlinx/coroutines/JobSupport;->onCompletionInternal(Ljava/lang/Object;)V
 SPLkotlinx/coroutines/JobSupport;->plus(Lkotlin/coroutines/CoroutineContext;)Lkotlin/coroutines/CoroutineContext;
 SPLkotlinx/coroutines/JobSupport;->promoteSingleToNodeList(Lkotlinx/coroutines/JobNode;)V
-SPLkotlinx/coroutines/JobSupport;->removeNode$kotlinx_coroutines_core(Lkotlinx/coroutines/JobNode;)V
+HSPLkotlinx/coroutines/JobSupport;->removeNode$kotlinx_coroutines_core(Lkotlinx/coroutines/JobNode;)V
 SPLkotlinx/coroutines/JobSupport;->setParentHandle$kotlinx_coroutines_core(Lkotlinx/coroutines/ChildHandle;)V
 SPLkotlinx/coroutines/JobSupport;->start()Z
 SPLkotlinx/coroutines/JobSupport;->startInternal(Ljava/lang/Object;)I

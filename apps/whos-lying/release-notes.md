@@ -5,6 +5,7 @@ Newest first. User-facing notes per language are in
 
 | versionCode | Version | Date | Notes |
 |---|---|---|---|
+| 12 | 1.8 | 2026-11-14 (production upload through the Release workflow; waits for the approval in GitHub, then Google's review) | A pack too big for a link or QR says so; confetti honours Remove animations; baseline profile |
 | 11 | 1.7 | 2026-11-13 (production) | Light and dark looks (lavender menus by day, violet neon at night, Appearance in About); a round survives Android stopping the app; shared packs validated and given a new id; stored packs set aside, never overwritten, when unreadable; targetSdk 37; baseline profile, new store screenshots |
 | 10 | 1.6 | 2026-11-03 (production) | Haptic when the word shows under the curtain; spring press; baseline profile |
 | 9 | 1.5 | 2026-10-31 (production) | New palette from seed #7756FA (Vibrant): violet-night surfaces; pink edge for own packs; softer accents as text; baseline profile, new store screenshots |

@@ -1,3 +1,5 @@
-El widget, más fácil de encontrar 🏟️
-- La app te ofrece añadir el widget a la pantalla de inicio, y explica cómo hacerlo a mano en cualquier móvil
-- Los datos de eventos se comprueban antes de guardarse
+Avisos que no se pierden 🏟️
+- Si el aviso de la víspera no te llegó, te avisamos esa misma mañana; nunca de noche
+- El día del evento, la app y el widget te dicen «Hoy»
+- El aviso dice el día: «Mañana, domingo 15, hay jaleo»
+- Modo oscuro: elige en Acerca de → Apariencia

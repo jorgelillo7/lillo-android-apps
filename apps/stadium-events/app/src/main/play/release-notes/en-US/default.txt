@@ -1,3 +1,5 @@
-The widget, easier to find 🏟️
-- The app offers to add the widget to your home screen, and says how to do it by hand on any phone
-- Event data is checked before it is saved
+Reminders that are not missed 🏟️
+- If the evening's reminder didn't reach you, we remind you that morning; never at night
+- On the day itself, the app and the widget say "Today"
+- The reminder names the day: "Tomorrow, Sunday 15, it's busy"
+- Dark look: pick it in About → Appearance

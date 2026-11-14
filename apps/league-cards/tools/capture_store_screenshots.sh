@@ -15,6 +15,7 @@ for locale in $CAPTURE_LOCALES; do
   capture_open "$locale" 4
   tap new_season 3
   shot "$locale" 01-card
+  look dark; shot "$locale" 01b-night; look light   # the same card in the night look
   tap joker 2
   shot "$locale" 02-joker
   chat=""; table=""

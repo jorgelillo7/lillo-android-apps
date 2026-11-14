@@ -23,6 +23,7 @@ LOCALES = {
         "tagline": "Cartas para tu liga fantasy · Sin cuentas · Sin anuncios",
         "headlines": {
             "01-card": ("Decide", "carta a carta"),
+            "01b-night": ("De día o de noche,", "como prefieras"),
             "02-joker": ("Un comodín", "por temporada"),
             "03-chat": ("El chat de la liga", "tras cada jornada"),
             "04-table": ("La clasificación", "jornada a jornada"),

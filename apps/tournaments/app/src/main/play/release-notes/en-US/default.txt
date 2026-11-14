@@ -1,5 +1,3 @@
-A new look 👑
-- A trophy room by day, a floodlit stadium by night: follows your phone, or pick one in About → Appearance
-- On a phone, the bracket shows round by round
-- A link with a newer copy of your tournament asks before replacing it
-- Your tournaments are never lost, even if reading them fails
+Links that always work 👑
+- A link or QR is offered only if the other phone can open it
+- Confetti stays still if your phone has "Remove animations" on

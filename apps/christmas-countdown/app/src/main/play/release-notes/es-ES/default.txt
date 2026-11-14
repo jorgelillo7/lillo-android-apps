@@ -1,5 +1,3 @@
-Nuevo aspecto 🎄
-- De día, una mañana nevada; de noche, el cielo de medianoche: sigue al móvil o elige en Información → Apariencia
-- En Información, un botón para añadir el widget a la pantalla de inicio
-- Lista para Android 17
+Avisos más fiables 🎄
+- Los avisos (un mes, el Adviento, la puerta del día, Navidad) llegan aunque la app lleve tiempo cerrada
 ¡Feliz Adviento!

@@ -20,5 +20,8 @@ An optional countdown before each vote, so nobody drags it out.
 🎨 DRAWING MODE AND SCORES
 Instead of talking, draw the word together on one canvas and share the masterpiece at the end. Points add up game after game: who is the best liar in your group?
 
+🌗 BY DAY OR BY NIGHT
+Lavender menus by day, violet neon by night: it follows your phone, or pick light or dark under Appearance.
+
 🚫 NO CATCH
 No ads, no purchases, no accounts, no internet. Nothing leaves your phone.

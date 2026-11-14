@@ -23,6 +23,8 @@ LOCALES = {
         "tagline": "Matches · Concerts · Finals · No setup · No ads",
         "headlines": {
             "01-busy": ("A match tomorrow?", "Know it the day before"),
+            "01b-night": ("Light or dark,", "as you prefer"),
+            "01c-today": ("On the day itself", "it says \"Today\""),
             "02-calm": ("A quiet day?", "Just as clear"),
             "03-maybe": ("Day not fixed yet?", "It says so"),
             "04-final": ("Concerts and finals", "the biggest days"),
@@ -34,6 +36,8 @@ LOCALES = {
         "tagline": "Partidos · Conciertos · Finales · Sin configurar · Sin anuncios",
         "headlines": {
             "01-busy": ("¿Mañana hay partido?", "Entérate la víspera"),
+            "01b-night": ("Claro u oscuro,", "como prefieras"),
+            "01c-today": ("El mismo día", "te dice «Hoy»"),
             "02-calm": ("¿Día tranquilo?", "También te lo dice"),
             "03-maybe": ("¿Día sin confirmar?", "Te lo cuenta tal cual"),
             "04-final": ("Conciertos y finales", "los días más gordos"),

@@ -31,7 +31,7 @@ object WheelColors {
     fun onSegment(color: Color): Color = if (color.luminance() > 0.45f) Ink else Cream
 
     /** The launcher icon's background, behind the icon in the About sheet. */
-    val IconBackground = Color(0xFF1F1B2E)
+    val IconBackground = Color(0xFF1E0A1B)
 }
 
 private val Raspberry = Color(0xFFC2185B)
