@@ -65,7 +65,7 @@ import androidx.compose.ui.unit.sp
  *
  * [sideActionsWhenShort]: on short screens (landscape, handhelds) the actions go in a column beside
  * the content instead of below it, and a page with no title or back button drops its header, so
- * the content keeps the screen's full height. Off by default: only for screens checked that way.
+ * the content keeps the screen's full height; its actions then sit at the top of that column. Off by default: only for screens checked that way.
  *
  * [readable]: lists, forms and text keep [LilloReadableWidth] at most, centred, on tablets and
  * unfolded foldables (full width on phones, upright or turned). Off for brackets, canvases and grids, which use every
@@ -88,7 +88,8 @@ fun LilloPage(
     val side = sideActionsWhenShort && isShortScreen()
     // System bars and, in landscape, the camera cutout; the background still draws behind them.
     Column(modifier.fillMaxSize().background(background).windowInsetsPadding(PageInsets)) {
-        if (!side || title != null || onBack != null) {
+        val header = !side || title != null || onBack != null
+        if (header) {
             Row(
                 Modifier.fillMaxWidth().height(56.dp).padding(horizontal = 4.dp),
                 verticalAlignment = Alignment.CenterVertically
@@ -122,11 +123,22 @@ fun LilloPage(
         if (side) {
             Row(Modifier.weight(1f).fillMaxWidth()) {
                 Column(Modifier.weight(1f).fillMaxHeight().padding(horizontal = 20.dp), content = content)
-                Column(
-                    Modifier.width(SIDE_ACTIONS_WIDTH).fillMaxHeight().padding(20.dp),
-                    verticalArrangement = Arrangement.Center,
-                    content = bottom
-                )
+                Column(Modifier.width(SIDE_ACTIONS_WIDTH).fillMaxHeight()) {
+                    // No header: its actions (About, sound…) top the side column instead of vanishing.
+                    if (!header) {
+                        Row(
+                            Modifier.fillMaxWidth().padding(top = 4.dp, end = 4.dp),
+                            horizontalArrangement = Arrangement.End,
+                            verticalAlignment = Alignment.CenterVertically,
+                            content = actions
+                        )
+                    }
+                    Column(
+                        Modifier.weight(1f).fillMaxWidth().padding(20.dp),
+                        verticalArrangement = Arrangement.Center,
+                        content = bottom
+                    )
+                }
             }
         } else {
             // Not on short screens (phones in landscape): there the width is what they have to spare.

@@ -19,6 +19,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -114,8 +115,8 @@ internal fun HomeScreen(
             ) {
                 Text(if (saved.muted) "🔇" else "🔊", style = MaterialTheme.typography.titleLarge)
             }
-            TextButton(onClick = onAbout, modifier = Modifier.testTag("about")) {
-                Text(stringResource(R.string.about), color = Kitchen.Muted)
+            IconButton(onClick = onAbout, modifier = Modifier.testTag("about")) {
+                Icon(Icons.Outlined.Info, contentDescription = stringResource(R.string.about), tint = Kitchen.Ink)
             }
         },
         bottom = {

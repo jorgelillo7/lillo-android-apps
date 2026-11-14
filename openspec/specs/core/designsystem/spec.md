@@ -39,3 +39,14 @@ language, or clear it back to the phone's, and close.
   `noConfettiWithAnimationsRemoved`, `confettiWithAnimationsOn`,
   `theAboutSheetOpensThePrivacyPolicyAndRatesOnlyOncePublished`, `aPublishedAppOffersToRateIt`,
   `theLanguageDialogSetsTheAppsLanguageOrGoesBackToThePhones`
+
+### Requirement: A short page keeps its header's actions
+
+On a short screen (landscape, handhelds), a `LilloPage` with `sideActionsWhenShort` and no
+title or back button drops its header so the content keeps the full height; the header's
+actions (About, sound) SHALL then sit at the top of the side column, never vanish. slipper's
+and league-cards' About could not be reached in landscape before.
+
+#### Scenario: the side column
+- **WHEN** a title-less page with side actions is shown on a landscape phone **THEN** both its header action and its bottom action are on screen
+- *Verifies:* `aShortPageWithoutHeaderKeepsItsActionsInTheSideColumn`
