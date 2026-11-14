@@ -11,6 +11,7 @@ import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
@@ -209,6 +210,7 @@ private fun SamplePage(sideActions: Boolean = true) = LilloPage(
     background = Brush.verticalGradient(listOf(Color(0xFF0A72D6), Color(0xFF2448E0))),
     contentColor = Color.White,
     sideActionsWhenShort = sideActions,
+    actions = { TextButton(onClick = {}) { Text("About", color = Color.White) } },
     bottom = { LilloBigButton("Continue", {}) }
 ) {
     Text("You caught the impostor!", style = MaterialTheme.typography.headlineMedium)
@@ -219,7 +221,7 @@ private fun SamplePage(sideActions: Boolean = true) = LilloPage(
 @Composable
 private fun PagePreview() = CatalogueLooks { SamplePage() }
 
-/** Landscape (and handhelds): the actions move beside the content. */
+/** Landscape (and handhelds): the actions move beside the content, the header's on top of them. */
 @Preview(name = "Page, short screen", device = "spec:width=411dp,height=891dp,orientation=landscape")
 @Composable
 private fun PageShortPreview() = CatalogueLooks { SamplePage() }

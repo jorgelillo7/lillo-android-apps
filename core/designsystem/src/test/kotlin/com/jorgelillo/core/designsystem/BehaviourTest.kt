@@ -5,6 +5,7 @@ import android.app.LocaleManager
 import android.provider.Settings
 import androidx.compose.foundation.layout.Box
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
@@ -16,6 +17,7 @@ import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.UriHandler
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
@@ -80,6 +82,23 @@ class BehaviourTest {
         confetti()
         compose.onNodeWithTag("burst").assertExists()
         compose.onNodeWithTag("rain").assertExists()
+    }
+
+    /** A landscape phone: short, so the actions go beside the content and a title-less page drops its header. */
+    @Test
+    @Config(qualifiers = "w891dp-h411dp-land")
+    fun aShortPageWithoutHeaderKeepsItsActionsInTheSideColumn() {
+        compose.setContent {
+            LilloPage(
+                title = null,
+                onBack = null,
+                sideActionsWhenShort = true,
+                actions = { Text("About", Modifier.testTag("about")) },
+                bottom = { Text("Play", Modifier.testTag("play")) }
+            ) { Text("Content") }
+        }
+        compose.onNodeWithTag("about").assertIsDisplayed()
+        compose.onNodeWithTag("play").assertIsDisplayed()
     }
 
     private val opened = mutableListOf<String>()

@@ -148,8 +148,6 @@ internal fun HomeScreen(
         sideActionsWhenShort = true,
         actions = { AboutButton({ about = true }) },
         bottom = {
-            // On short screens the header (and its ⓘ) gives way to the side column: it goes here.
-            if (isShortScreen()) AboutButton({ about = true }, Modifier.align(Alignment.End))
             val full = pluralStringResource(R.plurals.new_season_length, league.matchdays, league.matchdays)
             val short = Game.shortLength(league).let { pluralStringResource(R.plurals.short_season, it, it) }
             if (inProgress != null) {
