@@ -45,7 +45,7 @@ class LilloNotificationsTest {
     @Test
     @Config(sdk = [36])
     fun nothingIsShownWithoutThePermission() {
-        show()
+        assertFalse(show(), "says it showed nothing")
         assertEquals(0, shadowOf(manager).size())
     }
 
@@ -53,7 +53,7 @@ class LilloNotificationsTest {
     @Config(sdk = [36])
     fun aNotificationIsShownOnItsChannelAndANewOneWithTheSameIdReplacesIt() {
         shadowOf(app).grantPermissions(Manifest.permission.POST_NOTIFICATIONS)
-        show(id = 7, text = "first")
+        assertTrue(show(id = 7, text = "first"), "says it was shown")
         show(id = 7, text = "second")
         val shown = shadowOf(manager).allNotifications.single()
         assertEquals("tomorrow", shown.channelId)

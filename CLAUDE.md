@@ -121,7 +121,7 @@ Project skills are indexed in [`.claude/CLAUDE.md`](.claude/CLAUDE.md).
   `@Preview` in `core/designsystem/.../Catalogue.kt`; `CatalogueScreenshotTest` captures every preview there
   in both looks (`_light` added to the light one; with the accessibility checks), so a new component needs a preview, not a hand-written screenshot test. `:core:platform` has
   `JsonStore` (an unreadable stored document is set aside, never overwritten; each app's `StoredStateTest` pins its released format), `AppWidgetPins` (is the app's widget placed, can the launcher be asked to place it), sharing and links; `:core:reminders` has notifications (`LilloNotifications`: channels,
-  permission check, tap to open) and reminder chains (`LilloSchedule.at`: one WorkManager job at a time); `:core:sharelink` (pure Kotlin) puts any serializable value in a
+  permission check, tap to open) and reminder chains (`LilloSchedule`: one WorkManager job at a time; `ensure` from `Application.onCreate`, never `at`, which the job itself uses to move on); `:core:sharelink` (pure Kotlin) puts any serializable value in a
   `jorgelillo7.github.io/<path>/#…` link (tournaments `/t/`, impostor packs `/p/`).
 - **Reuse first; the second copy goes to core.** Every app should get what the others already
   proved. Before writing a composable, helper, Gradle setting or script, look for it in `core/`,

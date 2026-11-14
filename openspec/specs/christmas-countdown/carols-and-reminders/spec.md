@@ -6,7 +6,8 @@ that does not repeat back to back, and reminders at the moments that matter.
 - **Source:** `apps/christmas-countdown/domain/` (`Melody`, `ShuffledPlaylist`,
   `Reminders`)
 - **Verified by:** `apps/christmas-countdown/domain/src/test/` (`MelodyTest`,
-  `ShuffledPlaylistTest`, `RemindersTest`)
+  `ShuffledPlaylistTest`, `RemindersTest`), `apps/christmas-countdown/app/src/test/`
+  (`ReminderSchedulerTest`, `ReminderChainTest`)
 
 ---
 
@@ -56,3 +57,17 @@ evening, and so on, wrapping to next year after Christmas.
 - **WHEN** the next slot is asked from 18 Oct, 25 Nov 10:00, 30 Nov 23:00, 1 Dec 10:00, 17 Dec 18:00, 18 Dec 10:00, 24 Dec 18:00 and 25 Dec 10:00 **THEN** the answers are 25 Nov morning, 1 Dec morning, 1 Dec morning, 2 Dec evening, 18 Dec morning, 18 Dec evening, 25 Dec morning and 25 Nov 2027 morning
 - *Verifies:* `milestonesAndBigDaysInTheMorning`, `doorReminderOnlyWhenItIsStillClosed`,
   `nextSlotWalksTheSeasonAndWrapsToNextYear`
+
+### Requirement: A reminder fires with the app closed
+
+The app's start SHALL keep the season's job when it is due or already planned
+(`ReminderScheduler.ensureNext`), and the job SHALL plan the next slot when it runs
+(`ReminderScheduler.scheduleNext`), so a reminder fires whether or not the app's process is
+alive at its time.
+
+#### Scenario: the process is started for the due job
+- **WHEN** 25 November's 10:00 job is due and the app starts at 10:01 **THEN** that job is kept as the only one
+- **WHEN** the job plans the next one at 10:01 **THEN** it replaces itself with 1 December at 10:00
+- **WHEN** the job planned at start runs through WorkManager **THEN** one new job is planned after it
+- *Verifies:* `ReminderSchedulerTest.theAppsStartKeepsTheReminderThatIsDue`, `ReminderSchedulerTest.theJobItselfMovesTheChainOn`,
+  `ReminderChainTest.theJobPlannedAtStartRunsAndPlansTheNextOne`

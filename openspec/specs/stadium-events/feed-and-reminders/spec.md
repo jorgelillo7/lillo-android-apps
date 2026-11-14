@@ -54,6 +54,11 @@ later day than planned, and always plan the next evening.
 - **WHEN** it is before 19:00 **THEN** the job is planned for today at 19:00; **WHEN** it is 19:00 or later **THEN** for tomorrow; **WHEN** it is planned again **THEN** it replaces the pending one
 - *Verifies:* `EveningSchedulerTest.theEveningIsSevenLocalAndNextRunIsTodayOrTomorrowAccordingly`, `EveningSchedulerTest.theJobWaitsUntilSevenInTheEveningAndNoLonger`, `EveningSchedulerTest.anEveningAlreadyPastPlansTomorrowsInstead`, `EveningSchedulerTest.planningAgainReplacesTheJobInsteadOfStackingAnother`
 
+#### Scenario: The reminder fires with the app closed
+
+- **WHEN** the 19:00 job is due and the app starts at 19:01 (WorkManager started its process to run the job) **THEN** that job is kept; **WHEN** the job planned at start runs through WorkManager **THEN** it plans the next one
+- *Verifies:* `EveningSchedulerTest.theAppsStartKeepsTheEveningJobThatIsDue`, `EveningChainTest.theJobPlannedAtStartRunsAndPlansTheNextOne`
+
 #### Scenario: The evening before a busy day
 
 - **WHEN** the job runs on its planned day and tomorrow is busy **THEN** one notification is shown and the next evening is planned; **WHEN** it runs a day late **THEN** nothing is shown and the next evening is still planned

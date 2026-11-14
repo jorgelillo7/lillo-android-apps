@@ -95,3 +95,8 @@ Short, one line each. Add to it whenever something bites.
 - **A new app's listing in a second language can't be created together with its graphics**
   (stadium-events, 2026-11-11: "Listing for language 'en-US' not found"). The Release workflow now
   publishes the texts first, then the graphics; the release-android-app skill says the same.
+- **Never replace a reminder job from `Application.onCreate`.** WorkManager starts a dead app's
+  process to run a due job, and `onCreate` runs first: re-planning there with REPLACE cancelled
+  the job it was started for, so reminders only arrived when the app happened to be alive.
+  Start-up uses `LilloSchedule.ensure`; only the job itself replaces. Reproduce with the process
+  killed (`am kill` after HOME, never `force-stop`, which drops the jobs) and wait for the slot.
