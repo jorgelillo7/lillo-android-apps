@@ -24,6 +24,7 @@
 - 🖼️ Export the bracket or standings as an image, and every match as CSV
 - 📊 Hall of fame across tournaments (by player name): titles, finals, record, win-rate bar
 - 🚫 No permissions at all, no ads, no analytics
+- 🌗 Two looks, day and night: Auto follows the phone, or pick Light or Dark in About → Appearance
 
 ## 🏗️ Architecture
 
@@ -31,7 +32,7 @@
 |---|---|
 | `domain` | Pure Kotlin: model, bracket (seeding, byes, advancing), Swiss pairing and standings, two-sided layout, stats, CSV, share-link codec, library import. Unit tested. |
 | `app` | Compose UI, `TournamentsViewModel`, DataStore (one JSON document), navigation-compose, QR with ZXing core (encoding only), PNG export with `android.graphics.Canvas` + FileProvider |
-| Links and privacy | `jorgelillo7.github.io`: `/t/` (pending), `/.well-known/assetlinks.json`, `/privacy/tournaments/` |
+| Links and privacy | `jorgelillo7.github.io`: `/t/`, `/.well-known/assetlinks.json`, `/privacy/tournaments/` |
 
 Decisions and competitor notes: [docs/plans/tournaments.md](../../docs/plans/tournaments.md).
 

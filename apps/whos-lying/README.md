@@ -25,6 +25,7 @@
 - 🚫 No ads, no accounts, no network, no data collected
 - 🔗 Share your own word packs by link or QR code (`jorgelillo7.github.io/p/#…`, the pack travels in the link): open it, share it to the app from a chat, or paste it in Packs → Import
 - ✏️ The included packs can be copied into your own and edited (they ship with the app, so the originals stay as they are)
+- 🌗 Two looks, day and night: Auto follows the phone, or pick Light or Dark in Settings
 
 ## 🏗️ Architecture
 
