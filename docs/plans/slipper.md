@@ -1,6 +1,6 @@
 # ¿Te pilla la chancla? (slipper runner)
 
-Status: **v1 ready for its first release** (2026-10-25: gameplay and look reworked, see below), not on Play yet. Idea: [game-ideas.md](game-ideas.md) §1.
+Status: **on Google Play** (1.3 brings the night look and the About sheet with language). Idea: [game-ideas.md](game-ideas.md) §1.
 
 You run away from the grandma, who throws slippers at you. One finger: tap to jump (hold to jump
 higher). Collect croquetas on the way; the more you eat, the angrier she gets and the faster she

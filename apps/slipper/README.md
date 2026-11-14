@@ -6,7 +6,15 @@ behind throwing slippers. Bumping into furniture or a slipper lets her close in;
 the gap closes. Tap to jump, hold to jump higher. The end screen
 challenges a friend by link to the very same run. Pixel art, no ads, no account, no server.
 
-Status: **prototype** (2026-10-22). Plan, decisions and to-do: [docs/plans/slipper.md](../../docs/plans/slipper.md).
+[On Google Play](https://play.google.com/store/apps/details?id=com.jorgelillo.slipper). Plan and decisions: [docs/plans/slipper.md](../../docs/plans/slipper.md).
+
+## ✨ Features
+
+- 🏃 One finger: tap to jump, hold to jump higher; the house is built ahead in chunks, so every run differs
+- 🩴 Bumping into furniture or a slipper lets the grandma close in; she catches you when the gap closes
+- 🔗 Challenge a friend by link to the very same run (`jorgelillo7.github.io/c/#…`)
+- 🌗 Two looks, grandma's house by day and by night: Auto follows the phone, or pick Light or Dark in About (ⓘ)
+- 🌍 Spanish and English, switchable in About (Android 13+) · 🚫 no ads, no account, no server
 
 ## 🏗️ Architecture
 

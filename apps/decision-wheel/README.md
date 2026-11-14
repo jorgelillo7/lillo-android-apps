@@ -20,6 +20,7 @@
 - 🚫 No ads, no tracking, no network: everything stays on the phone
 - ⭐ Favourite wheels first, and launcher shortcuts (long-press the icon) to favourite / recent wheels
 - ♻️ Restore the example wheels you deleted, without touching your own
+- 🌗 Two looks, day and night: Auto follows the phone, or pick Light or Dark in About → Appearance
 
 ## 🏗️ Architecture
 

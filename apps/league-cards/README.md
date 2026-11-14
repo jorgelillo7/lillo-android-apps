@@ -24,6 +24,7 @@
   fastest moan in the West”, “three goalkeepers”…) or to how the season ends, the last 30 seasons;
   sharing the result lists the achievements of that season
 - 🚫 No permissions, no account, no ads: the season is saved on the phone
+- 🌗 Two looks, day and night: Auto follows the phone, or pick Light or Dark in About → Appearance
 
 ## 🔒 The deck: sample in the repo, the league's own outside it
 
