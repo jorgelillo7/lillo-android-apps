@@ -93,6 +93,10 @@ gh workflow run release.yml -f app=<app> -f action=promote -f track=production  
   The workflow publishes the texts first and then the graphics: Google rejects a language's graphics
   until its listing exists. From the terminal, do the same in two `publishListing` runs, the first one
   with the `graphics/` folders set aside.
+- **The bundle went through but the listing failed** (Google answers 500 on a graphic now and
+  then): the versionCode is already taken, so rerunning the upload fails. Run only the listing with
+  `-f action=listing -f track=production`, and push the `<app>/v<versionCode>` tag by hand on the
+  published commit, because the failed run skipped it.
 - An app's **first** production release: add `-f draft=true` (Google only takes a draft until the app
   has been published once), then the user sends it for review in Play Console (*Publishing overview*).
 - `-f dry_run=true` builds and checks everything and publishes nothing.

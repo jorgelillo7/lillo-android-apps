@@ -6,6 +6,8 @@
 #   upload  + internal     the usual first step: test it from the opt-in link
 #   promote + production   then move that same bundle on, without building again
 #   upload  + production   straight to production, when no testing round is needed
+#   listing                only the store texts and graphics, for a listing that failed after its
+#                          bundle went through (the versionCode cannot be uploaded twice)
 #   + draft                the app's first production release: Google only accepts a draft on an
 #                          app never published; send it for review in Play Console (Publishing overview)
 #
@@ -26,9 +28,9 @@ on:
         type: choice
         options: [christmas-countdown, decision-wheel, whos-lying, tournaments, group-polls, league-cards, slipper, stadium-events]
       action:
-        description: "upload: build and upload this version · promote: move the internal release on"
+        description: "upload: build and upload this version · promote: move the internal release on · listing: only the store listing (texts and graphics)"
         type: choice
-        options: [upload, promote]
+        options: [upload, promote, listing]
         default: upload
       track:
         description: Track
@@ -167,12 +169,14 @@ jobs:
           if [ "$ACTION" = upload ]; then
             # Same inputs as the build above: Gradle reuses that bundle, it doesn't build another.
             tasks+=(":apps:$APP:app:publishBundle" --track "$TRACK")
-          else
+          elif [ "$ACTION" = promote ]; then
             tasks+=(":apps:$APP:app:promoteArtifact" --from-track internal --promote-track "$TRACK")
           fi
-          if [ "${{ inputs.draft }}" = true ]; then tasks+=(--release-status draft); fi
-          ./gradlew "${tasks[@]}" $GRADLE_EXTRA -Dorg.gradle.jvmargs="-Xmx4g -Dfile.encoding=UTF-8"
-          if [ "${{ inputs.listing }}" = true ]; then
+          if [ "${#tasks[@]}" -gt 0 ]; then
+            if [ "${{ inputs.draft }}" = true ]; then tasks+=(--release-status draft); fi
+            ./gradlew "${tasks[@]}" $GRADLE_EXTRA -Dorg.gradle.jvmargs="-Xmx4g -Dfile.encoding=UTF-8"
+          fi
+          if [ "$ACTION" = listing ] || [ "${{ inputs.listing }}" = true ]; then
             # Texts first, then everything: Google rejects a language's graphics until its listing
             # exists, and Gradle Play Publisher sends both in one edit (a new app's second language
             # failed with "Listing for language 'en-US' not found").
