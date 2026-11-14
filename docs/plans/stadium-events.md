@@ -2,7 +2,7 @@
 
 Tells the neighbours around the Riyadh Air Metropolitano (San Blas-Canillejas, Las Rosas, Coslada,
 San Fernando, the A-2 and M-40) whether tomorrow there is a match, a concert or another big event
-at the stadium, with a reminder the evening before. Made for people who never check event
+at the stadium, with a reminder the evening before (or that morning, if it did not arrive). Made for people who never check event
 calendars, such as the user's parents: **as simple as possible, nothing to set up**.
 
 Package `com.jorgelillo.stadiumevents`, folder `apps/stadium-events`. Play title "¿Hay jaleo?
@@ -16,10 +16,10 @@ say so.
 |---|---|
 | Audience | Neighbours and drivers around the stadium, aged 50–70: big text, one question answered. |
 | Main screen | One card answering tomorrow: "SÍ, hay jaleo" (amber; coral for the biggest days) with what, time and "more movement about 2 h before", or "NO, día tranquilo" (green). Below it, only the next three busy days. |
-| Settings | None in v1. The reminder is on from the start: the evening before, at a fixed hour. |
-| Widget | Home-screen widget with the same answer as the main card ("Mañana · Partido 21:00"), built on Christmas Countdown's Glance widget. |
+| Settings | None in v1. The reminder is on from the start: the evening before at 19:00, and at 09:00 on the day itself only if the evening's was not shown (phone off, installed that morning). One job, two slots; never at night, never twice for a day. |
+| Widget | Home-screen widget with the same answer as the main card ("Mañana · Partido 21:00"; "Hoy" on an event day, when the screen also shows today's answer above tomorrow's), built on Christmas Countdown's Glance widget. |
 | Busy levels | Atlético home matches, Spain matches and other events: "Mucho jaleo". Concerts, finals (e.g. the 2027 Champions League final), Champions League nights and matches against Real Madrid or Barcelona: "Jaleo máximo". Decided in the feed (`level`), so changing it needs no app update. |
-| Unconfirmed dates | LaLiga fixes the day a few weeks ahead ("sábado 5 o domingo 6"): the card and the list show both days and "día por confirmar"; the reminder goes out once the day is fixed. |
+| Unconfirmed dates | LaLiga fixes the day a few weeks ahead ("sábado 5 o domingo 6"): the card and the list show both days and "día por confirmar"; both possible days get a "puede haber jaleo" reminder, the evening before and as the morning's catch-up. |
 | Traffic | No real-time traffic. "About 2 h before" is a rule of thumb and is worded as one. |
 | Where the data comes from | Shown in the app (footer: "Datos: agenda oficial del estadio (riyadhairmetropolitano.com) y calendario del Atlético de Madrid. Revisado hoy a las 8:00") and in the store description. |
 | Palette | Light: cream background, dark text, amber / coral / green cards. The dark variant only when the phone is in dark mode. |

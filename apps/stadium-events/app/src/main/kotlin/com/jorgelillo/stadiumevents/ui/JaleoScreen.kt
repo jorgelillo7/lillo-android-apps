@@ -38,14 +38,14 @@ import com.jorgelillo.core.designsystem.LilloWidgetCard
 import com.jorgelillo.core.designsystem.accentEdge
 import com.jorgelillo.core.platform.WidgetOffer
 import com.jorgelillo.stadiumevents.R
+import com.jorgelillo.stadiumevents.domain.Day
 import com.jorgelillo.stadiumevents.domain.Level
-import com.jorgelillo.stadiumevents.domain.Tomorrow
 import com.jorgelillo.stadiumevents.domain.UpcomingDay
 import com.jorgelillo.stadiumevents.ui.theme.JaleoPalette
 
 /**
- * The whole app: one answer for tomorrow, the next busy days, and where the data comes from. Big
- * text on purpose: it is for people who never look at event calendars.
+ * The whole app: one answer for tomorrow (and for today on an event day), the next busy days, and
+ * where the data comes from. Big text on purpose: it is for people who never look at event calendars.
  */
 @Composable
 internal fun JaleoScreen(
@@ -77,7 +77,9 @@ internal fun JaleoScreen(
         ) {
             Column {
                 Text(
-                    stringResource(R.string.question),
+                    stringResource(
+                        if (state?.todayAnswer is Day.Busy) R.string.question_today else R.string.question
+                    ),
                     fontSize = 32.sp,
                     lineHeight = 38.sp,
                     fontWeight = FontWeight.Bold,
@@ -91,7 +93,10 @@ internal fun JaleoScreen(
                 state.fetchedAt == null -> LoadingCard(state.offline, palette, onRetry)
 
                 else -> {
-                    AnswerCard(state.tomorrow, texts, palette)
+                    if (state.todayAnswer is Day.Busy) {
+                        AnswerCard(state.todayAnswer, texts.todayLabel(state.today), texts, palette, tag = "today")
+                    }
+                    AnswerCard(state.tomorrow, texts.tomorrowLabel(state.tomorrow.date), texts, palette, tag = "answer")
                     Upcoming(state.upcoming, texts, palette)
                     if (!widget.placed) {
                         LilloWidgetCard(
@@ -115,22 +120,22 @@ private fun Card(colour: Color, tag: String, content: @Composable () -> Unit) = 
 ) { content() }
 
 @Composable
-private fun AnswerCard(tomorrow: Tomorrow, texts: JaleoTexts, palette: JaleoPalette) {
-    val colour = when (tomorrow) {
-        is Tomorrow.Calm -> palette.calm
-        is Tomorrow.Busy -> if (tomorrow.event.level == Level.MAX) palette.max else palette.busy
+private fun AnswerCard(day: Day, label: String, texts: JaleoTexts, palette: JaleoPalette, tag: String) {
+    val colour = when (day) {
+        is Day.Calm -> palette.calm
+        is Day.Busy -> if (day.event.level == Level.MAX) palette.max else palette.busy
     }
-    Card(colour, tag = "answer") {
+    Card(colour, tag = tag) {
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Text(
-                texts.tomorrowLabel(tomorrow.date),
+                label,
                 fontSize = 20.sp,
                 fontWeight = FontWeight.SemiBold,
                 color = palette.onCard
             )
-            val answer = when (tomorrow) {
-                is Tomorrow.Calm -> R.string.answer_calm
-                is Tomorrow.Busy -> if (tomorrow.maybe) R.string.answer_maybe else R.string.answer_busy
+            val answer = when (day) {
+                is Day.Calm -> R.string.answer_calm
+                is Day.Busy -> if (day.maybe) R.string.answer_maybe else R.string.answer_busy
             }
             Text(
                 stringResource(answer),
@@ -139,20 +144,20 @@ private fun AnswerCard(tomorrow: Tomorrow, texts: JaleoTexts, palette: JaleoPale
                 fontWeight = FontWeight.Bold,
                 color = palette.onCard
             )
-            when (tomorrow) {
-                is Tomorrow.Busy -> {
+            when (day) {
+                is Day.Busy -> {
                     Text(
-                        texts.what(tomorrow.event),
+                        texts.what(day.event),
                         fontSize = 28.sp,
                         fontWeight = FontWeight.Bold,
                         color = palette.onCard
                     )
-                    Text(texts.title(tomorrow.event), fontSize = 22.sp, color = palette.onCard)
+                    Text(texts.title(day.event), fontSize = 22.sp, color = palette.onCard)
                     Spacer(Modifier.height(4.dp))
-                    Text(texts.hint(tomorrow), fontSize = 19.sp, lineHeight = 26.sp, color = palette.onCard)
+                    Text(texts.hint(day), fontSize = 19.sp, lineHeight = 26.sp, color = palette.onCard)
                 }
 
-                is Tomorrow.Calm -> {
+                is Day.Calm -> {
                     Text(stringResource(R.string.calm_line), fontSize = 22.sp, color = palette.onCard)
                     Text(
                         stringResource(R.string.calm_reminder),

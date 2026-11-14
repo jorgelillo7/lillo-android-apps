@@ -6,9 +6,9 @@ ONE QUESTION: BUSY TOMORROW?
 • Below it, the next busy days: matches, concerts and finals.
 
 NOTHING TO SET UP
-• Ready as soon as it's installed: the evening before every busy day you get a reminder.
-• Home-screen widget: "Tomorrow: Match 21:00" without opening anything.
-• Big text and light colours, made for anyone to use.
+• Ready as soon as it's installed: the evening before every busy day you get a reminder, and if it didn't reach you (phone off), that same morning.
+• Home-screen widget: "Tomorrow: Match 21:00" without opening anything; on the day itself, "Today".
+• Big text and light colours, made for anyone to use. A dark look if you prefer.
 
 WHERE DOES THE DATA COME FROM?
 Two official, public sources, checked every day:

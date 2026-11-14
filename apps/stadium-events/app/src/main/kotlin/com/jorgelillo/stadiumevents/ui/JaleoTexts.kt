@@ -3,10 +3,11 @@ package com.jorgelillo.stadiumevents.ui
 import android.content.res.Resources
 import androidx.core.os.ConfigurationCompat
 import com.jorgelillo.stadiumevents.R
+import com.jorgelillo.stadiumevents.domain.Day
 import com.jorgelillo.stadiumevents.domain.Jaleo
 import com.jorgelillo.stadiumevents.domain.Kind
+import com.jorgelillo.stadiumevents.domain.Reminder
 import com.jorgelillo.stadiumevents.domain.StadiumEvent
-import com.jorgelillo.stadiumevents.domain.Tomorrow
 import com.jorgelillo.stadiumevents.domain.UpcomingDay
 import java.time.Instant
 import java.time.LocalDate
@@ -27,6 +28,21 @@ class JaleoTexts(private val resources: Resources) {
 
     /** "Mañana, miércoles 25". */
     fun tomorrowLabel(date: LocalDate) = resources.getString(R.string.tomorrow_label, format(date, "EEEE d"))
+
+    /** "Hoy, miércoles 25". */
+    fun todayLabel(date: LocalDate) = resources.getString(R.string.today_label, format(date, "EEEE d"))
+
+    /** "Mañana, domingo 15, hay jaleo en el Metropolitano", or "Hoy hay jaleo…" for the morning one. */
+    fun notificationTitle(reminder: Reminder): String = when {
+        reminder.today && reminder.day.maybe -> resources.getString(R.string.notification_today_maybe_title)
+
+        reminder.today -> resources.getString(R.string.notification_today_title)
+
+        else -> resources.getString(
+            if (reminder.day.maybe) R.string.notification_maybe_title else R.string.notification_title,
+            format(reminder.day.date, "EEEE d")
+        )
+    }
 
     fun kind(event: StadiumEvent) = resources.getString(
         when (event.kind) {
@@ -54,14 +70,14 @@ class JaleoTexts(private val resources: Resources) {
     }
 
     /** What the neighbours should expect: from when it gets busy, or that the day isn't fixed. */
-    fun hint(busy: Tomorrow.Busy): String = when {
+    fun hint(busy: Day.Busy): String = when {
         busy.maybe -> resources.getString(R.string.hint_maybe, eitherDays(busy.event))
 
         else -> Jaleo.busyFrom(busy.event.time)?.let { resources.getString(R.string.hint_busy_from, it) }
             ?: resources.getString(R.string.hint_busy_day)
     }
 
-    fun notification(busy: Tomorrow.Busy) = resources.getString(
+    fun notification(busy: Day.Busy) = resources.getString(
         R.string.notification_text,
         what(busy.event),
         title(busy.event),

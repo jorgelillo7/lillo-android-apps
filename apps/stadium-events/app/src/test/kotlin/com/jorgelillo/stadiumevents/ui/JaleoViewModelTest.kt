@@ -14,7 +14,7 @@ import com.jorgelillo.stadiumevents.SampleFeed
 import com.jorgelillo.stadiumevents.data.FeedFetcher
 import com.jorgelillo.stadiumevents.data.FeedRepository
 import com.jorgelillo.stadiumevents.domain.AppState
-import com.jorgelillo.stadiumevents.domain.Tomorrow
+import com.jorgelillo.stadiumevents.domain.Day
 import java.io.IOException
 import java.time.LocalDate
 import java.util.UUID
@@ -73,7 +73,7 @@ class JaleoViewModelTest {
         val vm = viewModel()
         vm.state.filterNotNull().test(timeout = StoreTimeout) {
             val state = awaitMatching { it.fetchedAt != null }
-            val busy = assertIs<Tomorrow.Busy>(state.tomorrow)
+            val busy = assertIs<Day.Busy>(state.tomorrow)
             assertEquals("atletico-vs-viking", busy.event.id)
             assertEquals(
                 listOf("atletico-vs-betis", "2027-uefa-champions-league-final", "karol-g"),
@@ -85,12 +85,38 @@ class JaleoViewModelTest {
     }
 
     @Test
+    fun theEventDayAnswersTodayToo() = runTest {
+        val saved = store(AppState(SampleFeed.feed(today), fetchedAt = now))
+        val vm = JaleoViewModel(
+            FeedRepository(saved, FeedFetcher { SampleFeed.json(today) }),
+            Launcher(pinnable = true),
+            today = { today.plusDays(1) },
+            now = { now }
+        ).also { main.cancelAtEnd(it.viewModelScope) }
+        vm.state.filterNotNull().test(timeout = StoreTimeout) {
+            val state = awaitMatching { it.fetchedAt != null }
+            assertEquals("atletico-vs-viking", assertIs<Day.Busy>(state.todayAnswer).event.id)
+            assertIs<Day.Calm>(state.tomorrow)
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun aCalmTodayIsNotAnswered() = runTest {
+        val vm = viewModel(store(AppState(SampleFeed.feed(today), fetchedAt = now)))
+        vm.state.filterNotNull().test(timeout = StoreTimeout) {
+            assertIs<Day.Calm>(awaitMatching { it.fetchedAt != null }.todayAnswer)
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
     fun aFailedDownloadKeepsTheLastCopyAndSaysSo() = runTest {
         val saved = store(AppState(SampleFeed.feed(today), fetchedAt = now - 5 * 60 * 60 * 1000L))
         val vm = viewModel(saved, FeedFetcher { throw IOException("no network") })
         vm.state.filterNotNull().test(timeout = StoreTimeout) {
             val state = awaitMatching { it.offline }
-            assertIs<Tomorrow.Busy>(state.tomorrow)
+            assertIs<Day.Busy>(state.tomorrow)
             assertEquals(now - 5 * 60 * 60 * 1000L, state.fetchedAt)
             cancelAndIgnoreRemainingEvents()
         }

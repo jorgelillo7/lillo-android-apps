@@ -1,7 +1,7 @@
 # Capability: answer
 
 "¿Hay jaleo?": one answer, in big letters, to whether tomorrow is busy around the
-Metropolitano stadium, and what the next busy days are.
+Metropolitano stadium (and today, on an event day), and what the next busy days are.
 
 - **Source:** `apps/stadium-events/domain/` (`Jaleo`, `Feed`),
   `apps/stadium-events/app/` (`JaleoViewModel`, the texts)
@@ -35,6 +35,19 @@ stated rather than hidden.
   `anUnfixedDayIsAMaybe`, `aFixedEventBeatsAMaybeAndTheBiggestWins`, `aFixedMatchBeatsAMaybeOnItsOwn`,
   `everyNightOfATourIsBusy`, `busyFromIsTwoHoursBeforeTheStart`
 
+### Requirement: Today is answered too
+
+On a busy day, the screen SHALL show today's answer ("Hoy, domingo 15") above tomorrow's and
+ask "¿Hay jaleo?" instead of "¿Hay jaleo mañana?", and the widget SHALL show today's answer
+("Hoy") instead of tomorrow's. On a calm day only tomorrow is answered. Today and tomorrow
+SHALL be answered by the same rule (`Jaleo.on`).
+
+Tapping the morning's "Hoy hay jaleo" reminder used to land on tomorrow's answer.
+
+#### Scenario: the event day
+- **WHEN** the date is an event day **THEN** today's answer is that event, the widget answers today, and tomorrow is answered as usual; **WHEN** today is calm **THEN** only tomorrow is answered and the widget answers tomorrow
+- *Verifies:* `JaleoTest.todayAndTomorrowAreAnsweredByTheSameRule`, `JaleoTest.theWidgetAnswersTodayWhileTodayIsBusyElseTomorrow`, `JaleoViewModelTest.theEventDayAnswersTodayToo`, `JaleoViewModelTest.aCalmTodayIsNotAnswered`
+
 ### Requirement: The next busy days are few and skip tomorrow and the past
 
 The list of upcoming days SHALL leave out tomorrow's event and past events, be ordered by
@@ -50,7 +63,8 @@ shortened: "A vs B" becomes "A – B" with "Atlético de Madrid" as "Atlético",
 ### Requirement: The texts say what, when and from when
 
 The reminder text SHALL give the kind, time, title, competition, and the time traffic
-rises with the places affected; the tomorrow label SHALL name the weekday and day. An unfixed match
+rises with the places affected; the evening reminder's title and the tomorrow and today labels
+SHALL name the weekday and day. An unfixed match
 SHALL read "El sábado 5 o domingo 6: el día aún no está confirmado" and its row "día por confirmar"
 with both dates, a tour SHALL show its days count, and the last check SHALL read "hoy a las 8:05" the same day
 and "el 24 nov a las 8:05" later.
@@ -60,8 +74,9 @@ and "el 24 nov a las 8:05" later.
 - **WHEN** the match is unfixed **THEN** the hint, the row's date and its description read as above
 - **WHEN** a four-day tour is listed **THEN** it reads "Concierto · Karol G · 4 días"
 - **WHEN** the last check was at 08:05 on the 24th **THEN** it reads "Revisado hoy a las 8:05" that day and "Revisado el 24 nov a las 8:05" the next
+- **WHEN** Spain play England on Sunday 15 at 20:45 **THEN** the evening's title is "Mañana, domingo 15, hay jaleo en el Metropolitano", the morning's "Hoy hay jaleo en el Metropolitano", the text "Partido · 20:45 · España – Inglaterra (Nations League). Más gente y tráfico desde las 18:45 aprox. por Canillejas, Las Rosas, Coslada y la M-40." and the label "Hoy, domingo 15"
 - *Verifies:* `theReminderSaysWhatWhenAndFromWhen`, `anUnfixedMatchShowsBothDays`,
-  `aTourCountsItsNights`, `checkedTodayOrOnADay`
+  `aTourCountsItsNights`, `checkedTodayOrOnADay`, `theEveningTitleNamesTheDayAndTheMorningOneSaysToday`
 
 ### Requirement: The first open answers tomorrow
 

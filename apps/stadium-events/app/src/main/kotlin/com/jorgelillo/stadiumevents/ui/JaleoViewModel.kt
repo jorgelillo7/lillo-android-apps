@@ -9,8 +9,8 @@ import com.jorgelillo.core.platform.WidgetOffer
 import com.jorgelillo.core.platform.WidgetPins
 import com.jorgelillo.stadiumevents.data.FeedRepository
 import com.jorgelillo.stadiumevents.domain.AppState
+import com.jorgelillo.stadiumevents.domain.Day
 import com.jorgelillo.stadiumevents.domain.Jaleo
-import com.jorgelillo.stadiumevents.domain.Tomorrow
 import com.jorgelillo.stadiumevents.domain.UpcomingDay
 import java.time.LocalDate
 import java.time.ZoneId
@@ -26,7 +26,9 @@ import kotlinx.coroutines.launch
 /** What the one screen shows. */
 data class JaleoUiState(
     val today: LocalDate,
-    val tomorrow: Tomorrow,
+    /** Shown only when busy: on the event day the answer people need first. */
+    val todayAnswer: Day,
+    val tomorrow: Day,
     val upcoming: List<UpcomingDay>,
     /** Null until the first download worked: the screen says it is looking for events. */
     val fetchedAt: Long?,
@@ -39,6 +41,7 @@ data class JaleoUiState(
     companion object {
         fun from(app: AppState, today: LocalDate, refreshing: Boolean = false, offline: Boolean = false) = JaleoUiState(
             today = today,
+            todayAnswer = Jaleo.on(app.feed.events, today),
             tomorrow = Jaleo.tomorrow(app.feed.events, today),
             upcoming = Jaleo.upcoming(app.feed.events, today),
             fetchedAt = app.fetchedAt,

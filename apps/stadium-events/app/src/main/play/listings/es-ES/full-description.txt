@@ -6,9 +6,9 @@ UNA SOLA PREGUNTA: ¿MAÑANA HAY JALEO?
 • Debajo, los próximos días con jaleo: partidos, conciertos y finales.
 
 SIN CONFIGURAR NADA
-• Al instalarla ya está lista: la víspera de cada día con jaleo te llega un aviso por la tarde.
-• Widget para la pantalla de inicio: «Mañana: partido 21:00» sin abrir nada.
-• Letra grande y colores claros, pensada para que la use cualquiera.
+• Al instalarla ya está lista: la víspera de cada día con jaleo te llega un aviso por la tarde, y si no te llegó (móvil apagado), esa misma mañana.
+• Widget para la pantalla de inicio: «Mañana: partido 21:00» sin abrir nada; el mismo día, «Hoy».
+• Letra grande y colores claros, pensada para que la use cualquiera. Modo oscuro si lo prefieres.
 
 ¿DE DÓNDE SALEN LOS DATOS?
 De dos fuentes oficiales y públicas, revisadas cada día:

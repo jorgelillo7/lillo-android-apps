@@ -20,8 +20,8 @@ import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
 
 /**
- * The evening chain: one job a day at 19:00 local time, replaced (never stacked) when the job plans the
- * next, and kept when the app starts.
+ * The reminder chain: one job at the next 09:00 or 19:00 local time, replaced (never stacked) when the
+ * job plans the next, and kept when the app starts.
  */
 @RunWith(AndroidJUnit4::class)
 @Config(sdk = [36])
@@ -47,26 +47,22 @@ class EveningSchedulerTest {
     private fun pending() = jobs().filter { it.state == WorkInfo.State.ENQUEUED }
 
     @Test
-    fun theEveningIsSevenLocalAndNextRunIsTodayOrTomorrowAccordingly() {
-        assertEquals(19, EveningScheduler.AT.hour)
-        assertEquals(0, EveningScheduler.AT.minute)
+    fun theJobRunsAtTheNextNineOrSeven() {
         val day = LocalDateTime.of(2026, 11, 24, 0, 0)
-        assertEquals(day.withHour(19), EveningScheduler.nextRun(day.withHour(8)))
-        assertEquals(day.withHour(19), EveningScheduler.nextRun(day.withHour(18).withMinute(59)))
-        assertEquals(day.plusDays(1).withHour(19), EveningScheduler.nextRun(day.withHour(19)))
-        assertEquals(day.plusDays(1).withHour(19), EveningScheduler.nextRun(day.withHour(23).withMinute(30)))
+        EveningScheduler.ensureNext(context, day.withHour(8))
+        assertEquals(TimeUnit.HOURS.toMillis(1), pending().single().initialDelayMillis, "08:00 → 09:00")
     }
 
     @Test
     fun theJobWaitsUntilSevenInTheEveningAndNoLonger() {
-        EveningScheduler.scheduleNext(context, LocalDateTime.of(2026, 11, 24, 8, 30))
-        assertEquals(TimeUnit.MINUTES.toMillis(10 * 60 + 30), pending().single().initialDelayMillis)
+        EveningScheduler.scheduleNext(context, LocalDateTime.of(2026, 11, 24, 12, 30))
+        assertEquals(TimeUnit.MINUTES.toMillis(6 * 60 + 30), pending().single().initialDelayMillis)
     }
 
     @Test
-    fun anEveningAlreadyPastPlansTomorrowsInstead() {
+    fun anEveningAlreadyPastPlansTomorrowMorningInstead() {
         EveningScheduler.scheduleNext(context, LocalDateTime.of(2026, 11, 24, 21, 0))
-        assertEquals(TimeUnit.HOURS.toMillis(22), pending().single().initialDelayMillis)
+        assertEquals(TimeUnit.HOURS.toMillis(12), pending().single().initialDelayMillis)
     }
 
     @Test
