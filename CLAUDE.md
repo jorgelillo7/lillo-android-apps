@@ -94,6 +94,10 @@ Project skills are indexed in [`.claude/CLAUDE.md`](.claude/CLAUDE.md).
   `jorgelillo.android.library`, `jorgelillo.android.compose`, `jorgelillo.jvm.library`. They set
   SDK levels, Java 17 target and core library desugaring, so module build files only declare
   namespace, app id/version, signing and dependencies.
+- **Security floors** in `build-logic/settings` (`jorgelillo.security-floors`, applied in
+  `settings.gradle.kts`): a transitive library with a Dependabot advisory is lifted to its patched
+  release in every configuration and build-script classpath. A new alert gets a line there; a line
+  goes once the library pulling the old version ships the fix itself.
 - **AGP 9 has Kotlin built in**: never apply `org.jetbrains.kotlin.android`. The Compose compiler
   plugin is still needed (applied by the compose convention plugin).
 - AndroidX versions are chained to compileSdk/AGP (e.g. Compose 1.12+ needs compileSdk 37 and

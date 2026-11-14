@@ -7,6 +7,11 @@ pluginManagement {
     }
 }
 
+// Lifts transitive libraries with a published advisory to their patched release (build-logic).
+plugins {
+    id("jorgelillo.security-floors")
+}
+
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
