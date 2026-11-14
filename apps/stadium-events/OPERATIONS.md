@@ -44,9 +44,8 @@ publishes again. Meanwhile the last good file stays published and the apps keep 
 
 ## Release
 
-Not on Play yet: see `PENDING.md`. The first bundle and the Play Console setup are by hand
-(`release-android-app` skill and [docs/publishing-on-google-play.md](../../docs/publishing-on-google-play.md));
-after that, the Release workflow (`-f app=stadium-events`).
+On Play since 1.0 (2026-11). Releases go through the Release workflow (`-f app=stadium-events`,
+`release-android-app` skill and [docs/publishing-on-google-play.md](../../docs/publishing-on-google-play.md)).
 
 Play Console answers:
 
