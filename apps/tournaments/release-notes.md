@@ -5,6 +5,7 @@ Newest first. User-facing notes per language are in
 
 | versionCode | Version | Date | Notes |
 |---|---|---|---|
+| 7 | 1.6 | 2026-11-15 (production upload through the Release workflow; waits for the approval in GitHub, then Google's review) | About opens expanded and scrolls (core LilloSheet): the language button and everything below it reachable in landscape and on handhelds; baseline profile |
 | 6 | 1.5 | 2026-11-14 (production upload through the Release workflow; waits for the approval in GitHub, then Google's review) | A link is offered only if the other phone can read it; confetti honours Remove animations; baseline profile |
 | 5 | 1.4 | 2026-11-13 (production) | Light and dark looks (a trophy room by day, a floodlit stadium by night, Appearance in About); the bracket round by round on a phone; a link with a newer copy asks before replacing; imported tournaments validated; stored data set aside, never overwritten, when unreadable; targetSdk 37; baseline profile, new store screenshots |
 | 4 | 1.3 | 2026-11-03 (production) | Haptic when the champion is decided; ⚔️/🏆 header; spring press; baseline profile |

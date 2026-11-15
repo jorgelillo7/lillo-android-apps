@@ -5,6 +5,7 @@ Newest first. User-facing notes per language are in
 
 | versionCode | Version | Date | Notes |
 |---|---|---|---|
+| 8 | 1.7 | 2026-11-15 (production upload through the Release workflow; waits for the approval in GitHub, then Google's review) | About opens expanded and scrolls (core LilloSheet): every row reachable in landscape and on handhelds; baseline profile |
 | 7 | 1.6 | 2026-11-14 (production upload through the Release workflow; waits for the approval in GitHub, then Google's review) | Icon and store graphics on the dark look's wine (the old indigo icon no longer matched); confetti honours Remove animations; baseline profile |
 | 6 | 1.5 | 2026-11-13 (production) | Light and dark looks (sunset by day and by night, Appearance in About); the last decision large under the wheels, else a compact line under the title; a spin survives rotation; stored wheels set aside, never overwritten, when unreadable; targetSdk 37; baseline profile, new store screenshots |
 | 5 | 1.4 | 2026-11-03 (production) | Spring press and haptic tick; floating hero emoji; baseline profile |

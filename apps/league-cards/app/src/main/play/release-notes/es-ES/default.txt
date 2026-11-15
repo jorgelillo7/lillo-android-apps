@@ -1,4 +1,2 @@
-De día o de noche ⚽
-- El chat de la liga de día o de noche: sigue al móvil o elige en Información → Apariencia
-- Si ya conoces las reglas, aparecen plegadas
-- En horizontal, Información siempre a mano
+Información, siempre a mano 🃏
+- Acerca de cabe en cualquier pantalla: en horizontal o en consolas portátiles se desliza y llegas a Apariencia, Idioma, Valorar y Privacidad
