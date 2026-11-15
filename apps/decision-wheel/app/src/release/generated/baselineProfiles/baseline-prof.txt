@@ -5853,7 +5853,7 @@ SPLandroidx/compose/runtime/internal/RememberEventDispatcher;->sideEffect(Lkotli
 Landroidx/compose/runtime/internal/SnapshotThreadLocal;
 SPLandroidx/compose/runtime/internal/SnapshotThreadLocal;-><clinit>()V
 SPLandroidx/compose/runtime/internal/SnapshotThreadLocal;-><init>()V
-SPLandroidx/compose/runtime/internal/SnapshotThreadLocal;->get()Ljava/lang/Object;
+HSPLandroidx/compose/runtime/internal/SnapshotThreadLocal;->get()Ljava/lang/Object;
 SPLandroidx/compose/runtime/internal/SnapshotThreadLocal;->set(Ljava/lang/Object;)V
 Landroidx/compose/runtime/internal/SnapshotThreadLocalKt;
 SPLandroidx/compose/runtime/internal/SnapshotThreadLocalKt;-><clinit>()V
@@ -13054,7 +13054,7 @@ SPLandroidx/emoji2/text/flatbuffer/Table;->__indirect(I)I
 SPLandroidx/emoji2/text/flatbuffer/Table;->__offset(I)I
 SPLandroidx/emoji2/text/flatbuffer/Table;->__reset(ILjava/nio/ByteBuffer;)V
 SPLandroidx/emoji2/text/flatbuffer/Table;->__vector(I)I
-HSPLandroidx/emoji2/text/flatbuffer/Table;->__vector_len(I)I
+SPLandroidx/emoji2/text/flatbuffer/Table;->__vector_len(I)I
 Landroidx/emoji2/text/flatbuffer/Utf8;
 SPLandroidx/emoji2/text/flatbuffer/Utf8;-><init>()V
 SPLandroidx/emoji2/text/flatbuffer/Utf8;->getDefault()Landroidx/emoji2/text/flatbuffer/Utf8;

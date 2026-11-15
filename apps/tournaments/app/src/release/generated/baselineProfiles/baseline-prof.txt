@@ -4508,7 +4508,7 @@ Landroidx/compose/runtime/internal/Thread_androidKt;
 SPLandroidx/compose/runtime/internal/Thread_androidKt;-><clinit>()V
 SPLandroidx/compose/runtime/internal/Thread_androidKt;->getMainThreadId()J
 Landroidx/compose/runtime/internal/Thread_jvmKt;
-SPLandroidx/compose/runtime/internal/Thread_jvmKt;->currentThreadId()J
+HSPLandroidx/compose/runtime/internal/Thread_jvmKt;->currentThreadId()J
 Landroidx/compose/runtime/internal/Trace;
 SPLandroidx/compose/runtime/internal/Trace;-><clinit>()V
 SPLandroidx/compose/runtime/internal/Trace;-><init>()V
@@ -4789,7 +4789,7 @@ SPLandroidx/compose/runtime/snapshots/SnapshotKt;->createTransparentSnapshotWith
 SPLandroidx/compose/runtime/snapshots/SnapshotKt;->createTransparentSnapshotWithNoParentReadObserver(Landroidx/compose/runtime/snapshots/Snapshot;Lkotlin/jvm/functions/Function1;Z)Landroidx/compose/runtime/snapshots/Snapshot;
 SPLandroidx/compose/runtime/snapshots/SnapshotKt;->current(Landroidx/compose/runtime/snapshots/StateRecord;)Landroidx/compose/runtime/snapshots/StateRecord;
 SPLandroidx/compose/runtime/snapshots/SnapshotKt;->current(Landroidx/compose/runtime/snapshots/StateRecord;Landroidx/compose/runtime/snapshots/Snapshot;)Landroidx/compose/runtime/snapshots/StateRecord;
-HSPLandroidx/compose/runtime/snapshots/SnapshotKt;->currentSnapshot()Landroidx/compose/runtime/snapshots/Snapshot;
+SPLandroidx/compose/runtime/snapshots/SnapshotKt;->currentSnapshot()Landroidx/compose/runtime/snapshots/Snapshot;
 SPLandroidx/compose/runtime/snapshots/SnapshotKt;->emptyLambda$lambda$0(Landroidx/compose/runtime/snapshots/SnapshotIdSet;)Lkotlin/Unit;
 SPLandroidx/compose/runtime/snapshots/SnapshotKt;->getLock()Ljava/lang/Object;
 SPLandroidx/compose/runtime/snapshots/SnapshotKt;->mergedReadObserver$default(Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;ZILjava/lang/Object;)Lkotlin/jvm/functions/Function1;
@@ -13561,6 +13561,7 @@ SPLkotlin/coroutines/CoroutineContext$DefaultImpls$$ExternalSyntheticLambda0;->i
 Lkotlin/coroutines/CoroutineContext$Element;
 Lkotlin/coroutines/CoroutineContext$Element$DefaultImpls;
 SPLkotlin/coroutines/CoroutineContext$Element$DefaultImpls;->fold(Lkotlin/coroutines/CoroutineContext$Element;Ljava/lang/Object;Lkotlin/jvm/functions/Function2;)Ljava/lang/Object;
+HSPLkotlin/coroutines/CoroutineContext$Element$DefaultImpls;->get(Lkotlin/coroutines/CoroutineContext$Element;Lkotlin/coroutines/CoroutineContext$Key;)Lkotlin/coroutines/CoroutineContext$Element;
 SPLkotlin/coroutines/CoroutineContext$Element$DefaultImpls;->minusKey(Lkotlin/coroutines/CoroutineContext$Element;Lkotlin/coroutines/CoroutineContext$Key;)Lkotlin/coroutines/CoroutineContext;
 SPLkotlin/coroutines/CoroutineContext$Element$DefaultImpls;->plus(Lkotlin/coroutines/CoroutineContext$Element;Lkotlin/coroutines/CoroutineContext;)Lkotlin/coroutines/CoroutineContext;
 Lkotlin/coroutines/CoroutineContext$Key;
@@ -13707,7 +13708,6 @@ Lkotlin/jvm/internal/IntCompanionObject;
 SPLkotlin/jvm/internal/IntCompanionObject;-><clinit>()V
 SPLkotlin/jvm/internal/IntCompanionObject;-><init>()V
 Lkotlin/jvm/internal/Intrinsics;
-HSPLkotlin/jvm/internal/Intrinsics;->areEqual(Ljava/lang/Object;Ljava/lang/Object;)Z
 SPLkotlin/jvm/internal/Intrinsics;->checkNotNull(Ljava/lang/Object;)V
 SPLkotlin/jvm/internal/Intrinsics;->checkNotNull(Ljava/lang/Object;Ljava/lang/String;)V
 SPLkotlin/jvm/internal/Intrinsics;->checkNotNullExpressionValue(Ljava/lang/Object;Ljava/lang/String;)V
@@ -13957,7 +13957,7 @@ SPLkotlinx/coroutines/CancellableContinuationImpl;->dispatchResume(I)V
 SPLkotlinx/coroutines/CancellableContinuationImpl;->getContext()Lkotlin/coroutines/CoroutineContext;
 SPLkotlinx/coroutines/CancellableContinuationImpl;->getDelegate$kotlinx_coroutines_core()Lkotlin/coroutines/Continuation;
 SPLkotlinx/coroutines/CancellableContinuationImpl;->getExceptionalResult$kotlinx_coroutines_core(Ljava/lang/Object;)Ljava/lang/Throwable;
-SPLkotlinx/coroutines/CancellableContinuationImpl;->getParentHandle()Lkotlinx/coroutines/DisposableHandle;
+HSPLkotlinx/coroutines/CancellableContinuationImpl;->getParentHandle()Lkotlinx/coroutines/DisposableHandle;
 HSPLkotlinx/coroutines/CancellableContinuationImpl;->getResult()Ljava/lang/Object;
 SPLkotlinx/coroutines/CancellableContinuationImpl;->getState$kotlinx_coroutines_core()Ljava/lang/Object;
 SPLkotlinx/coroutines/CancellableContinuationImpl;->getSuccessfulResult$kotlinx_coroutines_core(Ljava/lang/Object;)Ljava/lang/Object;
