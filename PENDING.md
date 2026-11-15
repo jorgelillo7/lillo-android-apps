@@ -17,6 +17,12 @@ Lines are pruned as items ship. What has **shipped** lives in `apps/<app>/releas
 | ⏳ | Grow the advent pool (activities and songs) between January and November, never during an Advent in progress | Ideas from you · `AdventActivity` / `AdventSong` in the domain |
 | ⏳ | Spanish carols (villancicos) for the advent songs | Public-domain scores to be found |
 
+## whos-lying
+
+| | What is missing | Waiting on |
+|---|---|---|
+| 🔨 | Store screenshot 08 (home with the ⓘ at the top right, phone, es and en) shows two Wi-Fi icons in the status bar, an emulator demo-mode glitch: retake it with a clean demo status bar and ship it with the next whos-lying listing update (`-f action=listing` is enough, no new version needed) | Ready |
+
 ## group-polls (new app, parked until 2026-10-23)
 
 | | What is missing | Waiting on |
