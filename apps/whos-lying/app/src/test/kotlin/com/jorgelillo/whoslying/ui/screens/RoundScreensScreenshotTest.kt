@@ -13,6 +13,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
@@ -207,6 +208,16 @@ class RoundScreensScreenshotTest {
     /** Choosing packs: every pack ticked, with "clear all" and the long-press hint. */
     private fun packPicker(name: String, dark: Boolean = true) = shot(name, dark) {
         PackPickerScreen(WordPacks.builtIn("en"), selected = emptySet(), onNewPack = {}, onDone = {})
+    }
+
+    /** Settings & info sit at the top right of the home, as every app's About, also on a short screen. */
+    @Test
+    @Config(qualifiers = "w891dp-h411dp-land")
+    fun theHomeOpensTheSettingsFromTheTopRight() {
+        var opened = 0
+        compose.setContent { LilloTheme(NeonDark) { HomeScreen(group, {}, {}, {}, {}, onAbout = { opened++ }) } }
+        compose.onNodeWithTag("about").assertIsDisplayed().performClick()
+        compose.runOnIdle { assertEquals(1, opened) }
     }
 
     /** The settings sheet is this app's About: the look is picked there. */

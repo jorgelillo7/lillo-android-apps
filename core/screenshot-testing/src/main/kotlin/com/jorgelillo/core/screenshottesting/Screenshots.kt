@@ -2,12 +2,17 @@ package com.jorgelillo.core.screenshottesting
 
 import android.provider.Settings
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.test.SemanticsNodeInteraction
+import androidx.compose.ui.test.isRoot
 import androidx.compose.ui.test.junit4.ComposeContentTestRule
+import androidx.compose.ui.test.onLast
 import androidx.compose.ui.test.onRoot
+import com.github.takahirom.roborazzi.ExperimentalRoborazziApi
 import com.github.takahirom.roborazzi.RoborazziATFAccessibilityCheckOptions
 import com.github.takahirom.roborazzi.RoborazziATFAccessibilityChecker
 import com.github.takahirom.roborazzi.RoborazziOptions
 import com.github.takahirom.roborazzi.captureRoboImage
+import com.github.takahirom.roborazzi.captureScreenRoboImage
 import com.github.takahirom.roborazzi.checkRoboAccessibility
 import com.google.android.apps.common.testing.accessibility.framework.AccessibilityCheckPreset
 import com.google.android.apps.common.testing.accessibility.framework.AccessibilityViewCheckResult
@@ -73,26 +78,61 @@ fun ComposeContentTestRule.captureScreenshot(
     beforeCapture: ComposeContentTestRule.() -> Unit = {},
     content: @Composable () -> Unit
 ) {
+    freeze()
+    setContent(content)
+    mainClock.advanceTimeByFrame()
+    beforeCapture()
+    onRoot().captureRoboImage("src/test/screenshots/$name.png", roborazziOptions = LilloRoborazziOptions)
+    onRoot().checkAccessibility()
+}
+
+/**
+ * Like [captureScreenshot], for a screen with a bottom sheet or a dialog open: those live in their
+ * own window, out of reach of a root capture. Captures every window as the screen shows them and
+ * audits the topmost one. The clock keeps running (a sheet held mid-slide never settles), so it is
+ * captured once it has slid in; "Remove animations" is on as in [captureScreenshot].
+ */
+@OptIn(ExperimentalRoborazziApi::class)
+fun ComposeContentTestRule.captureScreenWithSheet(
+    name: String,
+    beforeCapture: ComposeContentTestRule.() -> Unit = {},
+    content: @Composable () -> Unit
+) {
+    removeAnimations()
+    setContent(content)
+    waitForIdle()
+    beforeCapture()
+    waitForIdle()
+    captureScreenRoboImage("src/test/screenshots/$name.png", roborazziOptions = LilloRoborazziOptions)
+    onAllNodes(isRoot()).onLast().checkAccessibility()
+}
+
+private fun ComposeContentTestRule.freeze() {
     mainClock.autoAdvance = false
+    removeAnimations()
+}
+
+private fun removeAnimations() {
     // "Remove animations" on: entrance animations show their end state (see animationsEnabled).
     Settings.Global.putFloat(
         RuntimeEnvironment.getApplication().contentResolver,
         Settings.Global.ANIMATOR_DURATION_SCALE,
         0f
     )
-    setContent(content)
-    mainClock.advanceTimeByFrame()
-    beforeCapture()
-    onRoot().captureRoboImage("src/test/screenshots/$name.png", roborazziOptions = LilloRoborazziOptions)
-    // The same screen through Google's Accessibility Test Framework: every screenshot test is an
-    // accessibility audit too (labels, touch targets, text contrast at WCAG AA…).
-    onRoot().checkRoboAccessibility(
+}
+
+/**
+ * The same screen through Google's Accessibility Test Framework: every screenshot test is an
+ * accessibility audit too (labels, touch targets, text contrast at WCAG AA…).
+ */
+private fun SemanticsNodeInteraction.checkAccessibility() {
+    checkRoboAccessibility(
         roborazziATFAccessibilityCheckOptions = RoborazziATFAccessibilityCheckOptions(
             checker = RoborazziATFAccessibilityChecker(checks = ChecksButContrast),
             failureLevel = RoborazziATFAccessibilityChecker.CheckLevel.Warning
         )
     )
-    onRoot().checkRoboAccessibility(
+    checkRoboAccessibility(
         roborazziATFAccessibilityCheckOptions = RoborazziATFAccessibilityCheckOptions(
             checker = RoborazziATFAccessibilityChecker(
                 checks = setOf(TextContrastCheck()),

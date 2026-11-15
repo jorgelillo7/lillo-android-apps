@@ -7,14 +7,14 @@ import com.jorgelillo.stadiumevents.domain.StadiumEvent
 import java.time.LocalDate
 import kotlinx.serialization.json.Json
 
-/** A feed like the real one, around [today]: a Champions match tomorrow, then LaLiga, a final and a tour. */
+/** A feed like the real one, around [today]: a Champions night tomorrow (max, like the live feed), then LaLiga, a final and a tour. */
 object SampleFeed {
     fun events(today: LocalDate): List<StadiumEvent> = listOf(
         StadiumEvent(
             "atletico-vs-viking",
             "Atlético de Madrid vs Viking FK",
             Kind.MATCH,
-            Level.BUSY,
+            Level.MAX,
             listOf(today.plusDays(1).toString()),
             time = "21:00",
             competition = "UEFA Champions League"

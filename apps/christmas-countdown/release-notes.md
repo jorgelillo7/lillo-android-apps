@@ -5,6 +5,7 @@ Newest first. User-facing notes per language (as uploaded to Play) are in
 
 | versionCode | Version | Date | Notes |
 |---|---|---|---|
+| 11 | 4.7 | 2026-11-15 (production upload through the Release workflow; waits for the approval in GitHub, then Google's review) | About opens expanded and scrolls (core LilloSheet): Appearance, language, rate and privacy reachable in landscape and on handhelds, also under the widget card; baseline profile |
 | 10 | 4.6 | 2026-11-14 (production upload through the Release workflow; waits for the approval in GitHub, then Google's review) | Reminders arrive with the app's process dead (start-up no longer cancels the due job, core LilloSchedule.ensure); baseline profile |
 | 9 | 4.5 | 2026-11-13 (production) | Light and dark looks (a snowy morning by day, the midnight sky by night, Appearance in About); the widget offered in About; targetSdk 37; baseline profile, new store screenshots |
 | 8 | 4.4 | 2026-11-03 (production) | Spring press and haptic tick on buttons (core); baseline profile |

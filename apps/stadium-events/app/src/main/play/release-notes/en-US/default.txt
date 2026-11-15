@@ -1,5 +1,3 @@
-Reminders that are not missed 🏟️
-- If the evening's reminder didn't reach you, we remind you that morning; never at night
-- On the day itself, the app and the widget say "Today"
-- The reminder names the day: "Tomorrow, Sunday 15, it's busy"
-- Dark look: pick it in About → Appearance
+About, always within reach 🏟️
+- About fits any screen: in landscape or on handheld consoles it scrolls, so Appearance, Language, Rate and Privacy are always within reach
+- The widget is called "Busy day?": it answers for today on event days, otherwise for tomorrow

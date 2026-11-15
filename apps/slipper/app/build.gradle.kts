@@ -11,8 +11,8 @@ android {
     defaultConfig {
         // Permanent once uploaded to Play: confirm it before the first bundle (docs/plans/slipper.md).
         applicationId = "com.jorgelillo.slipper"
-        versionCode = 4
-        versionName = "1.3"
+        versionCode = 5
+        versionName = "1.4"
     }
 
     // Release signing and R8: the jorgelillo.android.application convention plugin.

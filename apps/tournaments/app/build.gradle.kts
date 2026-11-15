@@ -10,8 +10,8 @@ android {
 
     defaultConfig {
         applicationId = "com.jorgelillo.tournaments"
-        versionCode = 6
-        versionName = "1.5"
+        versionCode = 7
+        versionName = "1.6"
     }
 
     // Release signing and R8: the jorgelillo.android.application convention plugin.

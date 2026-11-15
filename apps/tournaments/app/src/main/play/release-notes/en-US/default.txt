@@ -1,3 +1,2 @@
-Links that always work 👑
-- A link or QR is offered only if the other phone can open it
-- Confetti stays still if your phone has "Remove animations" on
+About, always within reach 🏆
+- About fits any screen: in landscape or on handheld consoles it scrolls, so Appearance, Language, Rate and Privacy are always within reach

@@ -24,6 +24,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -74,16 +75,17 @@ internal fun HomeScreen(
     onPacks: () -> Unit,
     onAbout: () -> Unit
 ) {
-    LilloPage(title = null, onBack = null, bottom = {
+    LilloPage(title = null, onBack = null, actions = {
+        IconButton(onClick = onAbout, modifier = Modifier.testTag("about")) {
+            Icon(Icons.Outlined.Info, contentDescription = stringResource(R.string.action_about))
+        }
+    }, bottom = {
         LilloBigButton(stringResource(R.string.play), onPlay, modifier = Modifier.testTag("play"))
         Spacer(Modifier.height(12.dp))
         Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
             HomeChip("📖", stringResource(R.string.rules_short), onHowTo, Modifier.weight(1f).testTag("how_to"))
             HomeChip("🎭", stringResource(R.string.modes_short), onModes, Modifier.weight(1f).testTag("modes"))
             HomeChip("🗂️", stringResource(R.string.packs_short), onPacks, Modifier.weight(1f).testTag("packs"))
-        }
-        TextButton(onClick = onAbout, modifier = Modifier.align(Alignment.CenterHorizontally).testTag("about")) {
-            Text("⚙️  " + stringResource(R.string.action_about), color = Neon.Muted)
         }
     }, readable = true) {
         val summary = group?.takeIf { it.players.isNotEmpty() }

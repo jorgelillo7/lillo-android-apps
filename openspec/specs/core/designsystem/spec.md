@@ -4,8 +4,8 @@ The shared Compose pieces. Only the logic that is not drawing is specified; the 
 frozen by screenshot tests.
 
 - **Source:** `core/designsystem/` (`Avatar`)
-- **Verified by:** `core/designsystem/src/test/` (`AvatarInitialTest`,
-  `CatalogueScreenshotTest`)
+- **Verified by:** `core/designsystem/src/test/` (`AvatarInitialTest`, `BehaviourTest`,
+  `CatalogueScreenshotTest`, `AboutSheetScreenshotTest`)
 
 ---
 
@@ -50,3 +50,15 @@ and league-cards' About could not be reached in landscape before.
 #### Scenario: the side column
 - **WHEN** a title-less page with side actions is shown on a landscape phone **THEN** both its header action and its bottom action are on screen
 - *Verifies:* `aShortPageWithoutHeaderKeepsItsActionsInTheSideColumn`
+
+### Requirement: Every row of the About sheet is reachable on a short screen
+
+The About sheet (and any `LilloSheet`) SHALL open fully expanded and scroll its content, so on a
+landscape phone or a 16:9 handheld the look choice (with its labels whole), the language, "Rate"
+and the privacy link can all be reached, even under an app's extra block such as the widget card.
+On a short screen the icon sits beside the name to save height. Before, the sheet opened half
+expanded without scrolling and cut everything after the description or the look choice.
+
+#### Scenario: a landscape phone
+- **WHEN** the About sheet of a published app with a tall extra block is shown on a landscape phone **THEN** the look's "Dark" segment (at least 40dp tall), the language, "Rate" and "Privacy" can each be scrolled to and are displayed, and "Privacy" opens its link
+- *Verifies:* `everyAboutRowIsReachableOnAShortScreen`

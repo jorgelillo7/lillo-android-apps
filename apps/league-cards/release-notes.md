@@ -4,6 +4,7 @@ Newest first. User-facing notes are in `app/src/main/play/release-notes/es-ES/de
 
 | versionCode | Version | Date | Notes |
 |---|---|---|---|
+| 9 | 1.7 | 2026-11-15 (production upload through the Release workflow; waits for the approval in GitHub, then Google's review) | About opens expanded and scrolls (core LilloSheet): every row reachable in landscape and on handhelds; baseline profile |
 | 8 | 1.6 | 2026-11-14 (production upload through the Release workflow; waits for the approval in GitHub, then Google's review) | Light and dark looks (the chat by day and at night, Appearance in About); rules folded for a returning player; About reachable in landscape (core); confetti honours Remove animations; baseline profile, new store screenshots |
 | 7 | 1.5 | 2026-11-13 (production) | Stored season set aside, never overwritten, when unreadable; targetSdk 37; baseline profile |
 | 6 | 1.4 | 2026-11-03 (production) | Header face reacts to the season (😎/🙂/😭); haptic on answering a card; spring press; baseline profile |

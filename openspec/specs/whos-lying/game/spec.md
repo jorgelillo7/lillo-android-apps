@@ -5,10 +5,10 @@ discusses and votes players out, the game ends when the civilians or the infiltr
 win, and a match of several games crowns whoever scored most.
 
 - **Source:** `apps/whos-lying/domain/` (`Game`, `Settings`, the match scoring),
-  `apps/whos-lying/app/` (`GameViewModel`)
+  `apps/whos-lying/app/` (`GameViewModel`, the home)
 - **Verified by:** `apps/whos-lying/domain/src/test/` (`GameTest`,
   `ExhaustiveGameTest`), `apps/whos-lying/app/src/test/` (`GameViewModelTest`,
-  `GameFlowTest`)
+  `GameFlowTest`, `RoundScreensScreenshotTest`)
 
 ---
 
@@ -126,3 +126,13 @@ word. A whole game SHALL be playable from the welcome screen to catching the imp
 - *Verifies:* `addPlayerTrimsAndSkipsBlanksAndDuplicates`,
   `updateSettingsKeepsImpostorsWithinWhatThePlayersAllow`, `aGameNeedsEnoughPlayers`,
   `startingAGameDealsAndRemembersTheWord`, `aWholeGameEndsWithTheImpostorCaught`
+
+### Requirement: Settings are one tap away from the home
+
+The home SHALL open the settings sheet (language, look, rules, sharing, rating, privacy) from an
+info icon at its top right, the place every app keeps its About, upright and on a short landscape
+screen; the sheet opens expanded and scrolls (core `LilloSheet`).
+
+#### Scenario: a landscape phone
+- **WHEN** the home is shown on a landscape phone and the top-right icon is tapped **THEN** it is on screen and opens the settings
+- *Verifies:* `theHomeOpensTheSettingsFromTheTopRight`

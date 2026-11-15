@@ -1,3 +1,2 @@
-Un icono a juego 🎡
-- El icono, en los mismos tonos vino que la app
-- El confeti se queda quieto si tu móvil tiene «Quitar animaciones»
+Información, siempre a mano 🎡
+- Acerca de cabe en cualquier pantalla: en horizontal o en consolas portátiles se desliza y llegas a Apariencia, Idioma, Valorar y Privacidad

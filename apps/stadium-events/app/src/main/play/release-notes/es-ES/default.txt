@@ -1,5 +1,3 @@
-Avisos que no se pierden 🏟️
-- Si el aviso de la víspera no te llegó, te avisamos esa misma mañana; nunca de noche
-- El día del evento, la app y el widget te dicen «Hoy»
-- El aviso dice el día: «Mañana, domingo 15, hay jaleo»
-- Modo oscuro: elige en Acerca de → Apariencia
+Acerca de, siempre a mano 🏟️
+- Acerca de cabe en cualquier pantalla: en horizontal o en consolas portátiles se desliza y llegas a Apariencia, Idioma, Valorar y Privacidad
+- El widget se llama «¿Hay jaleo?»: responde por hoy los días de evento y, si no, por mañana

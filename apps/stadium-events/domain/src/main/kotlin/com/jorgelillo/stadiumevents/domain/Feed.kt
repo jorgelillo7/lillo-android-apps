@@ -96,7 +96,10 @@ enum class Level {
     @SerialName("busy")
     BUSY,
 
-    /** Concerts and finals: the biggest days. */
+    /**
+     * The biggest days: concerts, finals, Champions League nights, Real Madrid or Barcelona visiting,
+     * and matches the home club does not play.
+     */
     @SerialName("max")
     MAX
 }
