@@ -6,16 +6,15 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.rememberModalBottomSheetState
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
@@ -24,6 +23,7 @@ import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -38,6 +38,7 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 
 /** Texts of [LilloAboutSheet], from the app's own resources. */
@@ -61,7 +62,9 @@ fun LilloSheet(
         onDismissRequest = onDismiss,
         sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
         containerColor = containerColor,
-        modifier = TestTagsAsResourceIds
+        modifier = TestTagsAsResourceIds,
+        // Material's handle is 32dp wide; transparent padding makes it a 48dp touch target.
+        dragHandle = { BottomSheetDefaults.DragHandle(Modifier.padding(horizontal = 8.dp)) }
     ) {
         Column(
             modifier = Modifier
@@ -93,6 +96,7 @@ fun LilloAboutSheet(
     privacyUrl: String,
     playStoreUrl: String?,
     onDismiss: () -> Unit,
+    modifier: Modifier = Modifier,
     languages: List<Pair<String, String>> = LilloLanguages,
     /** Shown under the text: what only this app offers, such as [LilloWidgetCard]. */
     extra: (@Composable () -> Unit)? = null
@@ -102,7 +106,7 @@ fun LilloAboutSheet(
     LilloSheet(
         onDismiss = onDismiss,
         containerColor = containerColor,
-        modifier = Modifier.testTag("about_sheet"),
+        modifier = modifier.testTag("about_sheet"),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         AboutIdentity(icon, iconBackground, texts, short = isShortScreen())
@@ -145,7 +149,11 @@ private fun AboutIdentity(icon: Painter, iconBackground: Color, texts: AboutText
         )
     }
     val version = @Composable {
-        Text(texts.version, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Text(
+            texts.version,
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
     }
     if (short) {
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(16.dp)) {

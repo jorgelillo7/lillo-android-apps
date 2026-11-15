@@ -252,50 +252,50 @@ internal fun SettingsSheet(onHowTo: () -> Unit, onModes: () -> Unit, onWelcome: 
         modifier = Modifier.testTag("settings_sheet"),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-            Text(
-                stringResource(R.string.settings_title),
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Black
-            )
-            if (canPickAppLanguage) {
-                SettingsRow("🌐", stringResource(CoreR.string.lillo_language), currentAppLanguageName(), "language") {
-                    pickLanguage =
-                        true
-                }
+        Text(
+            stringResource(R.string.settings_title),
+            style = MaterialTheme.typography.headlineSmall,
+            fontWeight = FontWeight.Black
+        )
+        if (canPickAppLanguage) {
+            SettingsRow("🌐", stringResource(CoreR.string.lillo_language), currentAppLanguageName(), "language") {
+                pickLanguage =
+                    true
             }
-            LilloThemeModeChoice(Modifier.padding(vertical = 4.dp))
-            SettingsRow("📖", stringResource(R.string.how_to_play), null, "settings_how_to") {
-                onDismiss()
-                onHowTo()
-            }
-            SettingsRow("🎭", stringResource(R.string.modes_title), null, "settings_modes") {
-                onDismiss()
-                onModes()
-            }
-            SettingsRow(
-                "💌",
-                stringResource(R.string.settings_share),
-                stringResource(R.string.settings_share_desc),
-                "share"
-            ) {
-                context.shareText(shareText)
-            }
-            SettingsRow("🤝", stringResource(R.string.welcome_settings), null, "settings_welcome") {
-                onDismiss()
-                onWelcome()
-            }
-            SettingsRow("⭐", stringResource(R.string.about_rate), null, "rate") { uriHandler.openUri(PLAY_STORE_URL) }
-            SettingsRow("🔒", stringResource(R.string.about_privacy), null, "privacy") {
-                uriHandler.openUri(PRIVACY_POLICY_URL)
-            }
-            Text(
-                stringResource(R.string.about_body) + "\n" +
-                    stringResource(R.string.about_version, BuildConfig.VERSION_NAME),
-                style = MaterialTheme.typography.bodySmall,
-                color = Neon.Muted,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth().padding(top = 12.dp)
-            )
+        }
+        LilloThemeModeChoice(Modifier.padding(vertical = 4.dp))
+        SettingsRow("📖", stringResource(R.string.how_to_play), null, "settings_how_to") {
+            onDismiss()
+            onHowTo()
+        }
+        SettingsRow("🎭", stringResource(R.string.modes_title), null, "settings_modes") {
+            onDismiss()
+            onModes()
+        }
+        SettingsRow(
+            "💌",
+            stringResource(R.string.settings_share),
+            stringResource(R.string.settings_share_desc),
+            "share"
+        ) {
+            context.shareText(shareText)
+        }
+        SettingsRow("🤝", stringResource(R.string.welcome_settings), null, "settings_welcome") {
+            onDismiss()
+            onWelcome()
+        }
+        SettingsRow("⭐", stringResource(R.string.about_rate), null, "rate") { uriHandler.openUri(PLAY_STORE_URL) }
+        SettingsRow("🔒", stringResource(R.string.about_privacy), null, "privacy") {
+            uriHandler.openUri(PRIVACY_POLICY_URL)
+        }
+        Text(
+            stringResource(R.string.about_body) + "\n" +
+                stringResource(R.string.about_version, BuildConfig.VERSION_NAME),
+            style = MaterialTheme.typography.bodySmall,
+            color = Neon.Muted,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth().padding(top = 12.dp)
+        )
     }
     if (pickLanguage && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         LilloLanguageDialog(onDismiss = { pickLanguage = false })
