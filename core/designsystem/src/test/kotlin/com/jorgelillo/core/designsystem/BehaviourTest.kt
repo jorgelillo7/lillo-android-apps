@@ -4,12 +4,16 @@ import android.app.Application
 import android.app.LocaleManager
 import android.provider.Settings
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.lightColorScheme
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -17,10 +21,13 @@ import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.UriHandler
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.test.assertHeightIsAtLeast
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollTo
+import androidx.compose.ui.unit.dp
 import androidx.test.core.app.ApplicationProvider
 import org.junit.Assert.assertEquals
 import org.junit.Rule
@@ -103,14 +110,15 @@ class BehaviourTest {
 
     private val opened = mutableListOf<String>()
 
-    private fun about(playStoreUrl: String?) = compose.setContent {
+    private fun about(playStoreUrl: String?, extra: (@Composable () -> Unit)? = null) = compose.setContent {
         MaterialTheme(lightColorScheme()) {
             CompositionLocalProvider(
                 LocalUriHandler provides object : UriHandler {
                     override fun openUri(uri: String) {
                         opened += uri
                     }
-                }
+                },
+                LocalLilloThemeMode provides remember { mutableStateOf(LilloThemeMode.System) }
             ) {
                 LilloAboutSheet(
                     icon = ColorPainter(Color.Red),
@@ -119,7 +127,8 @@ class BehaviourTest {
                     texts = AboutTexts("App", "Version 1", "Body", rate = "Rate", privacy = "Privacy"),
                     privacyUrl = "https://example.org/privacy",
                     playStoreUrl = playStoreUrl,
-                    onDismiss = {}
+                    onDismiss = {},
+                    extra = extra
                 )
             }
         }
@@ -139,6 +148,24 @@ class BehaviourTest {
         about(playStoreUrl = "https://play.google.com/store/apps/details?id=x")
         compose.onNodeWithTag("rate").performClick()
         assertEquals(listOf("https://play.google.com/store/apps/details?id=x"), opened)
+    }
+
+    /**
+     * A landscape phone, with an app's extra block (a widget card) under the text: the sheet opens
+     * expanded and scrolls, so the look, the language, rating and privacy can all be reached.
+     */
+    @Test
+    @Config(qualifiers = "w891dp-h411dp-land")
+    fun everyAboutRowIsReachableOnAShortScreen() {
+        about(playStoreUrl = "https://play.google.com/store/apps/details?id=x") {
+            Box(Modifier.fillMaxWidth().height(240.dp).testTag("extra"))
+        }
+        listOf("theme_dark", "language", "rate", "privacy").forEach { tag ->
+            compose.onNodeWithTag(tag).performScrollTo().assertIsDisplayed()
+        }
+        compose.onNodeWithTag("theme_dark").assertHeightIsAtLeast(40.dp)
+        compose.onNodeWithTag("privacy").performClick()
+        assertEquals(listOf("https://example.org/privacy"), opened)
     }
 
     @Test

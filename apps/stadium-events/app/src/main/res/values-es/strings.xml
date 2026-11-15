@@ -46,8 +46,8 @@
     <string name="notification_today_maybe_title">Hoy puede haber jaleo en el Metropolitano</string>
     <string name="notification_text">%1$s · %2$s. %3$s.</string>
 
-    <string name="widget_name">¿Hay jaleo mañana?</string>
-    <string name="widget_description">Si mañana hay algo en el estadio</string>
+    <string name="widget_name">¿Hay jaleo?</string>
+    <string name="widget_description">Si hoy o mañana hay algo en el estadio</string>
     <string name="widget_tomorrow">Mañana</string>
     <string name="widget_today">Hoy</string>
     <string name="widget_calm">Día tranquilo</string>

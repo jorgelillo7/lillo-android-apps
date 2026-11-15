@@ -7,6 +7,13 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -37,12 +44,46 @@ import androidx.compose.ui.unit.dp
 data class AboutTexts(val title: String, val version: String, val body: String, val rate: String?, val privacy: String)
 
 /**
+ * A modal bottom sheet that opens fully expanded and scrolls its content, so every row stays
+ * reachable on short screens (landscape phones, handhelds). [modifier] goes on the scrolling column.
+ */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun LilloSheet(
+    onDismiss: () -> Unit,
+    containerColor: Color,
+    modifier: Modifier = Modifier,
+    horizontalAlignment: Alignment.Horizontal = Alignment.Start,
+    verticalArrangement: Arrangement.Vertical = Arrangement.spacedBy(12.dp),
+    content: @Composable ColumnScope.() -> Unit
+) {
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
+        containerColor = containerColor,
+        modifier = TestTagsAsResourceIds
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 24.dp)
+                .padding(bottom = 32.dp)
+                .then(modifier),
+            horizontalAlignment = horizontalAlignment,
+            verticalArrangement = verticalArrangement,
+            content = content
+        )
+    }
+}
+
+/**
  * The About sheet: app icon, name, version, a short text, the app's appearance (automatic, light or
  * dark; for apps with both looks, see [LocalLilloThemeMode]), the app's language (Android 13+,
  * when it ships in more than one of [languages]), and links to rate it on Google Play (left out while the
- * app isn't published: [playStoreUrl] null) and to the privacy policy.
+ * app isn't published: [playStoreUrl] null) and to the privacy policy. It opens expanded and scrolls
+ * ([LilloSheet]); on a short screen the icon sits beside the name to save height.
  */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LilloAboutSheet(
     icon: Painter,
@@ -58,49 +99,66 @@ fun LilloAboutSheet(
 ) {
     val uriHandler = LocalUriHandler.current
     var pickLanguage by rememberSaveable { mutableStateOf(false) }
-    ModalBottomSheet(onDismissRequest = onDismiss, containerColor = containerColor, modifier = TestTagsAsResourceIds) {
-        Column(
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp).padding(bottom = 32.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            Image(
-                painter = icon,
-                contentDescription = null,
-                modifier = Modifier.size(88.dp).clip(MaterialTheme.shapes.large).background(iconBackground)
-            )
-            Text(texts.title, style = MaterialTheme.typography.titleLarge, textAlign = TextAlign.Center)
-            Text(
-                texts.version,
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-            Text(texts.body, textAlign = TextAlign.Center)
-            extra?.invoke()
-            LocalLilloThemeMode.current?.let { mode -> ThemeModeRow(mode.value) { mode.value = it } }
-            if (canPickAppLanguage && languages.size > 1) {
-                OutlinedButton(onClick = {
-                    pickLanguage = true
-                }, modifier = Modifier.fillMaxWidth().testTag("language")) {
-                    Text(stringResource(R.string.lillo_language) + ": " + currentAppLanguageName())
-                }
-            }
-            if (playStoreUrl != null && texts.rate != null) {
-                OutlinedButton(onClick = {
-                    uriHandler.openUri(playStoreUrl)
-                }, modifier = Modifier.fillMaxWidth().testTag("rate")) {
-                    Text(texts.rate)
-                }
-            }
+    LilloSheet(
+        onDismiss = onDismiss,
+        containerColor = containerColor,
+        modifier = Modifier.testTag("about_sheet"),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        AboutIdentity(icon, iconBackground, texts, short = isShortScreen())
+        Text(texts.body, textAlign = TextAlign.Center)
+        extra?.invoke()
+        LocalLilloThemeMode.current?.let { mode -> ThemeModeRow(mode.value) { mode.value = it } }
+        if (canPickAppLanguage && languages.size > 1) {
             OutlinedButton(onClick = {
-                uriHandler.openUri(privacyUrl)
-            }, modifier = Modifier.fillMaxWidth().testTag("privacy")) {
-                Text(texts.privacy)
+                pickLanguage = true
+            }, modifier = Modifier.fillMaxWidth().testTag("language")) {
+                Text(stringResource(R.string.lillo_language) + ": " + currentAppLanguageName())
             }
+        }
+        if (playStoreUrl != null && texts.rate != null) {
+            OutlinedButton(onClick = {
+                uriHandler.openUri(playStoreUrl)
+            }, modifier = Modifier.fillMaxWidth().testTag("rate")) {
+                Text(texts.rate)
+            }
+        }
+        OutlinedButton(onClick = {
+            uriHandler.openUri(privacyUrl)
+        }, modifier = Modifier.fillMaxWidth().testTag("privacy")) {
+            Text(texts.privacy)
         }
     }
     if (pickLanguage && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         LilloLanguageDialog(onDismiss = { pickLanguage = false }, languages = languages)
+    }
+}
+
+/** Icon, name and version: stacked, or in one row when [short]. */
+@Composable
+private fun AboutIdentity(icon: Painter, iconBackground: Color, texts: AboutTexts, short: Boolean) {
+    val image = @Composable { size: Int ->
+        Image(
+            painter = icon,
+            contentDescription = null,
+            modifier = Modifier.size(size.dp).clip(MaterialTheme.shapes.large).background(iconBackground)
+        )
+    }
+    val version = @Composable {
+        Text(texts.version, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+    }
+    if (short) {
+        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+            image(56)
+            Column {
+                Text(texts.title, style = MaterialTheme.typography.titleLarge)
+                version()
+            }
+        }
+    } else {
+        image(88)
+        Text(texts.title, style = MaterialTheme.typography.titleLarge, textAlign = TextAlign.Center)
+        version()
     }
 }
 
@@ -129,14 +187,15 @@ internal fun ThemeModeRow(selected: LilloThemeMode, onSelect: (LilloThemeMode) -
             style = MaterialTheme.typography.labelLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
-        SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth().testTag("theme_mode")) {
+        // At least a touch target tall: a segment never gives its label's height away.
+        SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("theme_mode")) {
             labels.entries.forEachIndexed { index, (mode, label) ->
                 SegmentedButton(
                     selected = mode == selected,
                     onClick = { onSelect(mode) },
                     shape = SegmentedButtonDefaults.itemShape(index, labels.size),
                     modifier = Modifier.testTag("theme_${mode.name.lowercase()}")
-                ) { Text(stringResource(label), maxLines = 1) }
+                ) { Text(stringResource(label), maxLines = 1, overflow = TextOverflow.Ellipsis) }
             }
         }
     }

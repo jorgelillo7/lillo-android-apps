@@ -45,8 +45,8 @@
     <string name="notification_today_maybe_title">Maybe busy around the stadium today</string>
     <string name="notification_text">%1$s · %2$s. %3$s.</string>
 
-    <string name="widget_name">Busy tomorrow?</string>
-    <string name="widget_description">Whether there is something at the stadium tomorrow</string>
+    <string name="widget_name">Busy day?</string>
+    <string name="widget_description">Whether there is something at the stadium today or tomorrow</string>
     <string name="widget_tomorrow">Tomorrow</string>
     <string name="widget_today">Today</string>
     <string name="widget_calm">Quiet day</string>

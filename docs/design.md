@@ -37,6 +37,7 @@ spacing:
   list-gap: 10–12dp
 components:
   page: "LilloPage — header, content, bottom actions; side actions on short screens; readable width on tablets"
+  sheet: "LilloSheet — a bottom sheet that opens expanded and scrolls, so every row is reachable in landscape and on handhelds; LilloAboutSheet is built on it, reached from an info icon at the top right of the home screen"
   primary-button: "LilloBigButton — brand fill, Black label, 60dp tall"
   secondary-button: "LilloSecondaryButton — outlined, ≥ 52dp, grows with its label"
   summary-hero: "LilloSummaryHero — opt-in gradient card for a home with real state to summarise: title, one-line state, chips; compact strip on short screens"

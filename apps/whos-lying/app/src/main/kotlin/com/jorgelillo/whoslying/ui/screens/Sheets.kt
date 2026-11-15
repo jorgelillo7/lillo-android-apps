@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import com.jorgelillo.core.designsystem.LilloBigButton
 import com.jorgelillo.core.designsystem.LilloLanguageDialog
 import com.jorgelillo.core.designsystem.LilloSettingRow
+import com.jorgelillo.core.designsystem.LilloSheet
 import com.jorgelillo.core.designsystem.LilloThemeModeChoice
 import com.jorgelillo.core.designsystem.R as CoreR
 import com.jorgelillo.core.designsystem.canPickAppLanguage
@@ -245,13 +246,12 @@ internal fun SettingsSheet(onHowTo: () -> Unit, onModes: () -> Unit, onWelcome: 
     val uriHandler = LocalUriHandler.current
     var pickLanguage by rememberSaveable { mutableStateOf(false) }
     val shareText = stringResource(R.string.share_text, PLAY_STORE_URL)
-    ModalBottomSheet(onDismissRequest = onDismiss, containerColor = Neon.Card) {
-        Column(
-            Modifier.verticalScroll(
-                rememberScrollState()
-            ).padding(horizontal = 24.dp).padding(bottom = 32.dp).then(DialogTags).testTag("settings_sheet"),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
+    LilloSheet(
+        onDismiss = onDismiss,
+        containerColor = Neon.Card,
+        modifier = Modifier.testTag("settings_sheet"),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
             Text(
                 stringResource(R.string.settings_title),
                 style = MaterialTheme.typography.headlineSmall,
@@ -296,7 +296,6 @@ internal fun SettingsSheet(onHowTo: () -> Unit, onModes: () -> Unit, onWelcome: 
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth().padding(top = 12.dp)
             )
-        }
     }
     if (pickLanguage && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         LilloLanguageDialog(onDismiss = { pickLanguage = false })

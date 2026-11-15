@@ -32,7 +32,7 @@ fills:             # Neon, the same in both looks
   OnFill: "#14052B"       # text and icons on those fills and on avatars
 hero: ["#5B2EE6", "#C2185B"]   # summary hero, white text
 components:
-  home: "the title, then the summary hero only once a group exists (leader, game N of M, mode): real state; a first launch has none"
+  home: "the title, then the summary hero only once a group exists (leader, game N of M, mode): real state; a first launch has none. Settings & info behind the info icon at the top right, as in every app"
   stages: "reveal, countdown, debate, time up, voting, expose, result, ranking and podium play on vivid backdrops (RevealBackdrop and the outcome gradients) inside NightStage: the same in both looks"
   pack-row: "Card, accentEdge(Pink) for the group's own packs"
   pack-tile: "Card; selected: Violet 25% fill + 2dp Violet border"
