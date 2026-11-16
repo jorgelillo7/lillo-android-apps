@@ -251,6 +251,8 @@ class GameViewModel(
     private fun score(current: Game) {
         if (!current.isOver || scored) return
         scored = true
+        // Chaos is played for fun: no points and no round of a match used up.
+        if (!current.scored) return
         val points = Scoring.points(current)
         _lastPoints.value = points
         if (!Match.counts(current.outcome)) return

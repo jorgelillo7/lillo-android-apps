@@ -277,7 +277,7 @@
         <item quantity="other">%d players</item>
     </plurals>
     <string name="hero_leader">🏆 Leading: %1$s (%2$d pts)</string>
-    <string name="hero_match">🎯 Game %1$d of %2$d</string>
+    <string name="hero_match">🎯 Round %1$d of %2$d</string>
     <string name="hero_drawing">✏️ Drawing mode</string>
     <string name="setup_settings">Game settings</string>
     <string name="setup_rounds_unlimited">No limit</string>
@@ -302,4 +302,6 @@
     <string name="players_close">Close</string>
     <string name="setup_fewer">%1$s: fewer</string>
     <string name="setup_more">%1$s: more</string>
+    <string name="home_continue">Continue match</string>
+    <string name="home_new_match">New match</string>
 </resources>

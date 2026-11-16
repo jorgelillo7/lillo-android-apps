@@ -189,7 +189,7 @@ internal fun ResultScreen(
                     Spacer(Modifier.height(20.dp))
                     ResultPanel {
                         LabelValue(stringResource(R.string.result_secret_word), game.civilianWord)
-                        impostors.firstNotNullOfOrNull { it.word }?.let { decoy ->
+                        impostors.firstNotNullOfOrNull { it.word ?: it.hint }?.let { decoy ->
                             LabelValue(stringResource(R.string.result_decoy), decoy)
                         }
                         if (impostors.isNotEmpty() && impostors.size < game.cards.size) {
@@ -246,7 +246,7 @@ internal fun ResultScreen(
                                         overflow = TextOverflow.Ellipsis
                                     )
                                     Text(
-                                        card.word ?: "—",
+                                        card.word ?: card.hint?.let { "💡 $it" } ?: "—",
                                         color = Color.White.copy(alpha = 0.7f),
                                         style = MaterialTheme.typography.bodySmall
                                     )

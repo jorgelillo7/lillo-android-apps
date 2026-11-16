@@ -10,6 +10,7 @@ import com.jorgelillo.core.testing.MainDispatcherRule
 import com.jorgelillo.core.testing.awaitMatching
 import com.jorgelillo.whoslying.data.SavedState
 import com.jorgelillo.whoslying.data.StateRepository
+import com.jorgelillo.whoslying.domain.GameMode
 import com.jorgelillo.whoslying.domain.Match
 import com.jorgelillo.whoslying.domain.Outcome
 import com.jorgelillo.whoslying.domain.Role
@@ -116,6 +117,31 @@ class GameViewModelTest {
             vm.addPlayers("Dani", "Eva", "Fran", "Gus", "Hugo", "Inés")
             val nine = awaitMatching { it.players.size == 9 }.settings
             assertEquals(5 to 540, nine.rounds to nine.discussionSeconds, "a new group size sets them again")
+        }
+    }
+
+    @Test
+    fun aChaosGameScoresNothingAndUsesNoRound() = runTest {
+        val vm = viewModel()
+        vm.saved.filterNotNull().test {
+            vm.addPlayers("Ana", "Bea", "Carlos")
+            awaitMatching { it.players.size == 3 }
+            vm.updateSettings { it.copy(mode = GameMode.CHAOS) }
+            awaitMatching { it.settings.mode == GameMode.CHAOS }
+            assertTrue(vm.startGame())
+            val game = vm.game.value!!
+            val target = game.cards.firstOrNull {
+                it.role == Role.IMPOSTOR &&
+                    game.cards.count { c -> c.role == Role.IMPOSTOR } == 1
+            }
+            vm.eliminate(target?.player ?: game.cards.first().player)
+            vm.revealAll()
+            assertTrue(vm.game.value!!.isOver)
+            assertTrue(vm.lastPoints.value.isEmpty())
+            val after = vm.saved.value!!
+            assertEquals(0, after.roundsPlayed)
+            assertTrue(after.scores.isEmpty())
+            cancelAndIgnoreRemainingEvents()
         }
     }
 

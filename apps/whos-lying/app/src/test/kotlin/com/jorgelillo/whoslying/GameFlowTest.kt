@@ -89,6 +89,28 @@ class GameFlowTest {
     }
 
     @Test
+    fun aHalfPlayedMatchContinuesFromTheHome() {
+        aWholeGameEndsWithTheImpostorCaught()
+        compose.waitUntil(TIMEOUT) { viewModel().saved.value?.roundsPlayed == 1 }
+        tap("home")
+        // The next round starts straight from the home: no setup in between.
+        tap("continue_match")
+        compose.waitUntilExactlyOneExists(hasTestTag("tap_to_reveal"), TIMEOUT)
+        assertEquals(1, viewModel().saved.value?.roundsPlayed)
+    }
+
+    @Test
+    fun aNewMatchFromTheHomeStartsFromZero() {
+        aWholeGameEndsWithTheImpostorCaught()
+        compose.waitUntil(TIMEOUT) { viewModel().saved.value?.roundsPlayed == 1 }
+        tap("home")
+        tap("new_match")
+        compose.waitUntilExactlyOneExists(hasTestTag("start"), TIMEOUT)
+        compose.waitUntil(TIMEOUT) { viewModel().saved.value?.roundsPlayed == 0 }
+        assertEquals(emptyMap(), viewModel().saved.value?.scores)
+    }
+
+    @Test
     fun theGroupIsOneRowAwayFromSetup() {
         tap("welcome_ok")
         tap("play")

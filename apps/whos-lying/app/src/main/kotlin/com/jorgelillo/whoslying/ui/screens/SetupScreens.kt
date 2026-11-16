@@ -63,6 +63,7 @@ import androidx.compose.ui.unit.dp
 import com.jorgelillo.core.designsystem.HeroChip
 import com.jorgelillo.core.designsystem.LilloBigButton
 import com.jorgelillo.core.designsystem.LilloPage
+import com.jorgelillo.core.designsystem.LilloSecondaryButton
 import com.jorgelillo.core.designsystem.LilloSettingRow
 import com.jorgelillo.core.designsystem.LilloSummaryHero
 import com.jorgelillo.core.designsystem.isShortScreen
@@ -79,6 +80,10 @@ internal fun HomeScreen(
     /** The saved group and match, for the summary; null or no players: no summary. */
     group: HomeGroup?,
     onPlay: () -> Unit,
+    /** A match half played: its next round, straight away. */
+    onContinueMatch: () -> Unit,
+    /** A match half played: scores back to zero, then setup. */
+    onNewMatch: () -> Unit,
     onHowTo: () -> Unit,
     onModes: () -> Unit,
     onPacks: () -> Unit,
@@ -89,7 +94,21 @@ internal fun HomeScreen(
             Icon(Icons.Outlined.Info, contentDescription = stringResource(R.string.action_about))
         }
     }, bottom = {
-        LilloBigButton(stringResource(R.string.play), onPlay, modifier = Modifier.testTag("play"))
+        // The round it continues with is on the summary card just above.
+        if (group?.matchInProgress() != null) {
+            LilloBigButton(
+                stringResource(R.string.home_continue),
+                onContinueMatch,
+                modifier = Modifier.testTag("continue_match")
+            )
+            LilloSecondaryButton(
+                stringResource(R.string.home_new_match),
+                onNewMatch,
+                modifier = Modifier.padding(top = 8.dp).testTag("new_match")
+            )
+        } else {
+            LilloBigButton(stringResource(R.string.play), onPlay, modifier = Modifier.testTag("play"))
+        }
         Spacer(Modifier.height(12.dp))
         Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
             HomeChip("📖", stringResource(R.string.rules_short), onHowTo, Modifier.weight(1f).testTag("how_to"))
@@ -134,7 +153,13 @@ internal data class HomeGroup(
     val settings: GameSettings,
     val scores: Map<String, Int> = emptyMap(),
     val roundsPlayed: Int = 0
-)
+) {
+    /** The next round and the match length, while a scored match is half played; null otherwise. */
+    fun matchInProgress(): Pair<Int, Int>? = (roundsPlayed + 1 to settings.rounds).takeIf {
+        roundsPlayed > 0 && settings.rounds > 0 && !Match.isOver(roundsPlayed, settings.rounds) &&
+            settings.mode != GameMode.CHAOS && players.size >= Rules.MIN_PLAYERS
+    }
+}
 
 /** The group at a glance: players and mode, the match so far, who is leading. */
 @Composable
@@ -147,12 +172,16 @@ private fun GroupSummary(group: HomeGroup) {
             GameMode.CHAOS -> R.string.mode_chaos
         }
     )
+    // Chaos keeps no score: a leader or a round count would belong to another match.
+    val scored = settings.mode != GameMode.CHAOS
     val chips = buildList {
-        group.scores.filterKeys { it in group.players }.maxByOrNull { it.value }?.takeIf { it.value > 0 }?.let {
-            add(HeroChip(stringResource(R.string.hero_leader, it.key, it.value), "hero_leader"))
-        }
-        if (group.roundsPlayed > 0 && settings.rounds > 0) {
-            add(HeroChip(stringResource(R.string.hero_match, group.roundsPlayed + 1, settings.rounds), "hero_match"))
+        if (scored) {
+            group.scores.filterKeys { it in group.players }.maxByOrNull { it.value }?.takeIf { it.value > 0 }?.let {
+                add(HeroChip(stringResource(R.string.hero_leader, it.key, it.value), "hero_leader"))
+            }
+            group.matchInProgress()?.let { (next, of) ->
+                add(HeroChip(stringResource(R.string.hero_match, next, of), "hero_match"))
+            }
         }
         if (settings.drawing) add(HeroChip(stringResource(R.string.hero_drawing)))
     }
@@ -417,14 +446,17 @@ internal fun SetupScreen(
                 }
             }
             SettingsGroup {
-                GroupRow(
-                    "🏆",
-                    stringResource(R.string.setup_rounds),
-                    tag = "rounds_row",
-                    onClick = { picking = PICK_ROUNDS },
-                    value = roundsLabel(settings.rounds)
-                )
-                GroupDivider()
+                // Chaos keeps no score, so it has no match to count rounds for.
+                if (settings.mode != GameMode.CHAOS) {
+                    GroupRow(
+                        "🏆",
+                        stringResource(R.string.setup_rounds),
+                        tag = "rounds_row",
+                        onClick = { picking = PICK_ROUNDS },
+                        value = roundsLabel(settings.rounds)
+                    )
+                    GroupDivider()
+                }
                 GroupRow(
                     "⏱️",
                     stringResource(R.string.setup_timer),

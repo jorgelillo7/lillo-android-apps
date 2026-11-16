@@ -145,6 +145,11 @@ internal fun WhosLyingApp(app: WhosLyingApplication, incomingText: String? = nul
         composable<Home> {
             HomeScreen(
                 group = HomeGroup(state.players, state.settings, state.scores, state.roundsPlayed),
+                onContinueMatch = { if (vm.startGame()) nav.navigate(Reveal) },
+                onNewMatch = {
+                    vm.resetScores()
+                    nav.navigate(Setup)
+                },
                 onPlay = {
                     // A group already set up goes straight to setup; its players are one row away.
                     if (state.players.size >= Rules.MIN_PLAYERS) nav.navigate(Setup) else nav.navigate(Players)
@@ -269,10 +274,18 @@ internal fun WhosLyingApp(app: WhosLyingApplication, incomingText: String? = nul
                 lastElimination = lastElimination,
                 drawing = vm.strokes,
                 onShareDrawing = { shareDrawing(context, vm.strokes, caption) },
-                roundsLeft = state.settings.rounds.takeIf { it > 0 }?.let { Match.remaining(state.roundsPlayed, it) },
+                roundsLeft = state.settings.rounds.takeIf { it > 0 && game.scored }
+                    ?.let { Match.remaining(state.roundsPlayed, it) },
                 onSeeWinner = { nav.navigate(Podium) { popUpTo<Setup>() } },
                 onReport = { showReport = true },
-                onContinue = { nav.navigate(Ranking) },
+                // A Chaos game has no ranking to show: straight to the next one.
+                onContinue = {
+                    if (game.scored) {
+                        nav.navigate(Ranking)
+                    } else if (vm.startGame()) {
+                        nav.navigate(Reveal) { popUpTo<Setup>() }
+                    }
+                },
                 onHome = { nav.goHome() }
             )
         }
@@ -381,7 +394,9 @@ internal fun WhosLyingApp(app: WhosLyingApplication, incomingText: String? = nul
     if (showReport && reported != null) {
         ReportSheet(
             word = reported.civilianWord,
-            decoy = reported.cards.firstNotNullOfOrNull { card -> card.word?.takeIf { it != reported.civilianWord } },
+            decoy = reported.cards.firstNotNullOfOrNull { card ->
+                card.hint ?: card.word?.takeIf { it != reported.civilianWord }
+            },
             pack = reported.category,
             language = language,
             onDismiss = { showReport = false }

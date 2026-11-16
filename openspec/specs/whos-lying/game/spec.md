@@ -154,6 +154,24 @@ word. A whole game SHALL be playable from the welcome screen to catching the imp
   `updateSettingsKeepsImpostorsWithinWhatThePlayersAllow`, `aGameNeedsEnoughPlayers`,
   `startingAGameDealsAndRemembersTheWord`, `aWholeGameEndsWithTheImpostorCaught`
 
+### Requirement: A match half played is continued or restarted from the home
+
+With a scored match half played (rounds played, not over, not Chaos), the home SHALL offer
+"Continue match", which deals the next round straight away, and "New match", which sets the
+scores back to zero and opens setup; otherwise it SHALL offer "Play". A Chaos game SHALL add no
+points and use up no round, its result SHALL go straight to the next game, and the home SHALL
+show no leader or round for it. The reveal card SHALL show the role in Original and Chaos, the
+hint or "no word" for impostors, and only the word in Mysterious; results SHALL show an
+impostor's hint.
+
+#### Scenario: home and Chaos
+- **WHEN** the home shows a group at round 4 of 10 **THEN** it offers Continue match and New match, not Play; a Chaos group shows Play and no leader
+- **WHEN** a game is won in the app and the home's Continue match is tapped **THEN** the next round's reveal opens with one round played; New match instead opens setup with no scores and no rounds
+- **WHEN** a Chaos game ends in the app **THEN** nobody scores and no round is used
+- **WHEN** each kind of card is shown **THEN** civilians and impostors of Original are told their role, a hint shows as "Your hint", a journalist is told, and a Mysterious card shows only the word
+- *Verifies:* `homeWithGroup`, `aChaosGroupHasNoMatchToContinue`, `aHalfPlayedMatchContinuesFromTheHome`,
+  `aNewMatchFromTheHomeStartsFromZero`, `aChaosGameScoresNothingAndUsesNoRound`, `secretCardsPortrait`
+
 ### Requirement: Settings are one tap away from the home
 
 The home SHALL open the settings sheet (language, look, rules, sharing, rating, privacy) from an
