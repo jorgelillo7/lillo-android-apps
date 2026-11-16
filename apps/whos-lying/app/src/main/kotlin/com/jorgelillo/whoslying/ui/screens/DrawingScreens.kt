@@ -89,7 +89,8 @@ internal fun DrawingScreen(
     var inkArgb by rememberSaveable { mutableIntStateOf(InkColors[0].toArgb()) }
     val ink = Color(inkArgb)
     val starter =
-        game.starter.takeIf { it in alive } ?: game.cards.first { it.player in alive && it.role != Role.DRIFTER }.player
+        game.starter.takeIf { it in alive }
+            ?: game.cards.first { it.player in alive && it.role != Role.JOURNALIST }.player
     val voteButtons: @Composable ColumnScope.() -> Unit = {
         LilloBigButton(
             stringResource(R.string.vote_button),

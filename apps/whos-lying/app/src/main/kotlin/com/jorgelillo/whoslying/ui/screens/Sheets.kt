@@ -97,25 +97,25 @@ internal fun ModesSheet(onDismiss: () -> Unit) {
             Text(stringResource(R.string.modes_intro), color = Neon.Muted)
             listOf(
                 ModeGuide(
+                    "🕵️",
+                    R.string.mode_original,
+                    R.string.modes_original_who,
+                    R.string.modes_original_win,
+                    R.string.modes_original_tip
+                ),
+                ModeGuide(
                     "🎭",
-                    R.string.mode_classic,
-                    R.string.modes_classic_who,
-                    R.string.modes_classic_win,
-                    R.string.modes_classic_tip
+                    R.string.mode_mysterious,
+                    R.string.modes_mysterious_who,
+                    R.string.modes_mysterious_win,
+                    R.string.modes_mysterious_tip
                 ),
                 ModeGuide(
-                    "🙈",
-                    R.string.mode_blind,
-                    R.string.modes_blind_who,
-                    R.string.modes_blind_win,
-                    R.string.modes_blind_tip
-                ),
-                ModeGuide(
-                    "🤷",
-                    R.string.mode_drifter,
-                    R.string.modes_drifter_who,
-                    R.string.modes_drifter_win,
-                    R.string.modes_drifter_tip
+                    "🌀",
+                    R.string.mode_chaos,
+                    R.string.modes_chaos_who,
+                    R.string.modes_chaos_win,
+                    R.string.modes_chaos_tip
                 )
             ).forEach { mode ->
                 Column(Modifier.fillMaxWidth().clip(MaterialTheme.shapes.large).background(Neon.Night).padding(18.dp)) {
@@ -143,7 +143,6 @@ internal fun ModesSheet(onDismiss: () -> Unit) {
             listOf(
                 Triple("🎨", R.string.modes_drawing_title, R.string.modes_drawing),
                 Triple("🏆", R.string.modes_scores_title, R.string.modes_scores),
-                Triple("🌀", R.string.modes_chaos_title, R.string.modes_chaos),
                 Triple("💡", R.string.modes_hint_title, R.string.modes_hint),
                 Triple("⏱️", R.string.modes_timer_title, R.string.modes_timer)
             ).forEach { (emoji, title, body) ->

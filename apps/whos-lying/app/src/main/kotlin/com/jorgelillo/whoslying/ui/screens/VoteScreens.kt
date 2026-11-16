@@ -176,7 +176,7 @@ internal fun VotingScreen(
 
 /**
  * "Exposed in 3, 2, 1…" and then who the voted player really was. Game over goes straight to the
- * result ([onGameOver]); an eliminated drifter first gets one guess at the word.
+ * result ([onGameOver]); an eliminated journalist first gets one guess at the word.
  */
 @Composable
 internal fun ExposeScreen(
@@ -205,7 +205,7 @@ internal fun ExposeScreen(
         val background = when {
             count > 0 -> Neon.RevealBackdrop
             card.role == Role.CIVILIAN -> Neon.ImpostorsBackdrop
-            card.role == Role.DRIFTER -> Neon.DrifterBackdrop
+            card.role == Role.JOURNALIST -> Neon.JournalistBackdrop
             else -> Neon.CiviliansBackdrop
         }
         LilloPage(
@@ -264,9 +264,9 @@ private fun ColumnScope.EliminatedCard(card: Card, game: Game, guessResult: Bool
             stringResource(R.string.out_impostor_desc)
         )
 
-        Role.DRIFTER -> Triple(
-            "🤷",
-            stringResource(R.string.out_was_drifter, card.player),
+        Role.JOURNALIST -> Triple(
+            "📰",
+            stringResource(R.string.out_was_journalist, card.player),
             stringResource(R.string.guess_desc)
         )
     }
@@ -326,7 +326,7 @@ private fun ColumnScope.EliminatedCard(card: Card, game: Game, guessResult: Bool
         Text(
             if (guessResult == false) {
                 stringResource(R.string.guess_wrong)
-            } else if (card.role == Role.DRIFTER) {
+            } else if (card.role == Role.JOURNALIST) {
                 ""
             } else {
                 body
@@ -339,7 +339,7 @@ private fun ColumnScope.EliminatedCard(card: Card, game: Game, guessResult: Bool
     }
 }
 
-/** The eliminated drifter's one shot at the civilians' word. */
+/** The eliminated journalist's one shot at the civilians' word. */
 @Composable
 private fun ColumnScope.GuessInput(onGuess: (String) -> Unit) {
     var text by rememberSaveable { mutableStateOf("") }

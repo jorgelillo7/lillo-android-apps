@@ -28,7 +28,13 @@ class GameSerializationTest {
 
     @Test
     fun aJournalistWaitingToGuessComesBackWaiting() {
-        val dealt = Game.deal(players, GameSettings(GameMode.MYSTERIOUS, journalists = 1), pack, pack.entries.first(), Random(3))
+        val dealt = Game.deal(
+            players,
+            GameSettings(GameMode.MYSTERIOUS, journalists = 1),
+            pack,
+            pack.entries.first(),
+            Random(3)
+        )
         val waiting = dealt.eliminate(dealt.cards.single { it.role == Role.JOURNALIST }.player)
 
         val restored = roundTrip(waiting)

@@ -113,7 +113,7 @@ internal fun DebateScreen(
                 // After the first vote, the next round starts with whoever is still in.
                 val starter =
                     game.starter.takeIf { it in alive }
-                        ?: game.cards.first { it.player in alive && it.role != Role.DRIFTER }.player
+                        ?: game.cards.first { it.player in alive && it.role != Role.JOURNALIST }.player
                 Text(
                     stringResource(R.string.countdown_starts, starter),
                     color = Neon.AmberText,

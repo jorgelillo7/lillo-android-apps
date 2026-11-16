@@ -9,7 +9,9 @@ object Scoring {
     const val CIVILIAN_WIN = 5
     const val INFILTRATOR_WIN = 15
 
-    fun points(game: Game): Map<String, Int> = if (!game.scored) emptyMap() else when (val outcome = game.outcome) {
+    fun points(game: Game): Map<String, Int> = if (game.scored) winners(game) else emptyMap()
+
+    private fun winners(game: Game): Map<String, Int> = when (val outcome = game.outcome) {
         Outcome.CiviliansWin -> game.cards.filter { it.role == Role.CIVILIAN }.associate { it.player to CIVILIAN_WIN }
 
         is Outcome.InfiltratorsWin -> game.cards.filter { it.role in outcome.roles }.associate {

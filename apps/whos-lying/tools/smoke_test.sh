@@ -17,7 +17,7 @@ done
 hide_keyboard
 shot players
 tap continue 3
-tap mode_classic 1
+tap mode_mysterious 1
 shot setup
 tap start 3
 for _ in 1 2 3; do

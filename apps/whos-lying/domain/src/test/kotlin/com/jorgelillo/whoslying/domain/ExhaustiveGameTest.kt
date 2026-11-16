@@ -39,8 +39,8 @@ class ExhaustiveGameTest {
                         for (journalists in journalistCounts) {
                             for (impostors in 0..cap - journalists) {
                                 val settings = GameSettings(mode, impostors, hint, journalists, drawing = drawing)
-                                val valid = mode == GameMode.CHAOS || impostors + journalists >= 1 &&
-                                    (impostors >= 1 || mode == GameMode.MYSTERIOUS)
+                                val valid = mode == GameMode.CHAOS ||
+                                    (impostors + journalists >= 1 && (impostors >= 1 || mode == GameMode.MYSTERIOUS))
                                 assertEquals(valid, Rules.canStart(n, settings), "$settings n=$n")
                                 if (!valid) continue
                                 repeat(SEEDS) { seed ->
@@ -194,20 +194,24 @@ class ExhaustiveGameTest {
 
     private fun checkPoints(game: Game) {
         val points = Scoring.points(game)
-        val expected = if (!game.scored) emptyMap() else when (val outcome = game.outcome) {
-            Outcome.CiviliansWin -> game.cards.filter { it.role == Role.CIVILIAN }.associate {
-                it.player to
-                    Scoring.CIVILIAN_WIN
+        val expected = if (!game.scored) {
+            emptyMap()
+        } else {
+            when (val outcome = game.outcome) {
+                Outcome.CiviliansWin -> game.cards.filter { it.role == Role.CIVILIAN }.associate {
+                    it.player to
+                        Scoring.CIVILIAN_WIN
+                }
+
+                is Outcome.InfiltratorsWin -> game.cards.filter { it.role in outcome.roles }.associate {
+                    it.player to
+                        Scoring.INFILTRATOR_WIN
+                }
+
+                Outcome.JournalistGuessed -> mapOf(game.lastElimination!!.player to Scoring.INFILTRATOR_WIN)
+
+                else -> emptyMap()
             }
-
-            is Outcome.InfiltratorsWin -> game.cards.filter { it.role in outcome.roles }.associate {
-                it.player to
-                    Scoring.INFILTRATOR_WIN
-            }
-
-            Outcome.JournalistGuessed -> mapOf(game.lastElimination!!.player to Scoring.INFILTRATOR_WIN)
-
-            else -> emptyMap()
         }
         assertEquals(expected, points, "points for ${game.outcome}")
     }

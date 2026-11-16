@@ -174,7 +174,14 @@ class Game private constructor(
                     else -> Role.CIVILIAN
                 }
                 when {
-                    role == Role.CIVILIAN -> Card(name, role, entry.word, hint = null, knowsRole = settings.mode != GameMode.MYSTERIOUS)
+                    role == Role.CIVILIAN -> Card(
+                        name,
+                        role,
+                        entry.word,
+                        hint = null,
+                        knowsRole =
+                            settings.mode != GameMode.MYSTERIOUS
+                    )
 
                     role == Role.JOURNALIST -> Card(name, role, word = null, hint = null, knowsRole = true)
 
