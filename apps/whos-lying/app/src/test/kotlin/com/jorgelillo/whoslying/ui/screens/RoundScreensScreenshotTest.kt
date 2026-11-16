@@ -59,7 +59,7 @@ class RoundScreensScreenshotTest {
     private val players = listOf("Ana", "Bea", "Carlos", "Dani", "Eva")
     private val pack = WordPack("places", "Places", "🗺️", listOf(Entry("Beach", listOf("Pool"))))
 
-    private fun deal(mode: GameMode) = Game.deal(players, GameSettings(mode), pack, pack.entries.first(), Random(3))
+    private fun deal(settings: GameSettings) = Game.deal(players, settings, pack, pack.entries.first(), Random(3))
 
     /** Each screen in the dark look under its name, and in the light look with `_light` added. */
     private fun shot(
@@ -78,7 +78,7 @@ class RoundScreensScreenshotTest {
 
     private val group = HomeGroup(
         players,
-        GameSettings(GameMode.CLASSIC, rounds = 10, drawing = true),
+        GameSettings(GameMode.MYSTERIOUS, rounds = 10, drawing = true),
         scores = mapOf("Bea" to 12, "Ana" to 7),
         roundsPlayed = 3
     )
@@ -135,13 +135,13 @@ class RoundScreensScreenshotTest {
     fun homeWithGroupLargestFont() = home("home_group_large_font", group, dark = false)
 
     private fun voting(name: String, dark: Boolean = true) = shot(name, dark) {
-        val game = deal(GameMode.CLASSIC)
+        val game = deal(GameSettings(GameMode.MYSTERIOUS))
         VotingScreen(game, game.alive.map { it.player }.toSet(), forced = false, onConfirm = {}, onBack = {})
     }
 
     private fun lastChance(name: String) {
-        val game = deal(GameMode.DRIFTER).let {
-            it.eliminate(it.cards.single { card -> card.role == Role.DRIFTER }.player)
+        val game = deal(GameSettings(GameMode.MYSTERIOUS, journalists = 1)).let {
+            it.eliminate(it.cards.single { card -> card.role == Role.JOURNALIST }.player)
         }
         // Past the "exposed in 3, 2, 1…" countdown.
         shot(name, beforeCapture = { compose.mainClock.advanceTimeBy(3_000) }) {
@@ -291,11 +291,11 @@ class RoundScreensScreenshotTest {
     @Config(qualifiers = "+land")
     fun votingLandscape() = voting("voting_landscape")
 
-    @Test fun drifterLastChancePortrait() = lastChance("drifter_last_chance")
+    @Test fun journalistLastChancePortrait() = lastChance("journalist_last_chance")
 
     @Test
     @Config(qualifiers = "+land")
-    fun drifterLastChanceLandscape() = lastChance("drifter_last_chance_landscape")
+    fun journalistLastChanceLandscape() = lastChance("journalist_last_chance_landscape")
 
     @Test fun resultPortrait() = result("result")
 

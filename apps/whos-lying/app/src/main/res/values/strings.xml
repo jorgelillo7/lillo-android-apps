@@ -31,17 +31,17 @@
 
     <!-- Setup -->
     <string name="setup_title">Game setup</string>
-    <string name="mode_classic">Classic</string>
-    <string name="mode_classic_desc">The impostor gets a similar word and doesn\'t know they\'re the impostor.</string>
-    <string name="mode_blind">Blind</string>
-    <string name="mode_blind_desc">The impostor gets no word and has to bluff.</string>
-    <string name="mode_drifter">The Drifter</string>
-    <string name="mode_drifter_desc">Classic, plus a Drifter with no word who wins by guessing it.</string>
+    <string name="mode_original">Original</string>
+    <string name="mode_original_desc">Everyone knows their role. Impostors get no word, or a similar one as a hint.</string>
+    <string name="mode_mysterious">Mysterious</string>
+    <string name="mode_mysterious_desc">Nobody knows what they are: impostors get a similar word without knowing it.</string>
+    <string name="mode_chaos">Chaos</string>
+    <string name="mode_chaos_desc">Every few rounds chaos strikes: more impostors… sometimes everyone. No points.</string>
     <string name="setup_impostors">Impostors</string>
-    <string name="setup_hint">Category hint</string>
-    <string name="setup_hint_desc">Players without a word see the pack name</string>
-    <string name="setup_chaos">Chaos</string>
-    <string name="setup_chaos_desc">Some games get a random number of impostors… sometimes everyone</string>
+    <string name="setup_hint">Hint for impostors</string>
+    <string name="setup_hint_desc">Impostors see a word similar to the civilians\' one</string>
+    <string name="setup_journalists">Journalists</string>
+    <string name="setup_journalists_desc">No word: if voted out, they guess it to win</string>
     <string name="setup_packs">Packs</string>
     <string name="start">Start</string>
 
@@ -50,10 +50,10 @@
     <string name="reveal_tap">Slide up to see your word.\nLet go and it hides itself.</string>
     <string name="reveal_your_word">Your word</string>
     <string name="reveal_you_are_impostor">You are the impostor</string>
-    <string name="reveal_you_are_drifter">You are the Drifter</string>
+    <string name="reveal_you_are_journalist">You are the Journalist</string>
     <string name="reveal_impostor_desc">You have no word. Listen, blend in and don\'t get caught.</string>
-    <string name="reveal_drifter_desc">You have no word. If you\'re voted out, guess the word to win.</string>
-    <string name="reveal_hint">Category: %1$s</string>
+    <string name="reveal_journalist_desc">You have no word. If you\'re voted out, guess the word to win.</string>
+    <string name="reveal_hint">Your hint: %1$s</string>
     <string name="reveal_hide">Next player</string>
     <string name="reveal_counter">%1$d of %2$d</string>
 
@@ -66,11 +66,11 @@
     <string name="vote_reveal_all">End and reveal</string>
     <string name="out_was_civilian">%1$s was a civilian</string>
     <string name="out_was_impostor">%1$s was an impostor!</string>
-    <string name="out_was_drifter">%1$s was the Drifter!</string>
+    <string name="out_was_journalist">%1$s was a Journalist!</string>
     <string name="out_their_word">Their word: %1$s</string>
     <string name="next_vote">Keep playing</string>
 
-    <!-- Drifter guess -->
+    <!-- Journalist guess -->
     <string name="guess_title">Last chance, %1$s</string>
     <string name="guess_desc">Guess the civilians\' word to win the game.</string>
     <string name="guess_hint">The word</string>
@@ -79,15 +79,15 @@
 
     <!-- Result -->
     <string name="result_impostors">The impostors win!</string>
-    <string name="result_impostors_drifter">Impostors and Drifter win!</string>
-    <string name="result_drifter">The Drifter wins!</string>
-    <string name="result_drifter_guessed">The Drifter guessed the word!</string>
+    <string name="result_impostors_journalists">Impostors and Journalists win!</string>
+    <string name="result_journalists">The Journalists win!</string>
+    <string name="result_journalist_guessed">The Journalist guessed the word!</string>
     <string name="result_nobody">Everyone was an impostor! 🎭</string>
     <string name="result_ended">Game over</string>
     <string name="result_roles">Who was who</string>
     <string name="role_civilian">Civilian</string>
     <string name="role_impostor">Impostor</string>
-    <string name="role_drifter">Drifter</string>
+    <string name="role_journalist">Journalist</string>
     <string name="home">Home</string>
 
     <!-- Packs -->
@@ -127,7 +127,7 @@
     <string name="how_3_title">3 · Vote</string>
     <string name="how_3">Discuss and vote someone out. The app reveals what they were.</string>
     <string name="how_4_title">4 · Win</string>
-    <string name="how_4">Civilians win by voting out every impostor. Impostors win if only one civilian is left. The Drifter can also win by guessing the word when voted out.</string>
+    <string name="how_4">Civilians win by voting out every impostor. Impostors win if only one civilian is left. A Journalist can also win by guessing the word when voted out.</string>
 
     <!-- About -->
     <string name="about_version">Version %1$s</string>
@@ -151,23 +151,21 @@
 
     <!-- Game modes guide -->
     <string name="modes_title">Game modes</string>
-    <string name="modes_intro">All modes play the same way: everyone sees their word in secret, gives one clue per turn, and you vote someone out. What changes is who gets what.</string>
+    <string name="modes_intro">All modes play the same way: everyone looks at their card in secret, gives one clue per turn, and you vote someone out. What changes is who gets what, and who knows it.</string>
     <string name="modes_who_gets">Who gets what</string>
     <string name="modes_how_win">How to win</string>
     <string name="modes_tip">Tip</string>
-    <string name="modes_classic_who">Civilians get the word. The impostor gets a similar one (Beach vs. Pool) and isn\'t told they\'re the impostor: everyone sees the same screen.</string>
-    <string name="modes_classic_win">Civilians: vote out every impostor. Impostors: last until only one civilian is left, without realising it at first.</string>
-    <string name="modes_classic_tip">If the others\' clues don\'t quite fit your word… maybe you\'re the impostor. The best mode once the group knows the game. From 3 players.</string>
-    <string name="modes_blind_who">Civilians get the word. Impostors get nothing, not even the category, and know they\'re impostors.</string>
-    <string name="modes_blind_win">The same: civilians vote them all out, impostors survive until one civilian is left.</string>
-    <string name="modes_blind_tip">Impostor: listen before you speak and give vague clues. Civilians: not too obvious or they\'ll catch on. Great for first games and kids. From 3 players.</string>
-    <string name="modes_drifter_who">Like Classic, plus one Drifter with no word who knows it. The Drifter never starts the round.</string>
-    <string name="modes_drifter_win">If the Drifter is voted out, they get one last guess at the word: get it right and they win alone. If not, the game goes on. If they survive until one civilian is left, they win with the impostors.</string>
-    <string name="modes_drifter_tip">Civilians: careful with clues that give the word away. Drifter: pretend and piece it together from the clues. From 4 players.</string>
-    <string name="modes_chaos_title">Chaos (any mode)</string>
-    <string name="modes_chaos">About one game in three ignores the impostor count: there can be one, several… or everyone. Nobody knows how many there are, so trust no one.</string>
-    <string name="modes_hint_title">Category hint</string>
-    <string name="modes_hint">In The Drifter and drawing mode, players without a word see which pack it comes from (never in Blind: there impostors get nothing). Turn it off for a harder game.</string>
+    <string name="modes_original_who">Civilians get the word. Impostors get no word, or with the hint on, a similar one (Beach vs. Pool). Everyone is told their role.</string>
+    <string name="modes_original_win">Civilians: vote out every impostor. Impostors: last until only one civilian is left.</string>
+    <string name="modes_original_tip">Impostor: listen before you speak and give vague clues. Civilians: not too obvious or they\'ll catch on. The best mode to start with. Turn the hint off for a harder game.</string>
+    <string name="modes_mysterious_who">Civilians get the word. Impostors get a similar one and aren\'t told they\'re impostors: everyone sees the same screen. You can add Journalists, who get no word and know it.</string>
+    <string name="modes_mysterious_win">Civilians: vote out every impostor and journalist. A journalist voted out gets one guess at the word: right, they win alone; wrong, the game goes on. Impostors and journalists win if they last until one civilian is left.</string>
+    <string name="modes_mysterious_tip">If the others\' clues don\'t quite fit your word… maybe you\'re the impostor. Journalist: blend in and piece the word together. A journalist never starts.</string>
+    <string name="modes_chaos_who">Like Original with the hint on and a random number of impostors, up to half the group. But every few rounds chaos strikes: more impostors than that, some without a hint, and one round in five everyone is an impostor, with no hint at all. Nobody knows how many there are.</string>
+    <string name="modes_chaos_win">No winners, no losers, only survivors: Chaos never scores. Play it for the laughs.</string>
+    <string name="modes_chaos_tip">Trust no one, not even yourself.</string>
+    <string name="modes_hint_title">Hint for impostors</string>
+    <string name="modes_hint">In Original, impostors can get a word similar to the civilians\' one, so they can bluff better. Turn it off for a harder game. In Chaos it is always on, but some impostors may miss it.</string>
     <string name="modes_timer_title">Discussion time</string>
     <string name="modes_timer">An optional countdown before each vote, so nobody drags it out. When time\'s up it beeps and you go straight to the vote.</string>
 
@@ -213,11 +211,11 @@
     <string name="result_sub_civilians">Victory! The civilians win.</string>
     <string name="result_sub_infiltrators_vote">A civilian was voted out and only one is left.</string>
     <string name="result_sub_infiltrators">Only one civilian is left: they got away with it!</string>
-    <string name="result_sub_drifter">They guessed the word when voted out.</string>
+    <string name="result_sub_journalist">They guessed the word when voted out.</string>
     <string name="result_sub_nobody">There wasn\'t a single civilian.</string>
     <string name="result_sub_ended">You ended the game early.</string>
     <string name="result_secret_word">Secret word</string>
-    <string name="result_decoy">Impostor\'s word</string>
+    <string name="result_decoy">Impostor\'s hint</string>
     <plurals name="result_impostors_label">
         <item quantity="one">Impostor</item>
         <item quantity="other">Impostors</item>
@@ -232,11 +230,11 @@
     <string name="result_share">Share</string>
     <string name="drawing_share_caption">Our drawing of "%1$s" in Who\'s lying? %2$s</string>
     <string name="modes_drawing_title">Drawing mode (any mode)</string>
-    <string name="modes_drawing">Instead of saying clues, you draw the word together on one canvas: pass the phone and each adds a stroke or a detail. Impostors get no word (just the category, if the hint is on and the mode isn\'t Blind) and have to bluff. Then vote as usual, and share the masterpiece at the end.</string>
+    <string name="modes_drawing">Instead of saying clues, you draw the word together on one canvas: pass the phone and each adds a stroke or a detail. Impostors draw with their hint, if they get one, or blind (in Mysterious they draw blind and know it). Then vote as usual, and share the masterpiece at the end.</string>
     <string name="modes_scores_title">Scores</string>
-    <string name="modes_scores">Every player on the winning side scores, even if voted out: civilians 5 points, impostors and the Drifter 15. Points add up over the match (10 rounds by default, change it in setup); the ranking shows after every round, and after the last one the winner is crowned.</string>
+    <string name="modes_scores">Every player on the winning side scores, even if voted out: civilians 5 points, impostors and journalists 15 (a journalist who guesses the word scores alone). Points add up over the match (rounds follow the group size, change them in setup); the ranking shows after every round, and after the last one the winner is crowned. Chaos never scores.</string>
     <string name="scores_title">Ranking</string>
-    <string name="scores_rules">Civilians win 5 points, impostors and the Drifter 15.</string>
+    <string name="scores_rules">Civilians win 5 points, impostors and journalists 15.</string>
     <string name="scores_reset">Reset scores</string>
     <string name="scores_reset_confirm">Tap again to reset</string>
 
@@ -258,7 +256,7 @@
     <!-- Report a word -->
     <string name="report_title">Report this word</string>
     <string name="report_word">Civilians\' word: %1$s</string>
-    <string name="report_decoy">Impostor\'s word: %1$s</string>
+    <string name="report_decoy">Impostor\'s hint: %1$s</string>
     <string name="report_pick">Pick everything that applies</string>
     <string name="report_offensive">Offensive</string>
     <string name="report_typo">Spelling mistake</string>

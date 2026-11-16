@@ -65,7 +65,7 @@ class GameViewModelTest {
             vm.addPlayers("Ana", "Bea", "Carlos", "Dani", "Eva", "Fran", "Gus")
             awaitMatching { it.players.size == 7 }
             vm.updateSettings { it.copy(impostors = 5) }
-            // Seven players leave room for three impostors (fewer than half of the others).
+            // Seven players leave room for three impostors (at most half the group).
             assertEquals(3, awaitMatching { it.settings.impostors != 1 }.settings.impostors)
         }
     }

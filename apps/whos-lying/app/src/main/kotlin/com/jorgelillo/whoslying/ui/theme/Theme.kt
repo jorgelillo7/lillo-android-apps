@@ -40,7 +40,7 @@ object Neon {
     // 4.5:1 or more (WCAG AA), checked by the accessibility checks in the screenshot tests.
     val CiviliansBackdrop = Brush.verticalGradient(listOf(Color(0xFF0A72D6), Color(0xFF2346E8)))
     val ImpostorsBackdrop = Brush.verticalGradient(listOf(Color(0xFFC2410C), Color(0xFFC81E3A)))
-    val DrifterBackdrop = Brush.verticalGradient(listOf(Color(0xFFB45309), Color(0xFFBE185D)))
+    val JournalistBackdrop = Brush.verticalGradient(listOf(Color(0xFFB45309), Color(0xFFBE185D)))
 
     private val look: NeonLook
         @Composable

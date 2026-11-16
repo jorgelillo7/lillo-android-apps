@@ -2,13 +2,16 @@ package com.jorgelillo.whoslying.domain
 
 /**
  * Points for a finished game, added up across games: every player on the winning side scores,
- * eliminated or not. Impostors and the drifter score more because they are outnumbered.
+ * eliminated or not. Impostors and journalists score more because they are outnumbered. Chaos
+ * games score nobody.
  */
 object Scoring {
     const val CIVILIAN_WIN = 5
     const val INFILTRATOR_WIN = 15
 
-    fun points(game: Game): Map<String, Int> = when (val outcome = game.outcome) {
+    fun points(game: Game): Map<String, Int> = if (game.scored) winners(game) else emptyMap()
+
+    private fun winners(game: Game): Map<String, Int> = when (val outcome = game.outcome) {
         Outcome.CiviliansWin -> game.cards.filter { it.role == Role.CIVILIAN }.associate { it.player to CIVILIAN_WIN }
 
         is Outcome.InfiltratorsWin -> game.cards.filter { it.role in outcome.roles }.associate {
@@ -16,9 +19,8 @@ object Scoring {
                 INFILTRATOR_WIN
         }
 
-        Outcome.DrifterGuessed -> game.cards.filter {
-            it.role == Role.DRIFTER
-        }.associate { it.player to INFILTRATOR_WIN }
+        // The journalist who just guessed the word wins alone.
+        Outcome.JournalistGuessed -> listOfNotNull(game.lastElimination?.player).associateWith { INFILTRATOR_WIN }
 
         Outcome.NoCivilians, Outcome.EndedEarly, null -> emptyMap()
     }

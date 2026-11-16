@@ -61,18 +61,18 @@ internal fun ResultScreen(
     NightStage {
         val outcome = game.outcome
         val impostors = game.cards.filter { it.role == Role.IMPOSTOR }
-        val drifter = game.cards.firstOrNull { it.role == Role.DRIFTER }
+        val journalists = game.cards.filter { it.role == Role.JOURNALIST }
         val (emojis, title, subtitle) = when (outcome) {
             Outcome.CiviliansWin -> Triple(
                 "😎🕵️😱",
-                pluralStringResource(R.plurals.result_caught, impostors.size + (if (drifter != null) 1 else 0)),
+                pluralStringResource(R.plurals.result_caught, impostors.size + journalists.size),
                 stringResource(R.string.result_sub_civilians)
             )
 
-            Outcome.DrifterGuessed -> Triple(
-                "🤷💡🤯",
-                stringResource(R.string.result_drifter_guessed),
-                stringResource(R.string.result_sub_drifter)
+            Outcome.JournalistGuessed -> Triple(
+                "📰💡🤯",
+                stringResource(R.string.result_journalist_guessed),
+                stringResource(R.string.result_sub_journalist)
             )
 
             Outcome.NoCivilians -> Triple(
@@ -90,9 +90,9 @@ internal fun ResultScreen(
             is Outcome.InfiltratorsWin -> Triple(
                 "😏🕵️😏",
                 when (outcome.roles) {
-                    setOf(Role.DRIFTER) -> stringResource(R.string.result_drifter)
+                    setOf(Role.JOURNALIST) -> stringResource(R.string.result_journalists)
                     setOf(Role.IMPOSTOR) -> stringResource(R.string.result_impostors)
-                    else -> stringResource(R.string.result_impostors_drifter)
+                    else -> stringResource(R.string.result_impostors_journalists)
                 },
                 if (lastElimination?.role ==
                     Role.CIVILIAN
@@ -108,14 +108,14 @@ internal fun ResultScreen(
         val background = when (outcome) {
             Outcome.CiviliansWin -> Neon.CiviliansBackdrop
 
-            Outcome.DrifterGuessed -> Neon.DrifterBackdrop
+            Outcome.JournalistGuessed -> Neon.JournalistBackdrop
 
             is Outcome.InfiltratorsWin -> if (Role.IMPOSTOR in
                 outcome.roles
             ) {
                 Neon.ImpostorsBackdrop
             } else {
-                Neon.DrifterBackdrop
+                Neon.JournalistBackdrop
             }
 
             else -> Neon.RevealBackdrop
@@ -200,7 +200,9 @@ internal fun ResultScreen(
                                 }
                             )
                         }
-                        drifter?.let { LabelValue(stringResource(R.string.role_drifter), it.player) }
+                        if (journalists.isNotEmpty()) {
+                            LabelValue(stringResource(R.string.role_journalist), journalists.joinToString { it.player })
+                        }
                     }
                     if (drawing.isNotEmpty()) {
                         Spacer(Modifier.height(12.dp))
@@ -295,7 +297,7 @@ internal fun roleLabel(role: Role): String = stringResource(
     when (role) {
         Role.CIVILIAN -> R.string.role_civilian
         Role.IMPOSTOR -> R.string.role_impostor
-        Role.DRIFTER -> R.string.role_drifter
+        Role.JOURNALIST -> R.string.role_journalist
     }
 )
 
@@ -303,5 +305,5 @@ internal fun roleLabel(role: Role): String = stringResource(
 internal fun roleColor(role: Role): Color = when (role) {
     Role.CIVILIAN -> Neon.Turquoise
     Role.IMPOSTOR -> Neon.PinkText
-    Role.DRIFTER -> Neon.AmberText
+    Role.JOURNALIST -> Neon.AmberText
 }

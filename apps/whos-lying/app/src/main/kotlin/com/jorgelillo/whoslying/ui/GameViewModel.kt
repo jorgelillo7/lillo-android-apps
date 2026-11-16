@@ -129,9 +129,7 @@ class GameViewModel(
     fun removePlayer(name: String) = update { it.copy(players = it.players - name) }
 
     fun updateSettings(transform: (GameSettings) -> GameSettings) = update { s ->
-        val next = transform(s.settings)
-        val max = Rules.maxImpostors(s.players.size, next.mode).coerceAtLeast(1)
-        s.copy(settings = next.copy(impostors = next.impostors.coerceIn(1, max)))
+        s.copy(settings = Rules.fit(transform(s.settings), s.players.size))
     }
 
     /**
@@ -199,8 +197,8 @@ class GameViewModel(
         keep()
     }
 
-    /** True if the drifter guessed the word. */
-    fun guess(text: String): Boolean = move { it.guess(text) }?.drifterGuessed ?: false
+    /** True if the journalist guessed the word. */
+    fun guess(text: String): Boolean = move { it.guess(text) }?.journalistGuessed ?: false
 
     fun dismissElimination() {
         _lastElimination.value = null

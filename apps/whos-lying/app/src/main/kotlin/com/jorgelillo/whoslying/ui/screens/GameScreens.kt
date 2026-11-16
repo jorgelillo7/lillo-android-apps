@@ -206,7 +206,13 @@ private val Curtain = Brush.verticalGradient(listOf(Color(0xFF9B7DFF), Color(0xF
 
 @Composable
 private fun SecretCard(card: Card, compact: Boolean) {
-    val accent = if (card.knowsRole) Neon.Pink else Neon.Turquoise
+    val noWord = card.word == null
+    val accent = when {
+        !card.knowsRole -> Neon.Turquoise
+        card.role == Role.CIVILIAN -> Neon.Turquoise
+        card.role == Role.JOURNALIST -> Neon.Amber
+        else -> Neon.Pink
+    }
     Column(
         Modifier
             .fillMaxWidth()
@@ -222,39 +228,57 @@ private fun SecretCard(card: Card, compact: Boolean) {
             Spacer(Modifier.height(18.dp))
         }
         if (card.knowsRole) {
-            Emoji(if (card.role == Role.DRIFTER) "🤷" else "🕵️", size = if (compact) 36 else 64)
+            Emoji(
+                when (card.role) {
+                    Role.CIVILIAN -> "👥"
+                    Role.IMPOSTOR -> "🕵️"
+                    Role.JOURNALIST -> "📰"
+                },
+                size = if (compact) 36 else 64
+            )
             Text(
-                stringResource(
-                    if (card.role ==
-                        Role.DRIFTER
-                    ) {
-                        R.string.reveal_you_are_drifter
-                    } else {
-                        R.string.reveal_you_are_impostor
-                    }
-                ),
+                when (card.role) {
+                    Role.CIVILIAN -> stringResource(R.string.role_civilian)
+                    Role.IMPOSTOR -> stringResource(R.string.reveal_you_are_impostor)
+                    Role.JOURNALIST -> stringResource(R.string.reveal_you_are_journalist)
+                },
                 color = accent,
                 style = if (compact) MaterialTheme.typography.titleLarge else MaterialTheme.typography.headlineMedium,
                 fontWeight = FontWeight.Black,
-                textAlign = TextAlign.Center
-            )
-            Text(
-                stringResource(
-                    if (card.role ==
-                        Role.DRIFTER
-                    ) {
-                        R.string.reveal_drifter_desc
-                    } else {
-                        R.string.reveal_impostor_desc
-                    }
-                ),
-                color = Neon.Muted,
-                style = if (compact) MaterialTheme.typography.bodySmall else MaterialTheme.typography.bodyLarge,
                 textAlign = TextAlign.Center,
-                modifier = Modifier.padding(top = if (compact) 2.dp else 8.dp)
+                modifier = Modifier.testTag("secret_role")
+            )
+        }
+        if (noWord) {
+            val hint = card.hint
+            Text(
+                if (hint != null) {
+                    stringResource(R.string.reveal_hint, hint)
+                } else {
+                    stringResource(
+                        if (card.role ==
+                            Role.JOURNALIST
+                        ) {
+                            R.string.reveal_journalist_desc
+                        } else {
+                            R.string.reveal_impostor_desc
+                        }
+                    )
+                },
+                color = if (hint != null) Color.White else Neon.Muted,
+                style = if (hint != null) {
+                    MaterialTheme.typography.headlineSmall
+                } else if (compact) {
+                    MaterialTheme.typography.bodySmall
+                } else {
+                    MaterialTheme.typography.bodyLarge
+                },
+                fontWeight = if (hint != null) FontWeight.Bold else null,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(top = if (compact) 2.dp else 8.dp).testTag("secret_hint")
             )
         } else {
-            // CLASSIC impostors also land here: same layout as civilians, so nothing gives them away.
+            // Mysterious impostors also land here: the same layout as civilians, so nothing gives them away.
             Text(stringResource(R.string.reveal_your_word), color = Neon.Muted)
             Text(
                 card.word.orEmpty(),
@@ -264,13 +288,6 @@ private fun SecretCard(card: Card, compact: Boolean) {
                 textAlign = TextAlign.Center,
                 lineHeight = if (compact) 36.sp else 48.sp,
                 modifier = Modifier.padding(vertical = if (compact) 2.dp else 8.dp).testTag("secret_word")
-            )
-        }
-        card.hint?.let { hint ->
-            Text(
-                stringResource(R.string.reveal_hint, hint),
-                color = Neon.AmberText,
-                modifier = Modifier.padding(top = if (compact) 4.dp else 14.dp)
             )
         }
     }

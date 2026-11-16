@@ -133,9 +133,9 @@ private fun GroupSummary(group: HomeGroup) {
     val settings = group.settings
     val mode = stringResource(
         when (settings.mode) {
-            GameMode.CLASSIC -> R.string.mode_classic
-            GameMode.BLIND -> R.string.mode_blind
-            GameMode.DRIFTER -> R.string.mode_drifter
+            GameMode.ORIGINAL -> R.string.mode_original
+            GameMode.MYSTERIOUS -> R.string.mode_mysterious
+            GameMode.CHAOS -> R.string.mode_chaos
         }
     )
     val chips = buildList {
@@ -275,7 +275,7 @@ internal fun SetupScreen(
     onStart: () -> Unit,
     onBack: () -> Unit
 ) {
-    val maxImpostors = Rules.maxImpostors(playerCount, settings.mode).coerceAtLeast(1)
+    val cap = Rules.maxInfiltrators(playerCount).coerceAtLeast(1)
     // On short screens a fixed button would leave almost no room to scroll: it goes at the end of the list.
     val short = isShortScreen()
     val startButton: @Composable () -> Unit = {
@@ -297,12 +297,11 @@ internal fun SetupScreen(
                 Text("ⓘ  " + stringResource(R.string.setup_which_mode), color = Neon.TurquoiseText)
             }
             listOf(
-                Triple(GameMode.CLASSIC, R.string.mode_classic to R.string.mode_classic_desc, "🎭"),
-                Triple(GameMode.BLIND, R.string.mode_blind to R.string.mode_blind_desc, "🙈"),
-                Triple(GameMode.DRIFTER, R.string.mode_drifter to R.string.mode_drifter_desc, "🤷")
+                Triple(GameMode.ORIGINAL, R.string.mode_original to R.string.mode_original_desc, "🕵️"),
+                Triple(GameMode.MYSTERIOUS, R.string.mode_mysterious to R.string.mode_mysterious_desc, "🎭"),
+                Triple(GameMode.CHAOS, R.string.mode_chaos to R.string.mode_chaos_desc, "🌀")
             ).forEach { (mode, texts, emoji) ->
                 val selected = settings.mode == mode
-                val enabled = playerCount >= Rules.minPlayers(mode)
                 Row(
                     Modifier
                         .fillMaxWidth()
@@ -310,7 +309,7 @@ internal fun SetupScreen(
                         .clip(MaterialTheme.shapes.large)
                         .background(if (selected) Neon.CardHigh else Neon.Card)
                         .border(2.dp, if (selected) Neon.Violet else Color.Transparent, MaterialTheme.shapes.large)
-                        .clickable(enabled = enabled) { onChange { it.copy(mode = mode) } }
+                        .clickable { onChange { it.copy(mode = mode) } }
                         .padding(16.dp)
                         .testTag("mode_${mode.name.lowercase()}"),
                     verticalAlignment = Alignment.CenterVertically
@@ -321,7 +320,7 @@ internal fun SetupScreen(
                         Text(
                             stringResource(texts.first),
                             fontWeight = FontWeight.Bold,
-                            color = if (enabled) Neon.Ink else Neon.Muted
+                            color = Neon.Ink
                         )
                         Text(
                             stringResource(texts.second),
@@ -332,36 +331,35 @@ internal fun SetupScreen(
                 }
             }
 
-            SettingRow(stringResource(R.string.setup_impostors), null) {
-                IconButton(
-                    onClick = { onChange { it.copy(impostors = it.impostors - 1) } },
-                    enabled =
-                        settings.impostors > 1,
-                    modifier = Modifier.testTag("impostors_minus")
-                ) {
-                    Text("−", style = MaterialTheme.typography.headlineSmall)
-                }
-                Text(
-                    "${settings.impostors}",
-                    style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier.padding(horizontal = 8.dp)
-                )
-                IconButton(
-                    onClick = { onChange { it.copy(impostors = it.impostors + 1) } },
-                    enabled =
-                        settings.impostors < maxImpostors,
-                    modifier = Modifier.testTag("impostors_plus")
-                ) {
-                    Text("+", style = MaterialTheme.typography.headlineSmall)
+            if (settings.mode != GameMode.CHAOS) {
+                SettingRow(stringResource(R.string.setup_impostors), null) {
+                    Stepper(
+                        value = settings.impostors,
+                        canLower = settings.impostors > Rules.minImpostors(settings),
+                        canRaise = settings.impostors + settings.journalists < cap,
+                        tag = "impostors",
+                        onChange = { v -> onChange { it.copy(impostors = v) } }
+                    )
                 }
             }
-            if (Rules.hintAvailable(settings)) {
+            if (settings.mode == GameMode.ORIGINAL) {
                 SettingRow(stringResource(R.string.setup_hint), stringResource(R.string.setup_hint_desc)) {
-                    NeonSwitch(settings.categoryHint, "hint") { v -> onChange { it.copy(categoryHint = v) } }
+                    NeonSwitch(settings.impostorHint, "hint") { v -> onChange { it.copy(impostorHint = v) } }
                 }
             }
-            SettingRow(stringResource(R.string.setup_chaos), stringResource(R.string.setup_chaos_desc)) {
-                NeonSwitch(settings.chaos, "chaos") { v -> onChange { it.copy(chaos = v) } }
+            if (settings.mode == GameMode.MYSTERIOUS) {
+                SettingRow(
+                    stringResource(R.string.setup_journalists),
+                    stringResource(R.string.setup_journalists_desc)
+                ) {
+                    Stepper(
+                        value = settings.journalists,
+                        canLower = settings.journalists > 0 && settings.impostors + settings.journalists > 1,
+                        canRaise = settings.impostors + settings.journalists < cap,
+                        tag = "journalists",
+                        onChange = { v -> onChange { it.copy(journalists = v) } }
+                    )
+                }
             }
             SettingRow("🎨 " + stringResource(R.string.setup_drawing), stringResource(R.string.setup_drawing_desc)) {
                 NeonSwitch(settings.drawing, "drawing") { v -> onChange { it.copy(drawing = v) } }
@@ -503,6 +501,23 @@ private fun SettingRow(title: String, subtitle: String?, control: @Composable ()
     subtitle = subtitle,
     contentPadding = PaddingValues(horizontal = 16.dp, vertical = 10.dp)
 ) { control() }
+
+@Composable
+private fun Stepper(value: Int, canLower: Boolean, canRaise: Boolean, tag: String, onChange: (Int) -> Unit) = Row(
+    verticalAlignment = Alignment.CenterVertically
+) {
+    IconButton(onClick = { onChange(value - 1) }, enabled = canLower, modifier = Modifier.testTag("${tag}_minus")) {
+        Text("−", style = MaterialTheme.typography.headlineSmall)
+    }
+    Text(
+        "$value",
+        style = MaterialTheme.typography.titleLarge,
+        modifier = Modifier.padding(horizontal = 8.dp).testTag(tag)
+    )
+    IconButton(onClick = { onChange(value + 1) }, enabled = canRaise, modifier = Modifier.testTag("${tag}_plus")) {
+        Text("+", style = MaterialTheme.typography.headlineSmall)
+    }
+}
 
 @Composable
 private fun NeonSwitch(checked: Boolean, tag: String, onChange: (Boolean) -> Unit) {
