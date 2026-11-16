@@ -6,5 +6,5 @@
   (`GameViewModelTest`, setup screenshot tests upright and `+land`, both looks)
 - [x] Reveal card with the role; home continue / new match; chaos without points; result and
   report texts (`GameFlowTest` per mode, screenshot tests)
-- [ ] Help texts; sheets onto `LilloSheet`; README, DESIGN, OPERATIONS, store listing
+- [x] Help texts; sheets onto `LilloSheet`; README, DESIGN, OPERATIONS, store listing
 - [ ] Store captures, baseline profile, battery test per mode, release

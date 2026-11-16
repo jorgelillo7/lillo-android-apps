@@ -176,8 +176,10 @@ impostor's hint.
 
 The home SHALL open the settings sheet (language, look, rules, sharing, rating, privacy) from an
 info icon at its top right, the place every app keeps its About, upright and on a short landscape
-screen; the sheet opens expanded and scrolls (core `LilloSheet`).
+screen; the sheet opens expanded and scrolls (core `LilloSheet`), as do the how-to, modes,
+report and pack-share sheets.
 
 #### Scenario: a landscape phone
 - **WHEN** the home is shown on a landscape phone and the top-right icon is tapped **THEN** it is on screen and opens the settings
-- *Verifies:* `theHomeOpensTheSettingsFromTheTopRight`
+- **WHEN** the modes guide is opened **THEN** it opens expanded on Original, and covers Mysterious and Chaos
+- *Verifies:* `theHomeOpensTheSettingsFromTheTopRight`, `theModesSheetOpensFullyOnTheThreeModes`

@@ -21,12 +21,12 @@ Package: `com.jorgelillo.whoslying` (minSdk 24: navigation-compose needs it).
 | Store screenshots | emulator running + app installed: `apps/whos-lying/tools/capture_store_screenshots.sh`, check `store/raw/`, then `.venv/bin/python apps/whos-lying/tools/generate_store_assets.py` |
 
 UI test tags (usable with `scripts/tap-text.sh`, dialogs included): `play`, `how_to`, `modes`,
-`packs`, `about`, `modes_info`, `modes_sheet`, `timer_plus|minus`, `timer`, `unplayed`,
+`packs`, `about`, `modes_info`, `modes_sheet`, `timer`,
 `choose_packs`, `pack_<id>`, `select_all_packs`, `clear_packs`, `packs_done`, `picker_new_pack`, `settings_sheet`, `language`,
-`language_system|es|en`, `share`, `rate`, `privacy`, `player_name`, `add_player`, `continue`, `mode_classic|blind|drifter`, `impostors_plus|minus`,
-`hint`, `chaos`, `start`, `tap_to_reveal` (the curtain: swipe it up, e.g. `adb shell input swipe 540 1700 540 700 800`), `secret_word`, `hide`, `go_vote`, `timer`, `debate_out`, `vote_<player>`,
+`language_system|es|en`, `share`, `rate`, `privacy`, `player_name`, `add_player`, `continue`, `players_row`, `rename_<player>`, `mode_original|mysterious|chaos`, `mode_desc`, `impostors_plus|minus`, `journalists_plus|minus`, `cap_warning`, `continue_match`, `home_new_match`,
+`hint`, `start`, `tap_to_reveal` (the curtain: swipe it up, e.g. `adb shell input swipe 540 1700 540 700 800`), `secret_word`, `hide`, `go_vote`, `timer`, `debate_out`, `vote_<player>`,
 `confirm_vote`, `back_to_debate`, `exposing`, `eliminated`, `keep_playing`, `result_title`,
-`rounds_plus|minus`, `rounds`, `timer_value`, `time_up`, `rounds_left`, `see_winner`, `podium_title`, `new_match`,
+`rounds_row`, `timer_row` (each opens a list: `rounds_option_<n>`, `timer_option_<seconds>`), `secret_role`, `secret_hint`, `time_up`, `rounds_left`, `see_winner`, `podium_title`, `new_match`,
 `drawing`, `canvas`, `ink_0..6`, `ink_wheel` (colour wheel: `color_wheel`, `color_brightness`, `color_use`), `players_full`, `undo`, `clear`, `share_drawing`, `play_again` (result → ranking), `next_round`, `rank_<player>`, `reset_scores`,
 `guess_text`, `guess`, `reveal_all`, `play_again`, `home`, `new_pack`, `pack_name`, `pack_words`,
 `save_pack`, `back`.

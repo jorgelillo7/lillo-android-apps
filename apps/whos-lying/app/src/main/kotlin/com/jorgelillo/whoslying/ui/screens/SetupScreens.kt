@@ -104,7 +104,7 @@ internal fun HomeScreen(
             LilloSecondaryButton(
                 stringResource(R.string.home_new_match),
                 onNewMatch,
-                modifier = Modifier.padding(top = 8.dp).testTag("new_match")
+                modifier = Modifier.padding(top = 8.dp).testTag("home_new_match")
             )
         } else {
             LilloBigButton(stringResource(R.string.play), onPlay, modifier = Modifier.testTag("play"))

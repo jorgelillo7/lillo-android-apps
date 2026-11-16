@@ -104,7 +104,7 @@ class GameFlowTest {
         aWholeGameEndsWithTheImpostorCaught()
         compose.waitUntil(TIMEOUT) { viewModel().saved.value?.roundsPlayed == 1 }
         tap("home")
-        tap("new_match")
+        tap("home_new_match")
         compose.waitUntilExactlyOneExists(hasTestTag("start"), TIMEOUT)
         compose.waitUntil(TIMEOUT) { viewModel().saved.value?.roundsPlayed == 0 }
         assertEquals(emptyMap(), viewModel().saved.value?.scores)

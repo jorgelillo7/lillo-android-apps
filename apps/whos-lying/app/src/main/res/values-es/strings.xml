@@ -113,7 +113,7 @@
     <string name="pack_need">Pon un nombre y al menos 3 palabras</string>
 
     <string name="how_1_title">1 · Recibe tu palabra</string>
-    <string name="how_1">Pasaos el móvil. Todos veis la misma palabra secreta… menos los impostores.</string>
+    <string name="how_1">Pasaos el móvil y mirad vuestra tarjeta en secreto. Los civiles comparten la palabra secreta; los impostores reciben una pista, una palabra parecida o nada, según el modo.</string>
     <string name="how_2_title">2 · Da pistas</string>
     <string name="how_2">Por turnos, decid una palabra o frase corta sobre ella. Sin pasarse, que el impostor se entera.</string>
     <string name="how_3_title">3 · Votad</string>
