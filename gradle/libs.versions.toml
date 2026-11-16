@@ -17,7 +17,7 @@ androidxWork = "2.12.0"
 zxing = "3.5.4"
 
 # Gradle Play Publisher: 4.x is the line for AGP 9.
-playPublisher = "4.1.1"
+playPublisher = "4.1.2"
 spotless = "8.11.0"
 # Compose lint rules for ktlint (Spotless custom rule set).
 composeRules = "0.6.8"
