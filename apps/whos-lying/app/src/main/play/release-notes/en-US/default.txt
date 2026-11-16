@@ -1,3 +1,6 @@
-Settings, at the top right 🕵️
-- Settings open from the icon at the top right, as in our other apps
-- In landscape or on handheld consoles, settings open in full and everything is within reach
+New game modes 🕵️
+- Original: everyone knows their role; impostors get a hint or nothing
+- Mysterious: nobody knows what they are, with optional Journalists
+- Chaos: more impostors every few rounds, sometimes everyone; no points
+- Simpler setup; rounds and time follow the group; rename players
+- Continue a match or start a new one from the home

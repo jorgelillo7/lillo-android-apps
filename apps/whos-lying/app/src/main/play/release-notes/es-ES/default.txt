@@ -1,3 +1,6 @@
-Ajustes, arriba a la derecha 🕵️
-- Los ajustes se abren desde el icono de arriba a la derecha, como en el resto de apps
-- En horizontal o en consolas portátiles, los ajustes se abren enteros y llegas a todo
+Modos nuevos 🕵️
+- Original: cada uno sabe qué es; el impostor tiene pista o nada
+- Misterioso: nadie sabe qué es, y podéis añadir periodistas
+- Caos: más impostores cada pocas rondas, a veces todos; sin puntos
+- Configuración más sencilla; rondas y tiempo según el grupo; renombrar jugadores
+- Sigue una partida o empieza otra desde el inicio
