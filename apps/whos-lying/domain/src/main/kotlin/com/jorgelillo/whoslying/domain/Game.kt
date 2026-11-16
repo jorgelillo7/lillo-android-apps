@@ -148,15 +148,21 @@ class Game private constructor(
     }
 
     companion object {
-        /** Chance that a chaos game strikes: more impostors than the cap allows, some without a hint. */
-        const val CHAOS_PROBABILITY = 1.0 / 3
+        /** Chance that a chaos game is all in: everyone an impostor. */
+        const val ALL_IN_PROBABILITY = 1.0 / 5
+
+        /** Chance that a chaos game goes past the cap without being all in. */
+        const val PAST_CAP_PROBABILITY = 1.0 / 5
 
         fun deal(players: List<String>, settings: GameSettings, pack: WordPack, entry: Entry, random: Random): Game {
             require(Rules.canStart(players.size, settings)) { "Invalid setup" }
-            val chaosStrikes = settings.mode == GameMode.CHAOS && random.nextDouble() < CHAOS_PROBABILITY
+            val roll = if (settings.mode == GameMode.CHAOS) random.nextDouble() else 1.0
+            val allIn = roll < ALL_IN_PROBABILITY
+            val chaosStrikes = roll < ALL_IN_PROBABILITY + PAST_CAP_PROBABILITY
             val cap = Rules.maxInfiltrators(players.size)
             val impostors = when {
-                chaosStrikes -> random.nextInt(cap + 1, players.size + 1)
+                allIn -> players.size
+                chaosStrikes -> random.nextInt(cap + 1, players.size)
                 settings.mode == GameMode.CHAOS -> random.nextInt(1, cap + 1)
                 else -> settings.impostors
             }

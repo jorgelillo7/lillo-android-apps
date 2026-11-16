@@ -12,8 +12,8 @@ enum class GameMode {
     MYSTERIOUS,
 
     /**
-     * Original with hints and a random number of impostors within [Rules.maxInfiltrators], but about one
-     * game in three goes past it (up to everyone), some without a hint. Never scored.
+     * Original with hints and a random number of impostors within [Rules.maxInfiltrators]; one game in five
+     * goes past it and one in five is all in (everyone an impostor), some without a hint. Never scored.
      */
     CHAOS
 }

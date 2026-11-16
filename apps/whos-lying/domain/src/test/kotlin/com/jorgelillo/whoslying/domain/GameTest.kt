@@ -127,7 +127,13 @@ class GameTest {
         val games = (0 until 400).map { seed -> deal(GameSettings(GameMode.CHAOS, impostors = 2), seed) }
         val counts = games.map { game -> game.cards.count { it.role == Role.IMPOSTOR } }
         val cap = Rules.maxInfiltrators(players.size)
-        assertTrue(counts.count { it <= cap } > 200, "within the cap most of the time: ${counts.count { it <= cap }}")
+        assertTrue(counts.count { it <= cap } in 200..280, "within the cap 3 in 5: ${counts.count { it <= cap }}")
+        assertTrue(
+            counts.count {
+                it == players.size
+            } in 50..110,
+            "all in 1 in 5: ${counts.count { it == players.size }}"
+        )
         assertTrue((1..players.size).all { it in counts }, "counts seen: ${counts.toSet()}")
         assertTrue(games.all { game -> game.cards.all { it.knowsRole } && !game.scored })
         val impostorsOf = { past: Boolean ->

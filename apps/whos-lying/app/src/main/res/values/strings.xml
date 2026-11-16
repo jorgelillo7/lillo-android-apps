@@ -161,7 +161,7 @@
     <string name="modes_mysterious_who">Civilians get the word. Impostors get a similar one and aren\'t told they\'re impostors: everyone sees the same screen. You can add Journalists, who get no word and know it.</string>
     <string name="modes_mysterious_win">Civilians: vote out every impostor and journalist. A journalist voted out gets one guess at the word: right, they win alone; wrong, the game goes on. Impostors and journalists win if they last until one civilian is left.</string>
     <string name="modes_mysterious_tip">If the others\' clues don\'t quite fit your word… maybe you\'re the impostor. Journalist: blend in and piece the word together. A journalist never starts.</string>
-    <string name="modes_chaos_who">Like Original with the hint on and a random number of impostors (up to half the group), but every few rounds chaos strikes: even more impostors, sometimes two, sometimes many, sometimes everyone, and some without a hint. Nobody knows how many there are.</string>
+    <string name="modes_chaos_who">Like Original with the hint on and a random number of impostors, up to half the group. But every few rounds chaos strikes: more impostors than that, some without a hint, and one round in five everyone is an impostor. Nobody knows how many there are.</string>
     <string name="modes_chaos_win">No winners, no losers, only survivors: Chaos never scores. Play it for the laughs.</string>
     <string name="modes_chaos_tip">Trust no one, not even yourself.</string>
     <string name="modes_hint_title">Hint for impostors</string>
