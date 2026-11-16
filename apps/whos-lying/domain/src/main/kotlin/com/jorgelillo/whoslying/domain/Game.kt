@@ -11,10 +11,6 @@ object Rules {
     /** Impostors and journalists together: at most half the group (3 → 1, 4 → 2, 24 → 12). */
     fun maxInfiltrators(players: Int): Int = players / 2
 
-    /** About one impostor per five players: what Chaos deals when it doesn't strike (3–7 → 1, 8–12 → 2, 24 → 5). */
-    fun recommendedImpostors(players: Int): Int =
-        ((players + 2) / 5).coerceIn(1, maxInfiltrators(players).coerceAtLeast(1))
-
     /** Discussion timer choices in seconds: off, then 1 to 24 minutes. */
     val TIMER_OPTIONS = listOf(0) + (1..24).map { it * 60 }
 
@@ -152,16 +148,16 @@ class Game private constructor(
     }
 
     companion object {
-        /** Chance that a chaos game strikes: more impostors than usual, some without a hint. */
+        /** Chance that a chaos game strikes: more impostors than the cap allows, some without a hint. */
         const val CHAOS_PROBABILITY = 1.0 / 3
 
         fun deal(players: List<String>, settings: GameSettings, pack: WordPack, entry: Entry, random: Random): Game {
             require(Rules.canStart(players.size, settings)) { "Invalid setup" }
             val chaosStrikes = settings.mode == GameMode.CHAOS && random.nextDouble() < CHAOS_PROBABILITY
-            val usual = Rules.recommendedImpostors(players.size)
+            val cap = Rules.maxInfiltrators(players.size)
             val impostors = when {
-                chaosStrikes -> random.nextInt(usual + 1, players.size + 1)
-                settings.mode == GameMode.CHAOS -> usual
+                chaosStrikes -> random.nextInt(cap + 1, players.size + 1)
+                settings.mode == GameMode.CHAOS -> random.nextInt(1, cap + 1)
                 else -> settings.impostors
             }
             val journalists = if (settings.mode == GameMode.MYSTERIOUS) settings.journalists else 0

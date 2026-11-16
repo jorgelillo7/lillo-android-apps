@@ -123,27 +123,29 @@ class GameTest {
     }
 
     @Test
-    fun chaosUsuallyHasImpostorsForTheGroupSizeAndSometimesManyOrEveryone() {
-        assertEquals(listOf(1, 1, 2, 2, 3, 5), listOf(3, 7, 8, 12, 13, 24).map(Rules::recommendedImpostors))
-        val twelve = (1..12).map { "P$it" }
-        val counts12 = (0 until 300).map { seed ->
-            Game.deal(twelve, GameSettings(GameMode.CHAOS), pack, pack.entries.first(), Random(seed))
-                .cards.count { it.role == Role.IMPOSTOR }
-        }
-        assertTrue(counts12.count { it == 2 } > 150 && counts12.all { it >= 2 }, "12 players: ${counts12.toSet()}")
-
+    fun chaosDealsUpToTheCapAndSometimesPastItUpToEveryone() {
         val games = (0 until 400).map { seed -> deal(GameSettings(GameMode.CHAOS, impostors = 2), seed) }
         val counts = games.map { game -> game.cards.count { it.role == Role.IMPOSTOR } }
-        assertTrue(counts.count { it == 1 } > 200, "one impostor most of the time: ${counts.count { it == 1 }}")
-        assertTrue(2 in counts && players.size in counts, "counts seen: ${counts.toSet()}")
+        val cap = Rules.maxInfiltrators(players.size)
+        assertTrue(counts.count { it <= cap } > 200, "within the cap most of the time: ${counts.count { it <= cap }}")
+        assertTrue((1..players.size).all { it in counts }, "counts seen: ${counts.toSet()}")
         assertTrue(games.all { game -> game.cards.all { it.knowsRole } && !game.scored })
-        val struck = games.filter { game -> game.cards.count { it.role == Role.IMPOSTOR } > 1 }
-            .flatMap { game -> game.cards.filter { it.role == Role.IMPOSTOR } }
-        assertTrue(struck.any { it.hint == null } && struck.any { it.hint == "Piscina" })
+        val impostorsOf = { past: Boolean ->
+            games.filter { game -> (game.cards.count { it.role == Role.IMPOSTOR } > cap) == past }
+                .flatMap { game -> game.cards.filter { it.role == Role.IMPOSTOR } }
+        }
+        assertTrue(impostorsOf(true).any { it.hint == null } && impostorsOf(true).any { it.hint == "Piscina" })
+        assertTrue(impostorsOf(false).all { it.hint == "Piscina" }, "no chaos: every impostor gets the hint")
         val allImpostors = games.first { game -> game.cards.all { it.role == Role.IMPOSTOR } }
         val oneOut = allImpostors.eliminate(players.first())
         assertNull(oneOut.outcome)
         assertIs<Outcome.NoCivilians>(oneOut.reveal().outcome)
+
+        val all24 = (0 until 600).any { seed ->
+            Game.deal((1..24).map { "P$it" }, GameSettings(GameMode.CHAOS), pack, pack.entries.first(), Random(seed))
+                .cards.all { it.role == Role.IMPOSTOR }
+        }
+        assertTrue(all24, "24 players can all be impostors")
     }
 
     @Test

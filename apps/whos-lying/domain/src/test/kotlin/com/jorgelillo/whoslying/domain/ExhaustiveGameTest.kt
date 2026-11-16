@@ -78,7 +78,7 @@ class ExhaustiveGameTest {
         val impostors = game.cards.count { it.role == Role.IMPOSTOR }
         val journalists = game.cards.count { it.role == Role.JOURNALIST }
         if (settings.mode == GameMode.CHAOS) {
-            assertTrue(impostors in Rules.recommendedImpostors(n)..n, "$ctx: chaos gave $impostors")
+            assertTrue(impostors in 1..n, "$ctx: chaos gave $impostors")
             assertFalse(game.scored, ctx)
         } else {
             assertEquals(settings.impostors, impostors, ctx)

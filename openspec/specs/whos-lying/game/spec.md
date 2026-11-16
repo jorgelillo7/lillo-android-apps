@@ -18,9 +18,9 @@ In **Original** every player SHALL be told their role; impostors SHALL get no wo
 the impostor hint on, the entry's similar word as a hint. In **Mysterious** nobody SHALL be
 told their role but journalists: impostors SHALL get the similar word as if it were the word,
 and journalists (0 or more) SHALL get no word, know it, and never start. In **Chaos** about one
-game in three (`Game.CHAOS_PROBABILITY`) SHALL deal more impostors than usual, up to
-everyone, each with or without a hint; the others SHALL deal the usual count for the group
-(`Rules.recommendedImpostors`, about one per five players) with a hint; everyone
+game in three (`Game.CHAOS_PROBABILITY`) SHALL deal more impostors than the cap allows, up to
+everyone, each with or without a hint; the others SHALL deal a random count within the cap,
+every impostor with a hint; everyone
 SHALL know their role and the game SHALL never score. In **drawing** mode a Mysterious impostor
 SHALL draw blind, knowing it. Impostors and journalists together SHALL be at most half the group
 (`Rules.maxInfiltrators`), at least one of them, with an impostor except in Mysterious; Chaos
@@ -40,11 +40,10 @@ being decided before it is played.
 
 #### Scenario: limits and chaos
 - **WHEN** limits are asked **THEN** 3 players allow 1 infiltrator, 4 allow 2 and 24 allow 12; Mysterious starts with 3 players and one journalist alone, and not with nobody; settings beyond the cap are brought within it
-- **WHEN** the usual count is asked **THEN** 3 and 7 players get 1, 8 and 12 get 2, 13 get 3 and 24 get 5; 300 Chaos games of 12 never have fewer than 2 impostors and mostly 2
-- **WHEN** 400 Chaos games of five are dealt **THEN** most have one impostor, some have two or everyone, all tell every role, none is scored, and struck games have impostors with and without a hint
+- **WHEN** 400 Chaos games of five are dealt **THEN** most stay within the cap with every impostor hinted, every count from one to everyone shows up, all tell every role, none is scored, and games past the cap have impostors with and without a hint; 600 games of 24 include one where all 24 are impostors
 - **WHEN** every combination of mode, drawing, hint, players, impostors and journalists is played out **THEN** each invalid one refuses to start and each other deals and ends consistently
 - *Verifies:* `impostorsAndJournalistsAreAtMostHalfTheGroup`,
-  `chaosUsuallyHasImpostorsForTheGroupSizeAndSometimesManyOrEveryone`,
+  `chaosDealsUpToTheCapAndSometimesPastItUpToEveryone`,
   `everyCombinationDealsRightAndEveryGameEndsConsistently`
 
 #### Scenario: settings saved by earlier versions

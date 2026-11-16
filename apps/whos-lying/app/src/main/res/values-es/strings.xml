@@ -153,7 +153,7 @@
     <string name="modes_mysterious_who">Los civiles reciben la palabra. El impostor recibe una parecida y no se le dice que es impostor: todos ven la misma pantalla. Podéis añadir periodistas, que no tienen palabra y lo saben.</string>
     <string name="modes_mysterious_win">Civiles: eliminar a impostores y periodistas. Un periodista eliminado tiene una oportunidad de adivinar la palabra: si acierta, gana él solo; si falla, la partida sigue. Impostores y periodistas ganan si aguantan hasta que quede un civil.</string>
     <string name="modes_mysterious_tip">Si las pistas de los demás no encajan del todo con tu palabra… quizá el impostor eres tú. Periodista: disimula y ve atando cabos. Un periodista nunca empieza.</string>
-    <string name="modes_chaos_who">Como Original con pista y más o menos un impostor por cada cinco jugadores, pero cada pocas rondas se desata el caos: más impostores, a veces dos, a veces muchos, a veces todos, y alguno sin pista. Nadie sabe cuántos hay.</string>
+    <string name="modes_chaos_who">Como Original con pista y un número de impostores al azar (hasta la mitad del grupo), pero cada pocas rondas se desata el caos: todavía más impostores, a veces dos, a veces muchos, a veces todos, y alguno sin pista. Nadie sabe cuántos hay.</string>
     <string name="modes_chaos_win">Sin ganadores ni perdedores, solo supervivientes: el Caos nunca puntúa. Se juega por las risas.</string>
     <string name="modes_chaos_tip">No te fíes de nadie, ni de ti.</string>
     <string name="modes_hint_title">Pista para impostores</string>
