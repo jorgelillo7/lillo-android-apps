@@ -50,111 +50,102 @@ import com.jorgelillo.whoslying.ui.theme.Neon
 val PRIVACY_POLICY_URL = LilloLinks.privacyPolicy("whos-lying")
 val PLAY_STORE_URL = LilloLinks.playStore(BuildConfig.APPLICATION_ID)
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun HowToSheet(onDismiss: () -> Unit) {
-    ModalBottomSheet(onDismissRequest = onDismiss, containerColor = Neon.Card) {
-        Column(
-            Modifier.verticalScroll(rememberScrollState()).padding(horizontal = 24.dp).padding(bottom = 32.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            listOf(
-                Triple("🤫", R.string.how_1_title, R.string.how_1),
-                Triple("💬", R.string.how_2_title, R.string.how_2),
-                Triple("🗳️", R.string.how_3_title, R.string.how_3),
-                Triple("🏆", R.string.how_4_title, R.string.how_4)
-            ).forEach { (emoji, title, body) ->
-                Column(Modifier.fillMaxWidth().clip(MaterialTheme.shapes.large).background(Neon.Night).padding(18.dp)) {
-                    Text(
-                        "$emoji  " + stringResource(title),
-                        color = Neon.AmberText,
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Text(stringResource(body), modifier = Modifier.padding(top = 6.dp))
-                }
+    LilloSheet(onDismiss, Neon.Card, verticalArrangement = Arrangement.spacedBy(16.dp)) {
+        listOf(
+            Triple("🤫", R.string.how_1_title, R.string.how_1),
+            Triple("💬", R.string.how_2_title, R.string.how_2),
+            Triple("🗳️", R.string.how_3_title, R.string.how_3),
+            Triple("🏆", R.string.how_4_title, R.string.how_4)
+        ).forEach { (emoji, title, body) ->
+            Column(Modifier.fillMaxWidth().clip(MaterialTheme.shapes.large).background(Neon.Night).padding(18.dp)) {
+                Text(
+                    "$emoji  " + stringResource(title),
+                    color = Neon.AmberText,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(stringResource(body), modifier = Modifier.padding(top = 6.dp))
             }
         }
     }
 }
 
 /** Detailed guide to each game mode and the options that change a game. */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun ModesSheet(onDismiss: () -> Unit) {
-    ModalBottomSheet(onDismissRequest = onDismiss, containerColor = Neon.Card) {
-        Column(
-            Modifier.verticalScroll(
-                rememberScrollState()
-            ).padding(horizontal = 24.dp).padding(bottom = 32.dp).then(DialogTags).testTag("modes_sheet"),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            Text(
-                stringResource(R.string.modes_title),
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Black
+    LilloSheet(
+        onDismiss,
+        Neon.Card,
+        modifier = DialogTags.testTag("modes_sheet"),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        Text(
+            stringResource(R.string.modes_title),
+            style = MaterialTheme.typography.headlineSmall,
+            fontWeight = FontWeight.Black
+        )
+        Text(stringResource(R.string.modes_intro), color = Neon.Muted)
+        listOf(
+            ModeGuide(
+                "🕵️",
+                R.string.mode_original,
+                R.string.modes_original_who,
+                R.string.modes_original_win,
+                R.string.modes_original_tip
+            ),
+            ModeGuide(
+                "🎭",
+                R.string.mode_mysterious,
+                R.string.modes_mysterious_who,
+                R.string.modes_mysterious_win,
+                R.string.modes_mysterious_tip
+            ),
+            ModeGuide(
+                "🌀",
+                R.string.mode_chaos,
+                R.string.modes_chaos_who,
+                R.string.modes_chaos_win,
+                R.string.modes_chaos_tip
             )
-            Text(stringResource(R.string.modes_intro), color = Neon.Muted)
-            listOf(
-                ModeGuide(
-                    "🕵️",
-                    R.string.mode_original,
-                    R.string.modes_original_who,
-                    R.string.modes_original_win,
-                    R.string.modes_original_tip
-                ),
-                ModeGuide(
-                    "🎭",
-                    R.string.mode_mysterious,
-                    R.string.modes_mysterious_who,
-                    R.string.modes_mysterious_win,
-                    R.string.modes_mysterious_tip
-                ),
-                ModeGuide(
-                    "🌀",
-                    R.string.mode_chaos,
-                    R.string.modes_chaos_who,
-                    R.string.modes_chaos_win,
-                    R.string.modes_chaos_tip
+        ).forEach { mode ->
+            Column(Modifier.fillMaxWidth().clip(MaterialTheme.shapes.large).background(Neon.Night).padding(18.dp)) {
+                Text(
+                    "${mode.emoji}  " + stringResource(mode.title),
+                    color = Neon.AmberText,
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold
                 )
-            ).forEach { mode ->
-                Column(Modifier.fillMaxWidth().clip(MaterialTheme.shapes.large).background(Neon.Night).padding(18.dp)) {
+                listOf(
+                    R.string.modes_who_gets to mode.who,
+                    R.string.modes_how_win to mode.win,
+                    R.string.modes_tip to mode.tip
+                ).forEach { (label, body) ->
                     Text(
-                        "${mode.emoji}  " + stringResource(mode.title),
-                        color = Neon.AmberText,
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Bold
+                        stringResource(label),
+                        color = Neon.TurquoiseText,
+                        style = MaterialTheme.typography.labelLarge,
+                        modifier = Modifier.padding(top = 12.dp)
                     )
-                    listOf(
-                        R.string.modes_who_gets to mode.who,
-                        R.string.modes_how_win to mode.win,
-                        R.string.modes_tip to mode.tip
-                    ).forEach { (label, body) ->
-                        Text(
-                            stringResource(label),
-                            color = Neon.TurquoiseText,
-                            style = MaterialTheme.typography.labelLarge,
-                            modifier = Modifier.padding(top = 12.dp)
-                        )
-                        Text(stringResource(body), modifier = Modifier.padding(top = 2.dp))
-                    }
+                    Text(stringResource(body), modifier = Modifier.padding(top = 2.dp))
                 }
             }
-            listOf(
-                Triple("🎨", R.string.modes_drawing_title, R.string.modes_drawing),
-                Triple("🏆", R.string.modes_scores_title, R.string.modes_scores),
-                Triple("💡", R.string.modes_hint_title, R.string.modes_hint),
-                Triple("⏱️", R.string.modes_timer_title, R.string.modes_timer)
-            ).forEach { (emoji, title, body) ->
-                Column(Modifier.fillMaxWidth().clip(MaterialTheme.shapes.large).background(Neon.Night).padding(18.dp)) {
-                    Text(
-                        "$emoji  " + stringResource(title),
-                        color = Neon.AmberText,
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Text(stringResource(body), modifier = Modifier.padding(top = 6.dp))
-                }
+        }
+        listOf(
+            Triple("🎨", R.string.modes_drawing_title, R.string.modes_drawing),
+            Triple("🏆", R.string.modes_scores_title, R.string.modes_scores),
+            Triple("💡", R.string.modes_hint_title, R.string.modes_hint),
+            Triple("⏱️", R.string.modes_timer_title, R.string.modes_timer)
+        ).forEach { (emoji, title, body) ->
+            Column(Modifier.fillMaxWidth().clip(MaterialTheme.shapes.large).background(Neon.Night).padding(18.dp)) {
+                Text(
+                    "$emoji  " + stringResource(title),
+                    color = Neon.AmberText,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(stringResource(body), modifier = Modifier.padding(top = 6.dp))
             }
         }
     }
@@ -169,7 +160,6 @@ private class ModeGuide(
 )
 
 /** Lets the player say what's wrong with a word, then opens the prefilled report form. */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun ReportSheet(word: String, decoy: String?, pack: String, language: String, onDismiss: () -> Unit) {
     val uriHandler = LocalUriHandler.current
@@ -183,57 +173,55 @@ internal fun ReportSheet(word: String, decoy: String?, pack: String, language: S
         .map { stringResource(it) }
     var chosen by rememberSaveable { mutableStateOf(listOf<String>()) }
     var comment by rememberSaveable { mutableStateOf("") }
-    ModalBottomSheet(onDismissRequest = onDismiss, containerColor = Neon.Card) {
-        Column(
-            Modifier.verticalScroll(
-                rememberScrollState()
-            ).padding(horizontal = 24.dp).padding(bottom = 32.dp).then(DialogTags).testTag("report_sheet"),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+    LilloSheet(
+        onDismiss,
+        Neon.Card,
+        modifier = DialogTags.testTag("report_sheet"),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Text(
+            "⚠️  " + stringResource(R.string.report_title),
+            style = MaterialTheme.typography.headlineSmall,
+            fontWeight = FontWeight.Black
+        )
+        Text(stringResource(R.string.report_word, word), color = Neon.AmberText, fontWeight = FontWeight.Bold)
+        if (decoy !=
+            null
         ) {
-            Text(
-                "⚠️  " + stringResource(R.string.report_title),
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Black
-            )
-            Text(stringResource(R.string.report_word, word), color = Neon.AmberText, fontWeight = FontWeight.Bold)
-            if (decoy !=
-                null
-            ) {
-                Text(stringResource(R.string.report_decoy, decoy), color = Neon.AmberText, fontWeight = FontWeight.Bold)
-            }
-            Text(stringResource(R.string.report_pick), color = Neon.Muted, style = MaterialTheme.typography.bodySmall)
-            reasons.forEachIndexed { i, reason ->
-                val selected = reason in chosen
-                Row(
-                    Modifier
-                        .fillMaxWidth()
-                        .clip(MaterialTheme.shapes.large)
-                        .background(Neon.Night)
-                        .clickable { chosen = if (selected) chosen - reason else chosen + reason }
-                        .padding(horizontal = 16.dp, vertical = 14.dp)
-                        .testTag("reason_$i"),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(reason, Modifier.weight(1f), fontWeight = FontWeight.SemiBold)
-                    Text(if (selected) "✅" else "⚪")
-                }
-            }
-            OutlinedTextField(
-                value = comment,
-                onValueChange = { comment = it },
-                placeholder = { Text(stringResource(R.string.report_comment)) },
-                modifier = Modifier.fillMaxWidth().testTag("report_comment")
-            )
-            Text(
-                stringResource(R.string.report_privacy),
-                color = Neon.Muted,
-                style = MaterialTheme.typography.bodySmall
-            )
-            LilloBigButton(stringResource(R.string.report_send), {
-                uriHandler.openUri(WordReport.url(word, decoy, pack, language, chosen, comment).toString())
-                onDismiss()
-            }, modifier = Modifier.testTag("report_send"), enabled = chosen.isNotEmpty() || comment.isNotBlank())
+            Text(stringResource(R.string.report_decoy, decoy), color = Neon.AmberText, fontWeight = FontWeight.Bold)
         }
+        Text(stringResource(R.string.report_pick), color = Neon.Muted, style = MaterialTheme.typography.bodySmall)
+        reasons.forEachIndexed { i, reason ->
+            val selected = reason in chosen
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .clip(MaterialTheme.shapes.large)
+                    .background(Neon.Night)
+                    .clickable { chosen = if (selected) chosen - reason else chosen + reason }
+                    .padding(horizontal = 16.dp, vertical = 14.dp)
+                    .testTag("reason_$i"),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(reason, Modifier.weight(1f), fontWeight = FontWeight.SemiBold)
+                Text(if (selected) "✅" else "⚪")
+            }
+        }
+        OutlinedTextField(
+            value = comment,
+            onValueChange = { comment = it },
+            placeholder = { Text(stringResource(R.string.report_comment)) },
+            modifier = Modifier.fillMaxWidth().testTag("report_comment")
+        )
+        Text(
+            stringResource(R.string.report_privacy),
+            color = Neon.Muted,
+            style = MaterialTheme.typography.bodySmall
+        )
+        LilloBigButton(stringResource(R.string.report_send), {
+            uriHandler.openUri(WordReport.url(word, decoy, pack, language, chosen, comment).toString())
+            onDismiss()
+        }, modifier = Modifier.testTag("report_send"), enabled = chosen.isNotEmpty() || comment.isNotBlank())
     }
 }
 

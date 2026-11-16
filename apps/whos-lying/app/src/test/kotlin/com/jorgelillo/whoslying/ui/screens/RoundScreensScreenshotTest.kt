@@ -23,6 +23,7 @@ import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.unit.dp
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -96,7 +97,7 @@ class RoundScreensScreenshotTest {
     fun homeWithGroup() {
         home("home_group", group)
         compose.onNodeWithTag("continue_match").assertExists()
-        compose.onNodeWithTag("new_match").assertExists()
+        compose.onNodeWithTag("home_new_match").assertExists()
         compose.onNodeWithTag("play").assertDoesNotExist()
     }
 
@@ -399,6 +400,15 @@ class RoundScreensScreenshotTest {
         }
         compose.onNodeWithTag("theme_dark").performClick()
         compose.runOnIdle { assertEquals(LilloThemeMode.Dark, mode.value) }
+    }
+
+    @Test
+    fun theModesSheetOpensFullyOnTheThreeModes() {
+        compose.setContent { LilloTheme(NeonDark) { ModesSheet(onDismiss = {}) } }
+        compose.onNodeWithTag("modes_sheet").assertIsDisplayed()
+        // Opened expanded: the first mode's guide is on screen without dragging the sheet up.
+        compose.onNodeWithText("🕵️  Original").assertIsDisplayed()
+        listOf("🎭  Mysterious", "🌀  Chaos").forEach { compose.onNodeWithText(it).assertExists() }
     }
 
     @Test fun packPickerPortrait() = packPicker("pack_picker")

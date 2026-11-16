@@ -48,7 +48,7 @@ both, so the moment of the game never changes with the phone's setting.
 
 ## Rules
 
-- Roles have fixed colours: civilians turquoise, impostor pink, drifter amber. Never swap them.
+- Roles have fixed colours: civilians turquoise, impostor pink, journalist amber. Never swap them.
 - "Go" (green) is the only colour for the action that moves the round forward.
 - Fills (violet, turquoise, pink, amber, go) carry `OnFill` or white; as text each accent has its
   own tone per look (`Neon.TurquoiseText`, `PinkText`, `AmberText`, `VioletLight`).

@@ -120,7 +120,7 @@
 
     <!-- How to play -->
     <string name="how_1_title">1 · Get your word</string>
-    <string name="how_1">Pass the phone around. Everyone sees the same secret word… except the impostors.</string>
+    <string name="how_1">Pass the phone around and look at your card in secret. Civilians share the secret word; impostors get a hint, a similar word or nothing at all, depending on the mode.</string>
     <string name="how_2_title">2 · Give clues</string>
     <string name="how_2">In turns, say one word or short phrase about it. Not too obvious, or the impostor will catch on.</string>
     <string name="how_3_title">3 · Vote</string>
