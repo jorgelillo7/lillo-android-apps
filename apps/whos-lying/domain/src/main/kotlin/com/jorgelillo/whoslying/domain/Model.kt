@@ -13,7 +13,7 @@ enum class GameMode {
 
     /**
      * Original with hints and a random number of impostors within [Rules.maxInfiltrators]; one game in five
-     * goes past it and one in five is all in (everyone an impostor), some without a hint. Never scored.
+     * goes past it, some without a hint, and one in five is all in (everyone an impostor, no hints). Never scored.
      */
     CHAOS
 }

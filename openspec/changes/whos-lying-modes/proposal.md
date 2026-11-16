@@ -11,8 +11,8 @@ impostor games they already know: Original, Mysterious and Chaos.
 - **Modes** (landed with the domain, see `specs/whos-lying/game/spec.md`): Original (roles told,
   optional similar-word hint), Mysterious (roles hidden, optional journalists, the old drifter
   renamed), Chaos (Original with hints and a random number of impostors up to half the group; one
-  game in five goes past it and one in five is all in, everyone an impostor, some without a
-  hint; never scores). Impostors and journalists are at most half the group. Saved settings of
+  game in five goes past it and one in five is all in, everyone an impostor and nobody
+  hinted; past the cap some get no hint; never scores). Impostors and journalists are at most half the group. Saved settings of
   earlier versions map onto the new modes.
 - **Setup** in cards: mode cards, drawing switch, a players row, impostors and per-mode controls
   (hint in Original, journalists in Mysterious, nothing in Chaos) with a warning at the cap,

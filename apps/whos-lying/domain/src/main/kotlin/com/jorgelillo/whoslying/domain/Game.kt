@@ -148,7 +148,7 @@ class Game private constructor(
     }
 
     companion object {
-        /** Chance that a chaos game is all in: everyone an impostor. */
+        /** Chance that a chaos game is all in: everyone an impostor, nobody with a hint. */
         const val ALL_IN_PROBABILITY = 1.0 / 5
 
         /** Chance that a chaos game goes past the cap without being all in. */
@@ -202,6 +202,7 @@ class Game private constructor(
 
                     else -> {
                         val withHint = when {
+                            allIn -> false
                             chaosStrikes -> random.nextBoolean()
                             settings.mode == GameMode.CHAOS -> true
                             else -> settings.impostorHint

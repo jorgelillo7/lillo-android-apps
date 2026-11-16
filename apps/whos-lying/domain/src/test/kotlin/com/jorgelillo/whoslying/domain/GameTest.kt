@@ -137,12 +137,22 @@ class GameTest {
         assertTrue((1..players.size).all { it in counts }, "counts seen: ${counts.toSet()}")
         assertTrue(games.all { game -> game.cards.all { it.knowsRole } && !game.scored })
         val impostorsOf = { past: Boolean ->
-            games.filter { game -> (game.cards.count { it.role == Role.IMPOSTOR } > cap) == past }
+            games.filter { game -> game.cards.any { it.role == Role.CIVILIAN } }
+                .filter { game -> (game.cards.count { it.role == Role.IMPOSTOR } > cap) == past }
                 .flatMap { game -> game.cards.filter { it.role == Role.IMPOSTOR } }
         }
         assertTrue(impostorsOf(true).any { it.hint == null } && impostorsOf(true).any { it.hint == "Piscina" })
         assertTrue(impostorsOf(false).all { it.hint == "Piscina" }, "no chaos: every impostor gets the hint")
         val allImpostors = games.first { game -> game.cards.all { it.role == Role.IMPOSTOR } }
+        assertTrue(
+            games.filter { game -> game.cards.all { it.role == Role.IMPOSTOR } }.all { game ->
+                game.cards.all {
+                    it.hint ==
+                        null
+                }
+            },
+            "all in: nobody gets a hint"
+        )
         val oneOut = allImpostors.eliminate(players.first())
         assertNull(oneOut.outcome)
         assertIs<Outcome.NoCivilians>(oneOut.reveal().outcome)
