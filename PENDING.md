@@ -21,7 +21,7 @@ Lines are pruned as items ship. What has **shipped** lives in `apps/<app>/releas
 
 | | What is missing | Waiting on |
 |---|---|---|
-| 👤 | Version 14 (Original, Mysterious and Chaos modes, journalists, setup in cards, continue a match from the home): upload and promote with the Release workflow together with the listing (`-f listing=true`); then play every mode on a real phone | You |
+| 👤 | Version 14 (Original, Mysterious and Chaos modes, journalists, setup in cards, continue a match from the home) uploaded to production with the listing by the Release workflow: approve it in GitHub, then Google's review; once live, play every mode on a real phone | You |
 | 🔨 | `tools/battery_test.py` still drives the old modes and setup tags (Classic/Blind/Drifter, the `chaos` switch, round and timer steppers): rewrite it for Original, Mysterious with journalists and Chaos | Ready |
 
 ## group-polls (new app, parked until 2026-10-23)
