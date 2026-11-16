@@ -23,22 +23,23 @@ class GameSerializationTest {
         assertEquals(expected.outcome, actual.outcome)
         assertEquals(expected.pendingGuess, actual.pendingGuess)
         assertEquals(expected.lastElimination, actual.lastElimination)
+        assertEquals(expected.scored, actual.scored)
     }
 
     @Test
-    fun aDrifterWaitingToGuessComesBackWaiting() {
-        val dealt = Game.deal(players, GameSettings(GameMode.DRIFTER), pack, pack.entries.first(), Random(3))
-        val waiting = dealt.eliminate(dealt.cards.single { it.role == Role.DRIFTER }.player)
+    fun aJournalistWaitingToGuessComesBackWaiting() {
+        val dealt = Game.deal(players, GameSettings(GameMode.MYSTERIOUS, journalists = 1), pack, pack.entries.first(), Random(3))
+        val waiting = dealt.eliminate(dealt.cards.single { it.role == Role.JOURNALIST }.player)
 
         val restored = roundTrip(waiting)
 
         assertSameGame(waiting, restored)
-        assertEquals(Outcome.DrifterGuessed, restored.guess("cafe").outcome)
+        assertEquals(Outcome.JournalistGuessed, restored.guess("cafe").outcome)
     }
 
     @Test
     fun aGameMidVoteComesBackWithTheSameSurvivors() {
-        val dealt = Game.deal(players, GameSettings(GameMode.CLASSIC), pack, pack.entries.first(), Random(1))
+        val dealt = Game.deal(players, GameSettings(GameMode.MYSTERIOUS), pack, pack.entries.first(), Random(1))
         val civilian = dealt.cards.first { it.role == Role.CIVILIAN }.player
         val midGame = dealt.eliminate(civilian)
         assertNull(midGame.outcome)
@@ -54,8 +55,8 @@ class GameSerializationTest {
     fun everyOutcomeReadsBack() {
         val outcomes = listOf(
             Outcome.CiviliansWin,
-            Outcome.InfiltratorsWin(setOf(Role.IMPOSTOR, Role.DRIFTER)),
-            Outcome.DrifterGuessed,
+            Outcome.InfiltratorsWin(setOf(Role.IMPOSTOR, Role.JOURNALIST)),
+            Outcome.JournalistGuessed,
             Outcome.NoCivilians,
             Outcome.EndedEarly
         )

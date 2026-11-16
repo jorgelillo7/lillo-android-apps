@@ -2,8 +2,8 @@ package com.jorgelillo.whoslying.domain
 
 /**
  * Built-in packs, written for this app ([spanishPacks], [englishPacks]). Each line is "word /
- * similar word / similar word": civilians get the first, the impostor (CLASSIC and DRIFTER modes)
- * one of the others.
+ * similar word / similar word": civilians get the first, impostors one of the others (as a hint in
+ * Original and Chaos, as their word in Mysterious).
  */
 object WordPacks {
 

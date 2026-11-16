@@ -8,10 +8,8 @@ object Rules {
     const val MIN_PLAYERS = 3
     const val MAX_PLAYERS = 24
 
-    fun drifters(mode: GameMode): Int = if (mode == GameMode.DRIFTER) 1 else 0
-
-    /** Civilians must outnumber impostors at the start: impostors < (players - drifters) / 2. */
-    fun maxImpostors(players: Int, mode: GameMode): Int = ((players - drifters(mode) - 1) / 2).coerceAtLeast(0)
+    /** Impostors and journalists together: at most half the group (3 → 1, 4 → 2, 24 → 12). */
+    fun maxInfiltrators(players: Int): Int = players / 2
 
     /** Discussion timer choices in seconds: off, then 1 to 24 minutes. */
     val TIMER_OPTIONS = listOf(0) + (1..24).map { it * 60 }
@@ -19,17 +17,34 @@ object Rules {
     /** About a minute of discussion per player. */
     fun recommendedTimer(players: Int): Int = players.coerceIn(1, 24) * 60
 
-    /**
-     * Whether the category hint can apply: someone plays without a word (the drifter, drawing
-     * impostors) and the mode isn't Blind, whose point is that impostors get nothing at all.
-     */
-    fun hintAvailable(settings: GameSettings): Boolean =
-        settings.mode != GameMode.BLIND && (settings.mode == GameMode.DRIFTER || settings.drawing)
+    /** Fewest impostors the mode allows with these settings: none in Mysterious when a journalist plays. */
+    fun minImpostors(settings: GameSettings): Int =
+        if (settings.mode == GameMode.MYSTERIOUS && settings.journalists > 0) 0 else 1
 
-    fun minPlayers(mode: GameMode): Int = if (mode == GameMode.DRIFTER) 4 else MIN_PLAYERS
+    /** [settings] with its impostor and journalist counts brought within what [players] allow. */
+    fun fit(settings: GameSettings, players: Int): GameSettings {
+        val cap = maxInfiltrators(players).coerceAtLeast(1)
+        return when (settings.mode) {
+            GameMode.MYSTERIOUS -> {
+                val journalists = settings.journalists.coerceIn(0, cap)
+                val impostors = settings.impostors.coerceIn(0, cap - journalists)
+                settings.copy(
+                    journalists = journalists,
+                    impostors = if (impostors + journalists == 0) 1 else impostors
+                )
+            }
 
-    fun canStart(players: Int, settings: GameSettings): Boolean = players in minPlayers(settings.mode)..MAX_PLAYERS &&
-        settings.impostors in 1..maxImpostors(players, settings.mode)
+            else -> settings.copy(impostors = settings.impostors.coerceIn(1, cap), journalists = 0)
+        }
+    }
+
+    fun canStart(players: Int, settings: GameSettings): Boolean {
+        if (players !in MIN_PLAYERS..MAX_PLAYERS) return false
+        if (settings.mode == GameMode.CHAOS) return true
+        val journalists = if (settings.mode == GameMode.MYSTERIOUS) settings.journalists else 0
+        return settings.impostors >= minImpostors(settings) && journalists >= 0 &&
+            settings.impostors + journalists in 1..maxInfiltrators(players)
+    }
 
     /** Lower case, no accents, no surrounding spaces: "Café " matches "cafe". */
     fun normalize(text: String): String =
@@ -41,12 +56,12 @@ sealed interface Outcome {
     @Serializable
     data object CiviliansWin : Outcome
 
-    /** Impostors and/or the drifter survived until at most one civilian was left. */
+    /** Impostors and/or journalists survived until at most one civilian was left. */
     @Serializable
     data class InfiltratorsWin(val roles: Set<Role>) : Outcome
 
     @Serializable
-    data object DrifterGuessed : Outcome
+    data object JournalistGuessed : Outcome
 
     /** Chaos game where everyone was an impostor: nobody wins, the fun is finding out. */
     @Serializable
@@ -59,7 +74,7 @@ sealed interface Outcome {
 
 /** Result of voting someone out. */
 @Serializable
-data class Elimination(val player: String, val role: Role, val drifterMustGuess: Boolean)
+data class Elimination(val player: String, val role: Role, val journalistMustGuess: Boolean)
 
 /**
  * A game in progress. Immutable: every move returns the next state, so the UI (and tests) always
@@ -72,9 +87,11 @@ class Game private constructor(
     val civilianWord: String,
     val category: String,
     val starter: String,
+    /** Chaos games are played for fun: they never score. */
+    val scored: Boolean = true,
     private val eliminated: Set<String> = emptySet(),
     val outcome: Outcome? = null,
-    /** The eliminated drifter who still gets a guess at the word. */
+    /** The eliminated journalist who still gets a guess at the word. */
     val pendingGuess: String? = null,
     /** Who the last vote sent out, and what they were. */
     val lastElimination: Elimination? = null
@@ -87,19 +104,19 @@ class Game private constructor(
     fun eliminate(player: String): Game {
         check(!isOver && pendingGuess == null) { "Game is not waiting for a vote" }
         val card = cardOf(player)
-        val mustGuess = card.role == Role.DRIFTER
+        val mustGuess = card.role == Role.JOURNALIST
         val next = copy(eliminated = eliminated + player, lastElimination = Elimination(player, card.role, mustGuess))
         return if (mustGuess) next.copy(pendingGuess = player) else next.copy(outcome = next.evaluate())
     }
 
-    /** The eliminated drifter's last chance; [drifterGuessed] tells whether it was the word. */
+    /** The eliminated journalist's last chance; [journalistGuessed] tells whether it was the word. */
     fun guess(text: String): Game {
-        checkNotNull(pendingGuess) { "No drifter is guessing" }
+        checkNotNull(pendingGuess) { "No journalist is guessing" }
         val right = Rules.normalize(text) == Rules.normalize(civilianWord)
-        return copy(pendingGuess = null, outcome = if (right) Outcome.DrifterGuessed else evaluate())
+        return copy(pendingGuess = null, outcome = if (right) Outcome.JournalistGuessed else evaluate())
     }
 
-    val drifterGuessed: Boolean get() = outcome == Outcome.DrifterGuessed
+    val journalistGuessed: Boolean get() = outcome == Outcome.JournalistGuessed
 
     /** Ends the game now and shows who was who. */
     fun reveal(): Game {
@@ -116,7 +133,7 @@ class Game private constructor(
         outcome: Outcome? = this.outcome,
         pendingGuess: String? = this.pendingGuess,
         lastElimination: Elimination? = this.lastElimination
-    ) = Game(cards, civilianWord, category, starter, eliminated, outcome, pendingGuess, lastElimination)
+    ) = Game(cards, civilianWord, category, starter, scored, eliminated, outcome, pendingGuess, lastElimination)
 
     private fun evaluate(): Outcome? {
         val civilians = alive.count { it.role == Role.CIVILIAN }
@@ -131,16 +148,21 @@ class Game private constructor(
     }
 
     companion object {
-        /** Chance that a chaos game ignores the configured impostor count. */
+        /** Chance that a chaos game strikes: more impostors than set, some without a hint. */
         const val CHAOS_PROBABILITY = 1.0 / 3
 
         fun deal(players: List<String>, settings: GameSettings, pack: WordPack, entry: Entry, random: Random): Game {
             require(Rules.canStart(players.size, settings)) { "Invalid setup" }
-            val impostors = impostorCount(players.size, settings, random)
-            val drifters = if (impostors == players.size) 0 else Rules.drifters(settings.mode)
+            val chaosStrikes = settings.mode == GameMode.CHAOS && random.nextDouble() < CHAOS_PROBABILITY
+            val impostors = when {
+                chaosStrikes -> random.nextInt(2, players.size + 1)
+                settings.mode == GameMode.CHAOS -> 1
+                else -> settings.impostors
+            }
+            val journalists = if (settings.mode == GameMode.MYSTERIOUS) settings.journalists else 0
             val shuffled = players.indices.shuffled(random)
             val impostorIdx = shuffled.take(impostors).toSet()
-            val drifterIdx = shuffled.drop(impostors).take(drifters).toSet()
+            val journalistIdx = shuffled.drop(impostors).take(journalists).toSet()
             val decoy =
                 entry.decoys.randomOrNull(random)
                     ?: pack.entries.map { it.word }.filter { it != entry.word }.randomOrNull(random)
@@ -148,34 +170,34 @@ class Game private constructor(
             val cards = players.mapIndexed { i, name ->
                 val role = when (i) {
                     in impostorIdx -> Role.IMPOSTOR
-                    in drifterIdx -> Role.DRIFTER
+                    in journalistIdx -> Role.JOURNALIST
                     else -> Role.CIVILIAN
                 }
-                val word = when {
-                    role == Role.CIVILIAN -> entry.word
+                when {
+                    role == Role.CIVILIAN -> Card(name, role, entry.word, hint = null, knowsRole = settings.mode != GameMode.MYSTERIOUS)
 
-                    // Drawing a similar word would give impostors away, so they draw blind.
-                    role == Role.IMPOSTOR && settings.mode != GameMode.BLIND && !settings.drawing -> decoy
+                    role == Role.JOURNALIST -> Card(name, role, word = null, hint = null, knowsRole = true)
 
-                    else -> null
+                    // Drawing the similar word would give a Mysterious impostor away: they draw blind, and know it.
+                    settings.mode == GameMode.MYSTERIOUS ->
+                        if (settings.drawing) {
+                            Card(name, role, word = null, hint = null, knowsRole = true)
+                        } else {
+                            Card(name, role, decoy, hint = null, knowsRole = false)
+                        }
+
+                    else -> {
+                        val withHint = when {
+                            chaosStrikes -> random.nextBoolean()
+                            settings.mode == GameMode.CHAOS -> true
+                            else -> settings.impostorHint
+                        }
+                        Card(name, role, word = null, hint = decoy.takeIf { withHint }, knowsRole = true)
+                    }
                 }
-                val hint = if (word == null && settings.categoryHint &&
-                    Rules.hintAvailable(settings)
-                ) {
-                    pack.name
-                } else {
-                    null
-                }
-                Card(name, role, word, hint)
             }
-            val starter = cards.filter { it.role != Role.DRIFTER }.random(random).player
-            return Game(cards, entry.word, pack.name, starter)
-        }
-
-        private fun impostorCount(players: Int, settings: GameSettings, random: Random): Int {
-            if (!settings.chaos || random.nextDouble() >= CHAOS_PROBABILITY) return settings.impostors
-            val options = (1..Rules.maxImpostors(players, settings.mode)) + players
-            return options.random(random)
+            val starter = cards.filter { it.role != Role.JOURNALIST }.random(random).player
+            return Game(cards, entry.word, pack.name, starter, scored = settings.mode != GameMode.CHAOS)
         }
     }
 }

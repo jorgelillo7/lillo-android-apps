@@ -18,48 +18,55 @@ class GameTest {
     private fun deal(settings: GameSettings, seed: Int = 1, who: List<String> = players) =
         Game.deal(who, settings, pack, pack.entries.first(), Random(seed))
 
+    private val mysterious = GameSettings(GameMode.MYSTERIOUS)
+    private val withJournalist = GameSettings(GameMode.MYSTERIOUS, journalists = 1)
+
     @Test
-    fun classicImpostorGetsTheDecoyAndDoesNotKnow() {
-        val game = deal(GameSettings(GameMode.CLASSIC, impostors = 1))
-        val impostor = game.cards.single { it.role == Role.IMPOSTOR }
-        assertEquals("Piscina", impostor.word)
-        assertFalse(impostor.knowsRole)
-        assertTrue(game.cards.filter { it.role == Role.CIVILIAN }.all { it.word == "Playa" })
+    fun originalTellsEveryoneTheirRoleAndTheHintIsTheSimilarWord() {
+        for (hint in listOf(true, false)) {
+            val game = deal(GameSettings(GameMode.ORIGINAL, impostors = 2, impostorHint = hint))
+            val impostors = game.cards.filter { it.role == Role.IMPOSTOR }
+            assertEquals(2, impostors.size)
+            assertTrue(impostors.all { it.word == null && it.knowsRole }, "hint=$hint")
+            assertTrue(impostors.all { it.hint == if (hint) "Piscina" else null }, "hint=$hint")
+            assertTrue(game.cards.filter { it.role == Role.CIVILIAN }.all { it.word == "Playa" && it.knowsRole })
+        }
     }
 
     @Test
-    fun blindImpostorGetsNoWordAndNoHintEvenWithTheHintOn() {
-        for (drawing in listOf(false, true)) {
-            val game = deal(GameSettings(GameMode.BLIND, impostors = 2, categoryHint = true, drawing = drawing))
-            val impostors = game.cards.filter { it.role == Role.IMPOSTOR }
-            assertEquals(2, impostors.size)
-            assertTrue(impostors.all { it.word == null && it.hint == null && it.knowsRole }, "drawing=$drawing")
-        }
+    fun mysteriousImpostorGetsTheSimilarWordAndDoesNotKnow() {
+        val game = deal(mysterious)
+        val impostor = game.cards.single { it.role == Role.IMPOSTOR }
+        assertEquals("Piscina", impostor.word)
+        assertFalse(impostor.knowsRole)
+        assertTrue(game.cards.filter { it.role == Role.CIVILIAN }.all { it.word == "Playa" && !it.knowsRole })
     }
 
     @Test
     fun drawingImpostorsGetNoWordInAnyMode() {
         for (mode in GameMode.entries) {
-            val game = deal(GameSettings(mode, drawing = true))
+            val game = deal(GameSettings(mode, drawing = true), seed = 2)
             val impostor = game.cards.first { it.role == Role.IMPOSTOR }
             assertNull(impostor.word, "$mode")
-            assertTrue(impostor.knowsRole)
-            assertEquals(if (mode == GameMode.BLIND) null else "Lugares", impostor.hint, "$mode")
+            assertTrue(impostor.knowsRole, "$mode")
         }
     }
 
     @Test
-    fun drifterModeAddsOneDrifterWhoNeverStarts() {
+    fun journalistsGetNoWordKnowItAndNeverStart() {
         repeat(30) { seed ->
-            val game = deal(GameSettings(GameMode.DRIFTER), seed)
-            assertEquals(1, game.cards.count { it.role == Role.DRIFTER })
-            assertNotEquals(Role.DRIFTER, game.cardOf(game.starter).role)
+            val game = deal(GameSettings(GameMode.MYSTERIOUS, impostors = 0, journalists = 2), seed)
+            val journalists = game.cards.filter { it.role == Role.JOURNALIST }
+            assertEquals(2, journalists.size)
+            assertTrue(journalists.all { it.word == null && it.hint == null && it.knowsRole })
+            assertEquals(0, game.cards.count { it.role == Role.IMPOSTOR })
+            assertNotEquals(Role.JOURNALIST, game.cardOf(game.starter).role)
         }
     }
 
     @Test
     fun civiliansWinWhenEveryInfiltratorIsOut() {
-        val dealt = deal(GameSettings(GameMode.CLASSIC))
+        val dealt = deal(mysterious)
         val game = dealt.eliminate(dealt.cards.single { it.role == Role.IMPOSTOR }.player)
         assertEquals(Outcome.CiviliansWin, game.outcome)
         assertNull(dealt.outcome, "a move never changes the state it started from")
@@ -67,49 +74,65 @@ class GameTest {
 
     @Test
     fun impostorsWinWhenOneCivilianIsLeft() {
-        val dealt = deal(GameSettings(GameMode.CLASSIC), who = listOf("Ana", "Bea", "Carlos"))
+        val dealt = deal(mysterious, who = listOf("Ana", "Bea", "Carlos"))
         val game = dealt.eliminate(dealt.cards.first { it.role == Role.CIVILIAN }.player)
         assertEquals(Outcome.InfiltratorsWin(setOf(Role.IMPOSTOR)), game.outcome)
     }
 
     @Test
-    fun eliminatedDrifterGuessesWithAccentsAndCaseIgnored() {
-        val game = Game.deal(players, GameSettings(GameMode.DRIFTER), pack, Entry("Café", listOf("Té")), Random(3))
-        val drifter = game.cards.single { it.role == Role.DRIFTER }.player
-        val out = game.eliminate(drifter)
-        assertTrue(out.lastElimination!!.drifterMustGuess)
+    fun eliminatedJournalistGuessesWithAccentsAndCaseIgnored() {
+        val game = Game.deal(players, withJournalist, pack, Entry("Café", listOf("Té")), Random(3))
+        val journalist = game.cards.single { it.role == Role.JOURNALIST }.player
+        val out = game.eliminate(journalist)
+        assertTrue(out.lastElimination!!.journalistMustGuess)
         val guessed = out.guess("  cafe ")
-        assertTrue(guessed.drifterGuessed)
-        assertEquals(Outcome.DrifterGuessed, guessed.outcome)
+        assertTrue(guessed.journalistGuessed)
+        assertEquals(Outcome.JournalistGuessed, guessed.outcome)
     }
 
     @Test
-    fun wrongDrifterGuessKeepsTheGameGoing() {
-        val dealt = deal(GameSettings(GameMode.DRIFTER))
-        val game = dealt.eliminate(dealt.cards.single { it.role == Role.DRIFTER }.player).guess("Montaña")
-        assertFalse(game.drifterGuessed)
+    fun wrongJournalistGuessKeepsTheGameGoing() {
+        val dealt = deal(withJournalist)
+        val game = dealt.eliminate(dealt.cards.single { it.role == Role.JOURNALIST }.player).guess("Montaña")
+        assertFalse(game.journalistGuessed)
         assertNull(game.outcome)
         assertNull(game.pendingGuess, "the next vote can go ahead")
         assertEquals(4, game.alive.size)
     }
 
     @Test
-    fun impostorLimitsKeepCiviliansAhead() {
-        assertEquals(1, Rules.maxImpostors(3, GameMode.CLASSIC))
-        assertEquals(2, Rules.maxImpostors(5, GameMode.CLASSIC))
-        assertEquals(1, Rules.maxImpostors(4, GameMode.DRIFTER))
-        assertFalse(Rules.canStart(3, GameSettings(GameMode.DRIFTER)))
+    fun impostorsAndJournalistsAreAtMostHalfTheGroup() {
+        assertEquals(1, Rules.maxInfiltrators(3))
+        assertEquals(2, Rules.maxInfiltrators(4))
+        assertEquals(12, Rules.maxInfiltrators(24))
+        assertTrue(Rules.canStart(4, GameSettings(impostors = 2)))
         assertFalse(Rules.canStart(5, GameSettings(impostors = 3)))
+        assertTrue(Rules.canStart(3, GameSettings(GameMode.MYSTERIOUS, impostors = 0, journalists = 1)))
+        assertFalse(Rules.canStart(3, GameSettings(GameMode.MYSTERIOUS, impostors = 1, journalists = 1)))
+        assertFalse(Rules.canStart(5, GameSettings(GameMode.MYSTERIOUS, impostors = 0, journalists = 0)))
+        assertFalse(Rules.canStart(2, GameSettings()))
+        assertEquals(
+            GameSettings(GameMode.MYSTERIOUS, impostors = 0, journalists = 12),
+            Rules.fit(GameSettings(GameMode.MYSTERIOUS, impostors = 4, journalists = 20), 24)
+        )
+        assertEquals(
+            GameSettings(GameMode.MYSTERIOUS, impostors = 1, journalists = 0),
+            Rules.fit(GameSettings(GameMode.MYSTERIOUS, impostors = 0, journalists = 0), 6)
+        )
+        assertEquals(GameSettings(impostors = 2), Rules.fit(GameSettings(impostors = 5, journalists = 1), 4))
     }
 
     @Test
-    fun chaosSometimesMakesEveryoneAnImpostor() {
-        val counts = (0 until 400).map { seed ->
-            deal(GameSettings(GameMode.BLIND, chaos = true), seed).cards.count { it.role == Role.IMPOSTOR }
-        }.toSet()
-        assertTrue(1 in counts && players.size in counts, "counts seen: $counts")
-        val allImpostors = (0 until 400).map { deal(GameSettings(GameMode.BLIND, chaos = true), it) }
-            .first { game -> game.cards.all { it.role == Role.IMPOSTOR } }
+    fun chaosUsuallyHasOneImpostorAndSometimesManyOrEveryone() {
+        val games = (0 until 400).map { seed -> deal(GameSettings(GameMode.CHAOS, impostors = 2), seed) }
+        val counts = games.map { game -> game.cards.count { it.role == Role.IMPOSTOR } }
+        assertTrue(counts.count { it == 1 } > 200, "one impostor most of the time: ${counts.count { it == 1 }}")
+        assertTrue(2 in counts && players.size in counts, "counts seen: ${counts.toSet()}")
+        assertTrue(games.all { game -> game.cards.all { it.knowsRole } && !game.scored })
+        val struck = games.filter { game -> game.cards.count { it.role == Role.IMPOSTOR } > 1 }
+            .flatMap { game -> game.cards.filter { it.role == Role.IMPOSTOR } }
+        assertTrue(struck.any { it.hint == null } && struck.any { it.hint == "Piscina" })
+        val allImpostors = games.first { game -> game.cards.all { it.role == Role.IMPOSTOR } }
         val oneOut = allImpostors.eliminate(players.first())
         assertNull(oneOut.outcome)
         assertIs<Outcome.NoCivilians>(oneOut.reveal().outcome)
@@ -117,7 +140,7 @@ class GameTest {
 
     @Test
     fun endingEarlyIsNotANoCiviliansGame() {
-        val dealt = deal(GameSettings(GameMode.DRIFTER))
+        val dealt = deal(withJournalist)
         val game = dealt.eliminate(dealt.cards.single { it.role == Role.IMPOSTOR }.player)
         assertNull(game.outcome)
         assertEquals(Outcome.EndedEarly, game.reveal().outcome)
@@ -125,28 +148,33 @@ class GameTest {
 
     @Test
     fun winnersScoreWhetherEliminatedOrNot() {
-        val classic = deal(GameSettings(GameMode.CLASSIC))
+        val classic = deal(mysterious)
         val civilians = classic.cards.filter { it.role == Role.CIVILIAN }.map { it.player }
         val civiliansWin = classic.eliminate(classic.cards.single { it.role == Role.IMPOSTOR }.player)
         assertEquals(civilians.associateWith { Scoring.CIVILIAN_WIN }, Scoring.points(civiliansWin))
 
-        val three = deal(GameSettings(GameMode.CLASSIC), who = listOf("Ana", "Bea", "Carlos"))
+        val three = deal(mysterious, who = listOf("Ana", "Bea", "Carlos"))
         val impostorsWin = three.eliminate(three.cards.first { it.role == Role.CIVILIAN }.player)
         val impostor = impostorsWin.cards.single { it.role == Role.IMPOSTOR }.player
         assertEquals(mapOf(impostor to Scoring.INFILTRATOR_WIN), Scoring.points(impostorsWin))
 
-        val drifterGame = Game.deal(
+        val journalistGame = Game.deal(
             players,
-            GameSettings(GameMode.DRIFTER),
+            GameSettings(GameMode.MYSTERIOUS, impostors = 0, journalists = 2),
             pack,
             Entry("Café", listOf("Té")),
             Random(3)
         )
-        val drifter = drifterGame.cards.single { it.role == Role.DRIFTER }.player
-        val guessed = drifterGame.eliminate(drifter).guess("café")
-        assertEquals(mapOf(drifter to Scoring.INFILTRATOR_WIN), Scoring.points(guessed))
+        val journalist = journalistGame.cards.first { it.role == Role.JOURNALIST }.player
+        val guessed = journalistGame.eliminate(journalist).guess("café")
+        assertEquals(mapOf(journalist to Scoring.INFILTRATOR_WIN), Scoring.points(guessed), "only the one who guessed")
 
-        val ended = deal(GameSettings(GameMode.CLASSIC)).reveal()
+        val chaos = (0 until 50).map { deal(GameSettings(GameMode.CHAOS), it) }.first { game ->
+            game.cards.count { it.role == Role.IMPOSTOR } == 1
+        }
+        assertTrue(Scoring.points(chaos.eliminate(chaos.cards.single { it.role == Role.IMPOSTOR }.player)).isEmpty())
+
+        val ended = deal(mysterious).reveal()
         assertTrue(Scoring.points(ended).isEmpty())
     }
 
@@ -196,7 +224,7 @@ class GameTest {
     fun impostorGetsOneOfSeveralSimilarWords() {
         val entry = Entry("Playa", listOf("Piscina", "Lago", "Río"))
         val decoys = (0 until 60).map { seed ->
-            Game.deal(players, GameSettings(GameMode.CLASSIC), pack, entry, Random(seed)).cards.single {
+            Game.deal(players, mysterious, pack, entry, Random(seed)).cards.single {
                 it.role ==
                     Role.IMPOSTOR
             }.word
