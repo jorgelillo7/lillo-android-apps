@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
@@ -184,7 +185,59 @@ class RoundScreensScreenshotTest {
 
     /** A full list: no name field, just the "remove someone" notice. */
     private fun playersFull(name: String, dark: Boolean = true) = shot(name, dark) {
-        PlayersScreen((1..24).map { "Player $it" }, onAdd = {}, onRemove = {}, onContinue = {}, onBack = {})
+        PlayersScreen(
+            (1..24).map { "Player $it" },
+            onAdd = {},
+            onRemove = {},
+            onRename = { _, _ -> },
+            fromSetup = true,
+            onContinue = {},
+            onBack = {}
+        )
+    }
+
+    /** Setup in each mode, for a group of eight, with the counts at the cap in Mysterious. */
+    private fun setup(name: String, settings: GameSettings, dark: Boolean = true) = shot(name, dark) {
+        SetupScreen(
+            (1..8).map { "Player $it" },
+            settings,
+            listOf(pack),
+            40 to 300,
+            onChange = {},
+            onPlayers = {},
+            onModesInfo = {},
+            onChoosePacks = {},
+            onStart = {},
+            onBack = {}
+        )
+    }
+
+    private val original = GameSettings(GameMode.ORIGINAL, impostors = 2, rounds = 7, discussionSeconds = 480)
+
+    @Test fun setupOriginal() = setup("setup_original", original)
+
+    @Test fun setupOriginalLight() = setup("setup_original", original, dark = false)
+
+    @Test
+    @Config(qualifiers = "+land")
+    fun setupOriginalLandscape() = setup("setup_original_landscape", original)
+
+    @Test
+    @Config(qualifiers = "+land")
+    fun setupOriginalLandscapeLight() = setup("setup_original_landscape", original, dark = false)
+
+    @Test
+    fun setupMysteriousAtTheCap() {
+        setup("setup_mysterious", GameSettings(GameMode.MYSTERIOUS, impostors = 2, journalists = 2, rounds = 7))
+        compose.onNodeWithTag("cap_warning").assertExists()
+        compose.onNodeWithTag("impostors_plus").assertIsNotEnabled()
+    }
+
+    @Test
+    fun setupChaosHasNoImpostorCount() {
+        setup("setup_chaos", GameSettings(GameMode.CHAOS, rounds = 0, discussionSeconds = 0))
+        compose.onNodeWithTag("impostors").assertDoesNotExist()
+        compose.onNodeWithTag("players_row").assertExists()
     }
 
     private fun drawing(name: String, dark: Boolean = true) = shot(name, dark) {

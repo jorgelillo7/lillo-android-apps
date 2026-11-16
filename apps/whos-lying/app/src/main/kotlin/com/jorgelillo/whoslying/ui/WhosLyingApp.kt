@@ -15,6 +15,7 @@ import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -23,6 +24,7 @@ import androidx.navigation.toRoute
 import com.jorgelillo.whoslying.R
 import com.jorgelillo.whoslying.WhosLyingApplication
 import com.jorgelillo.whoslying.domain.Match
+import com.jorgelillo.whoslying.domain.Rules
 import com.jorgelillo.whoslying.domain.WordPack
 import com.jorgelillo.whoslying.ui.screens.CountdownScreen
 import com.jorgelillo.whoslying.ui.screens.DebateScreen
@@ -143,7 +145,10 @@ internal fun WhosLyingApp(app: WhosLyingApplication, incomingText: String? = nul
         composable<Home> {
             HomeScreen(
                 group = HomeGroup(state.players, state.settings, state.scores, state.roundsPlayed),
-                onPlay = { nav.navigate(Players) },
+                onPlay = {
+                    // A group already set up goes straight to setup; its players are one row away.
+                    if (state.players.size >= Rules.MIN_PLAYERS) nav.navigate(Setup) else nav.navigate(Players)
+                },
                 onHowTo = { showHowTo = true },
                 onModes = { showModes = true },
                 onPacks = { nav.navigate(Packs) },
@@ -151,17 +156,31 @@ internal fun WhosLyingApp(app: WhosLyingApplication, incomingText: String? = nul
             )
         }
         composable<Players> {
-            PlayersScreen(state.players, vm::addPlayer, vm::removePlayer, onContinue = {
-                nav.navigate(Setup)
-            }, onBack = { nav.popBackStack() })
+            val fromSetup = nav.previousBackStackEntry?.destination?.hasRoute<Setup>() == true
+            PlayersScreen(
+                state.players,
+                vm::addPlayer,
+                vm::removePlayer,
+                vm::renamePlayer,
+                fromSetup = fromSetup,
+                onContinue = {
+                    if (fromSetup) {
+                        nav.popBackStack()
+                    } else {
+                        nav.navigate(Setup) { popUpTo<Players> { inclusive = true } }
+                    }
+                },
+                onBack = { nav.popBackStack() }
+            )
         }
         composable<Setup> {
             SetupScreen(
-                playerCount = state.players.size,
+                players = state.players,
                 settings = state.settings,
                 packs = vm.allPacks(state),
                 unplayed = vm.unplayed(state),
                 onChange = vm::updateSettings,
+                onPlayers = { nav.navigate(Players) },
                 onModesInfo = { showModes = true },
                 onChoosePacks = { nav.navigate(PickPacks) },
                 onStart = { if (vm.startGame()) nav.navigate(Reveal) },

@@ -127,7 +127,9 @@ would let a match end without anyone having played it.
 
 ### Requirement: Setup keeps the players and limits valid
 
-Names SHALL be trimmed and blanks and case-insensitive duplicates skipped; a requested
+Names SHALL be trimmed and blanks and case-insensitive duplicates skipped; a player SHALL be
+renamed in place, keeping their points; every change to the group SHALL set rounds and
+discussion time to what suits its size (`Match.recommendedRounds`, a minute per player); a requested
 impostor count SHALL be reduced to what the players allow; a game SHALL not start with
 too few players; starting SHALL deal the game and remember its civilian word as a recent
 word. A whole game SHALL be playable from the welcome screen to catching the impostor.
@@ -138,7 +140,14 @@ word. A whole game SHALL be playable from the welcome screen to catching the imp
 - **WHEN** two players try to start **THEN** it returns false and there is no game
 - **WHEN** four players start **THEN** the game has one impostor and the civilian word is stored in the recent words
 - **WHEN** three players reveal their cards and vote for the impostor in the app **THEN** the outcome is `CiviliansWin`
-- *Verifies:* `addPlayerTrimsAndSkipsBlanksAndDuplicates`,
+- **WHEN** Bea is renamed to "bea", then to " ANA " or a blank, then to " Beatriz " **THEN** the players are Ana, Beatriz and Carlos in their places; a civilian who scored and is renamed keeps the points under the new name
+- **WHEN** three players join, rounds are changed to 3, and six more join **THEN** three players get the recommended rounds and 3 minutes, and nine get 5 rounds and 9 minutes
+- **WHEN** setup is shown in Mysterious at the cap and in Chaos **THEN** the cap warning shows and "more impostors" is off, and Chaos shows the players but no impostor count
+- **WHEN** the players are opened from setup and Ana is renamed **THEN** the list closes back to setup with the new name
+- *Verifies:* `renamingAPlayerKeepsTheirPlaceAndPoints`, `aRenamedPlayerKeepsTheirScore`,
+  `theGroupSizeSetsRoundsAndDiscussionTime`, `setupMysteriousAtTheCap`,
+  `setupChaosHasNoImpostorCount`, `theGroupIsOneRowAwayFromSetup`,
+  `addPlayerTrimsAndSkipsBlanksAndDuplicates`,
   `updateSettingsKeepsImpostorsWithinWhatThePlayersAllow`, `aGameNeedsEnoughPlayers`,
   `startingAGameDealsAndRemembersTheWord`, `aWholeGameEndsWithTheImpostorCaught`
 
