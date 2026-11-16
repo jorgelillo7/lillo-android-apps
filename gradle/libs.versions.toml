@@ -46,7 +46,7 @@ targetSdk = "37"
 minSdk = "24"
 appMinSdk = "24"
 
-firebaseBom = "35.1.0"
+firebaseBom = "35.2.0"
 kotlinxCoroutines = "1.11.0"
 
 [libraries]
