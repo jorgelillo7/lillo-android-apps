@@ -2,8 +2,12 @@ package com.jorgelillo.whoslying.ui.screens
 
 import android.app.Application
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -27,6 +31,7 @@ import com.jorgelillo.core.designsystem.LilloTheme
 import com.jorgelillo.core.designsystem.LilloThemeMode
 import com.jorgelillo.core.designsystem.LocalLilloThemeMode
 import com.jorgelillo.core.screenshottesting.captureScreenshot
+import com.jorgelillo.whoslying.domain.Card
 import com.jorgelillo.whoslying.domain.Entry
 import com.jorgelillo.whoslying.domain.Game
 import com.jorgelillo.whoslying.domain.GameMode
@@ -39,6 +44,7 @@ import com.jorgelillo.whoslying.ui.InkColors
 import com.jorgelillo.whoslying.ui.theme.Neon
 import com.jorgelillo.whoslying.ui.theme.NeonDark
 import com.jorgelillo.whoslying.ui.theme.NeonLight
+import com.jorgelillo.whoslying.ui.theme.NightStage
 import kotlin.random.Random
 import kotlin.test.assertEquals
 import org.junit.Rule
@@ -77,7 +83,7 @@ class RoundScreensScreenshotTest {
 
     /** Home with a group mid-match (summary header), and a first launch (no group yet). */
     private fun home(name: String, group: HomeGroup?, dark: Boolean = true) =
-        shot(name, dark) { HomeScreen(group, {}, {}, {}, {}, {}) }
+        shot(name, dark) { HomeScreen(group, {}, {}, {}, {}, {}, {}, {}) }
 
     private val group = HomeGroup(
         players,
@@ -86,7 +92,55 @@ class RoundScreensScreenshotTest {
         roundsPlayed = 3
     )
 
-    @Test fun homeWithGroup() = home("home_group", group)
+    @Test
+    fun homeWithGroup() {
+        home("home_group", group)
+        compose.onNodeWithTag("continue_match").assertExists()
+        compose.onNodeWithTag("new_match").assertExists()
+        compose.onNodeWithTag("play").assertDoesNotExist()
+    }
+
+    @Test
+    fun aChaosGroupHasNoMatchToContinue() {
+        compose.setContent {
+            LilloTheme(NeonDark) {
+                HomeScreen(group.copy(settings = group.settings.copy(mode = GameMode.CHAOS)), {
+                }, {}, {}, {}, {}, {}, {})
+            }
+        }
+        compose.onNodeWithTag("play").assertExists()
+        compose.onNodeWithTag("continue_match").assertDoesNotExist()
+        compose.onNodeWithTag("hero_leader").assertDoesNotExist()
+    }
+
+    /** What the reveal curtain hides, for each kind of card: told roles, a hint, no word, a journalist, Mysterious. */
+    private fun secretCards(name: String) = shot(name) {
+        val hinted = Card("Ana", Role.IMPOSTOR, word = null, hint = "Pool", knowsRole = true)
+        val cards = listOf(
+            Card("Bea", Role.CIVILIAN, "Beach", hint = null, knowsRole = true),
+            hinted,
+            hinted.copy(player = "Carlos", hint = null),
+            Card("Dani", Role.JOURNALIST, word = null, hint = null, knowsRole = true),
+            Card("Eva", Role.IMPOSTOR, "Pool", hint = null, knowsRole = false)
+        )
+        NightStage {
+            Box(Modifier.background(Neon.RevealBackdrop).padding(12.dp)) {
+                LazyVerticalGrid(
+                    GridCells.Adaptive(300.dp),
+                    verticalArrangement = Arrangement.spacedBy(10.dp),
+                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    items(cards) { SecretCard(it, compact = true) }
+                }
+            }
+        }
+    }
+
+    @Test fun secretCardsPortrait() = secretCards("secret_cards")
+
+    @Test
+    @Config(qualifiers = "+land")
+    fun secretCardsLandscape() = secretCards("secret_cards_landscape")
 
     @Test
     @Config(qualifiers = "+land")
@@ -327,7 +381,9 @@ class RoundScreensScreenshotTest {
     @Config(qualifiers = "w891dp-h411dp-land")
     fun theHomeOpensTheSettingsFromTheTopRight() {
         var opened = 0
-        compose.setContent { LilloTheme(NeonDark) { HomeScreen(group, {}, {}, {}, {}, onAbout = { opened++ }) } }
+        compose.setContent {
+            LilloTheme(NeonDark) { HomeScreen(group, {}, {}, {}, {}, {}, {}, onAbout = { opened++ }) }
+        }
         compose.onNodeWithTag("about").assertIsDisplayed().performClick()
         compose.runOnIdle { assertEquals(1, opened) }
     }
