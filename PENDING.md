@@ -21,7 +21,8 @@ Lines are pruned as items ship. What has **shipped** lives in `apps/<app>/releas
 
 | | What is missing | Waiting on |
 |---|---|---|
-| 🔨 | Store screenshot 08 (home with the ⓘ at the top right, phone, es and en) shows two Wi-Fi icons in the status bar, an emulator demo-mode glitch: retake it with a clean demo status bar and ship it with the next whos-lying listing update (`-f action=listing` is enough, no new version needed) | Ready |
+| 👤 | Version 14 (Original, Mysterious and Chaos modes, journalists, setup in cards, continue a match from the home): upload and promote with the Release workflow together with the listing (`-f listing=true`); then play every mode on a real phone | You |
+| 🔨 | `tools/battery_test.py` still drives the old modes and setup tags (Classic/Blind/Drifter, the `chaos` switch, round and timer steppers): rewrite it for Original, Mysterious with journalists and Chaos | Ready |
 
 ## group-polls (new app, parked until 2026-10-23)
 
@@ -54,7 +55,7 @@ Lines are pruned as items ship. What has **shipped** lives in `apps/<app>/releas
 
 | | What is missing | Waiting on |
 |---|---|---|
-| 🔨 | The other bottom sheets (whos-lying's how-to, modes, report and pack sheets, decision-wheel's and league-cards' own, tournaments' already expanded) still open half-way: move them onto core `LilloSheet` | — |
+| 🔨 | The other bottom sheets (decision-wheel's and league-cards' own; whos-lying's and tournaments' already expanded) still open half-way: move them onto core `LilloSheet` | — |
 | ⏳ | The specs' two remaining GAPs can't be tested here: reminders surviving a reboot and battery delays (WorkManager on a device) and league-cards' private deck (never in this repo) | A phone · the private deck |
 | ⏳ | Play's new app-quality thresholds (memory and code optimisation) are enforced from February 2027: in January, run `scripts/play_vitals.py` and compare with the thresholds once published (2026-11-07: no app has enough users for Google to report vitals; R8 is on everywhere and the apps are 1–2 MB) | January 2027 |
 | ⏳ | Play is expected to require targetSdk 37 from August 2027; the apps target it on `master` since 2026-11 and reach users with the releases above. In-App Review in `core`, shown after a good moment, is still an idea: first check with `scripts/verify-bundle.sh` that it adds no INTERNET permission to the apps that promise none | The releases above |

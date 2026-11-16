@@ -51,7 +51,9 @@ case "${1:-}" in
       demo enter
       demo clock -e hhmm 1225
       demo battery -e level 100 -e plugged false
-      demo network -e wifi show -e level 4 -e mobile show -e datatype none -e level 4
+      # Wi-Fi alone: with the mobile signal shown, API 37 draws a second Wi-Fi icon and "3G".
+      demo network -e wifi show -e level 4 -e fully true -e mobile hide -e sims 0 -e nosim hide
+      demo status -e vpn hide -e location hide -e alarm hide -e bluetooth hide -e mute hide -e volume hide
       demo notifications -e visible false
     else
       demo exit

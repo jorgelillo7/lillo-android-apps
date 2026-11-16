@@ -104,15 +104,14 @@ for locale in $CAPTURE_LOCALES; do
     tap player_name 1; "$ADB" shell input text "$name"; "$ADB" shell input keyevent KEYCODE_ENTER; sleep 1
   done
   hide_keyboard
-  tap continue 2
-  swipe_up 0.74 0.2    # scroll setup down to the timer
-  for _ in 1 2 3 4 5; do tap timer_plus 1; done      # 5 min, the recommendation for 5 players
+  tap continue 2      # rounds and time follow the group: 5 players, 10 rounds, 5 min
+  swipe_up 0.74 0.2    # scroll setup down to the packs
   tap choose_packs 2
   shot "$locale" 06-packs
   look dark; shot "$locale" 06b-night; look light   # the same menu in the night look
   tap packs_done 2
 
-  # Classic game: reveal, debate, vote the impostor out, result.
+  # Original game: reveal, debate, vote the impostor out, result.
   tap start 3
   reveal_all shoot
   sleep 6
@@ -127,9 +126,7 @@ for locale in $CAPTURE_LOCALES; do
 
   # Drawing mode.
   tap home 2
-  tap play 2
-  tap continue 2
-  swipe_up 0.74 0.2
+  tap home_new_match 2   # a match is half played now: a new one opens setup
   tap drawing 1
   tap start 3
   reveal_all

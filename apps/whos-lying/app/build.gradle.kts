@@ -10,8 +10,8 @@ android {
 
     defaultConfig {
         applicationId = "com.jorgelillo.whoslying"
-        versionCode = 13
-        versionName = "1.9"
+        versionCode = 14
+        versionName = "1.10"
     }
 
     // Release signing and R8: the jorgelillo.android.application convention plugin.
