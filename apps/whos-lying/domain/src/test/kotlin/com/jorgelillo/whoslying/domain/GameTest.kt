@@ -123,7 +123,15 @@ class GameTest {
     }
 
     @Test
-    fun chaosUsuallyHasOneImpostorAndSometimesManyOrEveryone() {
+    fun chaosUsuallyHasImpostorsForTheGroupSizeAndSometimesManyOrEveryone() {
+        assertEquals(listOf(1, 1, 2, 2, 3, 5), listOf(3, 7, 8, 12, 13, 24).map(Rules::recommendedImpostors))
+        val twelve = (1..12).map { "P$it" }
+        val counts12 = (0 until 300).map { seed ->
+            Game.deal(twelve, GameSettings(GameMode.CHAOS), pack, pack.entries.first(), Random(seed))
+                .cards.count { it.role == Role.IMPOSTOR }
+        }
+        assertTrue(counts12.count { it == 2 } > 150 && counts12.all { it >= 2 }, "12 players: ${counts12.toSet()}")
+
         val games = (0 until 400).map { seed -> deal(GameSettings(GameMode.CHAOS, impostors = 2), seed) }
         val counts = games.map { game -> game.cards.count { it.role == Role.IMPOSTOR } }
         assertTrue(counts.count { it == 1 } > 200, "one impostor most of the time: ${counts.count { it == 1 }}")

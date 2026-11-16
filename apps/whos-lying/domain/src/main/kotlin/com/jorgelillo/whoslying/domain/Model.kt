@@ -11,7 +11,10 @@ enum class GameMode {
     /** Nobody is told their role: impostors get the similar word. Journalists get no word and guess it when voted out. */
     MYSTERIOUS,
 
-    /** Original with hints, but about one game in three has more impostors (up to everyone), some without a hint. Never scored. */
+    /**
+     * Original with hints and [Rules.recommendedImpostors] impostors, but about one game in three has
+     * more (up to everyone), some without a hint. Never scored.
+     */
     CHAOS
 }
 
