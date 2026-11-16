@@ -13,7 +13,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
@@ -231,6 +233,63 @@ class RoundScreensScreenshotTest {
         setup("setup_mysterious", GameSettings(GameMode.MYSTERIOUS, impostors = 2, journalists = 2, rounds = 7))
         compose.onNodeWithTag("cap_warning").assertExists()
         compose.onNodeWithTag("impostors_plus").assertIsNotEnabled()
+    }
+
+    /** The cap warning at the smallest and largest groups, in both modes that have one; one screen, its setup swapped. */
+    private val capCase = mutableStateOf(3 to GameSettings())
+
+    private fun capWarning(players: Int, settings: GameSettings): String {
+        val first = !capStarted
+        capCase.value = players to settings
+        if (first) {
+            capStarted = true
+            compose.setContent {
+                val (count, current) = capCase.value
+                LilloTheme(NeonDark) {
+                    SetupScreen((1..count).map { "P$it" }, current, listOf(pack), 40 to 300, {}, {}, {}, {}, {}, {})
+                }
+            }
+        }
+        compose.waitForIdle()
+        compose.onNodeWithTag("impostors_plus").assertIsNotEnabled()
+        return compose.onNodeWithTag("cap_warning").fetchSemanticsNode().config[SemanticsProperties.Text].joinToString()
+    }
+
+    private var capStarted = false
+
+    @Test
+    fun theCapWarningAtThreePlayersIsSingular() {
+        assertEquals("Max 1 impostor for 3 players", capWarning(3, GameSettings(GameMode.ORIGINAL)))
+        assertEquals(
+            "Max 1 impostor or journalist for 3 players",
+            capWarning(3, GameSettings(GameMode.MYSTERIOUS, impostors = 0, journalists = 1))
+        )
+    }
+
+    @Test
+    fun theCapWarningAtTwentyFourPlayersAllowsTwelve() {
+        assertEquals("Max 12 impostors for 24 players", capWarning(24, GameSettings(GameMode.ORIGINAL, impostors = 12)))
+        assertEquals(
+            "Max 12 impostors and journalists for 24 players",
+            capWarning(24, GameSettings(GameMode.MYSTERIOUS, impostors = 4, journalists = 8))
+        )
+    }
+
+    @Test
+    fun belowTheCapThereIsNoWarning() {
+        compose.setContent {
+            LilloTheme(NeonDark) {
+                SetupScreen(
+                    (1..15).map { "P$it" },
+                    GameSettings(GameMode.MYSTERIOUS, impostors = 3, journalists = 3),
+                    listOf(pack),
+                    40 to 300,
+                    {}, {}, {}, {}, {}, {}
+                )
+            }
+        }
+        compose.onNodeWithTag("cap_warning").assertDoesNotExist()
+        compose.onNodeWithTag("journalists_plus").assertIsEnabled()
     }
 
     @Test
