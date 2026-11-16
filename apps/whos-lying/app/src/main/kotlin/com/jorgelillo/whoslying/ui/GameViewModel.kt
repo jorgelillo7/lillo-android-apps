@@ -122,11 +122,38 @@ class GameViewModel(
         ) {
             s
         } else {
-            s.copy(players = s.players + clean)
+            withGroup(s, s.players + clean)
         }
     }
 
-    fun removePlayer(name: String) = update { it.copy(players = it.players - name) }
+    fun removePlayer(name: String) = update { withGroup(it, it.players - name) }
+
+    /** Renames [old], keeping their place and their points; a blank or taken name changes nothing. */
+    fun renamePlayer(old: String, new: String) = update { s ->
+        val clean = new.trim()
+        val taken = s.players.any { it != old && it.equals(clean, ignoreCase = true) }
+        if (clean.isEmpty() || taken || old !in s.players) {
+            s
+        } else {
+            val points = s.scores[old]
+            s.copy(
+                players = s.players.map { if (it == old) clean else it },
+                scores = if (points == null) s.scores else s.scores - old + (clean to points)
+            )
+        }
+    }
+
+    /** A new group size resets rounds and discussion time to what suits it, and keeps the counts within its cap. */
+    private fun withGroup(s: SavedState, players: List<String>): SavedState = s.copy(
+        players = players,
+        settings = Rules.fit(
+            s.settings.copy(
+                rounds = Match.recommendedRounds(players.size),
+                discussionSeconds = Rules.recommendedTimer(players.size)
+            ),
+            players.size
+        )
+    )
 
     fun updateSettings(transform: (GameSettings) -> GameSettings) = update { s ->
         s.copy(settings = Rules.fit(transform(s.settings), s.players.size))

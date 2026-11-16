@@ -17,19 +17,25 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.FilledIconButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
@@ -46,6 +52,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
@@ -176,12 +185,24 @@ internal fun PlayersScreen(
     players: List<String>,
     onAdd: (String) -> Unit,
     onRemove: (String) -> Unit,
+    onRename: (old: String, new: String) -> Unit,
+    /** Opened from setup: the button closes the list instead of continuing to it. */
+    fromSetup: Boolean,
     onContinue: () -> Unit,
     onBack: () -> Unit
 ) {
     var draft by rememberSaveable { mutableStateOf("") }
+    var renaming by rememberSaveable { mutableStateOf<String?>(null) }
+
+    // The name field adds a player, or with a name being renamed, saves the new name.
     fun add() {
-        if (draft.isNotBlank()) onAdd(draft)
+        val old = renaming
+        if (old != null) {
+            onRename(old, draft)
+        } else if (draft.isNotBlank()) {
+            onAdd(draft)
+        }
+        renaming = null
         draft = ""
     }
     LilloPage(
@@ -189,7 +210,7 @@ internal fun PlayersScreen(
         onBack = onBack,
         modifier = Modifier.imePadding(),
         bottom = {
-            if (players.size >= Rules.MAX_PLAYERS) {
+            if (players.size >= Rules.MAX_PLAYERS && renaming == null) {
                 Text(
                     pluralStringResource(R.plurals.players_full, Rules.MAX_PLAYERS, Rules.MAX_PLAYERS),
                     color = Neon.AmberText,
@@ -214,13 +235,17 @@ internal fun PlayersScreen(
                     FilledIconButton(onClick = {
                         add()
                     }, enabled = draft.isNotBlank(), modifier = Modifier.size(52.dp).testTag("add_player")) {
-                        Icon(Icons.Filled.Add, contentDescription = stringResource(R.string.players_add))
+                        if (renaming != null) {
+                            Icon(Icons.Filled.Check, contentDescription = stringResource(R.string.players_rename_save))
+                        } else {
+                            Icon(Icons.Filled.Add, contentDescription = stringResource(R.string.players_add))
+                        }
                     }
                 }
             }
             Spacer(Modifier.height(12.dp))
             LilloBigButton(
-                stringResource(R.string.continue_),
+                stringResource(if (fromSetup) R.string.players_close else R.string.continue_),
                 onContinue,
                 enabled = players.size >= Rules.MIN_PLAYERS,
                 modifier = Modifier.testTag("continue")
@@ -232,7 +257,7 @@ internal fun PlayersScreen(
             if (players.size < Rules.MIN_PLAYERS) {
                 pluralStringResource(R.plurals.players_need_more, Rules.MIN_PLAYERS, Rules.MIN_PLAYERS)
             } else {
-                stringResource(R.string.players_subtitle)
+                stringResource(R.string.players_range, Rules.MIN_PLAYERS, Rules.MAX_PLAYERS)
             },
             color = Neon.Muted
         )
@@ -249,6 +274,16 @@ internal fun PlayersScreen(
                         Modifier.weight(1f).padding(horizontal = 14.dp),
                         style = MaterialTheme.typography.titleMedium
                     )
+                    IconButton(onClick = {
+                        renaming = name
+                        draft = name
+                    }, modifier = Modifier.testTag("rename_$name")) {
+                        Icon(
+                            Icons.Filled.Edit,
+                            contentDescription = stringResource(R.string.players_rename, name),
+                            tint = Neon.Muted
+                        )
+                    }
                     IconButton(onClick = { onRemove(name) }) {
                         Icon(
                             Icons.Filled.Close,
@@ -264,18 +299,23 @@ internal fun PlayersScreen(
 
 @Composable
 internal fun SetupScreen(
-    playerCount: Int,
+    players: List<String>,
     settings: GameSettings,
     packs: List<WordPack>,
     /** Words not played yet in the selected packs, out of how many. */
     unplayed: Pair<Int, Int>,
     onChange: ((GameSettings) -> GameSettings) -> Unit,
+    onPlayers: () -> Unit,
     onModesInfo: () -> Unit,
     onChoosePacks: () -> Unit,
     onStart: () -> Unit,
     onBack: () -> Unit
 ) {
+    val playerCount = players.size
     val cap = Rules.maxInfiltrators(playerCount).coerceAtLeast(1)
+    val recommendedRounds = Match.recommendedRounds(playerCount)
+    val recommendedTimer = Rules.recommendedTimer(playerCount)
+    var picking by rememberSaveable { mutableStateOf<String?>(null) }
     // On short screens a fixed button would leave almost no room to scroll: it goes at the end of the list.
     val short = isShortScreen()
     val startButton: @Composable () -> Unit = {
@@ -292,221 +332,335 @@ internal fun SetupScreen(
         bottom = { if (!short) startButton() },
         readable = true
     ) {
-        Column(Modifier.verticalScroll(rememberScrollState())) {
-            TextButton(onClick = onModesInfo, modifier = Modifier.align(Alignment.End).testTag("modes_info")) {
-                Text("ⓘ  " + stringResource(R.string.setup_which_mode), color = Neon.TurquoiseText)
+        Column(Modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            ModePicker(settings.mode, onPick = { mode -> onChange { it.copy(mode = mode) } }, onInfo = onModesInfo)
+            LilloSettingRow(
+                stringResource(R.string.setup_drawing),
+                leading = "🎨",
+                subtitle = stringResource(R.string.setup_drawing_desc),
+                containerColor = Neon.Card
+            ) {
+                NeonSwitch(settings.drawing, "drawing") { v -> onChange { it.copy(drawing = v) } }
             }
-            listOf(
-                Triple(GameMode.ORIGINAL, R.string.mode_original to R.string.mode_original_desc, "🕵️"),
-                Triple(GameMode.MYSTERIOUS, R.string.mode_mysterious to R.string.mode_mysterious_desc, "🎭"),
-                Triple(GameMode.CHAOS, R.string.mode_chaos to R.string.mode_chaos_desc, "🌀")
-            ).forEach { (mode, texts, emoji) ->
-                val selected = settings.mode == mode
-                Row(
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 10.dp)
-                        .clip(MaterialTheme.shapes.large)
-                        .background(if (selected) Neon.CardHigh else Neon.Card)
-                        .border(2.dp, if (selected) Neon.Violet else Color.Transparent, MaterialTheme.shapes.large)
-                        .clickable { onChange { it.copy(mode = mode) } }
-                        .padding(16.dp)
-                        .testTag("mode_${mode.name.lowercase()}"),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(emoji, style = MaterialTheme.typography.headlineMedium)
-                    Spacer(Modifier.width(14.dp))
-                    Column(Modifier.weight(1f)) {
-                        Text(
-                            stringResource(texts.first),
-                            fontWeight = FontWeight.Bold,
-                            color = Neon.Ink
-                        )
-                        Text(
-                            stringResource(texts.second),
-                            style = MaterialTheme.typography.bodySmall,
-                            color = Neon.Muted
-                        )
+            Text(
+                stringResource(R.string.setup_settings),
+                color = Neon.Muted,
+                style = MaterialTheme.typography.titleSmall,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
+            )
+            SettingsGroup {
+                GroupRow(
+                    "👥",
+                    stringResource(R.string.players_title),
+                    tag = "players_row",
+                    onClick = onPlayers,
+                    value = "$playerCount"
+                )
+                when (settings.mode) {
+                    GameMode.CHAOS -> GroupNote(stringResource(R.string.setup_chaos_note))
+
+                    else -> {
+                        GroupDivider()
+                        GroupRow("🕵️", stringResource(R.string.setup_impostors)) {
+                            Stepper(
+                                label = stringResource(R.string.setup_impostors),
+                                value = settings.impostors,
+                                canLower = settings.impostors > Rules.minImpostors(settings),
+                                canRaise = settings.impostors + settings.journalists < cap,
+                                tag = "impostors",
+                                onChange = { v -> onChange { it.copy(impostors = v) } }
+                            )
+                        }
+                        if (settings.mode == GameMode.MYSTERIOUS) {
+                            GroupDivider()
+                            GroupRow(
+                                "📰",
+                                stringResource(R.string.setup_journalists),
+                                subtitle = stringResource(R.string.setup_journalists_desc)
+                            ) {
+                                Stepper(
+                                    label = stringResource(R.string.setup_journalists),
+                                    value = settings.journalists,
+                                    canLower = settings.journalists > 0 &&
+                                        settings.impostors + settings.journalists > 1,
+                                    canRaise = settings.impostors + settings.journalists < cap,
+                                    tag = "journalists",
+                                    onChange = { v -> onChange { it.copy(journalists = v) } }
+                                )
+                            }
+                        }
+                        if (settings.impostors + settings.journalists >= cap && playerCount >= Rules.MIN_PLAYERS) {
+                            GroupNote(
+                                if (settings.mode == GameMode.MYSTERIOUS) {
+                                    pluralStringResource(R.plurals.setup_cap_infiltrators, cap, cap, playerCount)
+                                } else {
+                                    pluralStringResource(R.plurals.setup_cap_impostors, cap, cap, playerCount)
+                                },
+                                color = Neon.AmberText,
+                                tag = "cap_warning"
+                            )
+                        }
+                        if (settings.mode == GameMode.ORIGINAL) {
+                            GroupDivider()
+                            GroupRow(
+                                "💡",
+                                stringResource(R.string.setup_hint),
+                                subtitle = stringResource(R.string.setup_hint_desc)
+                            ) {
+                                NeonSwitch(settings.impostorHint, "hint") { v ->
+                                    onChange { it.copy(impostorHint = v) }
+                                }
+                            }
+                        }
                     }
                 }
             }
-
-            if (settings.mode != GameMode.CHAOS) {
-                SettingRow(stringResource(R.string.setup_impostors), null) {
-                    Stepper(
-                        value = settings.impostors,
-                        canLower = settings.impostors > Rules.minImpostors(settings),
-                        canRaise = settings.impostors + settings.journalists < cap,
-                        tag = "impostors",
-                        onChange = { v -> onChange { it.copy(impostors = v) } }
-                    )
-                }
-            }
-            if (settings.mode == GameMode.ORIGINAL) {
-                SettingRow(stringResource(R.string.setup_hint), stringResource(R.string.setup_hint_desc)) {
-                    NeonSwitch(settings.impostorHint, "hint") { v -> onChange { it.copy(impostorHint = v) } }
-                }
-            }
-            if (settings.mode == GameMode.MYSTERIOUS) {
-                SettingRow(
-                    stringResource(R.string.setup_journalists),
-                    stringResource(R.string.setup_journalists_desc)
-                ) {
-                    Stepper(
-                        value = settings.journalists,
-                        canLower = settings.journalists > 0 && settings.impostors + settings.journalists > 1,
-                        canRaise = settings.impostors + settings.journalists < cap,
-                        tag = "journalists",
-                        onChange = { v -> onChange { it.copy(journalists = v) } }
-                    )
-                }
-            }
-            SettingRow("🎨 " + stringResource(R.string.setup_drawing), stringResource(R.string.setup_drawing_desc)) {
-                NeonSwitch(settings.drawing, "drawing") { v -> onChange { it.copy(drawing = v) } }
-            }
-            val recommendedRounds = Match.recommendedRounds(playerCount)
-            SettingRow(
-                "🏆 " + stringResource(R.string.setup_rounds),
-                stringResource(R.string.setup_rounds_desc) + " · " +
-                    stringResource(R.string.setup_recommended, "$recommendedRounds")
-            ) {
-                val step = Match.ROUND_OPTIONS.indexOf(settings.rounds).coerceAtLeast(0)
-                IconButton(
-                    onClick = { onChange { it.copy(rounds = Match.ROUND_OPTIONS[step - 1]) } },
-                    enabled =
-                        step > 0,
-                    modifier = Modifier.testTag("rounds_minus")
-                ) {
-                    Text("−", style = MaterialTheme.typography.headlineSmall)
-                }
-                Text(
-                    if (settings.rounds == 0) "∞" else "${settings.rounds}",
-                    color = if (settings.rounds == recommendedRounds) Neon.TurquoiseText else Neon.Ink,
-                    style = MaterialTheme.typography.titleLarge,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.width(40.dp).testTag("rounds")
+            SettingsGroup {
+                GroupRow(
+                    "🏆",
+                    stringResource(R.string.setup_rounds),
+                    tag = "rounds_row",
+                    onClick = { picking = PICK_ROUNDS },
+                    value = roundsLabel(settings.rounds)
                 )
-                IconButton(
-                    onClick = { onChange { it.copy(rounds = Match.ROUND_OPTIONS[step + 1]) } },
-                    enabled =
-                        step < Match.ROUND_OPTIONS.lastIndex,
-                    modifier = Modifier.testTag("rounds_plus")
-                ) {
-                    Text("+", style = MaterialTheme.typography.headlineSmall)
-                }
-            }
-            val recommendedTimer = Rules.recommendedTimer(playerCount)
-            SettingRow(
-                "⏱️ " + stringResource(R.string.setup_timer),
-                stringResource(R.string.setup_timer_desc) + " · " +
-                    stringResource(
-                        R.string.setup_recommended,
-                        stringResource(
-                            R.string.setup_timer_minutes,
-                            recommendedTimer / 60
-                        )
-                    )
-            ) {
-                val step = Rules.TIMER_OPTIONS.indexOf(settings.discussionSeconds).coerceAtLeast(0)
-                IconButton(
-                    onClick = {
-                        onChange { it.copy(discussionSeconds = Rules.TIMER_OPTIONS[step - 1]) }
-                    },
-                    enabled =
-                        step > 0,
-                    modifier = Modifier.testTag("timer_minus")
-                ) {
-                    Text("−", style = MaterialTheme.typography.headlineSmall)
-                }
-                Text(
-                    if (settings.discussionSeconds == 0) {
-                        stringResource(R.string.setup_timer_off)
-                    } else {
-                        stringResource(R.string.setup_timer_minutes, settings.discussionSeconds / 60)
-                    },
-                    color = if (settings.discussionSeconds == recommendedTimer) Neon.TurquoiseText else Neon.Ink,
-                    style = MaterialTheme.typography.titleMedium,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.width(64.dp).testTag("timer_value")
+                GroupDivider()
+                GroupRow(
+                    "⏱️",
+                    stringResource(R.string.setup_timer),
+                    tag = "timer_row",
+                    onClick = { picking = PICK_TIMER },
+                    value = timerLabel(settings.discussionSeconds)
                 )
-                IconButton(
-                    onClick = {
-                        onChange { it.copy(discussionSeconds = Rules.TIMER_OPTIONS[step + 1]) }
-                    },
-                    enabled =
-                        step < Rules.TIMER_OPTIONS.lastIndex,
-                    modifier = Modifier.testTag("timer_plus")
-                ) {
-                    Text("+", style = MaterialTheme.typography.headlineSmall)
-                }
             }
-
             val (left, total) = unplayed
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(top = 6.dp)
-                    .clip(MaterialTheme.shapes.large)
-                    .background(Neon.Card)
-                    .clickable(onClick = onChoosePacks)
-                    .padding(horizontal = 16.dp, vertical = 14.dp)
-                    .testTag("choose_packs"),
-                verticalAlignment = Alignment.CenterVertically
+            val chosen = packs.filter { it.id in settings.packIds }
+            LilloSettingRow(
+                stringResource(R.string.setup_packs),
+                leading = "🗂️",
+                subtitle = when {
+                    settings.packIds.isEmpty() -> stringResource(R.string.pick_packs_all)
+                    chosen.size <= 3 -> chosen.joinToString { "${it.emoji} ${it.name}" }
+                    else -> pluralStringResource(R.plurals.pick_packs_some, chosen.size, chosen.size)
+                } + "\n" + stringResource(R.string.setup_unplayed, left, total),
+                containerColor = Neon.Card,
+                tag = "choose_packs",
+                onClick = onChoosePacks
             ) {
-                Text("🗂️", style = MaterialTheme.typography.headlineSmall)
-                Spacer(Modifier.width(14.dp))
-                Column(Modifier.weight(1f)) {
-                    Text(stringResource(R.string.setup_packs), fontWeight = FontWeight.SemiBold)
-                    val chosen = packs.filter { it.id in settings.packIds }
-                    Text(
-                        when {
-                            settings.packIds.isEmpty() -> stringResource(R.string.pick_packs_all)
-                            chosen.size <= 3 -> chosen.joinToString { "${it.emoji} ${it.name}" }
-                            else -> pluralStringResource(R.plurals.pick_packs_some, chosen.size, chosen.size)
-                        },
-                        style = MaterialTheme.typography.bodySmall,
-                        color = Neon.Muted,
-                        maxLines = 2
-                    )
-                    Text(
-                        stringResource(R.string.setup_unplayed, left, total),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = Neon.Muted,
-                        modifier = Modifier.testTag("unplayed")
-                    )
-                }
                 Text("›", style = MaterialTheme.typography.headlineMedium, color = Neon.Muted)
             }
             if (left * 10 < total) {
                 Text(
                     stringResource(R.string.setup_running_out),
                     style = MaterialTheme.typography.bodySmall,
-                    color = Neon.AmberText,
-                    modifier = Modifier.padding(top = 6.dp)
+                    color = Neon.AmberText
                 )
             }
-            Spacer(Modifier.height(16.dp))
-            if (short) {
-                startButton()
-                Spacer(Modifier.height(16.dp))
+            if (short) startButton()
+            Spacer(Modifier.height(4.dp))
+        }
+    }
+    when (picking) {
+        PICK_ROUNDS -> OptionDialog(
+            title = stringResource(R.string.setup_rounds),
+            options = Match.ROUND_OPTIONS,
+            selected = settings.rounds,
+            recommended = recommendedRounds,
+            label = { roundsLabel(it) },
+            tag = "rounds",
+            onPick = { v -> onChange { it.copy(rounds = v) } },
+            onDismiss = { picking = null }
+        )
+
+        PICK_TIMER -> OptionDialog(
+            title = stringResource(R.string.setup_timer),
+            options = Rules.TIMER_OPTIONS,
+            selected = settings.discussionSeconds,
+            recommended = recommendedTimer,
+            label = { timerLabel(it) },
+            tag = "timer",
+            onPick = { v -> onChange { it.copy(discussionSeconds = v) } },
+            onDismiss = { picking = null }
+        )
+    }
+}
+
+private const val PICK_ROUNDS = "rounds"
+private const val PICK_TIMER = "timer"
+
+@Composable
+private fun roundsLabel(rounds: Int): String = if (rounds == 0) {
+    stringResource(R.string.setup_rounds_unlimited)
+} else {
+    pluralStringResource(R.plurals.setup_rounds_value, rounds, rounds)
+}
+
+@Composable
+private fun timerLabel(seconds: Int): String = if (seconds == 0) {
+    stringResource(R.string.setup_timer_off)
+} else {
+    stringResource(R.string.setup_timer_minutes, seconds / 60)
+}
+
+/** The three modes side by side; the one picked is outlined, and its line of description sits below. */
+@Composable
+private fun ModePicker(selected: GameMode, onPick: (GameMode) -> Unit, onInfo: () -> Unit) {
+    val modes = listOf(
+        Triple(GameMode.ORIGINAL, "🕵️", R.string.mode_original to R.string.mode_original_desc),
+        Triple(GameMode.MYSTERIOUS, "🎭", R.string.mode_mysterious to R.string.mode_mysterious_desc),
+        Triple(GameMode.CHAOS, "🌀", R.string.mode_chaos to R.string.mode_chaos_desc)
+    )
+    Column {
+        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+            modes.forEach { (mode, emoji, texts) ->
+                val isSelected = mode == selected
+                Column(
+                    Modifier
+                        .weight(1f)
+                        .clip(MaterialTheme.shapes.large)
+                        .background(if (isSelected) Neon.CardHigh else Neon.Card)
+                        .border(2.dp, if (isSelected) Neon.Violet else Color.Transparent, MaterialTheme.shapes.large)
+                        .selectable(isSelected, role = Role.RadioButton) { onPick(mode) }
+                        .padding(vertical = 14.dp, horizontal = 6.dp)
+                        .testTag("mode_${mode.name.lowercase()}"),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(emoji, style = MaterialTheme.typography.headlineMedium)
+                    Text(
+                        stringResource(texts.first),
+                        fontWeight = FontWeight.Bold,
+                        maxLines = 1,
+                        modifier = Modifier.padding(top = 4.dp)
+                    )
+                }
+            }
+        }
+        val desc = modes.first { it.first == selected }.third.second
+        Row(Modifier.padding(top = 8.dp), verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                stringResource(desc),
+                color = Neon.Muted,
+                style = MaterialTheme.typography.bodySmall,
+                modifier = Modifier.weight(1f).testTag("mode_desc")
+            )
+            TextButton(onClick = onInfo, modifier = Modifier.testTag("modes_info")) {
+                Text("ⓘ  " + stringResource(R.string.setup_which_mode), color = Neon.TurquoiseText)
             }
         }
     }
 }
 
+/** Rows that belong together, on one card. */
 @Composable
-private fun SettingRow(title: String, subtitle: String?, control: @Composable () -> Unit) = LilloSettingRow(
-    title,
-    modifier = Modifier.padding(vertical = 6.dp),
-    subtitle = subtitle,
-    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 10.dp)
-) { control() }
+private fun SettingsGroup(content: @Composable () -> Unit) = Column(
+    Modifier.fillMaxWidth().clip(MaterialTheme.shapes.large).background(Neon.Card)
+) { content() }
 
 @Composable
-private fun Stepper(value: Int, canLower: Boolean, canRaise: Boolean, tag: String, onChange: (Int) -> Unit) = Row(
+private fun GroupRow(
+    leading: String,
+    title: String,
+    subtitle: String? = null,
+    tag: String? = null,
+    onClick: (() -> Unit)? = null,
+    value: String? = null,
+    control: (@Composable () -> Unit)? = null
+) = LilloSettingRow(
+    title,
+    leading = leading,
+    subtitle = subtitle,
+    containerColor = Color.Transparent,
+    tag = tag,
+    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 10.dp),
+    onClick = onClick
+) {
+    if (value != null) {
+        Text(value, color = Neon.Muted, style = MaterialTheme.typography.titleMedium)
+        Text("  ›", color = Neon.Muted, style = MaterialTheme.typography.titleLarge)
+    }
+    control?.invoke()
+}
+
+@Composable
+private fun GroupDivider() =
+    HorizontalDivider(Modifier.padding(horizontal = 16.dp), color = Neon.Muted.copy(alpha = 0.2f))
+
+@Composable
+private fun GroupNote(text: String, color: Color = Neon.Muted, tag: String? = null) = Text(
+    text,
+    color = color,
+    style = MaterialTheme.typography.bodyMedium,
+    modifier = Modifier
+        .fillMaxWidth()
+        .padding(start = 16.dp, end = 16.dp, bottom = 12.dp)
+        .then(if (tag != null) Modifier.testTag(tag) else Modifier)
+)
+
+/** A short list to choose one value from, the recommended one marked. */
+@Composable
+private fun OptionDialog(
+    title: String,
+    options: List<Int>,
+    selected: Int,
+    recommended: Int,
+    label: @Composable (Int) -> String,
+    tag: String,
+    onPick: (Int) -> Unit,
+    onDismiss: () -> Unit
+) = AlertDialog(
+    onDismissRequest = onDismiss,
+    confirmButton = {},
+    dismissButton = {
+        TextButton(onClick = onDismiss) { Text(stringResource(R.string.cancel)) }
+    },
+    title = { Text(title) },
+    text = {
+        LazyColumn(Modifier.then(DialogTags).testTag("${tag}_options")) {
+            items(options) { option ->
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .selectable(option == selected, role = Role.RadioButton) {
+                            onPick(option)
+                            onDismiss()
+                        }
+                        .padding(vertical = 12.dp)
+                        .testTag("${tag}_option_$option"),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    RadioButton(selected = option == selected, onClick = null)
+                    Text(label(option), modifier = Modifier.padding(start = 12.dp).weight(1f))
+                    if (option == recommended) {
+                        Text(
+                            stringResource(R.string.setup_recommended_short),
+                            color = Neon.TurquoiseText,
+                            style = MaterialTheme.typography.bodySmall
+                        )
+                    }
+                }
+            }
+        }
+    }
+)
+
+@Composable
+private fun Stepper(
+    label: String,
+    value: Int,
+    canLower: Boolean,
+    canRaise: Boolean,
+    tag: String,
+    onChange: (Int) -> Unit
+) = Row(
     verticalAlignment = Alignment.CenterVertically
 ) {
-    IconButton(onClick = { onChange(value - 1) }, enabled = canLower, modifier = Modifier.testTag("${tag}_minus")) {
+    val fewer = stringResource(R.string.setup_fewer, label)
+    val more = stringResource(R.string.setup_more, label)
+    IconButton(
+        onClick = { onChange(value - 1) },
+        enabled = canLower,
+        modifier = Modifier.semantics { contentDescription = fewer }.testTag("${tag}_minus")
+    ) {
         Text("−", style = MaterialTheme.typography.headlineSmall)
     }
     Text(
@@ -514,7 +668,11 @@ private fun Stepper(value: Int, canLower: Boolean, canRaise: Boolean, tag: Strin
         style = MaterialTheme.typography.titleLarge,
         modifier = Modifier.padding(horizontal = 8.dp).testTag(tag)
     )
-    IconButton(onClick = { onChange(value + 1) }, enabled = canRaise, modifier = Modifier.testTag("${tag}_plus")) {
+    IconButton(
+        onClick = { onChange(value + 1) },
+        enabled = canRaise,
+        modifier = Modifier.semantics { contentDescription = more }.testTag("${tag}_plus")
+    ) {
         Text("+", style = MaterialTheme.typography.headlineSmall)
     }
 }

@@ -39,7 +39,7 @@ being decided before it is played.
   `journalistsGetNoWordKnowItAndNeverStart`
 
 #### Scenario: limits and chaos
-- **WHEN** limits are asked **THEN** 3 players allow 1 infiltrator, 4 allow 2 and 24 allow 12; Mysterious starts with 3 players and one journalist alone, and not with nobody; settings beyond the cap are brought within it
+- **WHEN** limits are asked **THEN** 3 players allow 1 infiltrator, 4 allow 2, 15 allow 7 (an odd group rounds down) and 24 allow 12; Mysterious starts with 3 players and one journalist alone, and not with nobody; settings beyond the cap are brought within it
 - **WHEN** 400 Chaos games of five are dealt **THEN** about three in five stay within the cap with every impostor hinted, about one in five has everyone as an impostor and nobody hinted, every count from one to everyone shows up, all tell every role, none is scored, and games past the cap have impostors with and without a hint; 600 games of 24 include one where all 24 are impostors
 - **WHEN** every combination of mode, drawing, hint, players, impostors and journalists is played out **THEN** each invalid one refuses to start and each other deals and ends consistently
 - *Verifies:* `impostorsAndJournalistsAreAtMostHalfTheGroup`,
@@ -127,7 +127,9 @@ would let a match end without anyone having played it.
 
 ### Requirement: Setup keeps the players and limits valid
 
-Names SHALL be trimmed and blanks and case-insensitive duplicates skipped; a requested
+Names SHALL be trimmed and blanks and case-insensitive duplicates skipped; a player SHALL be
+renamed in place, keeping their points; every change to the group SHALL set rounds and
+discussion time to what suits its size (`Match.recommendedRounds`, a minute per player); a requested
 impostor count SHALL be reduced to what the players allow; a game SHALL not start with
 too few players; starting SHALL deal the game and remember its civilian word as a recent
 word. A whole game SHALL be playable from the welcome screen to catching the impostor.
@@ -138,7 +140,17 @@ word. A whole game SHALL be playable from the welcome screen to catching the imp
 - **WHEN** two players try to start **THEN** it returns false and there is no game
 - **WHEN** four players start **THEN** the game has one impostor and the civilian word is stored in the recent words
 - **WHEN** three players reveal their cards and vote for the impostor in the app **THEN** the outcome is `CiviliansWin`
-- *Verifies:* `addPlayerTrimsAndSkipsBlanksAndDuplicates`,
+- **WHEN** Bea is renamed to "bea", then to " ANA " or a blank, then to " Beatriz " **THEN** the players are Ana, Beatriz and Carlos in their places; a civilian who scored and is renamed keeps the points under the new name
+- **WHEN** three players join, rounds are changed to 3, and six more join **THEN** three players get the recommended rounds and 3 minutes, and nine get 5 rounds and 9 minutes
+- **WHEN** setup is shown in Mysterious at the cap and in Chaos **THEN** the cap warning shows and "more impostors" is off, and Chaos shows the players but no impostor count
+- **WHEN** setup is at the cap with 3 and with 24 players, in Original and in Mysterious **THEN** the warning reads "Max 1 impostor (or journalist) for 3 players" and "Max 12 impostors (and journalists) for 24 players"; 15 players with 6 of 7 show no warning
+- **WHEN** the players are opened from setup and Ana is renamed **THEN** the list closes back to setup with the new name
+- *Verifies:* `renamingAPlayerKeepsTheirPlaceAndPoints`, `aRenamedPlayerKeepsTheirScore`,
+  `theGroupSizeSetsRoundsAndDiscussionTime`, `setupMysteriousAtTheCap`,
+  `setupChaosHasNoImpostorCount`, `theGroupIsOneRowAwayFromSetup`,
+  `theCapWarningAtThreePlayersIsSingular`, `theCapWarningAtTwentyFourPlayersAllowsTwelve`,
+  `belowTheCapThereIsNoWarning`,
+  `addPlayerTrimsAndSkipsBlanksAndDuplicates`,
   `updateSettingsKeepsImpostorsWithinWhatThePlayersAllow`, `aGameNeedsEnoughPlayers`,
   `startingAGameDealsAndRemembersTheWord`, `aWholeGameEndsWithTheImpostorCaught`
 

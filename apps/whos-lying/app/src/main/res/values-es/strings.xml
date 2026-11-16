@@ -10,7 +10,6 @@
     <string name="action_about">Ajustes e información</string>
 
     <string name="players_title">Jugadores</string>
-    <string name="players_subtitle">De 3 a 24 jugadores, juntos y con un solo móvil</string>
     <string name="players_add_hint">Nombre del jugador</string>
     <string name="players_add">Añadir</string>
     <string name="drawing_ink">Color %1$d</string>
@@ -131,8 +130,7 @@
     <string name="rules_short">Reglas</string>
     <string name="modes_short">Modos</string>
     <string name="setup_which_mode">¿Qué modo elegimos?</string>
-    <string name="setup_timer">Tiempo</string>
-    <string name="setup_timer_desc">Cuenta atrás antes de votar</string>
+    <string name="setup_timer">Duración</string>
     <string name="setup_timer_off">No</string>
     <string name="setup_timer_minutes">%1$d min</string>
     <string name="setup_unplayed">Palabras por salir: %1$d de %2$d</string>
@@ -235,7 +233,6 @@
 
     <!-- Rondas y podio -->
     <string name="setup_rounds">Rondas</string>
-    <string name="setup_rounds_desc">Gana quien sume más puntos</string>
     <plurals name="scores_rounds_left">
         <item quantity="one">Queda %d ronda</item>
         <item quantity="many">Quedan %d rondas</item>
@@ -247,7 +244,6 @@
     <string name="podium_nobody">Nadie ha puntuado… ¡revancha!</string>
     <string name="podium_new_match">Nueva partida</string>
     <string name="time_up">¡Se acabó\nel tiempo!</string>
-    <string name="setup_recommended">Recomendado: %1$s</string>
 
     <!-- Reportar palabra -->
     <string name="report_title">Reportar esta palabra</string>
@@ -280,4 +276,30 @@
     <string name="hero_leader">🏆 Va ganando: %1$s (%2$d pts)</string>
     <string name="hero_match">🎯 Partida %1$d de %2$d</string>
     <string name="hero_drawing">✏️ Modo dibujo</string>
+    <string name="setup_settings">Configuración del juego</string>
+    <string name="setup_rounds_unlimited">Sin límite</string>
+    <plurals name="setup_rounds_value">
+        <item quantity="one">%1$d ronda</item>
+        <item quantity="many">%1$d rondas</item>
+        <item quantity="other">%1$d rondas</item>
+    </plurals>
+    <string name="setup_recommended_short">recomendado</string>
+    <plurals name="setup_cap_impostors">
+        <item quantity="one">Máx. %1$d impostor para %2$d jugadores</item>
+        <item quantity="many">Máx. %1$d impostores para %2$d jugadores</item>
+        <item quantity="other">Máx. %1$d impostores para %2$d jugadores</item>
+    </plurals>
+    <plurals name="setup_cap_infiltrators">
+        <item quantity="one">Máx. %1$d impostor o periodista para %2$d jugadores</item>
+        <item quantity="many">Máx. %1$d impostores y periodistas para %2$d jugadores</item>
+        <item quantity="other">Máx. %1$d impostores y periodistas para %2$d jugadores</item>
+    </plurals>
+    <string name="setup_chaos_note">El Caos elige a los impostores: nadie sabe cuántos hay.</string>
+    <string name="players_range">De %1$d a %2$d jugadores</string>
+    <string name="players_rename">Renombrar a %1$s</string>
+    <string name="players_rename_save">Guardar</string>
+    <string name="cancel">Cancelar</string>
+    <string name="players_close">Cerrar</string>
+    <string name="setup_fewer">%1$s: menos</string>
+    <string name="setup_more">%1$s: más</string>
 </resources>
