@@ -50,6 +50,12 @@ Lines are pruned as items ship. What has **shipped** lives in `apps/<app>/releas
 | 🔨 | The store screenshots show the sample deck; retake them with the league's deck if wanted | You |
 | ⏳ | More cards and chat lines from the group | Ideas from the league · private deck, never in this repo |
 
+## fake-ad games (idea, a collection)
+
+| | What is missing | Waiting on |
+|---|---|---|
+| 🔨 | Study the "fake mobile ad" games in depth before building any: the ads as faithfully playable as possible, with our own art and names; the engine may leave the Kotlin/Compose stack. Reference ads, leads and open questions in [docs/plans/fake-ad-games.md](docs/plans/fake-ad-games.md) | Your screenshots of the tower-defense and farm ads |
+
 ## repo
 
 | | What is missing | Waiting on |
