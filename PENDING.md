@@ -54,7 +54,7 @@ Lines are pruned as items ship. What has **shipped** lives in `apps/<app>/releas
 
 | | What is missing | Waiting on |
 |---|---|---|
-| 🔨 | Study the "fake mobile ad" games in depth before building any: the ads as faithfully playable as possible (mechanics, pacing, camera, feel), with our own art and names. Candidates: soldier crowd runner through maths gates (+, −, ×, ÷) into an enemy army; upgrade-with-cash tower defense; idle-arcade farm (cut corn, collect eggs, sell, upgrade); pull the pin, draw-to-protect, rescue-the-hero doors, number tower, merge soldiers. Leaving the Kotlin/Compose stack is allowed (Godot, Unity…) if real 3D or crowds of 1,000+ need it: decide the engine as part of the study and record it in `docs/decisions.md`. Leads: KFC's playable fake ads, Monkeycraft, itch.io "Fake Mobile Game" | Your screenshots of the tower-defense and farm ads |
+| 🔨 | Study the "fake mobile ad" games in depth before building any: the ads as faithfully playable as possible, with our own art and names; the engine may leave the Kotlin/Compose stack. Reference ads, leads and open questions in [docs/plans/fake-ad-games.md](docs/plans/fake-ad-games.md) | Your screenshots of the tower-defense and farm ads |
 
 ## repo
 
