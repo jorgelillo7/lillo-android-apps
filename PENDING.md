@@ -50,6 +50,12 @@ Lines are pruned as items ship. What has **shipped** lives in `apps/<app>/releas
 | 🔨 | The store screenshots show the sample deck; retake them with the league's deck if wanted | You |
 | ⏳ | More cards and chat lines from the group | Ideas from the league · private deck, never in this repo |
 
+## fake-ad games (idea, a collection)
+
+| | What is missing | Waiting on |
+|---|---|---|
+| 🔨 | Study the "fake mobile ad" games in depth before building any: the ads as faithfully playable as possible (mechanics, pacing, camera, feel), with our own art and names. Candidates: soldier crowd runner through maths gates (+, −, ×, ÷) into an enemy army; upgrade-with-cash tower defense; idle-arcade farm (cut corn, collect eggs, sell, upgrade); pull the pin, draw-to-protect, rescue-the-hero doors, number tower, merge soldiers. Leaving the Kotlin/Compose stack is allowed (Godot, Unity…) if real 3D or crowds of 1,000+ need it: decide the engine as part of the study and record it in `docs/decisions.md`. Leads: KFC's playable fake ads, Monkeycraft, itch.io "Fake Mobile Game" | Your screenshots of the tower-defense and farm ads |
+
 ## repo
 
 | | What is missing | Waiting on |
