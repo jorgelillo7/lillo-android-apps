@@ -10,6 +10,14 @@ characters or look).
 Leaving the Kotlin/Compose stack is allowed (Godot, Unity…) if real 3D or crowds of 1,000+ need
 it. The engine is decided during the study and recorded in [decisions.md](../decisions.md).
 
+Two kinds of target, both welcome:
+
+- **The ad is fake**: the advertised game is something else, so the ad's mini-game does not exist
+  as a full game. We build it.
+- **The ad is real but the game is buried**: the mechanic is there, but every level ends in
+  interstitials, coins, chests and "watch a video for ×8". We build the same mechanic without any
+  of that: no ads, no currency, no purchases.
+
 ## Reference ads
 
 What each ad shows, and what the advertised game really is. The ad is what we build.
@@ -22,6 +30,7 @@ What each ad shows, and what the advertised game really is. The ad is what we bu
 | Pull the pin (treasure and lava) | Evony: The King's Return | Pull pins so gold falls on the hero while lava or monsters fall elsewhere | Multiplayer empire strategy; a few pin levels added later |
 | Makeover choices | Project Makeover | A dramatic story where someone needs a makeover; the ad picks the wrong choices on purpose | Match-3 with basic outfit and decoration choices |
 | Lv. 1 to Lv. 100 | Mafia City | A level-1 crook robs a bank, picks money off the floor and becomes a boss surrounded by luxury | Static building management, timers and clan auto-battles |
+| Unscrew by colour | Screwdom (and many screw-puzzle clones) | A 3D house or toy covered in coloured screws; rotate it, tap a screw and it flies to the box of its colour at the top (3 holes; a full box leaves and a new one comes) or to a 5-hole waiting row; pieces fall as their screws go; fill the waiting row and you lose | Close to the ad, but buried in ads, coins and rewarded-video multipliers after every level |
 | Upgrade-with-cash tower defense | (screenshots to come) | Defend against waves, spend the cash on upgrades | — |
 | Idle-arcade farm | (screenshots to come) | Cut corn, collect eggs, sell them, buy upgrades | — |
 
