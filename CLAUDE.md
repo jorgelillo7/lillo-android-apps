@@ -21,9 +21,7 @@ Apps today, live on Play: `christmas-countdown` ("¿Ya es Navidad?", `com.jorgel
 is private and lives outside this public repo), `slipper` ("¿Te pilla la chancla?",
 `com.jorgelillo.slipper`, a pixel-art runner) and `stadium-events` ("¿Hay jaleo?
 Metropolitano", `com.jorgelillo.stadiumevents`; it reads a static events feed from
-`jorgelillo7.github.io`). Not on Play yet: `group-polls` ("¿Qué votáis?",
-`com.jorgelillo.grouppolls`, parked). `group-polls` is the only one with a backend
-(Firestore; its rules, tests and infra live in lillorepo `packages/group_polls`). Write code,
+`jorgelillo7.github.io`). Write code,
 docs and scripts so they work for any app.
 
 ## Environment
@@ -170,7 +168,7 @@ Project skills are indexed in [`.claude/CLAUDE.md`](.claude/CLAUDE.md).
   in with `scripts/set-release-secrets.sh`, run by the user. Details: docs/publishing-on-google-play.md §6.
   Publish the listing together with the release that adds what it describes. A new app goes into
   the workflow's `app` choices.
-- **Baseline profiles**: each app (but group-polls) has `apps/<app>/baselineprofile` (`jorgelillo.android.baselineprofile`,
+- **Baseline profiles**: each app has `apps/<app>/baselineprofile` (`jorgelillo.android.baselineprofile`,
   on `:core:baselineprofile`: startup plus the app's main journeys by test tag). The generated
   `app/src/release/generated/baselineProfiles/` is committed and ships in the bundle; regenerate it
   with `scripts/generate-baseline-profiles.sh <app>` before a release whose code changed.

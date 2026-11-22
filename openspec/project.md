@@ -9,9 +9,7 @@
 ## What this is
 
 A Gradle multi-project of small Android apps published on Google Play, with
-shared Compose code in `core/`. No accounts, no ads, no server — except
-`group-polls`, whose Firestore backend lives in lillorepo
-(`packages/group_polls`). `stadium-events` downloads one static file
+shared Compose code in `core/`. No accounts, no ads, no server. `stadium-events` downloads one static file
 (`jorgelillo7.github.io/stadium/events.json`) and needs no server of its own.
 
 ## Apps and their capabilities
@@ -25,7 +23,6 @@ shared Compose code in `core/`. No accounts, no ads, no server — except
 | `league-cards` | `com.jorgelillo.leaguecards` | [`season`](specs/league-cards/season/spec.md), [`trophies`](specs/league-cards/trophies/spec.md) |
 | `stadium-events` | `com.jorgelillo.stadiumevents` | [`answer`](specs/stadium-events/answer/spec.md), [`feed-and-reminders`](specs/stadium-events/feed-and-reminders/spec.md) |
 | `slipper` | `com.jorgelillo.slipper` | [`run`](specs/slipper/run/spec.md), [`challenges-and-progress`](specs/slipper/challenges-and-progress/spec.md) |
-| `group-polls` | `com.jorgelillo.grouppolls` | [`polls`](specs/group-polls/polls/spec.md), [`moderation-and-privacy`](specs/group-polls/moderation-and-privacy/spec.md) (its Firestore rules and their spec: lillorepo `packages/group_polls`) |
 | `core` | — | [`platform`](specs/core/platform/spec.md), [`sharelink`](specs/core/sharelink/spec.md), [`designsystem`](specs/core/designsystem/spec.md), [`reminders`](specs/core/reminders/spec.md) |
 
 Screenshot tests freeze what users already see and are not cited by scenarios (see
