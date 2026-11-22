@@ -48,9 +48,6 @@ include(":apps:whos-lying:app")
 include(":apps:whos-lying:domain")
 include(":apps:whos-lying:baselineprofile")
 
-// ¿Qué votáis? (group polls)
-include(":apps:group-polls:app")
-include(":apps:group-polls:domain")
 
 // ¿Quién gana? (tournaments)
 include(":apps:tournaments:app")

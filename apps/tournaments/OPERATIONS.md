@@ -35,7 +35,7 @@ are ~1.2 KB; above `Share.QR_MAX_CHARS` the QR is hidden and only the link is sh
 
 Opening the link in the app needs `jorgelillo7.github.io/.well-known/assetlinks.json` to list
 `com.jorgelillo.tournaments` with the SHA-256 of every signing certificate (debug key, upload key,
-Play app signing key), like group-polls. Until then: share to the app, or Import → paste.
+Play app signing key). Until then: share to the app, or Import → paste.
 
 ## Release
 

@@ -133,7 +133,7 @@ Once, in your own terminal (values go to GitHub through stdin, never through the
 
 ```bash
 scripts/set-release-secrets.sh --play            # the service account key above
-scripts/set-release-secrets.sh <app>             # each app's upload key (+ league-cards' private deck, group-polls' Firebase config)
+scripts/set-release-secrets.sh <app>             # each app's upload key (+ league-cards' private deck)
 scripts/set-release-secrets.sh --approval        # production waits for your approval (already set)
 ```
 

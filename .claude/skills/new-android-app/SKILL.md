@@ -104,7 +104,7 @@ Follow [docs/adding-a-new-app.md](../../../docs/adding-a-new-app.md). Checklist:
 ## 6. Repo bookkeeping
 
 - Privacy policy: `privacy/<app>/index.html` in `~/Projects/jorgelillo7.github.io` (copy the
-  closest one: no-data apps → `tournaments`, backend → `group-polls`) and an app card in the pinned "Apps" block of `index.html` and
+  closest one, e.g. `tournaments` for an app with no data) and an app card in the pinned "Apps" block of `index.html` and
   `en/index.html`. Publish only after the user previews it.
 - `apps/<app>/README.md`, `OPERATIONS.md` (uppercase), `release-notes.md`; add the app to the
   root README table, `docs/README.md` per-app table and `PENDING.md` (its own section).

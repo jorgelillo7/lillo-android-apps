@@ -1,4 +1,0 @@
-First version! 🔴🔵
-- Private polls by link, with who voted what
-- Public polls by language
-- Guess what most people will pick

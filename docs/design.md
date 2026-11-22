@@ -114,7 +114,7 @@ user-made or unbounded (cards, labels), down to a readable minimum, then scrolls
 All in `:core:designsystem`, each with a preview in `Catalogue.kt` (captured with accessibility
 checks). Apps call them directly and never copy them: colours come from the app's `LilloStyle`
 (`LilloColors`) and Material colour roles. A wrapper in an app's `ui/Common.kt` is only for that
-app's own style (group-polls' black titles and round 56 dp button), never a plain pass-through.
+app's own style, never a plain pass-through.
 
 ### Summary hero (`LilloSummaryHero`)
 

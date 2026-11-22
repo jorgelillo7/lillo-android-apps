@@ -84,8 +84,8 @@ Notes from app #2:
 Wrap the UI in `LilloTheme(colorScheme = RouletteColorScheme) { … }` from `:core:designsystem`, and
 put `TestTagsAsResourceIds` on the root and on every dialog or sheet. Also in core: `LilloPage`
 (header with back button, content, bottom actions), `LilloBigButton` and `isShortScreen()` for
-landscape phones and handhelds. Apps wrap them with their own colours (see `whos-lying` and
-`group-polls` `ui/screens/Common.kt`). If a component is useful to a second app, move it into
+landscape phones and handhelds. Apps wrap them with their own colours (see `whos-lying`
+`ui/screens/Common.kt`). If a component is useful to a second app, move it into
 `core/designsystem` then, not before.
 
 ## 3. Icon and store assets

@@ -6,8 +6,7 @@
 # Usage:
 #   scripts/set-release-secrets.sh <app-folder>    the app's upload key (apps/<app>/keystore.properties)
 #                                                  into the GitHub environment named like the app;
-#                                                  league-cards also gets its private league deck,
-#                                                  group-polls its firebase.properties
+#                                                  league-cards also gets its private league deck
 #   scripts/set-release-secrets.sh --play          the Play service account key
 #                                                  (~/.config/lillo-android-apps/play-service-account.json)
 #   scripts/set-release-secrets.sh --approval      the "production" environment: releases to
@@ -62,11 +61,6 @@ EOF
       deck="${LEAGUE_PRIVATE_DIR:-$ROOT/../lloros-league/content}/league-private.json"
       [ -f "$deck" ] || { echo "No private deck at $deck (set LEAGUE_PRIVATE_DIR)" >&2; exit 1; }
       gzip -9 -c "$deck" | base64 | tr -d '\n' | gh secret set LEAGUE_DECK_GZ_BASE64 --repo "$repo" --env "$app"
-    fi
-    if [ "$app" = group-polls ]; then
-      firebase="$ROOT/apps/group-polls/firebase.properties"
-      [ -f "$firebase" ] || { echo "No $firebase (apps/group-polls/OPERATIONS.md)" >&2; exit 1; }
-      gh secret set FIREBASE_PROPERTIES --repo "$repo" --env "$app" < "$firebase"
     fi
     echo "Release secrets for $app are in GitHub (environment '$app')."
     ;;

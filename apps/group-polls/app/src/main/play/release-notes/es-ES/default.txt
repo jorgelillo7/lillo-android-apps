@@ -1,4 +1,0 @@
-¡Primera versión! 🔴🔵
-- Encuestas privadas por enlace, con quién ha votado qué
-- Encuestas públicas por idioma
-- Adivina qué votará la mayoría
