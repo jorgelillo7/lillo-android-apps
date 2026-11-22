@@ -20,7 +20,7 @@ Lines are pruned as items ship. What has **shipped** lives in `apps/<app>/releas
 
 | | What is missing | Waiting on |
 |---|---|---|
-| 👤 | Version 14 (Original, Mysterious and Chaos modes, journalists, setup in cards, continue a match from the home) uploaded to production with the listing by the Release workflow: approve it in GitHub, then Google's review; once live, play every mode on a real phone | You |
+| ⏳ | Version 14 (1.10: Original, Mysterious and Chaos modes, journalists, setup in cards, continue a match from the home) sent to production with the listing on 16/11, nothing left to approve in GitHub; once Google's review puts it live, play every mode on a real phone (Original with and without a clue, Mysterious with journalists, Chaos, "Seguir partida" from the home) | Google's review (only Play Console shows it), then you |
 
 ## stadium-events (new app, v1 built 2026-11; feed live at `jorgelillo7.github.io/stadium/events.json`)
 
