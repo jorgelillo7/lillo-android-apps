@@ -2,8 +2,12 @@ package com.jorgelillo.whoslying.ui.screens
 
 import android.app.Application
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -13,9 +17,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertIsEnabled
+import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.unit.dp
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -24,6 +32,7 @@ import com.jorgelillo.core.designsystem.LilloTheme
 import com.jorgelillo.core.designsystem.LilloThemeMode
 import com.jorgelillo.core.designsystem.LocalLilloThemeMode
 import com.jorgelillo.core.screenshottesting.captureScreenshot
+import com.jorgelillo.whoslying.domain.Card
 import com.jorgelillo.whoslying.domain.Entry
 import com.jorgelillo.whoslying.domain.Game
 import com.jorgelillo.whoslying.domain.GameMode
@@ -36,6 +45,7 @@ import com.jorgelillo.whoslying.ui.InkColors
 import com.jorgelillo.whoslying.ui.theme.Neon
 import com.jorgelillo.whoslying.ui.theme.NeonDark
 import com.jorgelillo.whoslying.ui.theme.NeonLight
+import com.jorgelillo.whoslying.ui.theme.NightStage
 import kotlin.random.Random
 import kotlin.test.assertEquals
 import org.junit.Rule
@@ -74,7 +84,7 @@ class RoundScreensScreenshotTest {
 
     /** Home with a group mid-match (summary header), and a first launch (no group yet). */
     private fun home(name: String, group: HomeGroup?, dark: Boolean = true) =
-        shot(name, dark) { HomeScreen(group, {}, {}, {}, {}, {}) }
+        shot(name, dark) { HomeScreen(group, {}, {}, {}, {}, {}, {}, {}) }
 
     private val group = HomeGroup(
         players,
@@ -83,7 +93,55 @@ class RoundScreensScreenshotTest {
         roundsPlayed = 3
     )
 
-    @Test fun homeWithGroup() = home("home_group", group)
+    @Test
+    fun homeWithGroup() {
+        home("home_group", group)
+        compose.onNodeWithTag("continue_match").assertExists()
+        compose.onNodeWithTag("home_new_match").assertExists()
+        compose.onNodeWithTag("play").assertDoesNotExist()
+    }
+
+    @Test
+    fun aChaosGroupHasNoMatchToContinue() {
+        compose.setContent {
+            LilloTheme(NeonDark) {
+                HomeScreen(group.copy(settings = group.settings.copy(mode = GameMode.CHAOS)), {
+                }, {}, {}, {}, {}, {}, {})
+            }
+        }
+        compose.onNodeWithTag("play").assertExists()
+        compose.onNodeWithTag("continue_match").assertDoesNotExist()
+        compose.onNodeWithTag("hero_leader").assertDoesNotExist()
+    }
+
+    /** What the reveal curtain hides, for each kind of card: told roles, a hint, no word, a journalist, Mysterious. */
+    private fun secretCards(name: String) = shot(name) {
+        val hinted = Card("Ana", Role.IMPOSTOR, word = null, hint = "Pool", knowsRole = true)
+        val cards = listOf(
+            Card("Bea", Role.CIVILIAN, "Beach", hint = null, knowsRole = true),
+            hinted,
+            hinted.copy(player = "Carlos", hint = null),
+            Card("Dani", Role.JOURNALIST, word = null, hint = null, knowsRole = true),
+            Card("Eva", Role.IMPOSTOR, "Pool", hint = null, knowsRole = false)
+        )
+        NightStage {
+            Box(Modifier.background(Neon.RevealBackdrop).padding(12.dp)) {
+                LazyVerticalGrid(
+                    GridCells.Adaptive(300.dp),
+                    verticalArrangement = Arrangement.spacedBy(10.dp),
+                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    items(cards) { SecretCard(it, compact = true) }
+                }
+            }
+        }
+    }
+
+    @Test fun secretCardsPortrait() = secretCards("secret_cards")
+
+    @Test
+    @Config(qualifiers = "+land")
+    fun secretCardsLandscape() = secretCards("secret_cards_landscape")
 
     @Test
     @Config(qualifiers = "+land")
@@ -184,7 +242,116 @@ class RoundScreensScreenshotTest {
 
     /** A full list: no name field, just the "remove someone" notice. */
     private fun playersFull(name: String, dark: Boolean = true) = shot(name, dark) {
-        PlayersScreen((1..24).map { "Player $it" }, onAdd = {}, onRemove = {}, onContinue = {}, onBack = {})
+        PlayersScreen(
+            (1..24).map { "Player $it" },
+            onAdd = {},
+            onRemove = {},
+            onRename = { _, _ -> },
+            fromSetup = true,
+            onContinue = {},
+            onBack = {}
+        )
+    }
+
+    /** Setup in each mode, for a group of eight, with the counts at the cap in Mysterious. */
+    private fun setup(name: String, settings: GameSettings, dark: Boolean = true) = shot(name, dark) {
+        SetupScreen(
+            (1..8).map { "Player $it" },
+            settings,
+            listOf(pack),
+            40 to 300,
+            onChange = {},
+            onPlayers = {},
+            onModesInfo = {},
+            onChoosePacks = {},
+            onStart = {},
+            onBack = {}
+        )
+    }
+
+    private val original = GameSettings(GameMode.ORIGINAL, impostors = 2, rounds = 7, discussionSeconds = 480)
+
+    @Test fun setupOriginal() = setup("setup_original", original)
+
+    @Test fun setupOriginalLight() = setup("setup_original", original, dark = false)
+
+    @Test
+    @Config(qualifiers = "+land")
+    fun setupOriginalLandscape() = setup("setup_original_landscape", original)
+
+    @Test
+    @Config(qualifiers = "+land")
+    fun setupOriginalLandscapeLight() = setup("setup_original_landscape", original, dark = false)
+
+    @Test
+    fun setupMysteriousAtTheCap() {
+        setup("setup_mysterious", GameSettings(GameMode.MYSTERIOUS, impostors = 2, journalists = 2, rounds = 7))
+        compose.onNodeWithTag("cap_warning").assertExists()
+        compose.onNodeWithTag("impostors_plus").assertIsNotEnabled()
+    }
+
+    /** The cap warning at the smallest and largest groups, in both modes that have one; one screen, its setup swapped. */
+    private val capCase = mutableStateOf(3 to GameSettings())
+
+    private fun capWarning(players: Int, settings: GameSettings): String {
+        val first = !capStarted
+        capCase.value = players to settings
+        if (first) {
+            capStarted = true
+            compose.setContent {
+                val (count, current) = capCase.value
+                LilloTheme(NeonDark) {
+                    SetupScreen((1..count).map { "P$it" }, current, listOf(pack), 40 to 300, {}, {}, {}, {}, {}, {})
+                }
+            }
+        }
+        compose.waitForIdle()
+        compose.onNodeWithTag("impostors_plus").assertIsNotEnabled()
+        return compose.onNodeWithTag("cap_warning").fetchSemanticsNode().config[SemanticsProperties.Text].joinToString()
+    }
+
+    private var capStarted = false
+
+    @Test
+    fun theCapWarningAtThreePlayersIsSingular() {
+        assertEquals("Max 1 impostor for 3 players", capWarning(3, GameSettings(GameMode.ORIGINAL)))
+        assertEquals(
+            "Max 1 impostor or journalist for 3 players",
+            capWarning(3, GameSettings(GameMode.MYSTERIOUS, impostors = 0, journalists = 1))
+        )
+    }
+
+    @Test
+    fun theCapWarningAtTwentyFourPlayersAllowsTwelve() {
+        assertEquals("Max 12 impostors for 24 players", capWarning(24, GameSettings(GameMode.ORIGINAL, impostors = 12)))
+        assertEquals(
+            "Max 12 impostors and journalists for 24 players",
+            capWarning(24, GameSettings(GameMode.MYSTERIOUS, impostors = 4, journalists = 8))
+        )
+    }
+
+    @Test
+    fun belowTheCapThereIsNoWarning() {
+        compose.setContent {
+            LilloTheme(NeonDark) {
+                SetupScreen(
+                    (1..15).map { "P$it" },
+                    GameSettings(GameMode.MYSTERIOUS, impostors = 3, journalists = 3),
+                    listOf(pack),
+                    40 to 300,
+                    {}, {}, {}, {}, {}, {}
+                )
+            }
+        }
+        compose.onNodeWithTag("cap_warning").assertDoesNotExist()
+        compose.onNodeWithTag("journalists_plus").assertIsEnabled()
+    }
+
+    @Test
+    fun setupChaosHasNoImpostorCount() {
+        setup("setup_chaos", GameSettings(GameMode.CHAOS, rounds = 0, discussionSeconds = 0))
+        compose.onNodeWithTag("impostors").assertDoesNotExist()
+        compose.onNodeWithTag("players_row").assertExists()
     }
 
     private fun drawing(name: String, dark: Boolean = true) = shot(name, dark) {
@@ -215,7 +382,9 @@ class RoundScreensScreenshotTest {
     @Config(qualifiers = "w891dp-h411dp-land")
     fun theHomeOpensTheSettingsFromTheTopRight() {
         var opened = 0
-        compose.setContent { LilloTheme(NeonDark) { HomeScreen(group, {}, {}, {}, {}, onAbout = { opened++ }) } }
+        compose.setContent {
+            LilloTheme(NeonDark) { HomeScreen(group, {}, {}, {}, {}, {}, {}, onAbout = { opened++ }) }
+        }
         compose.onNodeWithTag("about").assertIsDisplayed().performClick()
         compose.runOnIdle { assertEquals(1, opened) }
     }
@@ -231,6 +400,15 @@ class RoundScreensScreenshotTest {
         }
         compose.onNodeWithTag("theme_dark").performClick()
         compose.runOnIdle { assertEquals(LilloThemeMode.Dark, mode.value) }
+    }
+
+    @Test
+    fun theModesSheetOpensFullyOnTheThreeModes() {
+        compose.setContent { LilloTheme(NeonDark) { ModesSheet(onDismiss = {}) } }
+        compose.onNodeWithTag("modes_sheet").assertIsDisplayed()
+        // Opened expanded: the first mode's guide is on screen without dragging the sheet up.
+        compose.onNodeWithText("🕵️  Original").assertIsDisplayed()
+        listOf("🎭  Mysterious", "🌀  Chaos").forEach { compose.onNodeWithText(it).assertExists() }
     }
 
     @Test fun packPickerPortrait() = packPicker("pack_picker")

@@ -39,7 +39,7 @@ being decided before it is played.
   `journalistsGetNoWordKnowItAndNeverStart`
 
 #### Scenario: limits and chaos
-- **WHEN** limits are asked **THEN** 3 players allow 1 infiltrator, 4 allow 2 and 24 allow 12; Mysterious starts with 3 players and one journalist alone, and not with nobody; settings beyond the cap are brought within it
+- **WHEN** limits are asked **THEN** 3 players allow 1 infiltrator, 4 allow 2, 15 allow 7 (an odd group rounds down) and 24 allow 12; Mysterious starts with 3 players and one journalist alone, and not with nobody; settings beyond the cap are brought within it
 - **WHEN** 400 Chaos games of five are dealt **THEN** about three in five stay within the cap with every impostor hinted, about one in five has everyone as an impostor and nobody hinted, every count from one to everyone shows up, all tell every role, none is scored, and games past the cap have impostors with and without a hint; 600 games of 24 include one where all 24 are impostors
 - **WHEN** every combination of mode, drawing, hint, players, impostors and journalists is played out **THEN** each invalid one refuses to start and each other deals and ends consistently
 - *Verifies:* `impostorsAndJournalistsAreAtMostHalfTheGroup`,
@@ -127,7 +127,9 @@ would let a match end without anyone having played it.
 
 ### Requirement: Setup keeps the players and limits valid
 
-Names SHALL be trimmed and blanks and case-insensitive duplicates skipped; a requested
+Names SHALL be trimmed and blanks and case-insensitive duplicates skipped; a player SHALL be
+renamed in place, keeping their points; every change to the group SHALL set rounds and
+discussion time to what suits its size (`Match.recommendedRounds`, a minute per player); a requested
 impostor count SHALL be reduced to what the players allow; a game SHALL not start with
 too few players; starting SHALL deal the game and remember its civilian word as a recent
 word. A whole game SHALL be playable from the welcome screen to catching the impostor.
@@ -138,16 +140,46 @@ word. A whole game SHALL be playable from the welcome screen to catching the imp
 - **WHEN** two players try to start **THEN** it returns false and there is no game
 - **WHEN** four players start **THEN** the game has one impostor and the civilian word is stored in the recent words
 - **WHEN** three players reveal their cards and vote for the impostor in the app **THEN** the outcome is `CiviliansWin`
-- *Verifies:* `addPlayerTrimsAndSkipsBlanksAndDuplicates`,
+- **WHEN** Bea is renamed to "bea", then to " ANA " or a blank, then to " Beatriz " **THEN** the players are Ana, Beatriz and Carlos in their places; a civilian who scored and is renamed keeps the points under the new name
+- **WHEN** three players join, rounds are changed to 3, and six more join **THEN** three players get the recommended rounds and 3 minutes, and nine get 5 rounds and 9 minutes
+- **WHEN** setup is shown in Mysterious at the cap and in Chaos **THEN** the cap warning shows and "more impostors" is off, and Chaos shows the players but no impostor count
+- **WHEN** setup is at the cap with 3 and with 24 players, in Original and in Mysterious **THEN** the warning reads "Max 1 impostor (or journalist) for 3 players" and "Max 12 impostors (and journalists) for 24 players"; 15 players with 6 of 7 show no warning
+- **WHEN** the players are opened from setup and Ana is renamed **THEN** the list closes back to setup with the new name
+- *Verifies:* `renamingAPlayerKeepsTheirPlaceAndPoints`, `aRenamedPlayerKeepsTheirScore`,
+  `theGroupSizeSetsRoundsAndDiscussionTime`, `setupMysteriousAtTheCap`,
+  `setupChaosHasNoImpostorCount`, `theGroupIsOneRowAwayFromSetup`,
+  `theCapWarningAtThreePlayersIsSingular`, `theCapWarningAtTwentyFourPlayersAllowsTwelve`,
+  `belowTheCapThereIsNoWarning`,
+  `addPlayerTrimsAndSkipsBlanksAndDuplicates`,
   `updateSettingsKeepsImpostorsWithinWhatThePlayersAllow`, `aGameNeedsEnoughPlayers`,
   `startingAGameDealsAndRemembersTheWord`, `aWholeGameEndsWithTheImpostorCaught`
+
+### Requirement: A match half played is continued or restarted from the home
+
+With a scored match half played (rounds played, not over, not Chaos), the home SHALL offer
+"Continue match", which deals the next round straight away, and "New match", which sets the
+scores back to zero and opens setup; otherwise it SHALL offer "Play". A Chaos game SHALL add no
+points and use up no round, its result SHALL go straight to the next game, and the home SHALL
+show no leader or round for it. The reveal card SHALL show the role in Original and Chaos, the
+hint or "no word" for impostors, and only the word in Mysterious; results SHALL show an
+impostor's hint.
+
+#### Scenario: home and Chaos
+- **WHEN** the home shows a group at round 4 of 10 **THEN** it offers Continue match and New match, not Play; a Chaos group shows Play and no leader
+- **WHEN** a game is won in the app and the home's Continue match is tapped **THEN** the next round's reveal opens with one round played; New match instead opens setup with no scores and no rounds
+- **WHEN** a Chaos game ends in the app **THEN** nobody scores and no round is used
+- **WHEN** each kind of card is shown **THEN** civilians and impostors of Original are told their role, a hint shows as "Your hint", a journalist is told, and a Mysterious card shows only the word
+- *Verifies:* `homeWithGroup`, `aChaosGroupHasNoMatchToContinue`, `aHalfPlayedMatchContinuesFromTheHome`,
+  `aNewMatchFromTheHomeStartsFromZero`, `aChaosGameScoresNothingAndUsesNoRound`, `secretCardsPortrait`
 
 ### Requirement: Settings are one tap away from the home
 
 The home SHALL open the settings sheet (language, look, rules, sharing, rating, privacy) from an
 info icon at its top right, the place every app keeps its About, upright and on a short landscape
-screen; the sheet opens expanded and scrolls (core `LilloSheet`).
+screen; the sheet opens expanded and scrolls (core `LilloSheet`), as do the how-to, modes,
+report and pack-share sheets.
 
 #### Scenario: a landscape phone
 - **WHEN** the home is shown on a landscape phone and the top-right icon is tapped **THEN** it is on screen and opens the settings
-- *Verifies:* `theHomeOpensTheSettingsFromTheTopRight`
+- **WHEN** the modes guide is opened **THEN** it opens expanded on Original, and covers Mysterious and Chaos
+- *Verifies:* `theHomeOpensTheSettingsFromTheTopRight`, `theModesSheetOpensFullyOnTheThreeModes`

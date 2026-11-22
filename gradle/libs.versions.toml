@@ -46,7 +46,6 @@ targetSdk = "37"
 minSdk = "24"
 appMinSdk = "24"
 
-firebaseBom = "35.1.0"
 kotlinxCoroutines = "1.11.0"
 
 [libraries]
@@ -98,11 +97,6 @@ composeRules-ktlint = { group = "io.nlopez.compose.rules", name = "ktlint", vers
 baselineprofile-gradlePlugin = { group = "androidx.benchmark", name = "benchmark-baseline-profile-gradle-plugin", version.ref = "androidxBenchmark" }
 playPublisher-gradlePlugin = { group = "com.github.triplet.gradle", name = "play-publisher", version.ref = "playPublisher" }
 
-firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
-firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore" }
-firebase-auth = { group = "com.google.firebase", name = "firebase-auth" }
-firebase-appcheck-playintegrity = { group = "com.google.firebase", name = "firebase-appcheck-playintegrity" }
-firebase-appcheck-debug = { group = "com.google.firebase", name = "firebase-appcheck-debug" }
 kotlinx-coroutines-play-services = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-play-services", version.ref = "kotlinxCoroutines" }
 
 [plugins]

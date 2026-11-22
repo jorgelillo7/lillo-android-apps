@@ -104,7 +104,10 @@ class GameTest {
     fun impostorsAndJournalistsAreAtMostHalfTheGroup() {
         assertEquals(1, Rules.maxInfiltrators(3))
         assertEquals(2, Rules.maxInfiltrators(4))
+        assertEquals(7, Rules.maxInfiltrators(15), "an odd group rounds down")
         assertEquals(12, Rules.maxInfiltrators(24))
+        assertTrue(Rules.canStart(15, GameSettings(GameMode.MYSTERIOUS, impostors = 4, journalists = 3)))
+        assertFalse(Rules.canStart(15, GameSettings(GameMode.MYSTERIOUS, impostors = 4, journalists = 4)))
         assertTrue(Rules.canStart(4, GameSettings(impostors = 2)))
         assertFalse(Rules.canStart(5, GameSettings(impostors = 3)))
         assertTrue(Rules.canStart(3, GameSettings(GameMode.MYSTERIOUS, impostors = 0, journalists = 1)))

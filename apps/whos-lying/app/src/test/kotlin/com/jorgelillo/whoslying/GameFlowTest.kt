@@ -9,6 +9,7 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performImeAction
 import androidx.compose.ui.test.performTextInput
+import androidx.compose.ui.test.performTextReplacement
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.printToString
 import androidx.compose.ui.test.swipeUp
@@ -85,6 +86,49 @@ class GameFlowTest {
         // "Exposed in 3, 2, 1…", then straight to the result: catching the only impostor ends the game.
         compose.waitUntilExactlyOneExists(hasTestTag("result_title"), TIMEOUT)
         assertEquals(Outcome.CiviliansWin, viewModel().game.value!!.outcome)
+    }
+
+    @Test
+    fun aHalfPlayedMatchContinuesFromTheHome() {
+        aWholeGameEndsWithTheImpostorCaught()
+        compose.waitUntil(TIMEOUT) { viewModel().saved.value?.roundsPlayed == 1 }
+        tap("home")
+        // The next round starts straight from the home: no setup in between.
+        tap("continue_match")
+        compose.waitUntilExactlyOneExists(hasTestTag("tap_to_reveal"), TIMEOUT)
+        assertEquals(1, viewModel().saved.value?.roundsPlayed)
+    }
+
+    @Test
+    fun aNewMatchFromTheHomeStartsFromZero() {
+        aWholeGameEndsWithTheImpostorCaught()
+        compose.waitUntil(TIMEOUT) { viewModel().saved.value?.roundsPlayed == 1 }
+        tap("home")
+        tap("home_new_match")
+        compose.waitUntilExactlyOneExists(hasTestTag("start"), TIMEOUT)
+        compose.waitUntil(TIMEOUT) { viewModel().saved.value?.roundsPlayed == 0 }
+        assertEquals(emptyMap(), viewModel().saved.value?.scores)
+    }
+
+    @Test
+    fun theGroupIsOneRowAwayFromSetup() {
+        tap("welcome_ok")
+        tap("play")
+        listOf("Ana", "Bea", "Carlos").forEach { name ->
+            compose.onNodeWithTag("player_name").performTextInput(name)
+            compose.onNodeWithTag("player_name").performImeAction()
+        }
+        compose.waitUntil(TIMEOUT) { viewModel().saved.value?.players?.size == 3 }
+        tap("continue")
+        tap("players_row")
+        tap("rename_Ana")
+        compose.onNodeWithTag("player_name").performTextReplacement("Ana María")
+        tap("add_player")
+        compose.waitUntil(TIMEOUT) { viewModel().saved.value?.players?.first() == "Ana María" }
+        // Opened from setup, the list closes back to it.
+        tap("continue")
+        compose.waitUntilExactlyOneExists(hasTestTag("start"), TIMEOUT)
+        assertEquals(listOf("Ana María", "Bea", "Carlos"), viewModel().saved.value?.players)
     }
 
     private companion object {

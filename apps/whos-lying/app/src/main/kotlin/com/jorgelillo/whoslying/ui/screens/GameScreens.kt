@@ -205,7 +205,7 @@ private const val PEEK_SHARE = 0.22f
 private val Curtain = Brush.verticalGradient(listOf(Color(0xFF9B7DFF), Color(0xFF5A35E6)))
 
 @Composable
-private fun SecretCard(card: Card, compact: Boolean) {
+internal fun SecretCard(card: Card, compact: Boolean) {
     val noWord = card.word == null
     val accent = when {
         !card.knowsRole -> Neon.Turquoise

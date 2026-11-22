@@ -12,7 +12,6 @@
 
     <!-- Players -->
     <string name="players_title">Players</string>
-    <string name="players_subtitle">3 to 24 players, sitting together with one phone</string>
     <string name="players_add_hint">Player name</string>
     <string name="players_add">Add</string>
     <string name="drawing_ink">Colour %1$d</string>
@@ -121,7 +120,7 @@
 
     <!-- How to play -->
     <string name="how_1_title">1 · Get your word</string>
-    <string name="how_1">Pass the phone around. Everyone sees the same secret word… except the impostors.</string>
+    <string name="how_1">Pass the phone around and look at your card in secret. Civilians share the secret word; impostors get a hint, a similar word or nothing at all, depending on the mode.</string>
     <string name="how_2_title">2 · Give clues</string>
     <string name="how_2">In turns, say one word or short phrase about it. Not too obvious, or the impostor will catch on.</string>
     <string name="how_3_title">3 · Vote</string>
@@ -139,8 +138,7 @@
     <string name="rules_short">Rules</string>
     <string name="modes_short">Modes</string>
     <string name="setup_which_mode">Which mode should we play?</string>
-    <string name="setup_timer">Time</string>
-    <string name="setup_timer_desc">Countdown before voting</string>
+    <string name="setup_timer">Duration</string>
     <string name="setup_timer_off">Off</string>
     <string name="setup_timer_minutes">%1$d min</string>
     <string name="setup_unplayed">Words still to come: %1$d of %2$d</string>
@@ -240,7 +238,6 @@
 
     <!-- Match rounds and podium -->
     <string name="setup_rounds">Rounds</string>
-    <string name="setup_rounds_desc">Most points wins</string>
     <plurals name="scores_rounds_left">
         <item quantity="one">%d round left</item>
         <item quantity="other">%d rounds left</item>
@@ -251,7 +248,6 @@
     <string name="podium_nobody">Nobody scored… rematch!</string>
     <string name="podium_new_match">New match</string>
     <string name="time_up">Time\'s up!</string>
-    <string name="setup_recommended">Recommended: %1$s</string>
 
     <!-- Report a word -->
     <string name="report_title">Report this word</string>
@@ -281,6 +277,31 @@
         <item quantity="other">%d players</item>
     </plurals>
     <string name="hero_leader">🏆 Leading: %1$s (%2$d pts)</string>
-    <string name="hero_match">🎯 Game %1$d of %2$d</string>
+    <string name="hero_match">🎯 Round %1$d of %2$d</string>
     <string name="hero_drawing">✏️ Drawing mode</string>
+    <string name="setup_settings">Game settings</string>
+    <string name="setup_rounds_unlimited">No limit</string>
+    <plurals name="setup_rounds_value">
+        <item quantity="one">%1$d round</item>
+        <item quantity="other">%1$d rounds</item>
+    </plurals>
+    <string name="setup_recommended_short">recommended</string>
+    <plurals name="setup_cap_impostors">
+        <item quantity="one">Max %1$d impostor for %2$d players</item>
+        <item quantity="other">Max %1$d impostors for %2$d players</item>
+    </plurals>
+    <plurals name="setup_cap_infiltrators">
+        <item quantity="one">Max %1$d impostor or journalist for %2$d players</item>
+        <item quantity="other">Max %1$d impostors and journalists for %2$d players</item>
+    </plurals>
+    <string name="setup_chaos_note">Chaos picks the impostors: nobody knows how many there are.</string>
+    <string name="players_range">From %1$d to %2$d players</string>
+    <string name="players_rename">Rename %1$s</string>
+    <string name="players_rename_save">Save</string>
+    <string name="cancel">Cancel</string>
+    <string name="players_close">Close</string>
+    <string name="setup_fewer">%1$s: fewer</string>
+    <string name="setup_more">%1$s: more</string>
+    <string name="home_continue">Continue match</string>
+    <string name="home_new_match">New match</string>
 </resources>

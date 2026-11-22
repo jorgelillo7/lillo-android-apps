@@ -14,22 +14,13 @@ Lines are pruned as items ship. What has **shipped** lives in `apps/<app>/releas
 
 | | What is missing | Waiting on |
 |---|---|---|
-| ⏳ | Grow the advent pool (activities and songs) between January and November, never during an Advent in progress | Ideas from you · `AdventActivity` / `AdventSong` in the domain |
-| ⏳ | Spanish carols (villancicos) for the advent songs | Public-domain scores to be found |
+| ⏳ | Grow the advent pool (activities, songs, public-domain villancicos) between January and November, never during an Advent in progress | January · ideas from you · `AdventActivity` / `AdventSong` in the domain |
 
 ## whos-lying
 
 | | What is missing | Waiting on |
 |---|---|---|
-| 🔨 | Store screenshot 08 (home with the ⓘ at the top right, phone, es and en) shows two Wi-Fi icons in the status bar, an emulator demo-mode glitch: retake it with a clean demo status bar and ship it with the next whos-lying listing update (`-f action=listing` is enough, no new version needed) | Ready |
-
-## group-polls (new app, parked until 2026-10-23)
-
-| | What is missing | Waiting on |
-|---|---|---|
-| 👤 | Create the app in Play Console (`com.jorgelillo.grouppolls`, App · Social); the upload key exists. Listing texts and graphics are ready in `app/src/main/play/listings`; don't upload a bundle until Firebase exists (without it the app runs on sample polls) | You · answers in `apps/group-polls/OPERATIONS.md` → "Play Console answers" |
-| 👤 | Create the Firebase project and give the OK | You · lillorepo `packages/group_polls/OPERATIONS.md` → "Create the project" |
-| 🔨 | Then: `firebase.properties`, App Check (Play Integrity + debug token), the Firebase API key restricted to this package and both signing SHA-1s and to the APIs the app calls (lillorepo `PENDING.md`), Play signing SHA-256 in `assetlinks.json`, publish `/q/` and `assetlinks.json` on the website (privacy page already live), Terraform on, internal test | The two steps above · plan in [docs/plans/group-polls.md](docs/plans/group-polls.md) |
+| 👤 | Version 14 (Original, Mysterious and Chaos modes, journalists, setup in cards, continue a match from the home) uploaded to production with the listing by the Release workflow: approve it in GitHub, then Google's review; once live, play every mode on a real phone | You |
 
 ## stadium-events (new app, v1 built 2026-11; feed live at `jorgelillo7.github.io/stadium/events.json`)
 
@@ -41,24 +32,19 @@ Lines are pruned as items ship. What has **shipped** lives in `apps/<app>/releas
 
 | | What is missing | Waiting on |
 |---|---|---|
-| ⏳ | Double elimination and round robin | Feedback after real use |
+| 🚧 | Double elimination and round robin | Parked by your call until someone uses the app |
 
-## league-cards (new game, live with the private deck)
+## fake-ad games (idea, a collection)
 
 | | What is missing | Waiting on |
 |---|---|---|
-| 🔨 | The store screenshots show the sample deck; retake them with the league's deck if wanted | You |
-| ⏳ | More cards and chat lines from the group | Ideas from the league · private deck, never in this repo |
+| 🔨 | Fake-ad games: **next big project once this file holds only long-term items**. First a technology study (engine, crowds of 1,000+, physics for pin-pull and fluids), then game one: the maths-gates crowd runner (a cannon fires a crowd through + / × gates at an enemy base), faithful in mechanics and feel, own art and names. Pin-pull (lava, treasure, a trapped character) is the candidate for game two | Ready · [docs/plans/fake-ad-games.md](docs/plans/fake-ad-games.md) |
 
 ## repo
 
 | | What is missing | Waiting on |
 |---|---|---|
-| 🔨 | The other bottom sheets (whos-lying's how-to, modes, report and pack sheets, decision-wheel's and league-cards' own, tournaments' already expanded) still open half-way: move them onto core `LilloSheet` | — |
-| ⏳ | The specs' two remaining GAPs can't be tested here: reminders surviving a reboot and battery delays (WorkManager on a device) and league-cards' private deck (never in this repo) | A phone · the private deck |
+| 🔨 | The other bottom sheets (decision-wheel's and league-cards' own; whos-lying's and tournaments' already expanded) still open half-way: move them onto core `LilloSheet` | — |
 | ⏳ | Play's new app-quality thresholds (memory and code optimisation) are enforced from February 2027: in January, run `scripts/play_vitals.py` and compare with the thresholds once published (2026-11-07: no app has enough users for Google to report vitals; R8 is on everywhere and the apps are 1–2 MB) | January 2027 |
-| ⏳ | Play is expected to require targetSdk 37 from August 2027; the apps target it on `master` since 2026-11 and reach users with the releases above. In-App Review in `core`, shown after a good moment, is still an idea: first check with `scripts/verify-bundle.sh` that it adds no INTERNET permission to the apps that promise none | The releases above |
-| ⏳ | Release round of 2026-11-15 approved and with Google (production 11, 8, 13, 7, 9, 5, 4 for christmas-countdown, decision-wheel, whos-lying, tournaments, league-cards, slipper, stadium-events; tracks match the repo per `scripts/play_status.py`). Once live: check About in landscape on the handheld, and that a reminder arrives with the app closed (christmas-countdown, stadium-events) | Google's review, then you |
-| 👤 | Look at the new looks on a real phone (they ship in the round above) (now every app has two: slipper's night scene, league-cards' day chat with the deck's names darkened): whos-lying's round stages stay night-coloured in the light look, so the status-bar icons may be dark over violet or red; tournaments' exported bracket image and christmas-countdown's widget keep their night colours in both looks; the light palettes were chosen by hand and checked only by the contrast tests | You, with a debug build · `./gradlew :apps:<app>:app:installDebug` |
+| ⏳ | Release round of 2026-11-15 approved and with Google (production 11, 8, 13, 7, 9, 5, 4 for christmas-countdown, decision-wheel, whos-lying, tournaments, league-cards, slipper, stadium-events; tracks match the repo per `scripts/play_status.py`). Once live: check About in landscape on the handheld, and that a reminder arrives with the app closed (christmas-countdown, stadium-events) | Google's review, then you · same phone session: the new light and dark looks (whos-lying's night stages under light status-bar icons, tournaments' bracket image and christmas-countdown's widget kept night-coloured, hand-picked light palettes) with a debug build, `./gradlew :apps:<app>:app:installDebug` |
 | ⏳ | Release workflow without a stored key: Workload Identity Federation (GitHub OIDC → the `play-publisher` service account), then delete its JSON key | The first CI releases working with the key |
-| 👤 | Baseline profiles are in every app (but group-polls), 2026-10: measure the cold start on a real phone (USB debugging on, `./gradlew :apps:slipper:baselineprofile:connectedBenchmarkReleaseAndroidTest`, then christmas-countdown). **It reinstalls the app with the upload key and removes it afterwards: the phone's Play copy and its data go** (use a phone without them, or accept losing that app's data). The emulator shows no difference on this Mac; Google's figure is ~20–30 % on real phones. Also more journeys (tournaments with data, whos-lying past the welcome) | You, with a phone at hand |

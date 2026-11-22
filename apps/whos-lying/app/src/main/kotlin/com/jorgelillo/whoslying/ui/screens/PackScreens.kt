@@ -9,6 +9,7 @@ import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -60,6 +61,7 @@ import com.jorgelillo.core.designsystem.LilloBigButton
 import com.jorgelillo.core.designsystem.LilloPage
 import com.jorgelillo.core.designsystem.LilloQrCode
 import com.jorgelillo.core.designsystem.LilloSectionTitle
+import com.jorgelillo.core.designsystem.LilloSheet
 import com.jorgelillo.core.designsystem.TestTagsAsResourceIds
 import com.jorgelillo.core.designsystem.accentEdge
 import com.jorgelillo.core.platform.shareText
@@ -323,19 +325,16 @@ private fun PackRow(pack: WordPack, onClick: (() -> Unit)?, onShare: (() -> Unit
 }
 
 /** Pass a pack to another phone: QR code for the camera, or the link through any chat. */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun PackShareSheet(pack: WordPack, onDismiss: () -> Unit) {
-    ModalBottomSheet(onDismissRequest = onDismiss, containerColor = Neon.Card) {
-        PackShareContent(pack)
+    LilloSheet(onDismiss, Neon.Card, horizontalAlignment = Alignment.CenterHorizontally) {
+        PackShareItems(pack)
     }
 }
 
-/** The share sheet's content: the link and its QR code, or why this pack can't be sent. */
+/** [PackShareItems] on their own, scrolling: how the screenshot tests show the share sheet. */
 @Composable
 internal fun PackShareContent(pack: WordPack, modifier: Modifier = Modifier) {
-    val context = LocalContext.current
-    val link = remember(pack) { PackShare.sendableLink(pack) }
     Column(
         modifier.then(TestTagsAsResourceIds).verticalScroll(
             rememberScrollState()
@@ -343,30 +342,38 @@ internal fun PackShareContent(pack: WordPack, modifier: Modifier = Modifier) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        Text(
-            "${pack.emoji} ${pack.name}",
-            style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.Black
-        )
-        if (link == null) {
-            Text(
-                stringResource(R.string.pack_share_too_big, PackShare.MAX_WORDS),
-                color = Neon.Muted,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.testTag("pack_too_big")
-            )
-        } else {
-            if (link.length <= PackShare.QR_MAX_CHARS) {
-                LilloQrCode(link, Modifier.testTag("pack_qr"))
-                Text(stringResource(R.string.pack_share_qr_help), color = Neon.Muted, textAlign = TextAlign.Center)
-            }
-            val message = stringResource(R.string.pack_share_message, pack.emoji, pack.name, link)
-            LilloBigButton(stringResource(R.string.pack_share_send), {
-                context.shareText(message)
-            }, modifier = Modifier.testTag("pack_send"))
-        }
-        Spacer(Modifier.height(12.dp))
+        PackShareItems(pack)
     }
+}
+
+/** The link and its QR code, or why this pack can't be sent. */
+@Composable
+private fun ColumnScope.PackShareItems(pack: WordPack) {
+    val context = LocalContext.current
+    val link = remember(pack) { PackShare.sendableLink(pack) }
+    Text(
+        "${pack.emoji} ${pack.name}",
+        style = MaterialTheme.typography.titleLarge,
+        fontWeight = FontWeight.Black
+    )
+    if (link == null) {
+        Text(
+            stringResource(R.string.pack_share_too_big, PackShare.MAX_WORDS),
+            color = Neon.Muted,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.testTag("pack_too_big")
+        )
+    } else {
+        if (link.length <= PackShare.QR_MAX_CHARS) {
+            LilloQrCode(link, Modifier.testTag("pack_qr"))
+            Text(stringResource(R.string.pack_share_qr_help), color = Neon.Muted, textAlign = TextAlign.Center)
+        }
+        val message = stringResource(R.string.pack_share_message, pack.emoji, pack.name, link)
+        LilloBigButton(stringResource(R.string.pack_share_send), {
+            context.shareText(message)
+        }, modifier = Modifier.testTag("pack_send"))
+    }
+    Spacer(Modifier.height(12.dp))
 }
 
 /** Paste a pack link (or the whole chat message) someone sent you. */

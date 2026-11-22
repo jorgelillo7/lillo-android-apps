@@ -15,7 +15,7 @@
 # its own environment (named like the app folder), the Play service account in a repository secret;
 # scripts/set-release-secrets.sh puts them there. What an app must not ship without is a secret of
 # its environment too, and a release without it fails: league-cards' private league deck (else
-# the public sample) and group-polls' Firebase config (else the in-memory sample backend).
+# the public sample).
 name: Release
 # What each run ships, in the list of runs and in the approval: "league-cards · upload → production (draft)".
 run-name: "${{ inputs.app }} · ${{ inputs.action }} → ${{ inputs.track }}${{ inputs.draft && ' (draft)' || '' }}${{ inputs.listing && ' + listing' || '' }}${{ inputs.dry_run && ' (dry run)' || '' }}"
@@ -26,7 +26,7 @@ on:
       app:
         description: App
         type: choice
-        options: [christmas-countdown, decision-wheel, whos-lying, tournaments, group-polls, league-cards, slipper, stadium-events]
+        options: [christmas-countdown, decision-wheel, whos-lying, tournaments, league-cards, slipper, stadium-events]
       action:
         description: "upload: build and upload this version · promote: move the internal release on · listing: only the store listing (texts and graphics)"
         type: choice
@@ -82,7 +82,7 @@ jobs:
       TRACK: ${{ inputs.track }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: actions/setup-java@77dd5b2ce225ea11469928ac317850245a74ae78 # v6.2.0
+      - uses: actions/setup-java@d1374f8ac74474200d16ef8ecee22c7ae7a51880 # v6.3.0
         with:
           distribution: temurin
           java-version: 25
@@ -118,18 +118,6 @@ jobs:
           mkdir -p "$RUNNER_TEMP/deck"
           echo "$LEAGUE_DECK_GZ_BASE64" | base64 --decode | gunzip > "$RUNNER_TEMP/deck/league-private.json"
           echo "GRADLE_EXTRA=-PleagueCards.privateDir=$RUNNER_TEMP/deck" >> "$GITHUB_ENV"
-
-      # group-polls: the Firebase project (apps/group-polls/firebase.properties, git-ignored).
-      - name: Firebase config
-        if: inputs.app == 'group-polls' && inputs.action == 'upload'
-        env:
-          FIREBASE_PROPERTIES: ${{ secrets.FIREBASE_PROPERTIES }}
-        run: |
-          if [ -z "$FIREBASE_PROPERTIES" ]; then
-            if [ "${{ inputs.dry_run }}" = true ]; then echo "::warning::No Firebase config: the dry run builds the in-memory backend"; exit 0; fi
-            echo "::error::No Firebase config: run scripts/set-release-secrets.sh group-polls"; exit 1
-          fi
-          echo "$FIREBASE_PROPERTIES" > apps/group-polls/firebase.properties
 
       - name: Play service account
         if: ${{ !inputs.dry_run }}
