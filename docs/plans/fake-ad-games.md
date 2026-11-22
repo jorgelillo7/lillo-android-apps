@@ -37,6 +37,22 @@ What each ad shows, and what the advertised game really is. The ad is what we bu
 Other common ad mechanics to look at: draw a line to protect, rescue-the-hero doors, merge
 soldiers, stack runner that builds a bridge, parking jam, colour sort.
 
+## Game one: modes
+
+The owner wants more than the ad's single pace. Three modes on the same tracks and engine:
+
+| Mode | Gates | Pace |
+|---|---|---|
+| **Classic** | What the ads show: `+20`, `×2`, `−15` | Real time, no stopping |
+| **Maths** | Expressions solvable in your head: `×(12 ÷ 4)`, `+(5² − 10)`, `−2³`, `×√49`, a simple equation (`+x` where `3x = 21`), percentages (`+50 %`) | Real time |
+| **Think** | Same as Maths, harder | Time stops at each pair of gates: 10 seconds to choose, a countdown on screen; no choice in time takes the left gate |
+
+What makes Maths and Think a puzzle: the better gate depends on the crowd you bring. With 20 units,
+`×3` (60) beats `+30` (50); with 10 it loses (30 against 40). So gates are generated per level from
+the expected crowd, the better one is never always the bigger number, and a test checks every
+generated pair has exactly one better choice and stays within the mode's difficulty (operands,
+operations, size of the intermediate results).
+
 ## Leads
 
 - KFC's "Original Fake Games": playable versions of fake ads (rolling barrels, a trapped king, a
