@@ -48,7 +48,6 @@ include(":apps:whos-lying:app")
 include(":apps:whos-lying:domain")
 include(":apps:whos-lying:baselineprofile")
 
-
 // ¿Quién gana? (tournaments)
 include(":apps:tournaments:app")
 include(":apps:tournaments:domain")
