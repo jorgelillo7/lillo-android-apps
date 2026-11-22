@@ -41,7 +41,7 @@ One entry per document. Runbooks first, then setup, then reference.
 ## Plans
 
 Design decisions of apps that needed a plan before coding:
-[`plans/tournaments.md`](plans/tournaments.md),
+[`plans/fake-ad-games-tech.md`](plans/fake-ad-games-tech.md), [`plans/tournaments.md`](plans/tournaments.md),
 [`plans/stadium-events.md`](plans/stadium-events.md).
 
 Shared scripts: [`scripts/`](../scripts). Branding: [`branding/`](../branding).

@@ -1,6 +1,6 @@
 # Fake-ad games (idea, a collection)
 
-Status: **idea, study pending**. Open item in [PENDING.md](../../PENDING.md).
+Status: **idea; technology study in [fake-ad-games-tech.md](fake-ad-games-tech.md)**. Open item in [PENDING.md](../../PENDING.md).
 
 Mobile ads often show a quick, satisfying mini-game that the installed app barely contains. The
 idea is a collection that delivers those ads as real games, as faithful to the ad as possible in

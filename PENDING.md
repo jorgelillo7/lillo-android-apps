@@ -38,7 +38,7 @@ Lines are pruned as items ship. What has **shipped** lives in `apps/<app>/releas
 
 | | What is missing | Waiting on |
 |---|---|---|
-| 🔨 | Fake-ad games: **next big project once this file holds only long-term items**. First a technology study (engine, crowds of 1,000+, physics for pin-pull and fluids), then game one: the maths-gates crowd runner (a cannon fires a crowd through + / × gates at an enemy base), faithful in mechanics and feel, own art and names. Pin-pull (lava, treasure, a trapped character) is the candidate for game two | Ready · [docs/plans/fake-ad-games.md](docs/plans/fake-ad-games.md) |
+| 🔨 | Fake-ad games: **next big project once this file holds only long-term items**. Technology study written ([fake-ad-games-tech.md](docs/plans/fake-ad-games-tech.md): Godot 4, `games/` next to `apps/`, publishing through the Release workflow); next its spikes S1–S4 (S2 and S3 need you with a phone), then game one: the maths-gates crowd runner (a cannon fires a crowd through + / × gates at an enemy base), faithful in mechanics and feel, own art and names. Pin-pull (lava, treasure, a trapped character) is the candidate for game two | Ready · [docs/plans/fake-ad-games.md](docs/plans/fake-ad-games.md) |
 
 ## repo
 

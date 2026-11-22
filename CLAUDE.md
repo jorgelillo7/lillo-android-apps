@@ -173,7 +173,7 @@ Project skills are indexed in [`.claude/CLAUDE.md`](.claude/CLAUDE.md).
   `app/src/release/generated/baselineProfiles/` is committed and ships in the bundle; regenerate it
   with `scripts/generate-baseline-profiles.sh <app>` before a release whose code changed.
 - `targetSdk` must meet Google Play's current requirement (API 36 since Aug 2026; the apps target 37 since 2026-11).
-- Share links and App Links use `jorgelillo7.github.io` (`/q/`, `/t/`, `/p/` and
+- Share links and App Links use `jorgelillo7.github.io` (`/t/`, `/p/` and
   `/.well-known/assetlinks.json` live in that repo): free static GitHub Pages, data in the link
   fragment, no server. The domain is tied to the GitHub username, which the user keeps for good,
   so no custom domain is planned; changing it would break every link already shared.
