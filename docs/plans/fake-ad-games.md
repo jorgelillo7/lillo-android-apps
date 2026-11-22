@@ -24,10 +24,10 @@ What each ad shows, and what the advertised game really is. The ad is what we bu
 
 | Ad mechanic | Seen in ads for | What the ad shows | What the real game is |
 |---|---|---|---|
-| Maths gates crowd runner | Top War, Last War: Survival | A squad runs along a bridge, shooting or passing through blue gates (+20, ×2) and red ones (−15) to grow before a giant boss or an enemy army | Base-building strategy and resource management; Last War has a few similar mini-games early on |
+| Maths gates crowd runner — **game one** | Top War, Last War: Survival, Mob Control (a cannon at the bottom fires the crowd up lanes of + / × gates at an enemy base) | A squad runs along a bridge, shooting or passing through blue gates (+20, ×2) and red ones (−15) to grow before a giant boss or an enemy army | Base-building strategy and resource management; Last War has a few similar mini-games early on |
 | Number tower | Hero Wars | A knight picks which monster to fight by power (10 vs 5), absorbs the weaker ones and climbs to rescue a princess | Turn-based auto-battle RPG with little direct control |
 | Pull the pin (rescue) | Homescapes, Gardenscapes | A character trapped in a burning or freezing house; pull pins in the right order to save him | Match-3 to earn stars and decorate a mansion |
-| Pull the pin (treasure and lava) | Evony: The King's Return | Pull pins so gold falls on the hero while lava or monsters fall elsewhere | Multiplayer empire strategy; a few pin levels added later |
+| Pull the pin (treasure and lava) — **game two** | Evony: The King's Return, Royal Match, Homescapes | Pull pins so gold falls on the hero while lava or monsters fall elsewhere | Multiplayer empire strategy; a few pin levels added later |
 | Makeover choices | Project Makeover | A dramatic story where someone needs a makeover; the ad picks the wrong choices on purpose | Match-3 with basic outfit and decoration choices |
 | Lv. 1 to Lv. 100 | Mafia City | A level-1 crook robs a bank, picks money off the floor and becomes a boss surrounded by luxury | Static building management, timers and clan auto-battles |
 | Unscrew by colour | Screwdom (and many screw-puzzle clones) | A 3D house or toy covered in coloured screws; rotate it, tap a screw and it flies to the box of its colour at the top (3 holes; a full box leaves and a new one comes) or to a 5-hole waiting row; pieces fall as their screws go; fill the waiting row and you lose | Close to the ad, but buried in ads, coins and rewarded-video multipliers after every level |
