@@ -33,5 +33,32 @@ const THEMES := {
 }
 
 
-static func named(name: String) -> Dictionary:
-	return THEMES.get(name, THEMES[NAMES[0]])
+## Squad colours the player can pick: [squad, helmets/badge]. Each one was checked to stay apart
+## from both palettes' enemies, boss and track with every kind of colour vision (tests).
+const SQUADS := {
+	"default": [],
+	"sky": [Color("#38BDF8"), Color("#0B6E99")],
+	"orange": [Color("#FF8A1F"), Color("#A34E05")],
+	"lime": [Color("#A3E635"), Color("#4D7C0F")],
+	"white": [Color("#F2F2F7"), Color("#8A8AA0")],
+}
+## The smallest colour difference (ΔE, any vision) a squad keeps from enemies, boss and track.
+const MIN_DIFFERENCE := 19.0
+
+
+## Theme `name` with the squad in `squad` (one of SQUADS; "default" keeps the theme's own).
+static func named(name: String, squad := "default") -> Dictionary:
+	var theme: Dictionary = THEMES.get(name, THEMES[NAMES[0]]).duplicate()
+	var pick: Array = SQUADS.get(squad, [])
+	if not pick.is_empty():
+		theme.squad = pick[0]
+		theme.squad_dark = pick[1]
+	return theme
+
+
+## The swatch shown for each squad choice under theme `name`.
+static func swatches(name: String) -> Dictionary:
+	var result := {}
+	for squad in SQUADS:
+		result[squad] = named(name, squad).squad
+	return result

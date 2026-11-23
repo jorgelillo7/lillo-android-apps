@@ -124,7 +124,7 @@ func _build() -> void:
 	var minion := _model("Skeleton_Minion.glb")
 	if archer and minion:
 		var running := LilloPoseBaker.bake(self, archer, RUN, 4, FIGURE_HEIGHT, ARCHER_SPARES)
-		var tint := _tinted(running[0], palette.squad.lightened(0.25))
+		var tint := _tinted(running[0], palette.squad)
 		soldiers_view = LilloAnimatedCrowd.new(running, SOLDIER_CAPACITY, 10.0, tint)
 		soldiers_view.add_clip(SHOOT, LilloPoseBaker.bake(self, archer, SHOOT, 4, FIGURE_HEIGHT, ARCHER_SPARES))
 		var walking := LilloPoseBaker.bake(self, minion, "Walking_A", 4, FIGURE_HEIGHT)
@@ -181,13 +181,10 @@ func _build() -> void:
 	add_child(camera)
 
 
-## The model's own textured material washed with `colour`, so the team reads at a glance.
+## The model's texture repainted in `colour`, so the team reads as the colour the player picked.
 func _tinted(mesh: Mesh, colour: Color) -> Material:
-	var material: StandardMaterial3D = mesh.surface_get_material(0).duplicate()
-	material.albedo_color = Color.WHITE.lerp(colour, 0.65)
-	material.rim_enabled = true
-	material.rim = 0.4
-	return material
+	var own: StandardMaterial3D = mesh.surface_get_material(0)
+	return LilloMaterials.team(own.albedo_texture, colour)
 
 
 func _model(file: String) -> PackedScene:

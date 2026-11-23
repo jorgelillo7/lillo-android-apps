@@ -7,6 +7,7 @@ signal mode_picked(mode: int)
 signal level_picked(number: int)
 signal stress_picked
 signal night_toggled
+signal squad_picked(name: String)
 signal next_picked
 signal again_picked
 signal levels_picked
@@ -18,6 +19,10 @@ var palette: Dictionary
 var texts: Dictionary
 var level_map: LilloLevelMap
 var about: LilloAbout
+var swatches: LilloSwatchPicker
+## {name -> colour} for the squad picker, and the current choice.
+var squad_choices := {}
+var squad_choice := "default"
 var decor: Control
 var menu: Control
 var hud: Control
@@ -32,10 +37,12 @@ var result_stars: CenterContainer
 var next_button: Button
 
 
-func _init(colours: Dictionary, words: Dictionary, map: LilloLevelMap) -> void:
+func _init(colours: Dictionary, words: Dictionary, map: LilloLevelMap, squads: Dictionary, squad: String) -> void:
 	palette = colours
 	texts = words
 	level_map = map
+	squad_choices = squads
+	squad_choice = squad
 
 
 func _ready() -> void:
@@ -58,16 +65,21 @@ func _ready() -> void:
 	about = LilloAbout.new(texts.title, texts.version % version, PackedStringArray(texts.credits), texts.close, palette.outline)
 	about.closed.connect(show_screen.bind("menu"))
 	root.add_child(about)
+	swatches = LilloSwatchPicker.new(texts.colour_title, squad_choices, squad_choice, texts.close, palette.outline)
+	swatches.picked.connect(func(name: String) -> void: squad_picked.emit(name))
+	swatches.closed.connect(show_screen.bind("menu"))
+	root.add_child(swatches)
 
 
 ## Shows one screen: "menu", "levels", "run", "result" or "about".
 func show_screen(screen: String) -> void:
 	about.visible = screen == "about"
+	swatches.visible = screen == "colours"
 	menu.visible = screen == "menu"
 	level_map.visible = screen == "levels"
 	hud.visible = screen == "run"
 	result.visible = screen == "result"
-	decor.visible = screen in ["menu", "levels", "about"]
+	decor.visible = screen in ["menu", "levels", "about", "colours"]
 
 
 func show_levels(mode: int) -> void:
@@ -152,11 +164,14 @@ func _build_menu() -> Control:
 		tween.tween_property(title, "scale", Vector2.ONE, 0.9).set_trans(Tween.TRANS_SINE))
 	for i in texts.modes.size():
 		box.add_child(LilloTheme.button(texts.modes[i], func() -> void: mode_picked.emit(i), 44, 96.0))
-	var extras := HBoxContainer.new()
-	extras.add_theme_constant_override("separation", 10)
+	var extras := GridContainer.new()
+	extras.columns = 2
+	extras.add_theme_constant_override("h_separation", 10)
+	extras.add_theme_constant_override("v_separation", 10)
 	var night: bool = LilloSettings.read("night", false)
 	var dark := LilloTheme.box(Color(palette.outline, 0.75), Color(palette.outline, 0.9))
 	for button in [LilloTheme.button(texts.night_on if night else texts.night_off, func() -> void: night_toggled.emit(), 22),
+			LilloTheme.button(texts.colour, show_screen.bind("colours"), 22),
 			LilloTheme.button(texts.about, show_screen.bind("about"), 22),
 			LilloTheme.button(texts.stress, func() -> void: stress_picked.emit(), 22)]:
 		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL

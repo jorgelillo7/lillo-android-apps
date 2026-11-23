@@ -17,6 +17,13 @@ with our own art. Colours live in `game/palette.gd`; change them there, nowhere 
 Squad against enemies is teal against purple: told apart with red–green colour blindness, and
 unlike the red-and-blue of the games this genre is known for.
 
+**Squad colour** (menu → Squad colour): the palette's own, sky `#38BDF8`, orange `#FF8A1F`, lime
+`#A3E635` or white `#F2F2F7`. Each keeps a colour difference of ΔE ≥ 19 from both palettes'
+enemies, boss and track with normal vision and simulated protanopia, deuteranopia and tritanopia
+(`tests/test_palette.gd`, `LilloColours`). Rejected for failing it: blue, red, pink, yellow, navy,
+black. Models are repainted with `LilloMaterials.team`, which keeps the texture's shading and
+takes the hue from the squad colour.
+
 ## Type
 
 Luckiest Guy for everything on screen, white with a dark outline; numbers over the squad in gold
