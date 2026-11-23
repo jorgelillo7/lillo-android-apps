@@ -145,4 +145,4 @@ func test_only_the_mage_boss_throws_fireballs() -> void:
 	for number in [5, 10, 15, 20]:
 		var level := SummandosLevel.generate(SummandosLevel.Mode.EASY, number)
 		var boss: Dictionary = level.waves[-1]
-		assert_eq(boss.get("burn", 0) > 0, level.boss.model == SummandosLevel.RANGED_BOSS, "level %d" % number)
+		assert_eq(boss.get("burn", 0) > 0, level.boss.model in SummandosLevel.RANGED_BOSSES, "level %d" % number)

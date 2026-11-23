@@ -1,11 +1,15 @@
 ## An About card: the game's name and version, then one block per credit (what it is in the
 ## display font, who made it, its licence and a tappable link in a reading font) and a button to
-## close it. The credits sit side by side on a wide screen so the card fits its height. Emits
+## close it. The credits sit side by side on a wide screen, and the card shrinks when it still
+## does not fit the height. Emits
 ## `closed`.
 class_name LilloAbout
 extends Control
 
 signal closed
+
+## Room kept free above and below the card when it has to shrink to fit, in pixels.
+const FIT_MARGIN := 24.0
 
 
 ## `credits`: [{"what", "who", "licence", "link"}] ("link" optional, opened in the browser).
@@ -56,7 +60,17 @@ func _init(title: String, version: String, credits: Array, note: String, close_t
 		var wide := area.x > area.y * 1.2
 		grid.columns = mini(3, credits.size()) if wide else 1
 		box.custom_minimum_size.x = minf(area.x - 80.0, 880.0) if wide else 460.0
+		_fit.call_deferred(centre, card)
 	resized.connect(lay_out)
+
+
+## Too tall for the screen (many credits, a short landscape phone): shrinks the whole card,
+## round its centre once laid out. The container resets its child's scale, so `centre` is scaled.
+func _fit(centre: Control, card: Control) -> void:
+	await get_tree().process_frame
+	var shrink := minf(1.0, (size.y - FIT_MARGIN) / card.size.y)
+	centre.scale = Vector2.ONE * shrink
+	centre.position = size * 0.5 - (card.position + card.size * 0.5) * shrink
 
 
 static func _text(text: String, font: Font, size: int, colour: Color) -> Label:

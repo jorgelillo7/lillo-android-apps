@@ -23,10 +23,12 @@ var think_seconds := 5.0
 ## The boss at the end, or empty: {"model": file, "colour": index into BOSS_COLOURS, "height": m}.
 var boss := {}
 
-## The boss that throws fireballs.
-const RANGED_BOSS := "Skeleton_Mage.glb"
-## The skeleton models a boss can be, in turn.
-const BOSS_MODELS := ["Skeleton_Warrior.glb", "Skeleton_Mage.glb", "Skeleton_Rogue.glb", "Skeleton_Minion.glb"]
+## The bosses that throw fireballs.
+const RANGED_BOSSES := ["Skeleton_Mage.glb", "Necromancer.glb"]
+## The skeleton models a boss can be, in turn. The Golem and the Necromancer come from a bought
+## pack; without it SummandosModels draws a free stand-in, so a level is the same either way.
+const BOSS_MODELS := ["Skeleton_Warrior.glb", "Skeleton_Mage.glb", "Skeleton_Golem.glb", "Skeleton_Rogue.glb",
+	"Necromancer.glb", "Skeleton_Minion.glb"]
 ## [{z, left, right, think?}] where left/right are {"gate": LilloGate} or {"weapon": damage multiplier}.
 var rows: Array[Dictionary] = []
 ## [{z, x, count, hp, boss?, bite?, burn?}]: x is the lane the wave comes down (0 the middle), hp
@@ -128,7 +130,7 @@ static func generate(mode: Mode, number: int) -> SummandosLevel:
 	if has_boss:
 		level.boss = boss_look(mode, number)
 	level.waves.append({"z": level.length - 10.0, "x": 0.0, "count": 1, "hp": 1.0, "boss": has_boss,
-		"ranged": has_boss and level.boss.model == RANGED_BOSS})
+		"ranged": has_boss and level.boss.model in RANGED_BOSSES})
 	_size_waves(level, mode, d)
 	return level
 
@@ -139,7 +141,7 @@ static func boss_look(mode: Mode, number: int) -> Dictionary:
 	var turn := maxi(0, number / 5 - 1)
 	return {
 		"model": BOSS_MODELS[turn % BOSS_MODELS.size()],
-		"colour": (turn + mode * 2) % SummandosPalette.BOSS_COLOURS.size(),
+		"colour": (turn + turn / BOSS_MODELS.size() + mode * 2) % SummandosPalette.BOSS_COLOURS.size(),
 		"height": 3.6 + turn * 0.45,
 	}
 

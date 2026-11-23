@@ -9,3 +9,7 @@ Skeleton_Minion.glb 6ffc003f895bed0b074791e0e490846210a2e2f8fc7da300aba53cc185f9
 Skeleton_Warrior.glb 178b6fda810b814c250d8a2010c24dfd9b458b9006dd323353e620b7ff118bbe https://raw.githubusercontent.com/KayKit-Game-Assets/KayKit-Character-Pack-Skeletons-1.0/15b62b9bad122f72926c10fb14d622c73819fa54/addons/kaykit_character_pack_skeletons/Characters/gltf/Skeleton_Warrior.glb Walking_B,Idle_Combat
 Skeleton_Mage.glb e05b0f5cfa395271c9f75fd07c0a0613c56f401ece4ab644e080001a79971075 https://raw.githubusercontent.com/KayKit-Game-Assets/KayKit-Character-Pack-Skeletons-1.0/15b62b9bad122f72926c10fb14d622c73819fa54/addons/kaykit_character_pack_skeletons/Characters/gltf/Skeleton_Mage.glb Walking_B,Idle_Combat
 Skeleton_Rogue.glb 4003f2b77891bb56f7e0de7d555abcb497aebbcaee35b614211f16275f9ccae3 https://raw.githubusercontent.com/KayKit-Game-Assets/KayKit-Character-Pack-Skeletons-1.0/15b62b9bad122f72926c10fb14d622c73819fa54/addons/kaykit_character_pack_skeletons/Characters/gltf/Skeleton_Rogue.glb Walking_B,Idle_Combat
+# KayKit Skeletons EXTRA, bought from Kay Lousberg (CC0, but paid: never in this repo). The source is
+# the pack's character with its rig's animations added by scripts/glb_add_animations.py (OPERATIONS.md).
+Skeleton_Golem.glb 945c67b47bbc0b0ff016bb9b027970a3f8cde2aa6330dcea3f4afe54276c27d0 ~/Projects/documentation/assets/kaykit-skeletons-extra/Skeleton_Golem.glb Walking_A,Idle_A
+Necromancer.glb ff3ee575ad6779b8de0f05d1e623f0c9c1485d75aeeb741b1fba0246e69c9059 ~/Projects/documentation/assets/kaykit-skeletons-extra/Necromancer.glb Walking_B,Idle_A

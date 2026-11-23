@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 # Fetches a game's third-party models listed in engine/<game>/assets/models/models.txt
-# ("<file> <sha256> <url> [animations]" per line), each pinned by URL and checksum; skips files already there
-# with the right checksum. Usage: scripts/engine-assets.sh engine/<game>
+# ("<file> <sha256> <source> [animations]" per line), each pinned by checksum; skips files already there
+# with the right checksum. A source starting with ~/ is a local copy of a bought pack, which never goes
+# in the public repo: it is copied when this machine has it and skipped (the game falls back) when not.
+# Usage: scripts/engine-assets.sh engine/<game>
 set -euo pipefail
 
 project="${1:?usage: scripts/engine-assets.sh engine/<game>}"
@@ -14,7 +16,16 @@ while read -r file sum url _; do
   if [ -f "$target" ] && [ "$(shasum -a 256 "$target" | cut -d' ' -f1)" = "$sum" ]; then
     continue
   fi
-  curl -fsSL "$url" -o "$target.part"
+  case "$url" in
+    "~/"*)
+      local_copy="$HOME/${url#\~/}"
+      if [ ! -f "$local_copy" ]; then
+        echo "skipped $file: bought pack not on this machine ($url)"
+        continue
+      fi
+      cp "$local_copy" "$target.part" ;;
+    *) curl -fsSL "$url" -o "$target.part" ;;
+  esac
   got="$(shasum -a 256 "$target.part" | cut -d' ' -f1)"
   if [ "$got" != "$sum" ]; then
     rm -f "$target.part"

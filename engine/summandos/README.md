@@ -32,7 +32,10 @@ view/world.gd        the 3D world: track, gates, squad, enemies, boss, bullets, 
 view/ui.gd           the screens: menu, level map, HUD, result card
 assets/icons/        launcher icons, written by tools/generate_icon.py
 assets/models/       KayKit crossbowmen and skeletons (CC0), listed in models.txt, fetched by
-                     scripts/engine-assets.sh; without them the game draws its own figures
+                     scripts/engine-assets.sh; without them the game draws its own figures. The
+                     Golem and Necromancer bosses come from a bought pack copied in from this Mac
+                     (OPERATIONS.md); without it a free skeleton stands in
+assets/weapons/      Kenney Blaster Kit pistol and launcher (CC0), on weapon crates and in the HUD
 assets/sounds/       effects and the two music loops, synthesised by tools/generate_sounds.py
 assets/fonts/        Luckiest Guy (Astigmatic, Apache 2.0) and Fredoka (OFL), from google/fonts, with
                      their licences
