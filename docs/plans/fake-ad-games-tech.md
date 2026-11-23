@@ -1,6 +1,6 @@
 # Fake-ad games: technology study
 
-Status: **recommendation, pending the spikes below**. Product plan: [fake-ad-games.md](fake-ad-games.md).
+Status: **Godot decided** after S2; S3 and S4 pending. Product plan: [fake-ad-games.md](fake-ad-games.md).
 
 The question: what to build the first two games with, and how they live in this repo next to the
 Compose apps, reusing what already works (Play publishing, signing, listings, privacy pages, CI).
@@ -83,12 +83,12 @@ engine/
 | | Spike | Passes when |
 |---|---|---|
 | S1 ✅ | Pinned Godot install script, an `engine/core` addon and tests running headless, locally and in CI | Done: `scripts/godot.sh`, `scripts/engine-test.sh` (GUT 9.6.1), the Engine workflow; `LilloGate` and its tests in core, linked from `engine/summandos` |
-| S2 | Crowd runner prototype: 1,000 units on a track through two gates; a debug APK for a real phone | 60 fps on the owner's phone with 1,000 units; record the APK size |
+| S2 ✅ | Crowd runner prototype: 1,000 units on a track through two gates; a debug APK for a real phone | Passed on the owner's Android handheld: the performance test holds **60 fps** in landscape with about 350 soldiers and 500 enemies on screen plus bullets; the first level is won. Prototype in `engine/summandos`. APK 50 MB with arm64 + x86_64, about 25 MB arm64 only |
 | S3 | Pull-the-pin prototype: two pins, 300 bodies, lava meeting water | Pours read clearly and stay smooth on the phone |
 | S4 | Headless AAB export plus Gradle Play Publisher `artifactDir` dry run to the internal track | The bundle reaches internal testing through the Release workflow |
 
-S2 and S3 need the owner with a phone; the rest runs here. The engine decision goes into
-[decisions.md](../decisions.md) after S2.
+S3 needs the owner with a phone; the rest runs here. The engine decision is in
+[decisions.md](../decisions.md).
 
 ## Legal line
 

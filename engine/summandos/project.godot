@@ -3,13 +3,18 @@ config_version=5
 
 [application]
 
+config/quit_on_go_back=false
+
 config/name="Summandos"
 config/features=PackedStringArray("4.7", "Mobile")
 run/main_scene="res://main.tscn"
+config/icon="res://icons/main_192.png"
 
 [display]
 
 ; Upright and turned sideways: the layout adapts, never stretches or crops.
+window/size/viewport_width=720
+window/size/viewport_height=720
 window/handheld/orientation=6
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
@@ -17,3 +22,4 @@ window/stretch/aspect="expand"
 [rendering]
 
 renderer/rendering_method="mobile"
+textures/vram_compression/import_etc2_astc=true
