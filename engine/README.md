@@ -12,7 +12,9 @@ engine/
     addons/lillo_core/
       crowd/                  LilloFormation (where each member of a crowd stands, or a mob),
                               LilloCrowdView (hundreds of copies of a mesh in one draw call),
-                              LilloFigure (cartoon characters, monsters, streaks; toon material)
+                              LilloFigure (cartoon characters, monsters, streaks; toon material),
+                              LilloPoseBaker (an animated model as a few still, simplified
+                              poses) and LilloAnimatedCrowd (a crowd stepping through them)
       maths/                  LilloGate (a maths gate), LilloMathPuzzle (a number as a sum to
                               work out, three tiers)
       render/                 LilloMaterials (flat, banded ground, camera-facing badge) and their
@@ -21,9 +23,11 @@ engine/
                               LilloLevelMap (paged level map with stars and padlocks),
                               LilloStars, LilloBackdrop (rays, clouds, hills), LilloSticker
                               (a waving soldier or a swaying monster for corners), LilloFx
-                              (pop-ins, squishy buttons, rising numbers, confetti), LilloSafeArea
+                              (pop-ins, squishy buttons, rising numbers, confetti), LilloSafeArea,
+                              LilloAbout (name, version and credits)
       save/                   LilloSettings (player preferences and progress, kept on the phone)
-      dev/                    LilloCapture (--shot screenshots)
+      dev/                    LilloCapture (--shot screenshots), keep_animations.gd (import
+                              script that drops a model's unused animations)
     tests/                    GUT tests, res://tests/test_*.gd
   <game>/                     one Godot project per game, laid out as below
 ```
@@ -43,7 +47,9 @@ engine/<game>/
   game/                       rules without drawing (levels, a run, progress, palette, texts),
                               unit tested
   view/                       drawing: the 3D world and the screens; no rules
-  assets/                     what the game loads: icons/ (launcher), fonts/, later models/, sounds/
+  assets/                     what the game loads: icons/ (launcher), fonts/, models/ (third-party
+                              models listed in models.txt, fetched, not committed; their .import
+                              files are), later sounds/
   store/                      Play listing graphics: play-icon-512.png, raw/<locale>/ screenshots
   tools/                      game-specific scripts (icon generator, balance report, samples/)
   tests/                      GUT tests of game/ (test_core_link.gd checks the addon link)
@@ -56,6 +62,7 @@ engine/<game>/
 scripts/godot.sh --version                                   # pinned Godot, downloaded on first use
 scripts/godot.sh --path engine/<game>                        # open a project in the editor
 scripts/engine-test.sh engine/core                           # a project's tests, headless
+scripts/engine-assets.sh engine/<game>                       # fetch its models (pinned, checksummed)
 scripts/engine-shot.sh engine/<game> out.png 3 -- --levels   # screenshot (--landscape, --progress f.cfg)
 .venv/bin/python scripts/engine_icon_preview.py engine/<game> out.png   # icon at every size
 scripts/engine-export.sh [--arm64] engine/<game>             # Android APK, debug-signed by default
@@ -79,6 +86,11 @@ with Godot's debug key unless `GODOT_ANDROID_KEYSTORE_RELEASE_*` are set.
   `expand` stretching, so a rotated phone gets a real layout, never a stretched one.
 - **New `class_name` scripts need an import** (`scripts/godot.sh --headless --path <project>
   --import`) before other scripts can name them; `engine-test.sh` and `engine-export.sh` do it.
-- Godot's `.godot/` cache, exports and GUT are git-ignored; nothing downloaded is committed.
+- Godot's `.godot/` cache, exports, GUT and third-party models are git-ignored; nothing
+  downloaded is committed. Models are pinned by URL and SHA-256 in `assets/models/models.txt`;
+  a game still runs without them, drawing `LilloFigure` characters instead.
+- **Characters from models**: hundreds of skinned characters are too much for a phone, so crowds
+  use `LilloPoseBaker` (four poses, about 30 % of the triangles) and only the few hero characters
+  (leader, boss) play the full animation.
 - Upgrading Godot or GUT: change the version and checksum at the top of `scripts/godot.sh` or
   `scripts/engine-test.sh`.

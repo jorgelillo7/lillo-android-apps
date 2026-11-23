@@ -24,9 +24,12 @@ on a badge.
 
 ## Characters
 
-- In the run: toon-shaded figures with an outline (`LilloFigure`): soldiers in helmets, enemies
-  with their own skin tone, a horned monster for the boss. Placeholder for CC0 models (KayKit,
-  Quaternius), credited in an About screen when they arrive.
+- In the run: KayKit's CC0 hooded crossbowmen as the squad (washed teal), running between waves
+  and aiming and shooting bolts while a wave is in range; skeletons as the enemies (washed
+  purple), a giant skeleton warrior as the boss. Crowds step through four baked poses per clip;
+  the leader and the boss play the full animation. Without the models the game falls back to its
+  own toon figures (`LilloFigure`) with a horned monster boss.
+- Credits for every third-party piece are on the About card (menu → About).
 - In the menus: a waving soldier bottom-left and the swaying monster bottom-right
   (`LilloSticker`).
 
@@ -37,7 +40,9 @@ on a badge.
   tab, padlocks on locked levels; arrows, swipe and page dots; back bottom-left.
 - **Run**: the chase camera; gates are translucent panels with their half of the track painted,
   teal when the gate keeps or grows the squad and purple when it shrinks it, except in grown-up
-  mode, where every gate is the same gold so the colour gives nothing away;
+  mode, where every gate is the same gold so the colour gives nothing away; the gate the squad is
+  heading through lights up and grows as it nears, the other dims; waves come down a lane and
+  bolts fly to it, so the squad has to stand in front of a wave to hurt it;
   numbers rise when a gate is taken; "Think!" counts down before hard gates.
 - **Result**: a dark card with stars popping in and confetti on a win.
 

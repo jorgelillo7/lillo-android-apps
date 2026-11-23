@@ -8,6 +8,7 @@ config/quit_on_go_back=false
 config/name="Summandos"
 config/features=PackedStringArray("4.7", "Mobile")
 run/main_scene="res://main.tscn"
+config/version="0.1"
 config/icon="res://assets/icons/main_192.png"
 
 [display]

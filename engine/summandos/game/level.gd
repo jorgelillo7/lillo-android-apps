@@ -14,7 +14,7 @@ var start_soldiers := 1
 var reference := 0
 ## [{z, left, right, think?}] where left/right are {"gate": LilloGate} or {"weapon": damage multiplier}.
 var rows: Array[Dictionary] = []
-## [{z, count, hp}]: hp is each enemy's.
+## [{z, x, count, hp}]: x is the lane the wave comes down (0 the middle), hp each enemy's.
 var waves: Array[Dictionary] = []
 
 
@@ -98,9 +98,10 @@ static func generate(mode: Mode, number: int) -> SummandosLevel:
 	level.length = 20.0 + row_count * ROW_GAP + 30.0
 	level.waves = []
 	for i in range(1, row_count, 2):
-		level.waves.append({"z": 20.0 + i * ROW_GAP + ROW_GAP * 0.5, "count": 1, "hp": 1.0 + d})
+		level.waves.append({"z": 20.0 + i * ROW_GAP + ROW_GAP * 0.5, "x": random.randf_range(-2.5, 2.5),
+			"count": 1, "hp": 1.0 + d})
 	var boss := number % 5 == 0
-	level.waves.append({"z": level.length - 10.0, "count": 1, "hp": 1.0 if not boss else 50.0})
+	level.waves.append({"z": level.length - 10.0, "x": 0.0, "count": 1, "hp": 1.0 if not boss else 50.0})
 	_size_waves(level, d, boss)
 	return level
 

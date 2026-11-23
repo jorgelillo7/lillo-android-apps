@@ -15,6 +15,11 @@ const WAKE_DISTANCE := 40.0
 ## A row marked "think" stops the run this far before it, for this long, to work the sums out.
 const THINK_DISTANCE := 14.0
 const THINK_SECONDS := 10.0
+## Shots land in full within this many metres of a wave's centre line, none beyond AIM_MISS.
+const AIM_FULL := 1.5
+const AIM_MISS := 4.5
+## How fast an awake wave edges sideways towards the squad, in metres per second.
+const WAVE_DRIFT := 1.2
 
 var level: SummandosLevel
 var state := State.RUNNING
@@ -38,7 +43,7 @@ func _init(run_level: SummandosLevel) -> void:
 	level = run_level
 	soldiers = level.start_soldiers
 	for wave in level.waves:
-		waves.append({"z": wave.z, "count": wave.count, "hp": wave.hp, "damage_taken": 0.0})
+		waves.append({"z": wave.z, "x": wave.get("x", 0.0), "count": wave.count, "hp": wave.hp, "damage_taken": 0.0})
 
 
 ## Steers towards a track position; the squad never leaves the track.
@@ -93,7 +98,7 @@ func _shoot(delta: float) -> void:
 	var wave := target()
 	if wave.is_empty():
 		return
-	wave.damage_taken += soldiers * SHOTS_PER_SECOND * damage * delta
+	wave.damage_taken += soldiers * SHOTS_PER_SECOND * damage * aim(wave) * delta
 	var dead := mini(wave.count, int(wave.damage_taken / wave.hp))
 	if dead > 0:
 		wave.count -= dead
@@ -107,6 +112,7 @@ func _advance_waves(delta: float) -> void:
 	for wave in waves:
 		if wave.z - z < WAKE_DISTANCE:
 			wave.z = maxf(wave.z - ENEMY_SPEED * delta, z + 1.0)
+			wave.x = move_toward(wave.x, x, WAVE_DRIFT * delta)
 	if not waves.is_empty() and waves[0].z - z <= 1.0:
 		var front: Dictionary = waves[0]
 		var clash := mini(front.count, maxi(1, int(ceil(soldiers * 2.0 * delta))))
@@ -140,6 +146,23 @@ static func simulate(level: SummandosLevel, sides: Array[float]) -> SummandosRun
 		if run.state != State.RUNNING:
 			break
 		var row := mini(run.next_row, sides.size() - 1)
-		run.steer(2.0 * sides[row] if row >= 0 else 0.0)
+		run.steer(run.steer_hint(2.0 * sides[row] if row >= 0 else 0.0))
 		run.step(1.0 / 30.0)
 	return run
+
+
+## How much of the squad's fire reaches `wave`: 1 standing in front of it, falling to 0 once
+## AIM_MISS metres to one side.
+func aim(wave: Dictionary) -> float:
+	var off := absf(x - float(wave.get("x", 0.0)))
+	return clampf((AIM_MISS - off) / (AIM_MISS - AIM_FULL), 0.0, 1.0)
+
+
+## Where good play steers: in front of the wave being shot unless a gate is close, else to
+## `gate_x`, the side of the next gate it means to take.
+func steer_hint(gate_x: float) -> float:
+	var wave := target()
+	var gate_close: bool = next_row < level.rows.size() and level.rows[next_row].z - z < 8.0
+	if not wave.is_empty() and not gate_close:
+		return wave.x
+	return gate_x

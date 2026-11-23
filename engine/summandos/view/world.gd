@@ -12,21 +12,33 @@ const BULLET_SPEED := 45.0
 const VISIBLE_AHEAD := 70.0
 const BOSS_HEIGHT := 4.5
 const GATE_FLOOR_LENGTH := 7.0
+const FIGURE_HEIGHT := 0.85
+const MODELS := "res://assets/models/"
+## Spare kit on the crossbowman model that the squad does not carry.
+const ARCHER_SPARES := ["Knife_Offhand", "1H_Crossbow", "Knife", "Throwable"]
+const RUN := "Running_A"
+const SHOOT := "2H_Ranged_Shooting"
 
 var palette: Dictionary
 var texts: Dictionary
 var camera: Camera3D
-var leader: MeshInstance3D
+var leader: Node3D
+## The leader's AnimationPlayer when it is a model, to switch between running and shooting.
+var leader_player: AnimationPlayer
 var count_label: Label3D
 var count_badge: MeshInstance3D
-var soldiers_view: LilloCrowdView
-var enemies_view: LilloCrowdView
+var soldiers_view: LilloAnimatedCrowd
+var enemies_view: LilloAnimatedCrowd
 var bullets_view: LilloCrowdView
 var boss_view: LilloCrowdView
+## The boss as one fully animated model, when the models are there; else boss_view draws it.
+var boss_model: Node3D
 var row_nodes: Array[Node3D] = []
 var formation_cache := {}
 var bullets := PackedVector3Array()
 var bullet_ends := PackedFloat32Array()
+## Sideways distance each bolt covers on its way, so it flies to the wave's lane.
+var bullet_drift := PackedFloat32Array()
 var shown_row := 0
 ## Gates all in one colour, so the colour never hints which one grows the squad.
 var neutral_gates := false
@@ -50,6 +62,7 @@ func reset(level: SummandosLevel, neutral := false) -> void:
 	neutral_gates = neutral
 	bullets.clear()
 	bullet_ends.clear()
+	bullet_drift.clear()
 	formation_cache.clear()
 	shown_row = 0
 	for node in row_nodes:
@@ -58,8 +71,11 @@ func reset(level: SummandosLevel, neutral := false) -> void:
 	for row in level.rows:
 		var node := Node3D.new()
 		node.position = Vector3(0, 0, row.z)
-		node.add_child(_choice(row.left, -1.0))
-		node.add_child(_choice(row.right, 1.0))
+		var left := _choice(row.left, -1.0)
+		var right := _choice(row.right, 1.0)
+		node.add_child(left)
+		node.add_child(right)
+		node.set_meta("sides", [left, right])
 		add_child(node)
 		row_nodes.append(node)
 
@@ -104,25 +120,44 @@ func _build() -> void:
 		add_child(edge)
 
 	var outline := Color(palette.outline, 0.9)
-	var soldier := LilloFigure.build(0.75, palette.squad_dark, palette.skin, palette.squad)
-	soldiers_view = LilloCrowdView.new(soldier, LilloFigure.material(outline), SOLDIER_CAPACITY)
+	var archer := _model("Rogue_Hooded.glb")
+	var minion := _model("Skeleton_Minion.glb")
+	if archer and minion:
+		var running := LilloPoseBaker.bake(self, archer, RUN, 4, FIGURE_HEIGHT, ARCHER_SPARES)
+		var tint := _tinted(running[0], palette.squad.lightened(0.25))
+		soldiers_view = LilloAnimatedCrowd.new(running, SOLDIER_CAPACITY, 10.0, tint)
+		soldiers_view.add_clip(SHOOT, LilloPoseBaker.bake(self, archer, SHOOT, 4, FIGURE_HEIGHT, ARCHER_SPARES))
+		var walking := LilloPoseBaker.bake(self, minion, "Walking_A", 4, FIGURE_HEIGHT)
+		enemies_view = LilloAnimatedCrowd.new(walking, ENEMY_CAPACITY, 6.0, _tinted(walking[0], palette.enemy))
+		leader = _animated(archer, RUN, 1.2, ARCHER_SPARES, false, palette.squad)
+		leader_player = leader.find_children("*", "AnimationPlayer", true, false)[0]
+		leader_player.get_animation(SHOOT).loop_mode = Animation.LOOP_LINEAR
+	else:
+		var soldier: Array[Mesh] = [LilloFigure.build(0.75, palette.squad_dark, palette.skin, palette.squad)]
+		soldiers_view = LilloAnimatedCrowd.new(soldier, SOLDIER_CAPACITY, 1.0, LilloFigure.material(outline))
+		var enemy: Array[Mesh] = [LilloFigure.build(0.75, palette.enemy, palette.enemy_skin)]
+		enemies_view = LilloAnimatedCrowd.new(enemy, ENEMY_CAPACITY, 1.0, LilloFigure.material(outline))
+		var figure := MeshInstance3D.new()
+		figure.mesh = LilloFigure.build(1.1, palette.squad_dark, palette.skin, palette.squad)
+		figure.material_override = LilloFigure.material(outline)
+		figure.rotation.y = PI
+		leader = Node3D.new()
+		leader.add_child(figure)
 	add_child(soldiers_view)
-	var enemy := LilloFigure.build(0.75, palette.enemy, palette.enemy_skin)
-	enemies_view = LilloCrowdView.new(enemy, LilloFigure.material(outline), ENEMY_CAPACITY)
 	add_child(enemies_view)
+	add_child(leader)
 	var monster := LilloFigure.monster(BOSS_HEIGHT, palette.boss, palette.boss_belly, palette.boss_horns)
 	boss_view = LilloCrowdView.new(monster, LilloFigure.material(outline), 4)
 	add_child(boss_view)
+	var warrior := _model("Skeleton_Warrior.glb")
+	if warrior:
+		boss_model = _animated(warrior, "Walking_B", BOSS_HEIGHT, [], true, palette.boss)
+		boss_model.visible = false
+		add_child(boss_model)
 	var bullet_material := LilloMaterials.flat(palette.bullet, false, true)
 	bullet_material.vertex_color_use_as_albedo = true
-	bullets_view = LilloCrowdView.new(LilloFigure.streak(0.7, 0.05, palette.bullet), bullet_material, BULLET_CAPACITY)
+	bullets_view = LilloCrowdView.new(LilloFigure.streak(0.9, 0.035, palette.bullet), bullet_material, BULLET_CAPACITY)
 	add_child(bullets_view)
-
-	leader = MeshInstance3D.new()
-	leader.mesh = LilloFigure.build(1.1, palette.squad_dark, palette.skin, palette.squad)
-	leader.material_override = LilloFigure.material(outline)
-	leader.rotation.y = PI
-	add_child(leader)
 
 	count_label = Label3D.new()
 	count_label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
@@ -144,6 +179,41 @@ func _build() -> void:
 
 	camera = Camera3D.new()
 	add_child(camera)
+
+
+## The model's own textured material washed with `colour`, so the team reads at a glance.
+func _tinted(mesh: Mesh, colour: Color) -> Material:
+	var material: StandardMaterial3D = mesh.surface_get_material(0).duplicate()
+	material.albedo_color = Color.WHITE.lerp(colour, 0.65)
+	material.rim_enabled = true
+	material.rim = 0.4
+	return material
+
+
+func _model(file: String) -> PackedScene:
+	return load(MODELS + file) if ResourceLoader.exists(MODELS + file) else null
+
+
+## One animated character playing `animation` in a loop, `height` tall, washed with `tint`;
+## `facing_us` turns it to look down -z, towards the squad.
+func _animated(scene: PackedScene, animation: String, height: float, spares: Array, facing_us: bool,
+		tint: Color) -> Node3D:
+	var holder := Node3D.new()
+	var body: Node3D = scene.instantiate()
+	holder.add_child(body)
+	for name in spares:
+		var part := body.find_child(name, true, false)
+		if part:
+			part.queue_free()
+	for part in body.find_children("*", "MeshInstance3D", true, false):
+		if not spares.has(part.name) and part.mesh:
+			part.material_override = _tinted(part.mesh, tint)
+	var player: AnimationPlayer = body.find_children("*", "AnimationPlayer", true, false)[0]
+	player.get_animation(animation).loop_mode = Animation.LOOP_LINEAR
+	player.play(animation)
+	body.scale = Vector3.ONE * (height / 2.4)
+	body.rotation.y = PI if facing_us else 0.0
+	return holder
 
 
 func _fit_camera() -> void:
@@ -183,6 +253,7 @@ func _choice(pick: Dictionary, side: float) -> Node3D:
 		var gate_colour: Color = palette.neutral_gate if neutral_gates else (palette.good_gate if good else palette.bad_gate)
 		var floor_colour: Color = palette.neutral_floor if neutral_gates else (palette.good_floor if good else palette.bad_floor)
 		panel.material_override = LilloMaterials.flat(gate_colour, true)
+		node.set_meta("panel", panel)
 		node.add_child(panel)
 		var floor := MeshInstance3D.new()
 		var floor_plane := PlaneMesh.new()
@@ -238,10 +309,13 @@ func _enemy_offsets(count: int) -> PackedVector3Array:
 
 ## A small squad standing at the start, behind the menus.
 func draw_idle() -> void:
+	soldiers_view.play("default")
 	soldiers_view.show_at(Vector3.ZERO, _offsets(12).duplicate(), true)
 	enemies_view.show_points(PackedVector3Array())
 	bullets_view.show_points(PackedVector3Array())
 	boss_view.show_points(PackedVector3Array())
+	if boss_model:
+		boss_model.visible = false
 	count_badge.visible = false
 	leader.position = Vector3(0, 0.0, 0.6)
 	count_label.text = ""
@@ -260,6 +334,10 @@ func draw_run(run: SummandosRun, delta: float) -> void:
 	for i in squad_offsets.size():
 		var o := squad_offsets[i]
 		behind[i] = Vector3(clampf(o.x * 0.9 + x, -TRACK_WIDTH * 0.5 + 0.3, TRACK_WIDTH * 0.5 - 0.3), 0.0, -o.z - 0.6)
+	var shooting := not run.target().is_empty() and run.soldiers > 0
+	soldiers_view.play(SHOOT if shooting else "default")
+	if leader_player and leader_player.current_animation != (SHOOT if shooting else RUN):
+		leader_player.play(SHOOT if shooting else RUN, 0.2)
 	soldiers_view.show_at(Vector3(0, 0.0, run.z), behind, true)
 	leader.position = Vector3(x, 0.0, run.z + 0.2)
 	var running := run.state == SummandosRun.State.RUNNING
@@ -275,6 +353,7 @@ func draw_run(run: SummandosRun, delta: float) -> void:
 		LilloFx.pulse(count_label)
 	for node in row_nodes:
 		node.visible = node.position.z > run.z - 0.5
+	_highlight(run)
 
 	var enemy_points := PackedVector3Array()
 	var boss_points := PackedVector3Array()
@@ -282,33 +361,62 @@ func draw_run(run: SummandosRun, delta: float) -> void:
 		if wave.z - run.z > VISIBLE_AHEAD or enemy_points.size() >= ENEMY_CAPACITY:
 			break
 		if wave.hp >= 50.0:
-			boss_points.append(Vector3(0.0, 0.0, wave.z))
+			boss_points.append(Vector3(world_x(wave.x), 0.0, wave.z))
 			continue
 		for o in _enemy_offsets(wave.count):
 			if enemy_points.size() >= ENEMY_CAPACITY:
 				break
-			enemy_points.append(Vector3(o.x, 0.0, wave.z + o.z))
+			var ex := clampf(world_x(wave.x) + o.x * 0.6, -TRACK_WIDTH * 0.5 + 0.3, TRACK_WIDTH * 0.5 - 0.3)
+			enemy_points.append(Vector3(ex, 0.0, wave.z + o.z))
 	enemies_view.show_points(enemy_points)
-	boss_view.show_points(boss_points)
+	if boss_model:
+		boss_model.visible = not boss_points.is_empty()
+		if boss_model.visible:
+			boss_model.position = boss_points[0]
+	else:
+		boss_view.show_points(boss_points)
 	_draw_bullets(run, delta)
 	camera.position = Vector3(x * 0.35, rig.x, run.z - rig.y)
 	camera.look_at(Vector3(x * 0.35, 0, run.z + rig.z))
 
 
+## Lights the gate the squad is heading through and dims the other, so the choice is never a
+## surprise (a squad dead centre takes the right gate).
+func _highlight(run: SummandosRun) -> void:
+	if run.next_row >= row_nodes.size():
+		return
+	var node := row_nodes[run.next_row]
+	var near := clampf(1.0 - (node.position.z - run.z) / 25.0, 0.0, 1.0)
+	var taken := 0 if run.x < 0.0 else 1
+	var sides: Array = node.get_meta("sides")
+	for i in 2:
+		var side: Node3D = sides[i]
+		var chosen := i == taken
+		side.scale = Vector3.ONE * (1.0 + (0.12 * near if chosen else 0.0))
+		if side.has_meta("panel"):
+			var material: StandardMaterial3D = (side.get_meta("panel") as MeshInstance3D).material_override
+			material.albedo_color.a = lerpf(0.45, 0.8 if chosen else 0.2, near)
+
+
 func _draw_bullets(run: SummandosRun, delta: float) -> void:
 	var wave := run.target()
 	if not wave.is_empty() and run.soldiers > 0:
+		var lane := world_x(wave.x) - world_x(run.x)
 		for i in mini(8, run.soldiers):
 			if bullets.size() >= BULLET_CAPACITY:
 				break
-			var spread := Vector3(randf_range(-2.0, 2.0), 0.6, randf_range(-1.0, 0.5))
+			var spread := Vector3(randf_range(-1.5, 1.5), 0.6, randf_range(-1.0, 0.5))
 			bullets.append(Vector3(world_x(run.x), 0.0, run.z) + spread)
 			bullet_ends.append(wave.z)
+			bullet_drift.append(lane)
 	var i := bullets.size() - 1
 	while i >= 0:
+		var flight := maxf(1.0, bullet_ends[i] - run.z)
 		bullets[i].z += BULLET_SPEED * delta
+		bullets[i].x += bullet_drift[i] * BULLET_SPEED * delta / flight
 		if bullets[i].z >= bullet_ends[i]:
 			bullets.remove_at(i)
 			bullet_ends.remove_at(i)
+			bullet_drift.remove_at(i)
 		i -= 1
 	bullets_view.show_points(bullets)

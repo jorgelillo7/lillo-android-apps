@@ -1,7 +1,7 @@
 ## Summandos' entry point: wires the run (game/), the 3D world and the screens (view/) together and
 ## handles input and the back button. Options after `--`: `--mode=play|stress` starts a run at
 ## once (`--difficulty=easy|normal|adult --level=<n>` pick it, `--autosteer` takes the better gate),
-## `--levels` opens the level map, `--palette=sunset|night` overrides the saved choice, and
+## `--levels` opens the level map, `--about` the About card, `--palette=sunset|night` overrides the saved choice, and
 ## LilloCapture's `--shot=<png> --after=<s>` saves a screenshot and quits.
 extends Node3D
 
@@ -53,6 +53,8 @@ func _ready() -> void:
 		_start(start, level_number)
 	elif args.has("--levels"):
 		_open_levels(-1)
+	elif args.has("--about"):
+		ui.show_screen("about")
 	else:
 		_show_menu()
 
@@ -115,7 +117,7 @@ func _notification(what: int) -> void:
 		return
 	if run != null:
 		_open_levels(-1)
-	elif ui.level_map.visible:
+	elif ui.level_map.visible or ui.about.visible:
 		_show_menu()
 	else:
 		get_tree().quit()
@@ -149,12 +151,14 @@ func _clamp_x(x: float) -> float:
 	return clampf(x, -SummandosRun.TRACK_HALF_WIDTH, SummandosRun.TRACK_HALF_WIDTH)
 
 
-## Steers towards the side whose choice leaves more soldiers (performance test, --autosteer).
+## Steers like a good player: in front of the wave in range, else to the gate leaving more
+## soldiers (performance test, --autosteer).
 func _autosteer() -> float:
-	if run.next_row >= run.level.rows.size():
-		return 0.0
-	var row: Dictionary = run.level.rows[run.next_row]
-	return -2.5 if _value(row.left) > _value(row.right) else 2.5
+	var gate_x := 0.0
+	if run.next_row < run.level.rows.size():
+		var row: Dictionary = run.level.rows[run.next_row]
+		gate_x = -2.5 if _value(row.left) > _value(row.right) else 2.5
+	return run.steer_hint(gate_x)
 
 
 func _value(pick: Dictionary) -> int:
