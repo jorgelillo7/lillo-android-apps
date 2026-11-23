@@ -42,6 +42,10 @@ const SQUADS := {
 	"lime": [Color("#A3E635"), Color("#4D7C0F")],
 	"white": [Color("#F2F2F7"), Color("#8A8AA0")],
 }
+## Boss colours, one per boss in turn: each stays apart from every squad colour and both tracks
+## with every kind of colour vision (tests).
+const BOSS_COLOURS := [Color("#9B2FD1"), Color("#DC2626"), Color("#5B3FE0"), Color("#A21CAF"),
+	Color("#9F1239"), Color("#C026D3")]
 ## The smallest colour difference (ΔE, any vision) a squad keeps from enemies, boss and track.
 const MIN_DIFFERENCE := 19.0
 

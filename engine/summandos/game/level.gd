@@ -12,6 +12,11 @@ var length := 0.0
 var start_soldiers := 1
 ## Soldiers left at the end by the best choices, the yardstick for stars; 0 when unknown.
 var reference := 0
+## The boss at the end, or empty: {"model": file, "colour": index into BOSS_COLOURS, "height": m}.
+var boss := {}
+
+## The skeleton models a boss can be, in turn.
+const BOSS_MODELS := ["Skeleton_Warrior.glb", "Skeleton_Mage.glb", "Skeleton_Rogue.glb", "Skeleton_Minion.glb"]
 ## [{z, left, right, think?}] where left/right are {"gate": LilloGate} or {"weapon": damage multiplier}.
 var rows: Array[Dictionary] = []
 ## [{z, x, count, hp}]: x is the lane the wave comes down (0 the middle), hp each enemy's.
@@ -100,10 +105,23 @@ static func generate(mode: Mode, number: int) -> SummandosLevel:
 	for i in range(1, row_count, 2):
 		level.waves.append({"z": 20.0 + i * ROW_GAP + ROW_GAP * 0.5, "x": random.randf_range(-2.5, 2.5),
 			"count": 1, "hp": 1.0 + d})
-	var boss := number % 5 == 0
-	level.waves.append({"z": level.length - 10.0, "x": 0.0, "count": 1, "hp": 1.0 if not boss else 50.0})
-	_size_waves(level, d, boss)
+	var has_boss := number % 5 == 0
+	if has_boss:
+		level.boss = boss_look(mode, number)
+	level.waves.append({"z": level.length - 10.0, "x": 0.0, "count": 1, "hp": 1.0 if not has_boss else 50.0})
+	_size_waves(level, d, has_boss)
 	return level
+
+
+## How the boss of level `number` looks: models and colours rotate so no two bosses in a mode
+## share both, and each is bigger than the last.
+static func boss_look(mode: Mode, number: int) -> Dictionary:
+	var turn := maxi(0, number / 5 - 1)
+	return {
+		"model": BOSS_MODELS[turn % BOSS_MODELS.size()],
+		"colour": (turn + mode * 2) % SummandosPalette.BOSS_COLOURS.size(),
+		"height": 3.6 + turn * 0.45,
+	}
 
 
 ## A gate for a mode: easy keeps to + − ×2 ÷2, normal adds percentages and sums to work out,

@@ -90,6 +90,8 @@ uninstall a build signed otherwise.
 - `Identifier "LilloX" not declared`: the class cache is stale; same fix.
 - Containers set children's position and size, not scale: `LilloFx.pop_in` and `squishy` are
   safe on grid tiles and buttons.
+- A model still shows a T-pose or lacks an animation after editing `models.txt`: Godot did not
+  reimport it. Delete `engine/<game>/.godot/imported/<Model>.glb-*` and import again.
 - A Label3D left in world space falls behind a moving squad: parent rising text to something
   that moves with it (`LilloFx.rising_text(count_label, …)`).
 - The camera looks down +z, so screen-right is world −x: go through `world_x()`.

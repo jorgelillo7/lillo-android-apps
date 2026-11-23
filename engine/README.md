@@ -25,6 +25,7 @@ engine/
                               (a waving soldier or a swaying monster for corners), LilloFx
                               (pop-ins, squishy buttons, rising numbers, confetti), LilloSafeArea,
                               LilloAbout (name, version and credits), LilloSwatchPicker,
+                              LilloModelStage (an animated 3D character standing in a 2D screen),
                               LilloColours (ΔE under simulated colour blindness, for palette tests)
       save/                   LilloSettings (player preferences and progress, kept on the phone)
       dev/                    LilloCapture (--shot screenshots), keep_animations.gd (import

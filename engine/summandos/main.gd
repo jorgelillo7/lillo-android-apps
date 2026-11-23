@@ -72,7 +72,14 @@ func _ready() -> void:
 func _show_menu() -> void:
 	run = null
 	world.draw_idle()
+	ui.show_boss(_next_boss())
 	ui.show_screen("menu")
+
+
+## The look of the next boss the player will meet in the current mode.
+func _next_boss() -> Dictionary:
+	var next := ui.level_map.next_to_play()
+	return SummandosLevel.boss_look(difficulty, ceili(next / 5.0) * 5)
 
 
 ## Opens the level map of `picked` mode (-1 keeps the current one).
@@ -82,6 +89,7 @@ func _open_levels(picked: int) -> void:
 		LilloSettings.write("difficulty", picked)
 	run = null
 	world.draw_idle()
+	ui.show_boss(_next_boss())
 	ui.show_levels(difficulty)
 
 

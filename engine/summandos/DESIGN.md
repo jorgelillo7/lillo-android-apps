@@ -33,12 +33,16 @@ on a badge.
 
 - In the run: KayKit's CC0 hooded crossbowmen as the squad (washed teal), running between waves
   and aiming and shooting bolts while a wave is in range; skeletons as the enemies (washed
-  purple), a giant skeleton warrior as the boss. Crowds step through four baked poses per clip;
+  purple). Bosses every fifth level reuse the four free skeleton models (warrior, mage, rogue,
+  minion) in six boss colours, each boss bigger than the last; no two bosses in a mode share both
+  model and colour (`SummandosLevel.boss_look`). Boss colours keep ΔE ≥ 19 from every squad
+  colour and both tracks for every kind of colour vision (tests). Crowds step through four baked poses per clip;
   the leader and the boss play the full animation. Without the models the game falls back to its
   own toon figures (`LilloFigure`) with a horned monster boss.
 - Credits for every third-party piece are on the About card (menu → About).
-- In the menus: a waving soldier bottom-left and the swaying monster bottom-right
-  (`LilloSticker`).
+- In the menus and the level map: the crossbowman cheering bottom-left in the player's squad
+  colour, and the next boss of the chosen mode bottom-right in its combat stance
+  (`LilloModelStage`); without the models, the drawn soldier and monster (`LilloSticker`).
 
 ## Screens
 

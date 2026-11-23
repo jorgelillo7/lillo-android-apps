@@ -13,9 +13,6 @@ const VISIBLE_AHEAD := 70.0
 const BOSS_HEIGHT := 4.5
 const GATE_FLOOR_LENGTH := 7.0
 const FIGURE_HEIGHT := 0.85
-const MODELS := "res://assets/models/"
-## Spare kit on the crossbowman model that the squad does not carry.
-const ARCHER_SPARES := ["Knife_Offhand", "1H_Crossbow", "Knife", "Throwable"]
 const RUN := "Running_A"
 const SHOOT := "2H_Ranged_Shooting"
 
@@ -60,6 +57,7 @@ func _ready() -> void:
 ## Clears what the last run left and lays out `level`'s gates; `neutral` paints every gate alike.
 func reset(level: SummandosLevel, neutral := false) -> void:
 	neutral_gates = neutral
+	_dress_boss(level)
 	bullets.clear()
 	bullet_ends.clear()
 	bullet_drift.clear()
@@ -120,18 +118,18 @@ func _build() -> void:
 		add_child(edge)
 
 	var outline := Color(palette.outline, 0.9)
-	var archer := _model("Rogue_Hooded.glb")
-	var minion := _model("Skeleton_Minion.glb")
+	var archer := SummandosModels.scene("Rogue_Hooded.glb")
+	var minion := SummandosModels.scene("Skeleton_Minion.glb")
+	var spares := SummandosModels.ARCHER_SPARES
 	if archer and minion:
-		var running := LilloPoseBaker.bake(self, archer, RUN, 4, FIGURE_HEIGHT, ARCHER_SPARES)
-		var tint := _tinted(running[0], palette.squad)
+		var running := LilloPoseBaker.bake(self, archer, RUN, 4, FIGURE_HEIGHT, spares)
+		var tint := SummandosModels.team(running[0], palette.squad)
 		soldiers_view = LilloAnimatedCrowd.new(running, SOLDIER_CAPACITY, 10.0, tint)
-		soldiers_view.add_clip(SHOOT, LilloPoseBaker.bake(self, archer, SHOOT, 4, FIGURE_HEIGHT, ARCHER_SPARES))
+		soldiers_view.add_clip(SHOOT, LilloPoseBaker.bake(self, archer, SHOOT, 4, FIGURE_HEIGHT, spares))
 		var walking := LilloPoseBaker.bake(self, minion, "Walking_A", 4, FIGURE_HEIGHT)
-		enemies_view = LilloAnimatedCrowd.new(walking, ENEMY_CAPACITY, 6.0, _tinted(walking[0], palette.enemy))
-		leader = _animated(archer, RUN, 1.2, ARCHER_SPARES, false, palette.squad)
-		leader_player = leader.find_children("*", "AnimationPlayer", true, false)[0]
-		leader_player.get_animation(SHOOT).loop_mode = Animation.LOOP_LINEAR
+		enemies_view = LilloAnimatedCrowd.new(walking, ENEMY_CAPACITY, 6.0, SummandosModels.team(walking[0], palette.enemy))
+		leader = SummandosModels.character("Rogue_Hooded.glb", RUN, 1.2, palette.squad, false, spares)
+		leader_player = leader.get_meta("player")
 	else:
 		var soldier: Array[Mesh] = [LilloFigure.build(0.75, palette.squad_dark, palette.skin, palette.squad)]
 		soldiers_view = LilloAnimatedCrowd.new(soldier, SOLDIER_CAPACITY, 1.0, LilloFigure.material(outline))
@@ -149,11 +147,6 @@ func _build() -> void:
 	var monster := LilloFigure.monster(BOSS_HEIGHT, palette.boss, palette.boss_belly, palette.boss_horns)
 	boss_view = LilloCrowdView.new(monster, LilloFigure.material(outline), 4)
 	add_child(boss_view)
-	var warrior := _model("Skeleton_Warrior.glb")
-	if warrior:
-		boss_model = _animated(warrior, "Walking_B", BOSS_HEIGHT, [], true, palette.boss)
-		boss_model.visible = false
-		add_child(boss_model)
 	var bullet_material := LilloMaterials.flat(palette.bullet, false, true)
 	bullet_material.vertex_color_use_as_albedo = true
 	bullets_view = LilloCrowdView.new(LilloFigure.streak(0.9, 0.035, palette.bullet), bullet_material, BULLET_CAPACITY)
@@ -181,36 +174,18 @@ func _build() -> void:
 	add_child(camera)
 
 
-## The model's texture repainted in `colour`, so the team reads as the colour the player picked.
-func _tinted(mesh: Mesh, colour: Color) -> Material:
-	var own: StandardMaterial3D = mesh.surface_get_material(0)
-	return LilloMaterials.team(own.albedo_texture, colour)
-
-
-func _model(file: String) -> PackedScene:
-	return load(MODELS + file) if ResourceLoader.exists(MODELS + file) else null
-
-
-## One animated character playing `animation` in a loop, `height` tall, washed with `tint`;
-## `facing_us` turns it to look down -z, towards the squad.
-func _animated(scene: PackedScene, animation: String, height: float, spares: Array, facing_us: bool,
-		tint: Color) -> Node3D:
-	var holder := Node3D.new()
-	var body: Node3D = scene.instantiate()
-	holder.add_child(body)
-	for name in spares:
-		var part := body.find_child(name, true, false)
-		if part:
-			part.queue_free()
-	for part in body.find_children("*", "MeshInstance3D", true, false):
-		if not spares.has(part.name) and part.mesh:
-			part.material_override = _tinted(part.mesh, tint)
-	var player: AnimationPlayer = body.find_children("*", "AnimationPlayer", true, false)[0]
-	player.get_animation(animation).loop_mode = Animation.LOOP_LINEAR
-	player.play(animation)
-	body.scale = Vector3.ONE * (height / 2.4)
-	body.rotation.y = PI if facing_us else 0.0
-	return holder
+## Puts this level's boss on the track: its skeleton model, colour and size (SummandosLevel.boss),
+## or the default look for a level that does not say. Without models boss_view draws the monster.
+func _dress_boss(level: SummandosLevel) -> void:
+	if boss_model:
+		boss_model.queue_free()
+		boss_model = null
+	var look := level.boss if not level.boss.is_empty() else {"model": "Skeleton_Warrior.glb", "colour": 0, "height": BOSS_HEIGHT}
+	var colour: Color = SummandosPalette.BOSS_COLOURS[look.colour]
+	boss_model = SummandosModels.character(look.model, "Walking_B", look.height, colour, true)
+	if boss_model:
+		boss_model.visible = false
+		add_child(boss_model)
 
 
 func _fit_camera() -> void:

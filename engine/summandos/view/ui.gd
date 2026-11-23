@@ -24,6 +24,7 @@ var swatches: LilloSwatchPicker
 var squad_choices := {}
 var squad_choice := "default"
 var decor: Control
+var boss_corner: Control
 var menu: Control
 var hud: Control
 var result: Control
@@ -117,17 +118,43 @@ func _build_decor() -> void:
 	decor.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(decor)
 	decor.add_child(LilloBackdrop.new(palette))
-	var hero := LilloSticker.new("soldier", palette.squad, palette.skin, palette.squad_dark, palette.outline)
-	var boss := LilloSticker.new("monster", palette.boss, palette.boss_belly, palette.boss_horns, palette.outline)
-	for sticker in [hero, boss]:
-		sticker.size = Vector2(230, 230)
-		decor.add_child(sticker)
+	var hero: Control = null
+	var archer := SummandosModels.character("Rogue_Hooded.glb", "Cheer", 1.0, palette.squad, false,
+		SummandosModels.ARCHER_SPARES)
+	if archer:
+		hero = LilloModelStage.new(archer, 1.0, Vector2i(240, 280), 0.35)
+	else:
+		hero = LilloSticker.new("soldier", palette.squad, palette.skin, palette.squad_dark, palette.outline)
+		hero.size = Vector2(230, 230)
+	decor.add_child(hero)
+	boss_corner = Control.new()
+	boss_corner.size = Vector2(240, 280)
+	boss_corner.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	decor.add_child(boss_corner)
+	show_boss({})
 	var place := func() -> void:
 		var area := decor.get_viewport().get_visible_rect().size
-		hero.position = Vector2(-10, area.y - 230)
-		boss.position = Vector2(area.x - 200, area.y - 215)
+		hero.position = Vector2(-10, area.y - hero.size.y)
+		boss_corner.position = Vector2(area.x - boss_corner.size.x + 10, area.y - boss_corner.size.y)
 	decor.get_viewport().size_changed.connect(place)
 	place.call()
+
+
+## Puts `look` (SummandosLevel.boss_look) in the bottom-right corner: the next boss to beat. An
+## empty look, or no models, shows the drawn monster.
+func show_boss(look: Dictionary) -> void:
+	for child in boss_corner.get_children():
+		child.queue_free()
+	var boss: Node3D = null
+	if not look.is_empty():
+		boss = SummandosModels.character(look.model, "Idle_Combat", 1.6, SummandosPalette.BOSS_COLOURS[look.colour])
+	if boss:
+		boss_corner.add_child(LilloModelStage.new(boss, 1.6, Vector2i(240, 280), -0.35))
+	else:
+		var monster := LilloSticker.new("monster", palette.boss, palette.boss_belly, palette.boss_horns, palette.outline)
+		monster.size = Vector2(230, 230)
+		monster.position = Vector2(10, 50)
+		boss_corner.add_child(monster)
 
 
 func _column(parent: Control, card := false) -> VBoxContainer:
