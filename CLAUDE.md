@@ -66,8 +66,11 @@ keyboard, rotation, screenshots: what the shell helpers, `tap-text.sh`, `screens
 such as `apps/whos-lying/tools/battery_test.py` run on); each app's `tools/` only holds its own part.
 
 Engine games (`engine/`, Godot): `scripts/godot.sh` runs the pinned Godot (downloaded on first
-use), `scripts/engine-test.sh engine/<project>` runs its GUT tests headless, `scripts/engine-export.sh engine/<project>` builds its APK; shared code goes in
-`engine/core/addons/lillo_core`, linked from each game. Details: `engine/README.md`.
+use), `scripts/engine-test.sh engine/<project>` runs its GUT tests headless,
+`scripts/engine-shot.sh` takes screenshots, `scripts/engine_icon_preview.py` checks an icon and
+`scripts/engine-export.sh [--arm64] engine/<project>` builds its APK; shared code goes in
+`engine/core/addons/lillo_core/<area>/`, linked from each game; rules in `game/`, drawing in
+`view/`. Details: `engine/README.md`; workflow: the `engine-game` skill.
 
 Project skills are indexed in [`.claude/CLAUDE.md`](.claude/CLAUDE.md).
 
