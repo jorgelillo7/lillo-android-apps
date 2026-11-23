@@ -23,6 +23,7 @@ var swatches: LilloSwatchPicker
 var settings: Control
 var corner: Control
 var mute_button: LilloIconButton
+var help: LilloInfoCard
 ## {name -> colour} for the squad picker, and the current choice.
 var squad_choices := {}
 var squad_choice := "default"
@@ -82,6 +83,9 @@ func _ready() -> void:
 	root.add_child(swatches)
 	settings = _build_settings()
 	root.add_child(settings)
+	help = LilloInfoCard.new(texts.help, texts.help_sections, texts.close, palette.outline, palette.weapon, _reading())
+	help.closed.connect(show_screen.bind("menu"))
+	root.add_child(help)
 	corner = _build_corner()
 	root.add_child(corner)
 
@@ -99,12 +103,13 @@ func show_screen(screen: String) -> void:
 	about.visible = screen == "about"
 	swatches.visible = screen == "colours"
 	settings.visible = screen == "settings"
-	corner.visible = screen == "menu" or screen == "levels"
+	help.visible = screen == "help"
+	corner.visible = screen == "menu"
 	menu.visible = screen == "menu"
 	level_map.visible = screen == "levels"
 	hud.visible = screen == "run"
 	result.visible = screen == "result"
-	decor.visible = screen in ["menu", "levels", "about", "colours", "settings"]
+	decor.visible = screen in ["menu", "levels", "about", "colours", "settings", "help"]
 
 
 func show_levels(mode: int) -> void:
@@ -136,8 +141,10 @@ func show_result(won: bool, soldiers: int, kills: int, stars: int, has_next: boo
 	next_button.visible = has_next
 
 
-func update_hud(top: String, thinking: float) -> void:
+## `show_fps` puts the frame rate in the corner (the performance test only).
+func update_hud(top: String, thinking: float, show_fps := false) -> void:
 	hud_top.text = top
+	fps_label.visible = show_fps
 	think_box.visible = thinking > 0.0
 	think_label.text = texts.think % ceili(thinking)
 	fps_label.text = "%d FPS" % Engine.get_frames_per_second()
@@ -221,7 +228,7 @@ func _build_menu() -> Control:
 		tween.tween_property(title, "scale", Vector2(1.06, 1.06), 0.9).set_trans(Tween.TRANS_SINE)
 		tween.tween_property(title, "scale", Vector2.ONE, 0.9).set_trans(Tween.TRANS_SINE))
 	for i in texts.modes.size():
-		box.add_child(LilloTheme.button(texts.modes[i], func() -> void: mode_picked.emit(i), 44, 96.0))
+		box.add_child(_mode_button(i))
 
 	return screen
 
@@ -258,11 +265,33 @@ func _build_corner() -> Control:
 		audio.set_music(on)
 		mute_button.set_kind("sound" if on else "muted")
 		_refresh_settings())
+	var question := LilloIconButton.new("help", quiet)
+	question.pressed.connect(show_screen.bind("help"))
+	row.add_child(question)
 	row.add_child(mute_button)
 	var gear := LilloIconButton.new("gear", quiet)
 	gear.pressed.connect(show_screen.bind("settings"))
 	row.add_child(gear)
 	return layer
+
+
+## A rank button: its name large, and what its gates hold underneath in the reading font.
+func _mode_button(i: int) -> Button:
+	var button := LilloTheme.button("", func() -> void: mode_picked.emit(i), 40, 100.0)
+	var lines := VBoxContainer.new()
+	lines.set_anchors_preset(Control.PRESET_FULL_RECT)
+	lines.alignment = BoxContainer.ALIGNMENT_CENTER
+	lines.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	lines.add_theme_constant_override("separation", -2)
+	button.add_child(lines)
+	var name := LilloTheme.title(texts.modes[i], 40)
+	name.add_theme_color_override("font_color", Color.WHITE)
+	name.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	lines.add_child(name)
+	var hint := LilloAbout._text(texts.mode_hints[i], _reading(), 22, Color(palette.outline, 0.9))
+	hint.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	lines.add_child(hint)
+	return button
 
 
 ## The settings card: sound, music and vibration switches, night mode, squad colour, About.

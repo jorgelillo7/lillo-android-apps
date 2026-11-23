@@ -4,7 +4,8 @@
 ## `--difficulty=easy|normal|adult|expert --level=<n>` pick a level, `--autosteer` takes the better gate),
 ## `--levels` opens the level map, `--about` the About card, `--palette=sunset|night` and `--squad=<colour>` override the saved choices, `--colours` opens the
 ## squad colour picker, and
-## LilloCapture's `--shot=<png> --after=<s>` saves a screenshot and quits.
+## `--lang=es|en` overrides the phone's language, and LilloCapture's `--shot=<png> --after=<s>
+## [--shot-size=WxH]` saves a screenshot and quits.
 extends Node3D
 
 const MODES := ["easy", "normal", "adult", "expert"]
@@ -19,6 +20,8 @@ var mode := "play"
 var run: SummandosRun
 var target_x := 0.0
 var dragging := false
+## True when run to take a screenshot: the frame rate stays off the picture.
+var capturing := " ".join(OS.get_cmdline_user_args()).contains("--shot=")
 var world: SummandosWorld
 var ui: SummandosUi
 var audio: LilloAudio
@@ -28,6 +31,8 @@ var heard := {}
 
 
 func _ready() -> void:
+	if LilloCapture.rehost(self):
+		return
 	var args := OS.get_cmdline_user_args()
 	var start := ""
 	for arg in args:
@@ -41,6 +46,8 @@ func _ready() -> void:
 			start = arg.trim_prefix("--mode=")
 		elif arg.begins_with("--difficulty="):
 			difficulty = maxi(0, MODES.find(arg.trim_prefix("--difficulty="))) as SummandosLevel.Mode
+		elif arg.begins_with("--lang="):
+			texts = SummandosTexts.for_language(arg.trim_prefix("--lang="))
 		elif arg.begins_with("--level="):
 			level_number = int(arg.trim_prefix("--level="))
 	audio = LilloAudio.new(_sounds())
@@ -74,6 +81,8 @@ func _ready() -> void:
 		ui.show_screen("colours")
 	elif args.has("--settings"):
 		ui.show_screen("settings")
+	elif args.has("--help-card"):
+		ui.show_screen("help")
 	else:
 		_show_menu()
 
@@ -169,7 +178,7 @@ func _notification(what: int) -> void:
 		_open_levels(-1)
 	elif ui.about.visible or ui.swatches.visible:
 		ui.show_screen("settings")
-	elif ui.level_map.visible or ui.settings.visible:
+	elif ui.level_map.visible or ui.settings.visible or ui.help.visible:
 		_show_menu()
 	else:
 		get_tree().quit()
@@ -187,7 +196,7 @@ func _process(delta: float) -> void:
 	run.step(delta)
 	world.draw_run(run, delta)
 	_sound_run()
-	ui.update_hud(_hud_text(), run.thinking)
+	ui.update_hud(_hud_text(), run.thinking, mode == "stress" and not capturing)
 	if run.state != SummandosRun.State.RUNNING and not ui.result.visible:
 		_finish()
 
@@ -222,9 +231,11 @@ func _sound_run() -> void:
 
 
 func _hud_text() -> String:
-	return "%s   ·   %s %d   ·   %s %d%s" % [
-		texts.level % level_number if mode == "play" else texts.stress,
-		texts.soldiers, run.soldiers, texts.kills, run.kills,
+	var counts := "%s %d   ·   %s %d" % [texts.soldiers, run.soldiers, texts.kills, run.kills]
+	if mode != "play":
+		return counts
+	return "%s   ·   %s%s" % [
+		texts.level % level_number, counts,
 		("   ·   " + world.weapon_text(run.damage)) if run.damage > 1.0 else "",
 	]
 

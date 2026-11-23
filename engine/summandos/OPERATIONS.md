@@ -14,7 +14,15 @@ scripts/godot.sh --headless --path engine/summandos --script tools/balance.gd   
 scripts/engine-export.sh --arm64 engine/summandos           # APK for a phone (export/, debug key)
 ```
 
-Screenshots (`scripts/engine-shot.sh`, add `--landscape` for sideways):
+Store listing graphics (6 screenshots and the feature graphic, Spanish and English):
+
+```bash
+scripts/engine-assets.sh engine/summandos                   # models, if not fetched yet
+engine/summandos/tools/capture_store_screenshots.sh         # store/raw/<locale>/, 1080x2424
+.venv/bin/python engine/summandos/tools/generate_store_assets.py   # play/src/main/play/listings/
+```
+
+Screenshots (`scripts/engine-shot.sh`, add `--landscape` for sideways, `--store` for 1080x2424):
 
 ```bash
 scripts/engine-shot.sh engine/summandos menu.png 2

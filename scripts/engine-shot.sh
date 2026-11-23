@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # Screenshot of a game-engine project on the Mac, drawn by the real renderer:
-#   scripts/engine-shot.sh [--landscape] [--progress <file.cfg>] engine/<game> <out.png> <seconds> [-- game options]
-# Upright 540x1170 unless --landscape (1170x540). --progress puts a settings.cfg in the game's
+#   scripts/engine-shot.sh [--landscape|--store] [--progress <file.cfg>] engine/<game> <out.png> <seconds> [-- game options]
+# Upright 540x1170 unless --landscape (1170x540) or --store (1080x2424, drawn off-screen at
+# Play's phone size; the game's main scene must call LilloCapture.rehost). --progress puts a settings.cfg in the game's
 # user folder for the shot (e.g. stars for a level map) and restores the player's own afterwards.
 # Needs the screen unlocked: with it locked Godot draws nothing (use the emulator instead).
 set -euo pipefail
@@ -9,9 +10,11 @@ set -euo pipefail
 root="$(cd "$(dirname "$0")/.." && pwd)"
 resolution="540x1170"
 progress=""
+store=false
 while [ $# -gt 0 ]; do
   case "$1" in
     --landscape) resolution="1170x540"; shift ;;
+    --store) store=true; shift ;;
     --progress) progress="$2"; shift 2 ;;
     *) break ;;
   esac
@@ -33,6 +36,8 @@ if [ -n "$progress" ]; then
   cp "$progress" "$data/settings.cfg"
   trap 'rm -f "$data/settings.cfg"; [ -f "$data/settings.cfg.player" ] && mv "$data/settings.cfg.player" "$data/settings.cfg"' EXIT
 fi
+extra=()
+$store && extra=(--shot-size=1080x2424)
 timeout 120 "$root/scripts/godot.sh" --path "$project" --resolution "$resolution" -- \
-  "$@" --shot="$out" --after="$after" >/dev/null 2>&1
+  "$@" ${extra[@]+"${extra[@]}"} --shot="$out" --after="$after" >/dev/null 2>&1
 ls -lh "$out"

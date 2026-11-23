@@ -69,6 +69,15 @@ Read the preview: 48 px must still say what the game is; nothing important outsi
 mask; the monochrome layer must read (cut details out rather than lose them). Send it to the owner
 before committing a new icon.
 
+## Store listing graphics
+
+The apps' pipeline, fed by the game: `tools/capture_store_screenshots.sh` takes 1080x2424 raws
+with `scripts/engine-shot.sh --store` (drawn off-screen, so taller than the Mac's screen; the main
+scene calls `LilloCapture.rehost(self)` first), in every locale (`--lang=`), then
+`tools/generate_store_assets.py` frames them with headlines on `scripts/store_assets.py` into
+`play/src/main/play/listings/`. Pick moments by reading the level data (gate z, think rows):
+the run moves 9 m/s. Keep the frame rate and test-only labels off the pictures.
+
 ## A build for the owner's phone
 
 ```bash

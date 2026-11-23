@@ -47,8 +47,9 @@ licences), since Luckiest Guy is capitals only.
 
 ## Screens
 
-- **Menu**: the title breathing and the three mode buttons, nothing else. Two quiet round icons
-  top-right (on the level map too): a speaker that mutes or unmutes everything, and a gear that
+- **Menu**: the title breathing and the four rank buttons (Recruit, Soldier, Captain, Legend),
+  each with its operations in small type underneath, nothing else. Two quiet round icons
+  top-right: a "?" with the How to play card, a speaker that mutes or unmutes everything, and a gear that
   opens **Settings** (sound, music, vibration, night mode, squad colour, About). The performance
   test is only a command-line option (`--mode=stress`).
 - **About**: the name and version, one block per credit (what, who, licence and a tappable link),
