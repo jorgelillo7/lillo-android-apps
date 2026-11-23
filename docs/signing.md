@@ -9,7 +9,7 @@ days and a support request. Treat it like a password.
 |---|---|---|
 | `upload-<app>.jks` (the key) | `~/Projects/documentation/keys/<app>/` + Google Drive backup | **Yes** |
 | Its password | Password manager + `credentials.txt` next to the Drive backup | **Yes** |
-| `apps/<app>/keystore.properties` | Repo folder, git-ignored | **Yes** (contains the password) |
+| `apps/<app>/keystore.properties` (an engine game: `engine/<game>/`) | Repo folder, git-ignored | **Yes** (contains the password) |
 | Certificate fingerprints (SHA-1/SHA-256, serial) | `apps/<app>/OPERATIONS.md` | No |
 
 Christmas Countdown's key keeps its 2021 name: `~/Projects/documentation/keys/christmas-countdown/christmas.jks`
@@ -25,7 +25,7 @@ through a chat):
 
 ```bash
 cd ~/Projects/lillo-android-apps
-scripts/new-upload-key.sh <app-folder>          # e.g. decision-wheel
+scripts/new-upload-key.sh <app-folder>          # e.g. decision-wheel, or an engine game: summandos
 ```
 
 It creates `~/Projects/documentation/keys/<app>/upload-<app>.jks` (RSA 4096, PKCS12, alias

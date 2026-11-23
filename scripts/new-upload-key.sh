@@ -5,7 +5,7 @@
 # history, the process list or a chat.
 #
 # Usage: scripts/new-upload-key.sh <app-folder> [keys-dir]
-#   app-folder  folder under apps/, e.g. decision-wheel
+#   app-folder  folder under apps/ or engine/, e.g. decision-wheel or summandos
 #   keys-dir    where the .jks goes (default: ~/Projects/documentation/keys/<app-folder>)
 #
 # At the end it backs the key up to Google Drive with scripts/backup-upload-key.sh (encrypted when
@@ -13,13 +13,15 @@
 # Signing, lost key).
 set -euo pipefail
 source "$(dirname "$0")/env.sh"
+source "$(dirname "$0")/project_dir.sh"
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 
 app="${1:?usage: new-upload-key.sh <app-folder> [keys-dir]}"
-[ -d "$ROOT/apps/$app" ] || { echo "No such app: apps/$app" >&2; exit 1; }
+project="$(project_dir "$app")"
+[ -n "$project" ] || { echo "No such app or engine game: apps/$app, engine/$app" >&2; exit 1; }
 dir="${2:-$HOME/Projects/documentation/keys/$app}"
 jks="$dir/upload-$app.jks"
-props="$ROOT/apps/$app/keystore.properties"
+props="$project/keystore.properties"
 alias="upload"
 
 [ -e "$jks" ] && { echo "Refusing to overwrite existing key: $jks" >&2; exit 1; }
@@ -53,7 +55,7 @@ keyPassword=$KEY_PASSWORD
 EOF
 
 echo
-echo "Certificate (copy into apps/$app/OPERATIONS.md, it is not secret):"
+echo "Certificate (copy into ${project#"$ROOT"/}/OPERATIONS.md, it is not secret):"
 "$JAVA_HOME/bin/keytool" -J-Duser.language=en -list -v -keystore "$jks" -alias "$alias" -storepass:env KEY_PASSWORD \
   | grep -E 'Serial number|SHA1:|SHA256:|Valid from'
 unset KEY_PASSWORD again
@@ -69,5 +71,5 @@ echo
 echo "Done. Next:"
 echo "  1. Password saved in your password manager? (it is also in $props)"
 echo "$backed_up"
-echo "  3. Copy the certificate lines above into apps/$app/OPERATIONS.md."
+echo "  3. Copy the certificate lines above into ${project#"$ROOT"/}/OPERATIONS.md."
 echo "  4. git status must NOT list keystore.properties or the .jks."
