@@ -84,7 +84,7 @@ func _start(run_mode: String, number := level_number) -> void:
 	var level := SummandosLevel.stress() if mode == "stress" else SummandosLevel.generate(difficulty, level_number)
 	run = SummandosRun.new(level)
 	target_x = 0.0
-	world.reset(level)
+	world.reset(level, mode == "play" and difficulty == SummandosLevel.Mode.ADULT)
 	ui.show_screen("run")
 
 

@@ -28,6 +28,8 @@ var formation_cache := {}
 var bullets := PackedVector3Array()
 var bullet_ends := PackedFloat32Array()
 var shown_row := 0
+## Gates all in one colour, so the colour never hints which one grows the squad.
+var neutral_gates := false
 ## Camera rig for the current orientation: height, distance behind the squad, look-ahead.
 var rig := Vector3(7.5, 8.5, 9.0)
 
@@ -43,8 +45,9 @@ func _ready() -> void:
 	_fit_camera()
 
 
-## Clears what the last run left and lays out `level`'s gates.
-func reset(level: SummandosLevel) -> void:
+## Clears what the last run left and lays out `level`'s gates; `neutral` paints every gate alike.
+func reset(level: SummandosLevel, neutral := false) -> void:
+	neutral_gates = neutral
 	bullets.clear()
 	bullet_ends.clear()
 	formation_cache.clear()
@@ -177,16 +180,20 @@ func _choice(pick: Dictionary, side: float) -> Node3D:
 		quad.size = Vector2(TRACK_WIDTH * 0.5 - 0.3, 2.4)
 		panel.mesh = quad
 		panel.position.y = 1.2
-		panel.material_override = LilloMaterials.flat(palette.good_gate if good else palette.bad_gate, true)
+		var gate_colour: Color = palette.neutral_gate if neutral_gates else (palette.good_gate if good else palette.bad_gate)
+		var floor_colour: Color = palette.neutral_floor if neutral_gates else (palette.good_floor if good else palette.bad_floor)
+		panel.material_override = LilloMaterials.flat(gate_colour, true)
 		node.add_child(panel)
 		var floor := MeshInstance3D.new()
 		var floor_plane := PlaneMesh.new()
 		floor_plane.size = Vector2(TRACK_WIDTH * 0.5 - 0.15, GATE_FLOOR_LENGTH)
 		floor.mesh = floor_plane
 		floor.position = Vector3(0, 0.01, -GATE_FLOOR_LENGTH * 0.5)
-		floor.material_override = LilloMaterials.flat(palette.good_floor if good else palette.bad_floor)
+		floor.material_override = LilloMaterials.flat(floor_colour)
 		node.add_child(floor)
-		node.add_child(_label(gate.label(), 200, 40, 1.3))
+		var text := gate.label()
+		var fitted := clampi(int(850.0 / maxf(1.0, text.length())), 90, 200)
+		node.add_child(_label(text, fitted, int(fitted * 0.2), 1.3))
 		if gate.note != "":
 			node.add_child(_label(gate.note, 110, 28, 0.35))
 	else:

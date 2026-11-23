@@ -35,7 +35,9 @@ on a badge.
 - **Menu**: the title breathing, three mode buttons, night mode and the performance test.
 - **Level map**: rays, clouds and hills; tiles of 3 columns upright and 5 sideways, stars in a
   tab, padlocks on locked levels; arrows, swipe and page dots; back bottom-left.
-- **Run**: the chase camera; gates are translucent panels with their half of the track painted;
+- **Run**: the chase camera; gates are translucent panels with their half of the track painted,
+  teal when the gate keeps or grows the squad and purple when it shrinks it, except in grown-up
+  mode, where every gate is the same gold so the colour gives nothing away;
   numbers rise when a gate is taken; "Think!" counts down before hard gates.
 - **Result**: a dark card with stars popping in and confetti on a win.
 

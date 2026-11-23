@@ -57,6 +57,20 @@ found by its mechanic, and a short name reads better on the icon. No look borrow
 
 ## Game one: modes
 
+Built (PR #221): three modes on the same tracks, 30 generated levels each, chosen from the menu.
+
+| Mode | Gates | Colours | Pace |
+|---|---|---|---|
+| **Easy** | `+20`, `−15`, `×2`, `÷2` | Teal grows, purple shrinks | Real time |
+| **Normal** | Adds percentages, `×5`, operands as small sums (`×(3+4)`, `+21÷3`) | Teal / purple | Real time |
+| **Grown-up** | Powers, roots, equations (`+x` over `3x+5=26`) | **All the same gold**: the colour gives nothing away | Real time, think pause before 1–3 gates a level |
+| **Ultra** (planned, for the very keen) | Two-step operands (`×(2³−5)`, `+(√144÷3)²`), bigger numbers, both gates of every pair puzzles, gates whose better side flips with the crowd you bring | Gold | Shorter or no think pause; opens after finishing Grown-up |
+
+**Think pause**: time stops for 10 seconds only at the hardest pairs of gates.
+- **Nothing to sell**: no ads, no coins, no purchases.
+
+## Game one: modes
+
 The owner wants more than the ad's single pace. Two modes on the same tracks and engine, the second with think pauses:
 
 | Mode | Gates | Pace |
