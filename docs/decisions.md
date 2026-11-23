@@ -51,6 +51,7 @@ lives in the PR. Add a line when a decision is taken; change it when it is rever
 | Installers only from official channels (Gradle plugin portal, Maven Central, PyPI) | Wrapper installers (`npx`, `curl \| bash`) are a supply-chain risk | 2026-10 |
 | Games on a game engine live in `engine/`, Compose games stay in `apps/` | The folder says which tool builds it, not the genre: moving whos-lying, league-cards or slipper would rename modules, CI and docs for nothing users see; `engine/` survives a change of engine | 2026-11 |
 | Godot pinned in `scripts/godot.sh` (version + SHA-512 from the official release), GUT pinned in `scripts/engine-test.sh`, neither committed | Same rule as every other tool: official source, verified, reproducible in CI | 2026-11 |
+| Godot 4 is the engine for the fake-ad games; Unity stays out | Spike S2 held 60 fps with about 850 units plus bullets on a real Android handheld; Godot is free, MIT, and its scenes and scripts are plain text a PR can review | 2026-11 |
 | Backups copy only `files/datastore/` | Users' data travels to a new phone; WorkManager's database never does | #56 |
 | MIT licence for the code (names, icons, store graphics: all rights reserved) | Same as lillorepo; free to reuse, but no clones with the apps' own branding | #66 |
 | Share links and App Links on `jorgelillo7.github.io`, data in the fragment | Free static hosting, no server, nothing stored | 2026-10 |
