@@ -37,14 +37,16 @@ One entry per document. Runbooks first, then setup, then reference.
 | ¿Quién llora esta jornada? (league cards) | [`OPERATIONS.md`](../apps/league-cards/OPERATIONS.md) | [`release-notes.md`](../apps/league-cards/release-notes.md) |
 | ¿Te pilla la chancla? (slipper runner) | [`OPERATIONS.md`](../apps/slipper/OPERATIONS.md) | [`release-notes.md`](../apps/slipper/release-notes.md) |
 | ¿Hay jaleo? Metropolitano (stadium events) | [`OPERATIONS.md`](../apps/stadium-events/OPERATIONS.md) | [`release-notes.md`](../apps/stadium-events/release-notes.md) |
+| Summandos (engine game, in development) | [`OPERATIONS.md`](../engine/summandos/OPERATIONS.md) | — (none until its first release) |
 
 ## Plans
 
 Engine games (Godot): [`engine/README.md`](../engine/README.md).
 
 Design decisions of apps that needed a plan before coding:
-[`plans/fake-ad-games-tech.md`](plans/fake-ad-games-tech.md), [`plans/tournaments.md`](plans/tournaments.md),
-[`plans/stadium-events.md`](plans/stadium-events.md).
+[`plans/fake-ad-games.md`](plans/fake-ad-games.md), [`plans/fake-ad-games-tech.md`](plans/fake-ad-games-tech.md),
+[`plans/tournaments.md`](plans/tournaments.md), [`plans/stadium-events.md`](plans/stadium-events.md),
+[`plans/slipper.md`](plans/slipper.md); ideas not started yet: [`plans/game-ideas.md`](plans/game-ideas.md).
 
 Shared scripts: [`scripts/`](../scripts). Branding: [`branding/`](../branding).
-Claude Code skills: [`.claude/skills/`](../.claude/skills) — `new-android-app`, `release-android-app`, `upgrade-android-deps`, `check-android-env`, `play-status`.
+Claude Code skills: [`.claude/skills/`](../.claude/skills) — `new-android-app`, `release-android-app`, `upgrade-android-deps`, `check-android-env`, `play-status`, `engine-game`, `slim-engine`.

@@ -121,6 +121,8 @@ static func generate(mode: Mode, number: int) -> SummandosLevel:
 		row["left"] = left
 		row["right"] = right
 		level.rows.append(row)
+	if mode == Mode.ADULT and not level.rows.any(func(row: Dictionary) -> bool: return row.get("think", false)):
+		_think_before_the_last_puzzle(level)
 	level.length = 20.0 + row_count * ROW_GAP + 30.0
 	level.waves = []
 	for i in range(1, row_count, 2):
@@ -146,12 +148,23 @@ static func boss_look(mode: Mode, number: int) -> Dictionary:
 	}
 
 
+## Marks the last row showing a puzzle (or the last row) to think, so every Captain level has a pause.
+static func _think_before_the_last_puzzle(level: SummandosLevel) -> void:
+	for i in range(level.rows.size() - 1, -1, -1):
+		for side in [level.rows[i].left, level.rows[i].right]:
+			if side.has("gate") and side.gate.shown != "":
+				level.rows[i]["think"] = true
+				return
+	level.rows[-1]["think"] = true
+
+
 ## A gate for a mode: easy keeps to + − ×2 ÷2, normal adds percentages and sums to work out,
-## adult writes operands as powers, roots and equations.
+## adult writes operands as powers, roots and equations, expert as two-step sums.
 static func _option(mode: Mode, d: float, crowd: int, random: RandomNumberGenerator) -> Dictionary:
 	var Op := LilloGate.Op
 	var ops := [Op.ADD, Op.ADD, Op.SUBTRACT, Op.MULTIPLY, Op.DIVIDE]
-	if mode != Mode.EASY:
+	# A percentage never becomes a puzzle, so Legend (two-step sums everywhere) leaves it out.
+	if mode == Mode.NORMAL or mode == Mode.ADULT:
 		ops.append(Op.PERCENT)
 	var op: LilloGate.Op = ops[random.randi_range(0, ops.size() - 1)]
 	var value := 0
@@ -161,7 +174,7 @@ static func _option(mode: Mode, d: float, crowd: int, random: RandomNumberGenera
 		Op.SUBTRACT:
 			value = random.randi_range(3, maxi(4, mini(crowd - 1, 10 + int(d * 30.0))))
 		Op.MULTIPLY:
-			value = random.randi_range(2, 3 if mode == Mode.EASY else 4 + int(d * 2.0))
+			value = 2 if mode == Mode.EASY else random.randi_range(2, 4 + int(d * 2.0))
 		Op.DIVIDE:
 			value = 2 if mode == Mode.EASY else random.randi_range(2, 4)
 		Op.PERCENT:

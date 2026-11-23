@@ -2,12 +2,13 @@
 
 # 📱 Lillo Android Apps
 
-**A home for small, polished Android apps — built with Kotlin, Jetpack Compose and shared building blocks.**
+**A home for small, polished Android apps — built with Kotlin, Jetpack Compose and shared building blocks, plus games made with Godot.**
 
 ![Kotlin](https://img.shields.io/badge/Kotlin-2.4-7F52FF?logo=kotlin&logoColor=white)
 ![Compose](https://img.shields.io/badge/Jetpack%20Compose-Material%203-4285F4?logo=jetpackcompose&logoColor=white)
 ![AGP](https://img.shields.io/badge/AGP-9.5-02303A?logo=gradle&logoColor=white)
 ![Target SDK](https://img.shields.io/badge/targetSdk-37-3DDC84?logo=android&logoColor=white)
+![Godot](https://img.shields.io/badge/Godot-4.7-478CBF?logo=godotengine&logoColor=white)
 [![CI](https://github.com/jorgelillo7/lillo-android-apps/actions/workflows/ci.yml/badge.svg)](https://github.com/jorgelillo7/lillo-android-apps/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
@@ -17,23 +18,23 @@
 
 ## 🧩 Apps
 
-| App | Status | Folder |
-|---|---|---|
-| 🎄 [Is it Christmas yet? · Countdown](apps/christmas-countdown) | [On Google Play](https://play.google.com/store/apps/details?id=com.jorgelillo.christmascountdown) | `apps/christmas-countdown` |
-| 🎡 [What next? · Decision Wheel](apps/decision-wheel) | [On Google Play](https://play.google.com/store/apps/details?id=com.jorgelillo.decisionwheel) | `apps/decision-wheel` |
-| 🕵️ [Who's lying? · Impostor game](apps/whos-lying) | [On Google Play](https://play.google.com/store/apps/details?id=com.jorgelillo.whoslying) | `apps/whos-lying` |
-| 👑 [Last one standing? · Tournaments](apps/tournaments) | [On Google Play](https://play.google.com/store/apps/details?id=com.jorgelillo.tournaments) | `apps/tournaments` |
-| 😭 [¿Quién llora esta jornada? · Fantasy-league card game](apps/league-cards) | [On Google Play](https://play.google.com/store/apps/details?id=com.jorgelillo.leaguecards) (its league deck is private, outside this repo) | `apps/league-cards` |
-| 🩴 [¿Te pilla la chancla? · Slipper runner](apps/slipper) | [On Google Play](https://play.google.com/store/apps/details?id=com.jorgelillo.slipper) | `apps/slipper` |
-| 🏟️ [¿Hay jaleo? Metropolitano · Stadium events for the neighbours](apps/stadium-events) | [On Google Play](https://play.google.com/store/apps/details?id=com.jorgelillo.stadiumevents) | `apps/stadium-events` |
+| | App | Status | Folder |
+|---|---|---|---|
+| <img src="apps/christmas-countdown/store/play-icon-512.png" width="48" alt=""> | 🎄 [Is it Christmas yet? · Countdown](apps/christmas-countdown) | [On Google Play](https://play.google.com/store/apps/details?id=com.jorgelillo.christmascountdown) | `apps/christmas-countdown` |
+| <img src="apps/decision-wheel/store/play-icon-512.png" width="48" alt=""> | 🎡 [What next? · Decision Wheel](apps/decision-wheel) | [On Google Play](https://play.google.com/store/apps/details?id=com.jorgelillo.decisionwheel) | `apps/decision-wheel` |
+| <img src="apps/whos-lying/store/play-icon-512.png" width="48" alt=""> | 🕵️ [Who's lying? · Impostor game](apps/whos-lying) | [On Google Play](https://play.google.com/store/apps/details?id=com.jorgelillo.whoslying) | `apps/whos-lying` |
+| <img src="apps/tournaments/store/play-icon-512.png" width="48" alt=""> | 👑 [Last one standing? · Tournaments](apps/tournaments) | [On Google Play](https://play.google.com/store/apps/details?id=com.jorgelillo.tournaments) | `apps/tournaments` |
+| <img src="apps/league-cards/store/play-icon-512.png" width="48" alt=""> | 😭 [¿Quién llora esta jornada? · Fantasy-league card game](apps/league-cards) | [On Google Play](https://play.google.com/store/apps/details?id=com.jorgelillo.leaguecards) (its league deck is private, outside this repo) | `apps/league-cards` |
+| <img src="apps/slipper/store/play-icon-512.png" width="48" alt=""> | 🩴 [¿Te pilla la chancla? · Slipper runner](apps/slipper) | [On Google Play](https://play.google.com/store/apps/details?id=com.jorgelillo.slipper) | `apps/slipper` |
+| <img src="apps/stadium-events/store/play-icon-512.png" width="48" alt=""> | 🏟️ [¿Hay jaleo? Metropolitano · Stadium events for the neighbours](apps/stadium-events) | [On Google Play](https://play.google.com/store/apps/details?id=com.jorgelillo.stadiumevents) | `apps/stadium-events` |
 
 ## 🎮 Engine games
 
 Games built on a game engine (Godot) live in [`engine/`](engine/README.md), next to the apps:
 
-| Game | Status | Folder |
-|---|---|---|
-| ➕ Summandos · Maths squad shooter | In development | `engine/summandos` |
+| | Game | Status | Folder |
+|---|---|---|---|
+| <img src="engine/summandos/store/play-icon-512.png" width="48" alt=""> | ➕ Summandos · Maths squad shooter | In development | `engine/summandos` |
 
 ## 🗂️ Repository layout
 
@@ -66,6 +67,7 @@ apps/                              One folder per app (table above), all with th
     ├── store/                     Raw screenshots and the 512 px icon the listing graphics come from
     ├── tools/                     App-specific scripts (icon, store graphics, captures, smoke test)
     ├── README.md                  What the app does and how it is built
+    ├── DESIGN.md                  Its palette, type, icon and screens
     ├── OPERATIONS.md              Every command to run, test and release the app
     └── release-notes.md           Version history
 ```

@@ -3,14 +3,16 @@
 
     python3 scripts/check_specs.py
 
-`openspec/` states what the apps must do; the Kotlin tests prove it holds. A
-scenario names its test in a `*Verifies:*` line, by the test's name:
+`openspec/` states what the apps and games must do; the tests prove it holds:
+Kotlin tests for the apps, GUT tests (GDScript) for the engine games. A scenario
+names its test in a `*Verifies:*` line, by the test's name:
 
     - *Verifies:* `a short season ends after half the matchdays`,
       `GameTest.the first round deals every hand`
 
 A name resolves against the test functions of the tracked `*Test.kt` files, in
-backticks or camelCase. `ClassName.name` pins the class (a JVM method name cannot
+backticks or camelCase, and the `func test_*` of the tracked `engine/<project>/tests/test_*.gd`
+files (class: project and file, such as `summandos/test_run.test_a_small_squad_is_overrun`). `ClassName.name` pins the class (a JVM method name cannot
 contain a dot, so the first dot is always the separator); a bare `ClassName`
 means the whole class verifies the scenario.
 
@@ -33,6 +35,8 @@ SPECS = REPO_ROOT / "openspec" / "specs"
 # A test function is the `fun` that follows an annotation containing "Test"
 # (`@Test`, `@ParameterizedTest`, `@RepeatedTest`).
 _FUN = re.compile(r"^\s*(?:private\s+|internal\s+)?fun\s+(?:`([^`]+)`|([A-Za-z_]\w*))\s*\(")
+# A GUT test: a top-level `func test_*` in a `tests/test_*.gd` file.
+_GD_TEST = re.compile(r"^\s*func\s+(test_\w+)\s*\(")
 # Leading annotations on the line, as in `@Test fun x()` or `@Test @Config(...) fun x()`.
 _ANNOTATION = re.compile(r"\s*@([\w.:]+)(?:\([^()]*\))?")
 
@@ -47,7 +51,7 @@ def split_annotations(line: str) -> tuple[list[str], str]:
 
 
 def known_tests() -> dict[str, set[str]]:
-    """Test function names per class, for every tracked `*Test.kt`."""
+    """Test function names per class, for every tracked `*Test.kt` and GUT test file."""
     files = subprocess.run(
         ["git", "ls-files", "*Test.kt"], cwd=REPO_ROOT, capture_output=True, text=True
     ).stdout.split()
@@ -69,6 +73,15 @@ def known_tests() -> dict[str, set[str]]:
                 names.add(match.group(1) or match.group(2))
             if stripped:
                 annotated = False
+    gd_files = subprocess.run(
+        ["git", "ls-files", "engine/*/tests/test_*.gd"], cwd=REPO_ROOT, capture_output=True, text=True
+    ).stdout.split()
+    for path in gd_files:
+        # Keyed by project and file (`summandos/test_run`), so two projects' test_x.gd never merge.
+        names = classes.setdefault(f"{Path(path).parts[1]}/{Path(path).stem}", set())
+        for line in (REPO_ROOT / path).read_text().splitlines():
+            if match := _GD_TEST.match(line):
+                names.add(match.group(1))
     return classes
 
 

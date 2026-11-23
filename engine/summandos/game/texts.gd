@@ -17,7 +17,7 @@ static func for_language(language: String) -> Dictionary:
 			"help_sections": [
 				{"heading": "Elige puerta", "body": "Desliza el dedo para mover el pelotón y pasa por la puerta que deje más soldados. La que vas a coger se ilumina."},
 				{"heading": "Apunta", "body": "Ponte delante de cada oleada: solo aciertas a lo que tienes enfrente. Los enemigos aguantan varios disparos; un arma los tumba antes."},
-				{"heading": "Jefes", "body": "Cada 5 niveles, un jefe. No cae al chocar: se come soldados hasta que vacías su barra de vida. El mago lanza bolas de fuego: apártate del círculo rojo."},
+				{"heading": "Jefes", "body": "Cada 5 niveles, un jefe. No cae al chocar: se come soldados hasta que vacías su barra de vida. El mago y el nigromante lanzan bolas de fuego: apártate del círculo rojo."},
 				{"heading": "Estrellas", "body": "Ganas de 1 a 3 estrellas según los soldados que lleguen al final. Cada victoria abre el siguiente nivel."},
 				{"heading": "Recluta", "body": "Sumas, restas, ×2 y ÷2 con números a la vista. Puertas de colores: turquesa suma, morado resta."},
 				{"heading": "Soldado", "body": "Porcentajes y operandos escritos como sumas pequeñas: ×(3+4), +21÷3."},
@@ -53,7 +53,7 @@ static func for_language(language: String) -> Dictionary:
 		"help_sections": [
 			{"heading": "Pick a gate", "body": "Slide your finger to move the squad and go through the gate that leaves more soldiers. The one you will take lights up."},
 			{"heading": "Aim", "body": "Stand in front of each wave: you only hit what is ahead of you. Enemies take several shots; a weapon brings them down sooner."},
-			{"heading": "Bosses", "body": "A boss every 5 levels. It does not fall on contact: it eats soldiers until you empty its health bar. The mage throws fireballs: step out of the red ring."},
+			{"heading": "Bosses", "body": "A boss every 5 levels. It does not fall on contact: it eats soldiers until you empty its health bar. The mage and the necromancer throw fireballs: step out of the red ring."},
 			{"heading": "Stars", "body": "Win 1 to 3 stars by the soldiers who make it to the end. Each win opens the next level."},
 			{"heading": "Recruit", "body": "Adding, taking away, ×2 and ÷2 with plain numbers. Coloured gates: teal adds, purple takes."},
 			{"heading": "Soldier", "body": "Percentages, and operands written as small sums: ×(3+4), +21÷3."},

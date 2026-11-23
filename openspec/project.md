@@ -4,12 +4,14 @@
 > landing here cold. Structure, build and commands live in `CLAUDE.md`; this
 > describes **what the apps do and must keep doing**. Specs live in
 > `openspec/specs/{app}/{capability}/spec.md`, grouped by the app they belong
-> to, plus `openspec/specs/core/` for what the shared modules guarantee.
+> to, plus `openspec/specs/core/` for what the shared Compose modules guarantee and
+> `openspec/specs/engine-core/` for the shared Godot addon.
 
 ## What this is
 
 A Gradle multi-project of small Android apps published on Google Play, with
-shared Compose code in `core/`. No accounts, no ads, no server. `stadium-events` downloads one static file
+shared Compose code in `core/`, plus games built with Godot in `engine/` (shared addon in
+`engine/core/`). No accounts, no ads, no server. `stadium-events` downloads one static file
 (`jorgelillo7.github.io/stadium/events.json`) and needs no server of its own.
 
 ## Apps and their capabilities
@@ -23,6 +25,8 @@ shared Compose code in `core/`. No accounts, no ads, no server. `stadium-events`
 | `league-cards` | `com.jorgelillo.leaguecards` | [`season`](specs/league-cards/season/spec.md), [`trophies`](specs/league-cards/trophies/spec.md) |
 | `stadium-events` | `com.jorgelillo.stadiumevents` | [`answer`](specs/stadium-events/answer/spec.md), [`feed-and-reminders`](specs/stadium-events/feed-and-reminders/spec.md) |
 | `slipper` | `com.jorgelillo.slipper` | [`run`](specs/slipper/run/spec.md), [`challenges-and-progress`](specs/slipper/challenges-and-progress/spec.md) |
+| `summandos` (engine, Godot) | `com.jorgelillo.summandos` | [`levels`](specs/summandos/levels/spec.md), [`run`](specs/summandos/run/spec.md), [`bosses-and-weapons`](specs/summandos/bosses-and-weapons/spec.md), [`progress-and-look`](specs/summandos/progress-and-look/spec.md) |
+| `engine-core` (shared Godot addon) | — | [`maths`](specs/engine-core/maths/spec.md), [`shared-pieces`](specs/engine-core/shared-pieces/spec.md) |
 | `core` | — | [`platform`](specs/core/platform/spec.md), [`sharelink`](specs/core/sharelink/spec.md), [`designsystem`](specs/core/designsystem/spec.md), [`reminders`](specs/core/reminders/spec.md) |
 
 Screenshot tests freeze what users already see and are not cited by scenarios (see
@@ -37,7 +41,10 @@ runs in CI's Lint job.
   motive that makes it worth keeping.
 - **Tests** prove it holds. Each scenario names the test that verifies it, by
   its Kotlin name — a sentence in backticks, as the tests are already written
-  (`` `a short season ends after half the matchdays and still reaches the late cards` ``).
+  (`` `a short season ends after half the matchdays and still reaches the late cards` ``) —
+  or, for an engine game, its GUT function (`` `test_a_small_squad_is_overrun` ``).
+  Drawing-only engine tests (figures, materials, crowd animation) are not cited, like
+  screenshot tests.
   A scenario without a test is a gap; a test without a scenario is
   undocumented behaviour.
 - **Decisions** that shape the repo rather than one app's behaviour (module
