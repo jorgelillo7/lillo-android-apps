@@ -4,6 +4,7 @@ extends RefCounted
 
 const BANDS := preload("bands.gdshader")
 const BADGE := preload("badge.gdshader")
+const TEAM := preload("team.gdshader")
 
 
 ## A plain colour; `transparent` for see-through panels, `glowing` for things that shine.
@@ -35,4 +36,14 @@ static func badge(colour: Color) -> ShaderMaterial:
 	var material := ShaderMaterial.new()
 	material.shader = BADGE
 	material.set_shader_parameter("colour", colour)
+	return material
+
+
+## A textured model repainted in `colour`, keeping the texture's shading (see team.gdshader).
+static func team(texture: Texture2D, colour: Color, keep := 0.12) -> ShaderMaterial:
+	var material := ShaderMaterial.new()
+	material.shader = TEAM
+	material.set_shader_parameter("albedo_texture", texture)
+	material.set_shader_parameter("team", colour)
+	material.set_shader_parameter("keep", keep)
 	return material

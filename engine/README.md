@@ -17,14 +17,15 @@ engine/
                               poses) and LilloAnimatedCrowd (a crowd stepping through them)
       maths/                  LilloGate (a maths gate), LilloMathPuzzle (a number as a sum to
                               work out, three tiers)
-      render/                 LilloMaterials (flat, banded ground, camera-facing badge) and their
-                              shaders
+      render/                 LilloMaterials (flat, banded ground, camera-facing badge, a
+                              textured model repainted in a team colour) and their shaders
       ui/                     LilloTheme (font, outlined text, buttons with a lip, cards),
                               LilloLevelMap (paged level map with stars and padlocks),
                               LilloStars, LilloBackdrop (rays, clouds, hills), LilloSticker
                               (a waving soldier or a swaying monster for corners), LilloFx
                               (pop-ins, squishy buttons, rising numbers, confetti), LilloSafeArea,
-                              LilloAbout (name, version and credits)
+                              LilloAbout (name, version and credits), LilloSwatchPicker,
+                              LilloColours (ΔE under simulated colour blindness, for palette tests)
       save/                   LilloSettings (player preferences and progress, kept on the phone)
       dev/                    LilloCapture (--shot screenshots), keep_animations.gd (import
                               script that drops a model's unused animations)

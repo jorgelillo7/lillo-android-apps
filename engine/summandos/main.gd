@@ -1,14 +1,17 @@
 ## Summandos' entry point: wires the run (game/), the 3D world and the screens (view/) together and
 ## handles input and the back button. Options after `--`: `--mode=play|stress` starts a run at
 ## once (`--difficulty=easy|normal|adult --level=<n>` pick it, `--autosteer` takes the better gate),
-## `--levels` opens the level map, `--about` the About card, `--palette=sunset|night` overrides the saved choice, and
+## `--levels` opens the level map, `--about` the About card, `--palette=sunset|night` and `--squad=<colour>` override the saved choices, `--colours` opens the
+## squad colour picker, and
 ## LilloCapture's `--shot=<png> --after=<s>` saves a screenshot and quits.
 extends Node3D
 
 const MODES := ["easy", "normal", "adult"]
 
 var texts := SummandosTexts.for_language(OS.get_locale_language())
-var palette := SummandosPalette.named("night" if LilloSettings.read("night", false) else "sunset")
+var theme_name := "night" if LilloSettings.read("night", false) else "sunset"
+var squad_choice: String = LilloSettings.read("squad", "default")
+var palette := SummandosPalette.named(theme_name, squad_choice)
 var difficulty: SummandosLevel.Mode = LilloSettings.read("difficulty", SummandosLevel.Mode.EASY)
 var level_number := 1
 var mode := "play"
@@ -24,7 +27,11 @@ func _ready() -> void:
 	var start := ""
 	for arg in args:
 		if arg.begins_with("--palette="):
-			palette = SummandosPalette.named(arg.trim_prefix("--palette="))
+			theme_name = arg.trim_prefix("--palette=")
+			palette = SummandosPalette.named(theme_name, squad_choice)
+		elif arg.begins_with("--squad="):
+			squad_choice = arg.trim_prefix("--squad=")
+			palette = SummandosPalette.named(theme_name, squad_choice)
 		elif arg.begins_with("--mode="):
 			start = arg.trim_prefix("--mode=")
 		elif arg.begins_with("--difficulty="):
@@ -38,13 +45,14 @@ func _ready() -> void:
 		func(n: int) -> bool: return SummandosProgress.unlocked(difficulty, n),
 		{"tile": palette.squad, "tile_lip": palette.squad_dark, "tab": Color(palette.outline, 0.7),
 			"star": palette.weapon, "arrow": palette.squad, "arrow_lip": palette.squad_dark})
-	ui = SummandosUi.new(palette, texts, map)
+	ui = SummandosUi.new(palette, texts, map, SummandosPalette.swatches(theme_name), squad_choice)
 	add_child(ui)
 	add_child(LilloCapture.new())
 	ui.mode_picked.connect(_open_levels)
 	ui.level_picked.connect(func(number: int) -> void: _start("play", number))
 	ui.stress_picked.connect(_start.bind("stress"))
 	ui.night_toggled.connect(_toggle_night)
+	ui.squad_picked.connect(_pick_squad)
 	ui.next_picked.connect(func() -> void: _start("play", level_number + 1))
 	ui.again_picked.connect(func() -> void: _start(mode, level_number))
 	ui.levels_picked.connect(_open_levels.bind(-1))
@@ -55,6 +63,8 @@ func _ready() -> void:
 		_open_levels(-1)
 	elif args.has("--about"):
 		ui.show_screen("about")
+	elif args.has("--colours"):
+		ui.show_screen("colours")
 	else:
 		_show_menu()
 
@@ -73,6 +83,11 @@ func _open_levels(picked: int) -> void:
 	run = null
 	world.draw_idle()
 	ui.show_levels(difficulty)
+
+
+func _pick_squad(name: String) -> void:
+	LilloSettings.write("squad", name)
+	get_tree().reload_current_scene()
 
 
 func _toggle_night() -> void:
@@ -117,7 +132,7 @@ func _notification(what: int) -> void:
 		return
 	if run != null:
 		_open_levels(-1)
-	elif ui.level_map.visible or ui.about.visible:
+	elif ui.level_map.visible or ui.about.visible or ui.swatches.visible:
 		_show_menu()
 	else:
 		get_tree().quit()

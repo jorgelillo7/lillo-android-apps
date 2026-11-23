@@ -14,6 +14,7 @@ static func for_language(language: String) -> Dictionary:
 			"modes": ["Fácil", "Normal", "Adulto"], "next": "Siguiente nivel", "level": "Nivel %d",
 			"think": "¡Piensa! %d", "think_hint": "Elige puerta y suelta el dedo",
 			"about": "Acerca de", "close": "Cerrar", "version": "Versión %s",
+			"colour": "Color del pelotón", "colour_title": "Elige el color de tu pelotón",
 			"credits": [
 				"Personajes 3D: KayKit de Kay Lousberg (kaylousberg.com), CC0",
 				"Tipografía: Luckiest Guy de Astigmatic, licencia Apache 2.0",
@@ -30,6 +31,7 @@ static func for_language(language: String) -> Dictionary:
 		"modes": ["Easy", "Normal", "Grown-up"], "next": "Next level", "level": "Level %d",
 		"think": "Think! %d", "think_hint": "Pick a gate and lift your finger",
 		"about": "About", "close": "Close", "version": "Version %s",
+		"colour": "Squad colour", "colour_title": "Pick your squad's colour",
 		"credits": [
 			"3D characters: KayKit by Kay Lousberg (kaylousberg.com), CC0",
 			"Type: Luckiest Guy by Astigmatic, Apache License 2.0",

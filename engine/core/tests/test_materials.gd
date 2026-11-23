@@ -11,3 +11,10 @@ func test_shader_materials_carry_their_colours() -> void:
 	var bands := LilloMaterials.bands(Color.WHITE, Color.GRAY, 6.0)
 	assert_eq(bands.get_shader_parameter("period"), 6.0)
 	assert_eq(LilloMaterials.badge(Color.BLUE).get_shader_parameter("colour"), Color.BLUE)
+
+
+func test_a_team_material_carries_its_texture_and_colour() -> void:
+	var texture := ImageTexture.create_from_image(Image.create(2, 2, false, Image.FORMAT_RGB8))
+	var material := LilloMaterials.team(texture, Color.ORANGE)
+	assert_eq(material.get_shader_parameter("team"), Color.ORANGE)
+	assert_eq(material.get_shader_parameter("albedo_texture"), texture)
