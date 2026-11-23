@@ -1,5 +1,6 @@
 ## Summandos' scene: builds the track, the squad, the enemies and the HUD in code, and draws a
 ## SummandosRun every frame. Command-line options after `--`: `--mode=play|stress` starts a run
+## (`--difficulty=easy|normal|adult` and `--level=<n>` pick which),
 ## at once, `--palette=<name>` picks a SummandosPalette theme, `--shot=<png>` saves a screenshot
 ## after `--after=<seconds>` (default 3) and quits.
 extends Node3D
@@ -19,6 +20,8 @@ var texts := {}
 var palette := SummandosPalette.named("night" if LilloSettings.read("night", false) else "sunset")
 var run: SummandosRun
 var mode := "play"
+var difficulty: SummandosLevel.Mode = LilloSettings.read("difficulty", SummandosLevel.Mode.EASY)
+var level_number := 1
 var target_x := 0.0
 var dragging := false
 
@@ -44,6 +47,12 @@ var menu: Control
 var result: Control
 var result_title: Label
 var result_detail: Label
+var result_stars: Label
+var next_button: Button
+var think_box: Control
+var think_label: Label
+var level_grid: GridContainer
+var mode_buttons: Array[Button] = []
 
 var shot_path := ""
 ## Camera rig for the current orientation: height, distance behind the squad, look-ahead.
@@ -68,6 +77,10 @@ func _ready() -> void:
 			start_now = true
 		elif arg.begins_with("--shot="):
 			shot_path = arg.trim_prefix("--shot=")
+		elif arg.begins_with("--difficulty="):
+			difficulty = ["easy", "normal", "adult"].find(arg.trim_prefix("--difficulty=")) as SummandosLevel.Mode
+		elif arg.begins_with("--level="):
+			level_number = int(arg.trim_prefix("--level="))
 		elif arg.begins_with("--after="):
 			shot_after = float(arg.trim_prefix("--after="))
 	if start_now:
@@ -84,6 +97,8 @@ func _texts(language: String) -> Dictionary:
 			"won": "¡Victoria!", "lost": "Derrota", "again": "Otra vez", "menu": "Menú",
 			"kills": "Bajas", "weapon": "ARMA", "soldiers": "Soldados",
 			"detail": "%d soldados en pie · %d bajas enemigas",
+			"modes": ["Fácil", "Normal", "Adulto"], "next": "Siguiente nivel", "level": "Nivel %d",
+			"think": "¡Piensa! %d", "think_hint": "Elige puerta y suelta el dedo",
 		}
 	return {
 		"title": "Summandos", "play": "Play", "stress": "Performance test (1,000)",
@@ -91,6 +106,8 @@ func _texts(language: String) -> Dictionary:
 		"won": "Victory!", "lost": "Defeat", "again": "Again", "menu": "Menu",
 		"kills": "Kills", "weapon": "WEAPON", "soldiers": "Soldiers",
 		"detail": "%d soldiers standing · %d enemies down",
+		"modes": ["Easy", "Normal", "Grown-up"], "next": "Next level", "level": "Level %d",
+		"think": "Think! %d", "think_hint": "Pick a gate and lift your finger",
 	}
 
 
@@ -288,6 +305,15 @@ func _choice(pick: Dictionary, side: float) -> Node3D:
 		floor.material_override = _material(palette.good_floor if good else palette.bad_floor)
 		node.add_child(floor)
 		label.text = gate.label()
+		if gate.note != "":
+			var note := Label3D.new()
+			note.text = gate.note
+			note.font_size = 110
+			note.outline_size = 28
+			note.pixel_size = 0.01
+			note.rotation.y = PI
+			note.position.y = 0.35
+			node.add_child(note)
 	else:
 		var crate := MeshInstance3D.new()
 		var box := BoxMesh.new()
@@ -367,16 +393,52 @@ func _build_ui() -> void:
 	fps_label.set_anchors_preset(Control.PRESET_BOTTOM_LEFT)
 	fps_label.position.y = -40
 	hud.add_child(fps_label)
+	think_box = VBoxContainer.new()
+	think_box.set_anchors_preset(Control.PRESET_TOP_WIDE)
+	think_box.position.y = 90
+	think_box.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	hud.add_child(think_box)
+	think_label = _title("", 64)
+	think_label.add_theme_color_override("font_color", palette.weapon)
+	think_box.add_child(think_label)
+	think_box.add_child(_title(texts.think_hint, 26))
+	think_box.visible = false
 
 	menu = Control.new()
 	menu.set_anchors_preset(Control.PRESET_FULL_RECT)
 	root.add_child(menu)
-	var menu_box := _centre_box(menu)
+	var menu_box := _centre_box(menu, true)
 	menu_box.add_child(_title(texts.title, 84))
-	menu_box.add_child(_button(texts.play, _start.bind("play")))
-	menu_box.add_child(_button(texts.stress, _start.bind("stress")))
+	var modes := HBoxContainer.new()
+	modes.add_theme_constant_override("separation", 8)
+	for i in texts.modes.size():
+		var button := _button(texts.modes[i], _pick_mode.bind(i))
+		button.toggle_mode = true
+		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		button.add_theme_font_size_override("font_size", 24)
+		modes.add_child(button)
+		mode_buttons.append(button)
+	menu_box.add_child(modes)
+	var scroll := ScrollContainer.new()
+	scroll.custom_minimum_size = Vector2(0, 300)
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	menu_box.add_child(scroll)
+	level_grid = GridContainer.new()
+	level_grid.columns = 5
+	level_grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	level_grid.add_theme_constant_override("h_separation", 8)
+	level_grid.add_theme_constant_override("v_separation", 8)
+	scroll.add_child(level_grid)
+	var extras := HBoxContainer.new()
+	extras.add_theme_constant_override("separation", 8)
 	var night: bool = LilloSettings.read("night", false)
-	menu_box.add_child(_button(texts.night_on if night else texts.night_off, _toggle_night))
+	for button in [_button(texts.night_on if night else texts.night_off, _toggle_night),
+			_button(texts.stress, _start.bind("stress"))]:
+		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		button.add_theme_font_size_override("font_size", 20)
+		button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		extras.add_child(button)
+	menu_box.add_child(extras)
 
 	result = Control.new()
 	result.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -387,7 +449,12 @@ func _build_ui() -> void:
 	result_detail = _title("", 28)
 	result_detail.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	result_box.add_child(result_detail)
-	result_box.add_child(_button(texts.again, func() -> void: _start(mode)))
+	result_stars = _title("", 64)
+	result_stars.add_theme_color_override("font_color", palette.weapon)
+	result_box.add_child(result_stars)
+	next_button = _button(texts.next, func() -> void: _start("play", level_number + 1))
+	result_box.add_child(next_button)
+	result_box.add_child(_button(texts.again, func() -> void: _start(mode, level_number)))
 	result_box.add_child(_button(texts.menu, _show_menu))
 
 
@@ -413,17 +480,45 @@ func _toggle_night() -> void:
 	get_tree().reload_current_scene()
 
 
+func _pick_mode(picked: int) -> void:
+	difficulty = picked as SummandosLevel.Mode
+	LilloSettings.write("difficulty", picked)
+	_fill_levels()
+
+
+## The level map of the current mode: stars earned, the next level to play open, the rest locked.
+func _fill_levels() -> void:
+	for i in mode_buttons.size():
+		mode_buttons[i].set_pressed_no_signal(i == difficulty)
+	for child in level_grid.get_children():
+		child.queue_free()
+	for number in range(1, SummandosLevel.LEVELS_PER_MODE + 1):
+		var stars := SummandosProgress.stars(difficulty, number)
+		var button := _button("%d\n%s" % [number, _stars(stars)], _start.bind("play", number))
+		button.custom_minimum_size = Vector2(72, 72)
+		button.add_theme_font_size_override("font_size", 20)
+		button.disabled = not SummandosProgress.unlocked(difficulty, number)
+		level_grid.add_child(button)
+
+
+func _stars(count: int) -> String:
+	return "★".repeat(count) + "☆".repeat(3 - count)
+
+
 func _show_menu() -> void:
 	run = null
+	_fill_levels()
 	menu.visible = true
 	result.visible = false
 	hud.visible = false
 	_draw_idle()
 
 
-func _start(run_mode: String) -> void:
+func _start(run_mode: String, number := level_number) -> void:
 	mode = run_mode
-	run = SummandosRun.new(SummandosLevel.stress() if mode == "stress" else SummandosLevel.first())
+	level_number = clampi(number, 1, SummandosLevel.LEVELS_PER_MODE)
+	var level := SummandosLevel.stress() if mode == "stress" else SummandosLevel.generate(difficulty, level_number)
+	run = SummandosRun.new(level)
 	target_x = 0.0
 	bullets.clear()
 	bullet_ends.clear()
@@ -440,6 +535,11 @@ func _finish() -> void:
 	var won := run.state == SummandosRun.State.WON
 	result_title.text = texts.won if won else texts.lost
 	result_detail.text = texts.detail % [run.soldiers, run.kills]
+	var stars := run.stars() if mode == "play" else 0
+	result_stars.text = _stars(stars) if won and mode == "play" else ""
+	if mode == "play":
+		SummandosProgress.record(difficulty, level_number, stars)
+	next_button.visible = won and mode == "play" and level_number < SummandosLevel.LEVELS_PER_MODE
 
 
 # --- Input -------------------------------------------------------------------------------------
@@ -450,6 +550,8 @@ func _unhandled_input(event: InputEvent) -> void:
 	var width := get_viewport().get_visible_rect().size.x
 	if event is InputEventScreenTouch or event is InputEventMouseButton:
 		dragging = event.pressed
+		if not event.pressed and run.thinking > 0.0:
+			run.done_thinking()
 	elif (event is InputEventScreenDrag) or (event is InputEventMouseMotion and dragging):
 		target_x += event.relative.x / width * TRACK_WIDTH * 1.4
 		target_x = clampf(target_x, -SummandosRun.TRACK_HALF_WIDTH, SummandosRun.TRACK_HALF_WIDTH)
@@ -475,6 +577,8 @@ func _process(delta: float) -> void:
 			target_x = _autosteer()
 		run.steer(target_x)
 		run.step(delta)
+		think_box.visible = run.thinking > 0.0
+		think_label.text = texts.think % ceili(run.thinking)
 		_draw_run(delta)
 		if run.state != SummandosRun.State.RUNNING and not result.visible:
 			_finish()
@@ -565,7 +669,8 @@ func _draw_run(delta: float) -> void:
 	boss_view.show_points(boss_points)
 	_draw_bullets(delta)
 
-	hud_top.text = "%s %d   ·   %s %d%s" % [
+	hud_top.text = "%s   ·   %s %d   ·   %s %d%s" % [
+		texts.level % level_number if mode == "play" else texts.stress,
 		texts.soldiers, run.soldiers, texts.kills, run.kills,
 		("   ·   %s ×%s" % [texts.weapon, str(run.damage).trim_suffix(".0")]) if run.damage > 1.0 else "",
 	]

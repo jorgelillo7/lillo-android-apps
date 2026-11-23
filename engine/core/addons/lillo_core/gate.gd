@@ -8,6 +8,11 @@ const SYMBOLS := {Op.ADD: "+", Op.SUBTRACT: "−", Op.MULTIPLY: "×", Op.DIVIDE:
 
 var op: Op
 var value: int
+## How the operand is written on the gate when it is a puzzle, e.g. "2⁵" or "x"; empty shows the
+## plain number.
+var shown := ""
+## A second line under the gate, e.g. the equation that gives x.
+var note := ""
 
 
 func _init(gate_op: Op, gate_value: int) -> void:
@@ -42,6 +47,16 @@ static func better(left: LilloGate, right: LilloGate, crowd: int) -> int:
 
 
 func label() -> String:
+	var operand := str(value) if shown == "" else shown
+	if shown != "" and shown.length() > 1 and not shown.begins_with("√") and _has_operator(shown):
+		operand = "(%s)" % shown
 	if op == Op.PERCENT:
-		return "%d %%" % value
-	return "%s%d" % [SYMBOLS[op], value]
+		return "%s %%" % operand
+	return "%s%s" % [SYMBOLS[op], operand]
+
+
+static func _has_operator(text: String) -> bool:
+	for symbol in ["+", "−", "×", "÷"]:
+		if text.contains(symbol):
+			return true
+	return false

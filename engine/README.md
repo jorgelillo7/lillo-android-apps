@@ -13,7 +13,8 @@ engine/
                               LilloCrowdView (draws hundreds of copies of a mesh in one call),
                               LilloFigure (cartoon characters, monsters and bullet streaks as
                               one vertex-coloured mesh, toon material with outline),
-                              LilloSettings (player preferences kept between sessions)
+                              LilloSettings (player preferences kept between sessions),
+                              LilloMathPuzzle (a number written as a sum to work out)
     tests/                    GUT tests, res://tests/test_*.gd
   summandos/                  game one, Summandos (com.jorgelillo.summandos), README there
     addons/lillo_core         symlink to ../../core/addons/lillo_core
