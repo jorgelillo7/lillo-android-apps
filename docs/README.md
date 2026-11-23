@@ -40,6 +40,8 @@ One entry per document. Runbooks first, then setup, then reference.
 
 ## Plans
 
+Engine games (Godot): [`engine/README.md`](../engine/README.md).
+
 Design decisions of apps that needed a plan before coding:
 [`plans/fake-ad-games-tech.md`](plans/fake-ad-games-tech.md), [`plans/tournaments.md`](plans/tournaments.md),
 [`plans/stadium-events.md`](plans/stadium-events.md).

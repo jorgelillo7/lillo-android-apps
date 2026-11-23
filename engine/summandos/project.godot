@@ -1,0 +1,19 @@
+; Summandos (ES "Sumandos"): a shooting squad grown by maths gates. Plan: docs/plans/fake-ad-games.md
+config_version=5
+
+[application]
+
+config/name="Summandos"
+config/features=PackedStringArray("4.7", "Mobile")
+run/main_scene="res://main.tscn"
+
+[display]
+
+; Upright and turned sideways: the layout adapts, never stretches or crops.
+window/handheld/orientation=6
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
+
+[rendering]
+
+renderer/rendering_method="mobile"

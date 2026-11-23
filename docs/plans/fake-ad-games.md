@@ -41,7 +41,7 @@ soldiers, stack runner that builds a bridge, parking jam, colour sort.
 
 Name: **Sumandos** in Spanish, **Summandos** in English (a *summand* is each number in a sum, and
 both play on *Commandos*: a squad of sums). Package `com.jorgelillo.summandos` (English, like
-every app's), folder `games/summandos`. Outside the apps' question pattern on purpose: a game is
+every app's), folder `engine/summandos`. Outside the apps' question pattern on purpose: a game is
 found by its mechanic, and a short name reads better on the icon. No look borrowed from
 *Commandos*, a registered game title: only the word play.
 

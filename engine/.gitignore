@@ -1,0 +1,6 @@
+# Godot's import cache and export output, per project.
+.godot/
+export/
+# GUT is fetched by scripts/engine-test.sh, never committed.
+addons/gut/
+*/addons/gut/

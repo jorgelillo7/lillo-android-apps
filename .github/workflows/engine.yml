@@ -1,0 +1,49 @@
+# Tests of the game-engine projects under engine/ (Godot today): every project's GDScript tests,
+# headless, with the Godot version pinned in scripts/godot.sh. Runs only when engine code or its
+# scripts change; the Kotlin apps have their own CI.
+name: Engine
+
+on:
+  pull_request:
+    paths:
+      - "engine/**"
+      - "scripts/godot.sh"
+      - "scripts/engine-test.sh"
+      - ".github/workflows/engine.yml"
+  push:
+    branches: [master]
+    paths:
+      - "engine/**"
+      - "scripts/godot.sh"
+      - "scripts/engine-test.sh"
+      - ".github/workflows/engine.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: engine-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Engine tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Install Godot
+        run: scripts/godot.sh --version
+
+      - name: Test every project
+        run: |
+          status=0
+          for project in engine/*/project.godot; do
+            dir="$(dirname "$project")"
+            echo "::group::$dir"
+            scripts/engine-test.sh "$dir" || status=1
+            echo "::endgroup::"
+          done
+          exit $status

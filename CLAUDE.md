@@ -65,6 +65,10 @@ hide_keyboard, swipe_up/down, back, on_screen, wait_for, bounds/in_box/swipe_in 
 keyboard, rotation, screenshots: what the shell helpers, `tap-text.sh`, `screenshot.sh` and UI batteries
 such as `apps/whos-lying/tools/battery_test.py` run on); each app's `tools/` only holds its own part.
 
+Engine games (`engine/`, Godot): `scripts/godot.sh` runs the pinned Godot (downloaded on first
+use), `scripts/engine-test.sh engine/<project>` runs its GUT tests headless; shared code goes in
+`engine/core/addons/lillo_core`, linked from each game. Details: `engine/README.md`.
+
 Project skills are indexed in [`.claude/CLAUDE.md`](.claude/CLAUDE.md).
 
 ## Working on a change

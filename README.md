@@ -27,10 +27,19 @@
 | 🩴 [¿Te pilla la chancla? · Slipper runner](apps/slipper) | [On Google Play](https://play.google.com/store/apps/details?id=com.jorgelillo.slipper) | `apps/slipper` |
 | 🏟️ [¿Hay jaleo? Metropolitano · Stadium events for the neighbours](apps/stadium-events) | [On Google Play](https://play.google.com/store/apps/details?id=com.jorgelillo.stadiumevents) | `apps/stadium-events` |
 
+## 🎮 Engine games
+
+Games built on a game engine (Godot) live in [`engine/`](engine/README.md), next to the apps:
+
+| Game | Status | Folder |
+|---|---|---|
+| ➕ Summandos · Maths squad shooter | In development | `engine/summandos` |
+
 ## 🗂️ Repository layout
 
 ```
 PENDING.md                         Open work, one line per item
+engine/                            Games built on a game engine (Godot): shared addon in engine/core (README there)
 openspec/                          What each app must keep doing: specs per app, change proposals (map: openspec/project.md)
 docs/                              Runbook, Google Play guide, decisions, lessons learned (index: docs/README.md)
 scripts/                           Shared scripts: env, emulator, UI driver (ui_lib), smoke / capture libs, store graphics
