@@ -52,7 +52,7 @@ found by its mechanic, and a short name reads better on the icon. No look borrow
 - **Weapon power-ups** on the track kill more enemies (spread, rate, damage), but they sit where
   taking one means missing a gate: a real trade-off between firepower and platoon size.
 - **Maths for adults**: powers, roots, simple equations and percentages, all solvable in your head.
-- **Think pause**: time stops for 10 seconds only at the hardest pairs of gates.
+- **Think pause**: time stops for 5 seconds only at the hardest pairs of gates.
 - **Nothing to sell**: no ads, no coins, no purchases.
 
 ## Game one: modes
@@ -64,9 +64,9 @@ Built: four modes on the same tracks, 30 generated levels each (10 in expert), c
 | **Easy** | `+20`, `−15`, `×2`, `÷2` | Teal grows, purple shrinks | Real time |
 | **Normal** | Adds percentages, `×5`, operands as small sums (`×(3+4)`, `+21÷3`) | Teal / purple | Real time |
 | **Grown-up** | Powers, roots, equations (`+x` over `3x+5=26`) | **All the same gold**: the colour gives nothing away | Real time, think pause before 1–3 gates a level |
-| **Expert** (10 levels) | Two-step operands on both gates of every pair (`×(2³−5)`, `+(√144÷3)`, `+x` over `3x+4=x+18`), no weapons | Gold | A 7-second think pause before every gate; **the worse gate loses the level at once**, and the result card says what each gate would have left |
+| **Expert** (10 levels) | Two-step operands on both gates of every pair (`×(2³−5)`, `+(√144÷3)`, `+x` over `3x+4=x+18`), no weapons | Gold | A 5-second think pause before every gate; **the worse gate loses the level at once**, and the result card says what each gate would have left |
 
-**Think pause**: time stops for 10 seconds only at the hardest pairs of gates.
+**Think pause**: time stops for 5 seconds only at the hardest pairs of gates.
 - **Nothing to sell**: no ads, no coins, no purchases.
 
 ## Game one: modes
@@ -78,7 +78,7 @@ The owner wants more than the ad's single pace. Two modes on the same tracks and
 | **Classic** | What the ads show: `+20`, `×2`, `−15` | Real time, no stopping |
 | **Maths** | Expressions solvable in your head: `×(12 ÷ 4)`, `+(5² − 10)`, `−2³`, `×√49`, a simple equation (`+x` where `3x = 21`), percentages (`+50 %`) | Real time, except the hardest pairs: **think pause** |
 
-**Think pause**: only for the hardest pairs of gates (the generator rates each pair; the top tier pauses), time stops with 10 seconds to choose and a countdown on screen; no choice in time takes the left gate. Easy pairs never stop the run.
+**Think pause**: only for the hardest pairs of gates (the generator rates each pair; the top tier pauses), time stops with 5 seconds to choose and a countdown on screen; no choice in time takes the left gate. Easy pairs never stop the run.
 
 What makes Maths a puzzle: the better gate depends on the crowd you bring. With 20 units,
 `×3` (60) beats `+30` (50); with 10 it loses (30 against 40). So gates are generated per level from

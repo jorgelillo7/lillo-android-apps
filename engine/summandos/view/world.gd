@@ -12,6 +12,11 @@ const BULLET_SPEED := 45.0
 const VISIBLE_AHEAD := 70.0
 const BOSS_HEIGHT := 4.5
 const GATE_FLOOR_LENGTH := 7.0
+const LABEL_PIXEL := 0.01
+## How wide a gate's text may draw, in metres: the panel less a margin each side.
+const GATE_TEXT_WIDTH := TRACK_WIDTH * 0.5 - 0.6
+## The smallest font a gate's text shrinks to; the tests check every generated gate fits above it.
+const MIN_GATE_FONT := 60
 const FIGURE_HEIGHT := 0.85
 const RUN := "Running_A"
 const SHOOT := "2H_Ranged_Shooting"
@@ -27,6 +32,9 @@ var count_badge: MeshInstance3D
 var soldiers_view: LilloAnimatedCrowd
 var enemies_view: LilloAnimatedCrowd
 var bullets_view: LilloCrowdView
+## The mage's fireballs in flight, and a red ring where each will land.
+var fireballs_view: LilloCrowdView
+var landing_view: LilloCrowdView
 var boss_view: LilloCrowdView
 ## The boss as one fully animated model, when the models are there; else boss_view draws it.
 var boss_model: Node3D
@@ -151,6 +159,17 @@ func _build() -> void:
 	bullet_material.vertex_color_use_as_albedo = true
 	bullets_view = LilloCrowdView.new(LilloFigure.streak(0.9, 0.035, palette.bullet), bullet_material, BULLET_CAPACITY)
 	add_child(bullets_view)
+	var ball := SphereMesh.new()
+	ball.radius = 0.7
+	ball.height = 1.4
+	fireballs_view = LilloCrowdView.new(ball, LilloMaterials.flat(Color("#FF7A1A"), false, true), 8)
+	add_child(fireballs_view)
+	var ring := CylinderMesh.new()
+	ring.top_radius = SummandosRun.FIREBALL_RADIUS
+	ring.bottom_radius = SummandosRun.FIREBALL_RADIUS
+	ring.height = 0.02
+	landing_view = LilloCrowdView.new(ring, LilloMaterials.flat(Color(0.95, 0.15, 0.05, 0.55), true), 8)
+	add_child(landing_view)
 
 	count_label = Label3D.new()
 	count_label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
@@ -205,7 +224,7 @@ func _label(text: String, font_size: int, outline: int, height: float) -> Label3
 	label.text = text
 	label.font_size = font_size
 	label.outline_size = outline
-	label.pixel_size = 0.01
+	label.pixel_size = LABEL_PIXEL
 	label.rotation.y = PI
 	label.position.y = height
 	return label
@@ -235,10 +254,11 @@ func _choice(pick: Dictionary, side: float) -> Node3D:
 		floor.material_override = LilloMaterials.flat(floor_colour)
 		node.add_child(floor)
 		var text := gate.label()
-		var fitted := clampi(int(850.0 / maxf(1.0, text.length())), 90, 200)
+		var fitted := fit_font_size(text, 200, GATE_TEXT_WIDTH)
 		node.add_child(_label(text, fitted, int(fitted * 0.2), 1.3))
 		if gate.note != "":
-			node.add_child(_label(gate.note, 110, 28, 0.35))
+			var note_size := fit_font_size(gate.note, 110, GATE_TEXT_WIDTH)
+			node.add_child(_label(gate.note, note_size, int(note_size * 0.2), 0.35))
 	else:
 		var crate := MeshInstance3D.new()
 		var box := BoxMesh.new()
@@ -247,14 +267,33 @@ func _choice(pick: Dictionary, side: float) -> Node3D:
 		crate.position.y = 0.4
 		crate.material_override = LilloMaterials.flat(palette.weapon, false, true)
 		node.add_child(crate)
-		var label := _label(weapon_text(pick.weapon), 96, 40, 1.3)
+		var weapon_size := fit_font_size(weapon_text(pick.weapon), 110, GATE_TEXT_WIDTH)
+		var label := _label(weapon_text(pick.weapon), weapon_size, int(weapon_size * 0.2), 1.3)
 		label.modulate = palette.weapon
 		node.add_child(label)
 	return node
 
 
+## The weapon a multiplier stands for, by name: pistols ×2, a bazooka ×3.
 func weapon_text(multiplier: float) -> String:
-	return "%s ×%s" % [texts.weapon, str(multiplier).trim_suffix(".0")]
+	var name: String = texts.weapons.get(int(multiplier), texts.weapon)
+	return "%s ×%s" % [name, str(multiplier).trim_suffix(".0")]
+
+
+## The largest font size, up to `largest`, at which `text` (outline included) is at most `width`
+## metres wide on a gate's Label3D; never below MIN_GATE_FONT.
+static func fit_font_size(text: String, largest: int, width: float) -> int:
+	var size := largest
+	while size > MIN_GATE_FONT and text_width(text, size) > width:
+		size -= 2
+	return size
+
+
+## How wide `text` draws on a gate's Label3D at `font_size`, outline included, in metres.
+static func text_width(text: String, font_size: int) -> float:
+	var outline := font_size * 0.2
+	var drawn := ThemeDB.fallback_font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size).x
+	return (drawn + outline) * LABEL_PIXEL
 
 
 ## The camera looks down +z, so the screen's right is the world's -x; the run's x is screen-side.
@@ -285,6 +324,8 @@ func draw_idle() -> void:
 	soldiers_view.show_at(Vector3.ZERO, _offsets(12).duplicate(), true)
 	enemies_view.show_points(PackedVector3Array())
 	bullets_view.show_points(PackedVector3Array())
+	fireballs_view.show_points(PackedVector3Array())
+	landing_view.show_points(PackedVector3Array())
 	boss_view.show_points(PackedVector3Array())
 	if boss_model:
 		boss_model.visible = false
@@ -332,7 +373,7 @@ func draw_run(run: SummandosRun, delta: float) -> void:
 	for wave in run.waves:
 		if wave.z - run.z > VISIBLE_AHEAD or enemy_points.size() >= ENEMY_CAPACITY:
 			break
-		if wave.hp >= 50.0:
+		if wave.boss:
 			boss_points.append(Vector3(world_x(wave.x), 0.0, wave.z))
 			continue
 		for o in _enemy_offsets(wave.count):
@@ -348,6 +389,7 @@ func draw_run(run: SummandosRun, delta: float) -> void:
 	else:
 		boss_view.show_points(boss_points)
 	_draw_bullets(run, delta)
+	_draw_fireballs(run)
 	camera.position = Vector3(x * 0.35, rig.x, run.z - rig.y)
 	camera.look_at(Vector3(x * 0.35, 0, run.z + rig.z))
 
@@ -368,6 +410,23 @@ func _highlight(run: SummandosRun) -> void:
 		if side.has_meta("panel"):
 			var material: StandardMaterial3D = (side.get_meta("panel") as MeshInstance3D).material_override
 			material.albedo_color.a = lerpf(0.45, 0.8 if chosen else 0.2, near)
+
+
+## Each fireball arcs from the boss to where the squad stood when it was thrown, over a red ring
+## marking the spot, so the player sees where to move out of.
+func _draw_fireballs(run: SummandosRun) -> void:
+	var balls := PackedVector3Array()
+	var rings := PackedVector3Array()
+	for ball in run.fireballs:
+		var t: float = 1.0 - ball.left / SummandosRun.FIREBALL_FLIGHT
+		var start := Vector3(world_x(ball.from_x), 3.0, ball.from_z)
+		var end := Vector3(world_x(ball.x), 0.3, run.z)
+		var at := start.lerp(end, t)
+		at.y += sin(t * PI) * 3.0
+		balls.append(at)
+		rings.append(Vector3(end.x, 0.03, run.z))
+	fireballs_view.show_points(balls)
+	landing_view.show_points(rings)
 
 
 func _draw_bullets(run: SummandosRun, delta: float) -> void:
@@ -391,4 +450,8 @@ func _draw_bullets(run: SummandosRun, delta: float) -> void:
 			bullet_ends.remove_at(i)
 			bullet_drift.remove_at(i)
 		i -= 1
-	bullets_view.show_points(bullets)
+	# Pistols fire thicker bolts and a bazooka thicker still, so the weapon shows.
+	var thickness := PackedFloat32Array()
+	thickness.resize(bullets.size())
+	thickness.fill(1.0 + (run.damage - 1.0) * 0.6)
+	bullets_view.show_points(bullets, thickness)

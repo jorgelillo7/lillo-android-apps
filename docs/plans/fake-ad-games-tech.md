@@ -15,7 +15,7 @@ Compose apps, reusing what already works (Play publishing, signing, listings, pr
 | Feel | Numbers popping on gates, particles, haptics, a satisfying count-up | Pins that slide out under a finger, a pour that reads clearly |
 | Content | Levels as data: gate sequence, enemy size, boss | Levels as data: walls, pins, what sits behind each |
 
-Game one also has two modes, classic and maths, where the hardest pairs of gates stop time for 10 seconds ([plan](fake-ad-games.md#game-one-modes)): pausing is the engine's time scale, and the gate expressions come from a generator with tests. Both need levels loaded from data, a difficulty curve and progression **without** coins, ads or
+Game one also has two modes, classic and maths, where the hardest pairs of gates stop time for 5 seconds ([plan](fake-ad-games.md#game-one-modes)): pausing is the engine's time scale, and the gate expressions come from a generator with tests. Both need levels loaded from data, a difficulty curve and progression **without** coins, ads or
 purchases (the plan's rule).
 
 ## Options

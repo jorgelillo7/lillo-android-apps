@@ -33,10 +33,13 @@ var boss_corner: Control
 var menu: Control
 var hud: Control
 var result: Control
+var hud_heading: Label
 var hud_top: Label
+var boss_bar: ProgressBar
 var fps_label: Label
 var think_box: Control
 var think_label: Label
+var result_heading: Label
 var result_title: Label
 var result_detail: Label
 var result_stars: CenterContainer
@@ -74,7 +77,7 @@ func _ready() -> void:
 	if SummandosModels.scene("Skeleton_Golem.glb"):
 		credits.insert(1, texts.golem_credit)
 	about = LilloAbout.new(texts.title, texts.version % version, credits, texts.about_note, texts.close,
-		palette.outline, palette.weapon, _reading())
+		palette.outline, palette.weapon, _reading(), texts.name_story)
 	about.closed.connect(show_screen.bind("settings"))
 	root.add_child(about)
 	swatches = LilloSwatchPicker.new(texts.colour_title, squad_choices, squad_choice, texts.close, palette.outline)
@@ -121,9 +124,12 @@ func show_levels(mode: int) -> void:
 	show_screen("levels")
 
 
-## `failed_gate` (SummandosRun.failed_gate) explains an expert level lost on a gate.
-func show_result(won: bool, soldiers: int, kills: int, stars: int, has_next: bool, failed_gate := {}) -> void:
+## `heading` names the mode and level; `failed_gate` (SummandosRun.failed_gate) explains an expert
+## level lost on a gate.
+func show_result(heading: String, won: bool, soldiers: int, kills: int, stars: int, has_next: bool,
+		failed_gate := {}) -> void:
 	show_screen("result")
+	result_heading.text = heading
 	result_title.text = texts.won if won else texts.lost
 	result_detail.text = texts.detail % [soldiers, kills]
 	if not failed_gate.is_empty():
@@ -141,9 +147,15 @@ func show_result(won: bool, soldiers: int, kills: int, stars: int, has_next: boo
 	next_button.visible = has_next
 
 
-## `show_fps` puts the frame rate in the corner (the performance test only).
-func update_hud(top: String, thinking: float, show_fps := false) -> void:
+## `heading` names the mode and level above the counts in `top`; `boss` is the boss's health
+## (0 to 1) while it is near, else below 0; `show_fps` puts the frame rate in the corner (the
+## performance test only).
+func update_hud(heading: String, top: String, thinking: float, boss := -1.0, show_fps := false) -> void:
+	hud_heading.text = heading
+	hud_heading.visible = heading != ""
 	hud_top.text = top
+	boss_bar.visible = boss >= 0.0
+	boss_bar.value = maxf(boss, 0.0)
 	fps_label.visible = show_fps
 	think_box.visible = thinking > 0.0
 	think_label.text = texts.think % ceili(thinking)
@@ -350,30 +362,72 @@ func _refresh_settings() -> void:
 func _build_hud() -> Control:
 	var screen := _screen()
 	screen.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var top := VBoxContainer.new()
+	top.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
+	top.add_theme_constant_override("separation", 0)
+	top.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	screen.add_child(top)
+	hud_heading = LilloTheme.title("", 24)
+	hud_heading.add_theme_color_override("font_color", palette.weapon)
+	top.add_child(hud_heading)
 	hud_top = LilloTheme.title("", 30)
-	hud_top.set_anchors_preset(Control.PRESET_TOP_WIDE)
-	screen.add_child(hud_top)
+	top.add_child(hud_top)
+	boss_bar = _boss_bar()
+	top.add_child(boss_bar)
 	fps_label = Label.new()
 	fps_label.add_theme_font_size_override("font_size", 22)
 	fps_label.set_anchors_preset(Control.PRESET_BOTTOM_LEFT)
 	fps_label.position.y = -40
 	screen.add_child(fps_label)
+	# In the top-left corner, clear of the gates in the middle of the track.
 	think_box = VBoxContainer.new()
-	think_box.set_anchors_preset(Control.PRESET_TOP_WIDE)
-	think_box.position.y = 90
+	think_box.position = Vector2(20, 96)
+	think_box.custom_minimum_size.x = 320
+	think_box.add_theme_constant_override("separation", 0)
 	think_box.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	screen.add_child(think_box)
-	think_label = LilloTheme.title("", 64)
+	think_label = LilloTheme.title("", 52)
+	think_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
 	think_label.add_theme_color_override("font_color", palette.weapon)
 	think_box.add_child(think_label)
-	think_box.add_child(LilloTheme.title(texts.think_hint, 26))
+	var hint := LilloTheme.title(texts.think_hint, 22)
+	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+	hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	think_box.add_child(hint)
 	think_box.visible = false
 	return screen
+
+
+## The boss's health under the counts: a thick bar in the boss's colour on a dark track.
+func _boss_bar() -> ProgressBar:
+	var bar := ProgressBar.new()
+	bar.max_value = 1.0
+	bar.show_percentage = false
+	bar.custom_minimum_size = Vector2(320, 22)
+	bar.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var back := StyleBoxFlat.new()
+	back.bg_color = Color(palette.outline, 0.6)
+	back.set_corner_radius_all(11)
+	back.set_border_width_all(3)
+	back.border_color = palette.outline
+	var fill := StyleBoxFlat.new()
+	fill.bg_color = palette.boss
+	fill.set_corner_radius_all(11)
+	fill.set_border_width_all(3)
+	fill.border_color = palette.outline
+	bar.add_theme_stylebox_override("background", back)
+	bar.add_theme_stylebox_override("fill", fill)
+	bar.visible = false
+	return bar
 
 
 func _build_result() -> Control:
 	var screen := _screen()
 	var box := _column(screen, true)
+	result_heading = LilloTheme.title("", 24)
+	result_heading.add_theme_color_override("font_color", palette.weapon)
+	box.add_child(result_heading)
 	result_title = LilloTheme.title("", 72)
 	box.add_child(result_title)
 	result_detail = LilloTheme.title("", 28)

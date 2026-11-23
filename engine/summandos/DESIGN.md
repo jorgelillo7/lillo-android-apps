@@ -52,7 +52,7 @@ licences), since Luckiest Guy is capitals only.
   top-right: a "?" with the How to play card, a speaker that mutes or unmutes everything, and a gear that
   opens **Settings** (sound, music, vibration, night mode, squad colour, About). The performance
   test is only a command-line option (`--mode=stress`).
-- **About**: the name and version, one block per credit (what, who, licence and a tappable link),
+- **About**: the name and version, one block per credit (side by side when sideways) (what, who, licence and a tappable link),
   and the no-ads line. A bought pack (KayKit Skeletons EXTRA) gets its own line once its models
   are in the game.
 - **Level map**: rays, clouds and hills; tiles of 3 columns upright and 5 sideways, stars in a
@@ -62,12 +62,15 @@ licences), since Luckiest Guy is capitals only.
   mode, where every gate is the same gold so the colour gives nothing away; the gate the squad is
   heading through lights up and grows as it nears, the other dims; waves come down a lane and
   bolts fly to it, so the squad has to stand in front of a wave to hurt it;
-  numbers rise when a gate is taken; "Think!" counts down before hard gates.
-- **Result**: a dark card with stars popping in and confetti on a win.
+  numbers rise when a gate is taken; "Think!" counts down in the top-left corner, clear of the gates; the mode and level sit above
+  the counts, and a boss's health bar under them while it is near. The mage boss throws fireballs at where the squad
+  stands, over a red ring on the track; moving out of the ring dodges them. Weapons go by name:
+  pistols ×2, a bazooka ×3, with thicker bolts.
+- **Result**: the mode and level, then a dark card with stars popping in and confetti on a win.
 
 ## Expert
 
-Ten levels for the very keen: every gate is a two-step sum, every gate pauses for 7 seconds, gates
+Ten levels for the very keen: every gate is a two-step sum, every gate pauses for 5 seconds, gates
 are all gold, and taking the worse gate ends the level on the spot with "Wrong gate! ×(√100÷2)
 left 45 soldiers and +(2³+9) left 26." Random choices never win one (balance report).
 

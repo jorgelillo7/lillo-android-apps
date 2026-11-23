@@ -5,15 +5,18 @@ other way; maths gates grow or shrink the platoon, weapon crates make it deadlie
 Package `com.jorgelillo.summandos`. Plan and scope: [docs/plans/fake-ad-games.md](../../docs/plans/fake-ad-games.md).
 Look: [DESIGN.md](DESIGN.md). Commands: [OPERATIONS.md](OPERATIONS.md).
 
+The name joins *summands*, the numbers that are added, and *commandos*, the squad that turns them
+into soldiers (Spanish "Sumandos": *sumandos* and *comandos*); the About card says so.
+
 Status: **in development**, not on Play yet.
 
 - Four ranks, each with its operations under its name on the menu and a "How to play" card
   behind the corner "?": **Recruit** (+ − ×2 ÷2), **Soldier** (percentages and small sums),
-  **Captain** (powers, roots and equations for x, with a 10-second pause to think before a few
-  gates) and **Legend**: 10 levels of two-step sums ("2³−5", "√144÷3", "3x+4=x+18") with a 7-second pause
+  **Captain** (powers, roots and equations for x, with a 5-second pause to think before a few
+  gates) and **Legend**: 10 levels of two-step sums ("2³−5", "√144÷3", "3x+4=x+18") with a 5-second pause
   at every gate, where the worse gate loses the level at once.
 - 30 generated levels per mode (10 in expert), the same every time, each winnable by the best choices; 1–3 stars
-  by soldiers left, the next level opening on a win; a boss every fifth level.
+  by soldiers left, the next level opening on a win; a boss every fifth level with a health bar, which eats soldiers until shot down; enemies take several shots, so a weapon shows.
 - A paged level map, menus over an animated backdrop, night mode, a squad colour, English and
   Spanish, upright and sideways; a 1,000-unit performance test from the command line.
 
