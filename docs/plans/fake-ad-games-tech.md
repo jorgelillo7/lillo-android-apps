@@ -87,6 +87,7 @@ The full layout and the class list: [engine/README.md](../../engine/README.md).
 | S2 ✅ | Crowd runner prototype: 1,000 units on a track through two gates; a debug APK for a real phone | Passed on the owner's Android handheld: the performance test holds **60 fps** in landscape with about 350 soldiers and 500 enemies on screen plus bullets; the first level is won. Prototype in `engine/summandos`. APK 50 MB with arm64 + x86_64, about 25 MB arm64 only |
 | S3 | Pull-the-pin prototype: two pins, 300 bodies, lava meeting water | Pours read clearly and stay smooth on the phone |
 | S4 | Headless AAB export plus Gradle Play Publisher `artifactDir` dry run to the internal track | The bundle reaches internal testing through the Release workflow |
+| S3b | Smaller engine: Godot's Android export templates built without the modules the games do not use (advanced physics, networking, XR, extra importers), pinned and checksummed like the stock ones | The arm64 download drops from ~26 MB (the engine is ~24 MB of it) to 10–15 MB and every game still passes its tests and runs on the phone |
 
 S3 needs the owner with a phone; the rest runs here. The engine decision is in
 [decisions.md](../decisions.md).
