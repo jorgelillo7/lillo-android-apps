@@ -1,6 +1,8 @@
-## Writes a number as a small sum to work out in one's head, at three tiers: 0 the plain number,
+## Writes a number as a small sum to work out in one's head, at four tiers: 0 the plain number,
 ## 1 an operation with small numbers ("3+4", "21÷3"), 2 adult maths (a power, a square root or a
-## one-step equation for x). Every result is exact: the expression always equals the value.
+## one-step equation for x), 3 two steps ("2³−5", "√144÷3", "3x+4=x+18"). Every result is exact:
+## the expression always equals the value. Tier 3 puzzles also carry "check", the same sum in
+## Godot's Expression syntax, so a test can evaluate it independently.
 class_name LilloMathPuzzle
 extends RefCounted
 
@@ -13,6 +15,8 @@ static func express(value: int, tier: int, random: RandomNumberGenerator) -> Dic
 		return {"text": str(value), "note": "", "hard": false}
 	if tier == 1:
 		return {"text": _operation(value, random), "note": "", "hard": false}
+	if tier >= 3:
+		return _two_steps(value, random)
 	var forms: Array[Dictionary] = []
 	var power := _power(value)
 	if power != "":
@@ -64,3 +68,35 @@ static func _equation(value: int, random: RandomNumberGenerator) -> Dictionary:
 	var a := random.randi_range(2, 4)
 	var b := random.randi_range(1, 20)
 	return {"text": "x", "note": "%dx+%d=%d" % [a, b, a * value + b], "hard": true}
+
+
+static func _two_steps(value: int, random: RandomNumberGenerator) -> Dictionary:
+	var forms: Array[Dictionary] = []
+	for base in range(2, 11):
+		for exponent in range(2, 6):
+			var power := int(pow(base, exponent))
+			if power > value and power - value <= 9 and power <= 200:
+				forms.append({"text": "%d%s−%d" % [base, SUPERSCRIPTS[exponent], power - value],
+					"check": "pow(%d,%d)-%d" % [base, exponent, power - value]})
+			elif power < value and value - power <= 9:
+				forms.append({"text": "%d%s+%d" % [base, SUPERSCRIPTS[exponent], value - power],
+					"check": "pow(%d,%d)+%d" % [base, exponent, value - power]})
+	for k in range(2, 6):
+		if value * k <= 20:
+			forms.append({"text": "√%d÷%d" % [value * k * value * k, k],
+				"check": "sqrt(%d)/%d" % [value * k * value * k, k]})
+	for k in range(2, 5):
+		if value % k == 0 and value / k <= 15:
+			forms.append({"text": "√%d×%d" % [(value / k) * (value / k), k],
+				"check": "sqrt(%d)*%d" % [(value / k) * (value / k), k]})
+	var a := random.randi_range(3, 5)
+	var c := random.randi_range(1, a - 1)
+	var b := random.randi_range(1, 15)
+	var d := (a - c) * value + b
+	forms.append({"text": "x", "note": "%dx+%d=%sx+%d" % [a, b, "" if c == 1 else str(c), d],
+		"check": "(%d-%d)/(%d-%d)" % [d, b, a, c]})
+	var pick: Dictionary = forms[random.randi_range(0, forms.size() - 1)]
+	pick["hard"] = true
+	if not pick.has("note"):
+		pick["note"] = ""
+	return pick

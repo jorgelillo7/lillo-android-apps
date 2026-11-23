@@ -12,9 +12,9 @@ const SHOTS_PER_SECOND := 1.5
 const TRACK_HALF_WIDTH := 4.0
 ## Enemies stand still until the squad is this close, then walk towards it.
 const WAKE_DISTANCE := 40.0
-## A row marked "think" stops the run this far before it, for this long, to work the sums out.
+## A row marked "think" stops the run this far before it (for level.think_seconds) to work the
+## sums out.
 const THINK_DISTANCE := 14.0
-const THINK_SECONDS := 10.0
 ## Shots land in full within this many metres of a wave's centre line, none beyond AIM_MISS.
 const AIM_FULL := 1.5
 const AIM_MISS := 4.5
@@ -35,6 +35,9 @@ var next_row := 0
 var last_pick: Dictionary = {}
 ## Seconds of thinking time left; the run stands still while it is above zero.
 var thinking := 0.0
+## Set when a strict level is lost on a gate: {"taken", "other": LilloGate, "taken_result",
+## "other_result": soldiers each would have left}.
+var failed_gate := {}
 var think_enabled := true
 var _thought_row := -1
 
@@ -68,12 +71,14 @@ func step(delta: float) -> void:
 		var row: Dictionary = level.rows[next_row]
 		if row.get("think", false) and row.z - z <= THINK_DISTANCE:
 			_thought_row = next_row
-			thinking = THINK_SECONDS
+			thinking = level.think_seconds
 			return
 	var blocked: bool = not waves.is_empty() and waves[0].z - z <= 1.0
 	if not blocked:
 		z = minf(z + SPEED * delta, level.length)
 	_take_rows()
+	if state != State.RUNNING:
+		return
 	_shoot(delta)
 	_advance_waves(delta)
 	if soldiers <= 0:
@@ -86,6 +91,15 @@ func _take_rows() -> void:
 	while next_row < level.rows.size() and z >= level.rows[next_row].z:
 		var row: Dictionary = level.rows[next_row]
 		var pick: Dictionary = row.left if x < 0.0 else row.right
+		var other: Dictionary = row.right if x < 0.0 else row.left
+		if level.strict and pick.has("gate") and other.has("gate"):
+			var mine := (pick.gate as LilloGate).apply(soldiers)
+			var theirs := (other.gate as LilloGate).apply(soldiers)
+			if theirs > mine:
+				failed_gate = {"taken": pick.gate, "other": other.gate, "taken_result": mine, "other_result": theirs}
+				state = State.LOST
+				next_row += 1
+				return
 		if pick.has("gate"):
 			soldiers = (pick.gate as LilloGate).apply(soldiers)
 		else:

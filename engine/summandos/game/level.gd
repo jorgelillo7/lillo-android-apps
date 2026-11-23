@@ -3,15 +3,21 @@
 class_name SummandosLevel
 extends RefCounted
 
-enum Mode { EASY, NORMAL, ADULT }
+enum Mode { EASY, NORMAL, ADULT, EXPERT }
 
 const LEVELS_PER_MODE := 30
+## Expert is a short, brutal set: two-step sums at every gate, and the worse gate loses the level.
+const EXPERT_LEVELS := 10
 const ROW_GAP := 28.0
 
 var length := 0.0
 var start_soldiers := 1
 ## Soldiers left at the end by the best choices, the yardstick for stars; 0 when unknown.
 var reference := 0
+## Taking the worse gate of a pair loses the level at once (expert).
+var strict := false
+## How long a "think" row stops the run, in seconds.
+var think_seconds := 10.0
 ## The boss at the end, or empty: {"model": file, "colour": index into BOSS_COLOURS, "height": m}.
 var boss := {}
 
@@ -68,16 +74,24 @@ static func stress() -> SummandosLevel:
 	return level
 
 
+## How many levels `mode` has.
+static func level_count(mode: Mode) -> int:
+	return EXPERT_LEVELS if mode == Mode.EXPERT else LEVELS_PER_MODE
+
+
 ## Level `number` (from 1) of a mode, the same every time: more rows, harder sums and bigger waves
 ## as the number grows. Waves are sized from the best choices and shrunk until those choices win.
 static func generate(mode: Mode, number: int) -> SummandosLevel:
 	var random := RandomNumberGenerator.new()
 	random.seed = hash("summandos-%d-%d" % [mode, number])
-	var d := clampf((number - 1) / float(LEVELS_PER_MODE - 1), 0.0, 1.0)
+	var d := clampf((number - 1) / float(level_count(mode) - 1), 0.0, 1.0)
+	var expert := mode == Mode.EXPERT
 	var level := SummandosLevel.new()
+	level.strict = expert
+	level.think_seconds = 7.0 if expert else 10.0
 	level.start_soldiers = 5 + random.randi_range(0, 5)
-	var row_count := 5 + mini(4, number / 6)
-	var weapon_row := random.randi_range(2, row_count - 1) if number >= 3 else -1
+	var row_count := 6 + number / 3 if expert else 5 + mini(4, number / 6)
+	var weapon_row := random.randi_range(2, row_count - 1) if number >= 3 and not expert else -1
 	var crowd := level.start_soldiers
 	var think_left := 1 + int(d * 2.0) if mode == Mode.ADULT else 0
 	for i in row_count:
@@ -86,8 +100,8 @@ static func generate(mode: Mode, number: int) -> SummandosLevel:
 		var right := _option(mode, d, crowd, random)
 		while LilloGate.better(left.gate, right.gate, crowd) == -1:
 			right = _option(mode, d, crowd, random)
-		if mode == Mode.ADULT and think_left > 0 and (left.gate.note != "" or left.gate.shown != "") \
-				and random.randf() < 0.6:
+		if expert or (mode == Mode.ADULT and think_left > 0 and (left.gate.note != "" or left.gate.shown != "") \
+				and random.randf() < 0.6):
 			row["think"] = true
 			think_left -= 1
 		crowd = maxi(left.gate.apply(crowd), right.gate.apply(crowd))
@@ -150,6 +164,8 @@ static func _option(mode: Mode, d: float, crowd: int, random: RandomNumberGenera
 		tier = 1
 	elif mode == Mode.ADULT:
 		tier = 2 if random.randf() < 0.5 + d * 0.4 else 1
+	elif mode == Mode.EXPERT:
+		tier = 3
 	if op != Op.PERCENT and tier > 0:
 		var puzzle := LilloMathPuzzle.express(value, tier, random)
 		if puzzle.text != str(value):
@@ -163,7 +179,7 @@ static func _option(mode: Mode, d: float, crowd: int, random: RandomNumberGenera
 static func _size_waves(level: SummandosLevel, d: float, boss: bool) -> void:
 	var sides := best_sides(level)
 	var crowd_at := _crowd_by_row(level, sides)
-	var strength := 0.25 + d * 0.75
+	var strength := 0.6 + d * 0.5 if level.strict else 0.25 + d * 0.75
 	for attempt in 12:
 		for wave in level.waves:
 			var crowd := _crowd_before(level, crowd_at, wave.z)

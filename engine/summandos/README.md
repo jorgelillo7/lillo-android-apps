@@ -7,9 +7,11 @@ Look: [DESIGN.md](DESIGN.md). Commands: [OPERATIONS.md](OPERATIONS.md).
 
 Status: **in development**, not on Play yet.
 
-- Three modes: **easy** (+ − ×2 ÷2), **normal** (percentages and small sums), **grown-up**
-  (powers, roots and equations for x, with a 10-second pause to think before a few gates).
-- 30 generated levels per mode, the same every time, each winnable by the best choices; 1–3 stars
+- Four modes: **easy** (+ − ×2 ÷2), **normal** (percentages and small sums), **grown-up**
+  (powers, roots and equations for x, with a 10-second pause to think before a few gates) and
+  **expert**: 10 levels of two-step sums ("2³−5", "√144÷3", "3x+4=x+18") with a 7-second pause
+  at every gate, where the worse gate loses the level at once.
+- 30 generated levels per mode (10 in expert), the same every time, each winnable by the best choices; 1–3 stars
   by soldiers left, the next level opening on a win; a boss every fifth level.
 - A paged level map, menus over an animated backdrop, night mode, a squad colour, English and
   Spanish, upright and sideways; a 1,000-unit performance test from the command line.

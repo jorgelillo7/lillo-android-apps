@@ -108,6 +108,7 @@ func show_screen(screen: String) -> void:
 
 
 func show_levels(mode: int) -> void:
+	level_map.count = SummandosLevel.level_count(mode)
 	var total := 0
 	for number in range(1, level_map.count + 1):
 		total += level_map.stars_of.call(number)
@@ -115,10 +116,14 @@ func show_levels(mode: int) -> void:
 	show_screen("levels")
 
 
-func show_result(won: bool, soldiers: int, kills: int, stars: int, has_next: bool) -> void:
+## `failed_gate` (SummandosRun.failed_gate) explains an expert level lost on a gate.
+func show_result(won: bool, soldiers: int, kills: int, stars: int, has_next: bool, failed_gate := {}) -> void:
 	show_screen("result")
 	result_title.text = texts.won if won else texts.lost
 	result_detail.text = texts.detail % [soldiers, kills]
+	if not failed_gate.is_empty():
+		result_detail.text = texts.wrong_gate % [(failed_gate.taken as LilloGate).label(), failed_gate.taken_result,
+			(failed_gate.other as LilloGate).label(), failed_gate.other_result]
 	for child in result_stars.get_children():
 		child.queue_free()
 	if won and stars > 0:

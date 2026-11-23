@@ -8,7 +8,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT.parent / "core" / "tools"))
-from lillo_sfx import mix, note, noise, sequence, silence, tone, write  # noqa: E402
+from lillo_sfx import mix, note, noise, sequence, silence, song, tone, write  # noqa: E402
 
 OUT = ROOT / "assets" / "sounds"
 
@@ -42,34 +42,26 @@ SOUNDS = {
 }
 
 
-def loop(bpm: int, bass: list, lead: list, bars: int) -> list:
-    """A seamless chiptune loop: one bass note per beat, one lead note per half beat."""
-    beat = 60 / bpm
-    out = silence(beat * 4 * bars)
-    for i, n in enumerate(bass * (bars * 4 // len(bass))):
-        start = int(i * beat * 44100)
-        part = tone(note(n), note(n), beat * 0.9, "triangle", 0.35, decay=3)
-        for j, s in enumerate(part):
-            if start + j < len(out):
-                out[start + j] += s
-    for i, n in enumerate(lead * (bars * 8 // len(lead))):
-        if n == "-":
-            continue
-        start = int(i * beat / 2 * 44100)
-        part = tone(note(n), note(n), beat * 0.45, "square", 0.12, decay=6)
-        for j, s in enumerate(part):
-            if start + j < len(out):
-                out[start + j] += s
-    return out
-
-
 MUSIC = {
-    "music_menu": lambda: loop(100, ["C3", "G2", "A2", "F2"],
-                               ["E5", "G5", "C6", "G5", "A5", "-", "G5", "E5",
-                                "D5", "E5", "G5", "-", "C5", "D5", "E5", "-"], 8),
-    "music_run": lambda: loop(132, ["A2", "A2", "F2", "G2"],
-                              ["A4", "C5", "E5", "A5", "G5", "E5", "C5", "E5",
-                               "F5", "A5", "C6", "A5", "G5", "B4", "D5", "G5"], 8),
+    # The menus: a bouncy little march in C, light on drums.
+    "music_menu": lambda: song(
+        112, 8,
+        [("C3", "E4", "G4"), ("A2", "C4", "E4"), ("F2", "A3", "C4"), ("G2", "B3", "D4")],
+        [("E5", 2), ("G5", 1), ("E5", 1), ("C5", 2), ("D5", 2), ("E5", 2), ("C5", 2), ("A4", 4),
+         ("F5", 2), ("E5", 1), ("D5", 1), ("C5", 2), ("A4", 2), ("B4", 2), ("D5", 2), ("G5", 4),
+         ("E5", 2), ("G5", 1), ("A5", 1), ("G5", 2), ("E5", 2), ("C5", 2), ("E5", 2), ("A4", 4),
+         ("F5", 2), ("A5", 2), ("G5", 2), ("F5", 2), ("E5", 2), ("D5", 2), ("C5", 4)],
+        list("k...h...s...h..."), lead="triangle"),
+    # The run: a driving march in A minor with a snare roll, a bugle-like lead.
+    "music_run": lambda: song(
+        144, 8,
+        [("A2", "C4", "E4"), ("A2", "C4", "E4"), ("F2", "A3", "C4"), ("G2", "B3", "D4"),
+         ("A2", "C4", "E4"), ("C3", "E4", "G4"), ("D3", "F4", "A4"), ("E2", "G#3", "B3")],
+        [("A4", 2), ("A4", 1), ("A4", 1), ("C5", 2), ("E5", 2), ("D5", 2), ("C5", 2), ("B4", 2), ("A4", 2),
+         ("F4", 2), ("A4", 2), ("C5", 4), ("D5", 2), ("B4", 2), ("G4", 4),
+         ("A4", 2), ("C5", 1), ("E5", 1), ("A5", 4), ("G5", 2), ("E5", 2), ("C5", 2), ("E5", 2),
+         ("F5", 2), ("E5", 2), ("D5", 2), ("C5", 2), ("B4", 4), ("G#4", 4)],
+        list("k.h.s.h.k.kks.rr")),
 }
 
 

@@ -64,6 +64,12 @@ licences), since Luckiest Guy is capitals only.
   numbers rise when a gate is taken; "Think!" counts down before hard gates.
 - **Result**: a dark card with stars popping in and confetti on a win.
 
+## Expert
+
+Ten levels for the very keen: every gate is a two-step sum, every gate pauses for 7 seconds, gates
+are all gold, and taking the worse gate ends the level on the spot with "Wrong gate! ×(√100÷2)
+left 45 soldiers and +(2³+9) left 26." Random choices never win one (balance report).
+
 ## Sound
 
 Every effect is synthesised by `tools/generate_sounds.py` (nothing sampled): a pop on every button,

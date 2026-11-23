@@ -1,13 +1,13 @@
 ## Summandos' entry point: wires the run (game/), the 3D world and the screens (view/) together and
 ## handles input and the back button. Options after `--`: `--mode=play|stress` starts a run at
 ## once (stress is the 1,000-unit performance test, reachable only from here;
-## `--difficulty=easy|normal|adult --level=<n>` pick a level, `--autosteer` takes the better gate),
+## `--difficulty=easy|normal|adult|expert --level=<n>` pick a level, `--autosteer` takes the better gate),
 ## `--levels` opens the level map, `--about` the About card, `--palette=sunset|night` and `--squad=<colour>` override the saved choices, `--colours` opens the
 ## squad colour picker, and
 ## LilloCapture's `--shot=<png> --after=<s>` saves a screenshot and quits.
 extends Node3D
 
-const MODES := ["easy", "normal", "adult"]
+const MODES := ["easy", "normal", "adult", "expert"]
 
 var texts := SummandosTexts.for_language(OS.get_locale_language())
 var theme_name := "night" if LilloSettings.read("night", false) else "sunset"
@@ -128,11 +128,11 @@ func _toggle_night() -> void:
 
 func _start(run_mode: String, number := level_number) -> void:
 	mode = run_mode
-	level_number = clampi(number, 1, SummandosLevel.LEVELS_PER_MODE)
+	level_number = clampi(number, 1, SummandosLevel.level_count(difficulty))
 	var level := SummandosLevel.stress() if mode == "stress" else SummandosLevel.generate(difficulty, level_number)
 	run = SummandosRun.new(level)
 	target_x = 0.0
-	world.reset(level, mode == "play" and difficulty == SummandosLevel.Mode.ADULT)
+	world.reset(level, mode == "play" and difficulty >= SummandosLevel.Mode.ADULT)
 	heard = {"row": 0, "soldiers": run.soldiers, "kills": 0, "think": 0, "boss": false}
 	_music("run")
 	ui.show_screen("run")
@@ -147,7 +147,7 @@ func _finish() -> void:
 	audio.play("win" if won else "lose")
 	audio.buzz(80 if won else 200)
 	ui.show_result(won, run.soldiers, run.kills, stars,
-		won and playing and level_number < SummandosLevel.LEVELS_PER_MODE)
+		won and playing and level_number < SummandosLevel.level_count(difficulty), run.failed_gate)
 
 
 func _unhandled_input(event: InputEvent) -> void:
