@@ -40,7 +40,9 @@ on a badge.
   tab, padlocks on locked levels; arrows, swipe and page dots; back bottom-left.
 - **Run**: the chase camera; gates are translucent panels with their half of the track painted,
   teal when the gate keeps or grows the squad and purple when it shrinks it, except in grown-up
-  mode, where every gate is the same gold so the colour gives nothing away;
+  mode, where every gate is the same gold so the colour gives nothing away; the gate the squad is
+  heading through lights up and grows as it nears, the other dims; waves come down a lane and
+  bolts fly to it, so the squad has to stand in front of a wave to hurt it;
   numbers rise when a gate is taken; "Think!" counts down before hard gates.
 - **Result**: a dark card with stars popping in and confetti on a win.
 

@@ -44,7 +44,7 @@ static func rising_text(parent: Node3D, at: Vector3, text: String, colour: Color
 	label.position = at
 	parent.add_child(label)
 	var tween := label.create_tween().set_parallel()
-	tween.tween_property(label, "position", at + Vector3(0, 2.5, 0), 0.9).set_ease(Tween.EASE_OUT)
+	tween.tween_property(label, "position", at + Vector3(0, 1.2, 0), 0.9).set_ease(Tween.EASE_OUT)
 	tween.tween_property(label, "modulate:a", 0.0, 0.9).set_delay(0.3)
 	tween.chain().tween_callback(label.queue_free)
 

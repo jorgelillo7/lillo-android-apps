@@ -151,12 +151,14 @@ func _clamp_x(x: float) -> float:
 	return clampf(x, -SummandosRun.TRACK_HALF_WIDTH, SummandosRun.TRACK_HALF_WIDTH)
 
 
-## Steers towards the side whose choice leaves more soldiers (performance test, --autosteer).
+## Steers like a good player: in front of the wave in range, else to the gate leaving more
+## soldiers (performance test, --autosteer).
 func _autosteer() -> float:
-	if run.next_row >= run.level.rows.size():
-		return 0.0
-	var row: Dictionary = run.level.rows[run.next_row]
-	return -2.5 if _value(row.left) > _value(row.right) else 2.5
+	var gate_x := 0.0
+	if run.next_row < run.level.rows.size():
+		var row: Dictionary = run.level.rows[run.next_row]
+		gate_x = -2.5 if _value(row.left) > _value(row.right) else 2.5
+	return run.steer_hint(gate_x)
 
 
 func _value(pick: Dictionary) -> int:

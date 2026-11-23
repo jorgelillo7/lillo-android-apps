@@ -37,6 +37,8 @@ var row_nodes: Array[Node3D] = []
 var formation_cache := {}
 var bullets := PackedVector3Array()
 var bullet_ends := PackedFloat32Array()
+## Sideways distance each bolt covers on its way, so it flies to the wave's lane.
+var bullet_drift := PackedFloat32Array()
 var shown_row := 0
 ## Gates all in one colour, so the colour never hints which one grows the squad.
 var neutral_gates := false
@@ -60,6 +62,7 @@ func reset(level: SummandosLevel, neutral := false) -> void:
 	neutral_gates = neutral
 	bullets.clear()
 	bullet_ends.clear()
+	bullet_drift.clear()
 	formation_cache.clear()
 	shown_row = 0
 	for node in row_nodes:
@@ -68,8 +71,11 @@ func reset(level: SummandosLevel, neutral := false) -> void:
 	for row in level.rows:
 		var node := Node3D.new()
 		node.position = Vector3(0, 0, row.z)
-		node.add_child(_choice(row.left, -1.0))
-		node.add_child(_choice(row.right, 1.0))
+		var left := _choice(row.left, -1.0)
+		var right := _choice(row.right, 1.0)
+		node.add_child(left)
+		node.add_child(right)
+		node.set_meta("sides", [left, right])
 		add_child(node)
 		row_nodes.append(node)
 
@@ -247,6 +253,7 @@ func _choice(pick: Dictionary, side: float) -> Node3D:
 		var gate_colour: Color = palette.neutral_gate if neutral_gates else (palette.good_gate if good else palette.bad_gate)
 		var floor_colour: Color = palette.neutral_floor if neutral_gates else (palette.good_floor if good else palette.bad_floor)
 		panel.material_override = LilloMaterials.flat(gate_colour, true)
+		node.set_meta("panel", panel)
 		node.add_child(panel)
 		var floor := MeshInstance3D.new()
 		var floor_plane := PlaneMesh.new()
@@ -346,6 +353,7 @@ func draw_run(run: SummandosRun, delta: float) -> void:
 		LilloFx.pulse(count_label)
 	for node in row_nodes:
 		node.visible = node.position.z > run.z - 0.5
+	_highlight(run)
 
 	var enemy_points := PackedVector3Array()
 	var boss_points := PackedVector3Array()
@@ -353,12 +361,13 @@ func draw_run(run: SummandosRun, delta: float) -> void:
 		if wave.z - run.z > VISIBLE_AHEAD or enemy_points.size() >= ENEMY_CAPACITY:
 			break
 		if wave.hp >= 50.0:
-			boss_points.append(Vector3(0.0, 0.0, wave.z))
+			boss_points.append(Vector3(world_x(wave.x), 0.0, wave.z))
 			continue
 		for o in _enemy_offsets(wave.count):
 			if enemy_points.size() >= ENEMY_CAPACITY:
 				break
-			enemy_points.append(Vector3(o.x, 0.0, wave.z + o.z))
+			var ex := clampf(world_x(wave.x) + o.x * 0.6, -TRACK_WIDTH * 0.5 + 0.3, TRACK_WIDTH * 0.5 - 0.3)
+			enemy_points.append(Vector3(ex, 0.0, wave.z + o.z))
 	enemies_view.show_points(enemy_points)
 	if boss_model:
 		boss_model.visible = not boss_points.is_empty()
@@ -371,20 +380,43 @@ func draw_run(run: SummandosRun, delta: float) -> void:
 	camera.look_at(Vector3(x * 0.35, 0, run.z + rig.z))
 
 
+## Lights the gate the squad is heading through and dims the other, so the choice is never a
+## surprise (a squad dead centre takes the right gate).
+func _highlight(run: SummandosRun) -> void:
+	if run.next_row >= row_nodes.size():
+		return
+	var node := row_nodes[run.next_row]
+	var near := clampf(1.0 - (node.position.z - run.z) / 25.0, 0.0, 1.0)
+	var taken := 0 if run.x < 0.0 else 1
+	var sides: Array = node.get_meta("sides")
+	for i in 2:
+		var side: Node3D = sides[i]
+		var chosen := i == taken
+		side.scale = Vector3.ONE * (1.0 + (0.12 * near if chosen else 0.0))
+		if side.has_meta("panel"):
+			var material: StandardMaterial3D = (side.get_meta("panel") as MeshInstance3D).material_override
+			material.albedo_color.a = lerpf(0.45, 0.8 if chosen else 0.2, near)
+
+
 func _draw_bullets(run: SummandosRun, delta: float) -> void:
 	var wave := run.target()
 	if not wave.is_empty() and run.soldiers > 0:
+		var lane := world_x(wave.x) - world_x(run.x)
 		for i in mini(8, run.soldiers):
 			if bullets.size() >= BULLET_CAPACITY:
 				break
-			var spread := Vector3(randf_range(-2.0, 2.0), 0.6, randf_range(-1.0, 0.5))
+			var spread := Vector3(randf_range(-1.5, 1.5), 0.6, randf_range(-1.0, 0.5))
 			bullets.append(Vector3(world_x(run.x), 0.0, run.z) + spread)
 			bullet_ends.append(wave.z)
+			bullet_drift.append(lane)
 	var i := bullets.size() - 1
 	while i >= 0:
+		var flight := maxf(1.0, bullet_ends[i] - run.z)
 		bullets[i].z += BULLET_SPEED * delta
+		bullets[i].x += bullet_drift[i] * BULLET_SPEED * delta / flight
 		if bullets[i].z >= bullet_ends[i]:
 			bullets.remove_at(i)
 			bullet_ends.remove_at(i)
+			bullet_drift.remove_at(i)
 		i -= 1
 	bullets_view.show_points(bullets)

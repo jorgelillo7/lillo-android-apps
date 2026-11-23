@@ -82,3 +82,25 @@ func test_the_first_level_can_be_won_by_good_choices() -> void:
 		if run.state != SummandosRun.State.RUNNING:
 			break
 	assert_eq(run.state, SummandosRun.State.WON, "soldiers left: %d" % run.soldiers)
+
+
+func test_shots_only_land_when_aimed_at_the_wave() -> void:
+	var waves: Array[Dictionary] = [{"z": 15.0, "x": 3.5, "count": 10, "hp": 1.0}]
+	var aimed := SummandosRun.new(_level([], waves, 20))
+	aimed.steer(3.5)
+	var away := SummandosRun.new(_level([], waves, 20))
+	away.steer(-3.5)
+	assert_eq(aimed.aim(aimed.waves[0]), 1.0)
+	assert_eq(away.aim(away.waves[0]), 0.0)
+	_run_for(aimed, 1.0)
+	_run_for(away, 1.0)
+	assert_gt(aimed.kills, 0, "standing in front of the wave kills")
+	assert_eq(away.kills, 0, "shooting at empty track kills nothing")
+
+
+func test_an_awake_wave_edges_towards_the_squad() -> void:
+	var waves: Array[Dictionary] = [{"z": 20.0, "x": 3.0, "count": 50, "hp": 100.0}]
+	var run := SummandosRun.new(_level([], waves, 5))
+	run.steer(-3.0)
+	_run_for(run, 1.0)
+	assert_lt(run.waves[0].x, 3.0)

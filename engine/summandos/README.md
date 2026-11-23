@@ -17,7 +17,8 @@ Status: **in development**, not on Play yet.
 ```
 main.gd              entry point: wires game/ and view/, input, back button, command-line options
 game/level.gd        level data (rows of choices, enemy waves) and the level generator
-game/run.gd          one run without drawing: steering, gates, shooting, clashes, thinking pauses
+game/run.gd          one run without drawing: steering, gates, aimed shooting at waves in lanes,
+                     clashes, thinking pauses
 game/progress.gd     stars per mode and level, saved; which levels are open
 game/palette.gd      the colour themes (sunset, night): every colour the game uses
 game/texts.gd        every word on screen, English and Spanish
