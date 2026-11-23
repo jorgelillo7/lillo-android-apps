@@ -37,7 +37,7 @@ One entry per document. Runbooks first, then setup, then reference.
 | ¿Quién llora esta jornada? (league cards) | [`OPERATIONS.md`](../apps/league-cards/OPERATIONS.md) | [`release-notes.md`](../apps/league-cards/release-notes.md) |
 | ¿Te pilla la chancla? (slipper runner) | [`OPERATIONS.md`](../apps/slipper/OPERATIONS.md) | [`release-notes.md`](../apps/slipper/release-notes.md) |
 | ¿Hay jaleo? Metropolitano (stadium events) | [`OPERATIONS.md`](../apps/stadium-events/OPERATIONS.md) | [`release-notes.md`](../apps/stadium-events/release-notes.md) |
-| Summandos (engine game, in development) | [`OPERATIONS.md`](../engine/summandos/OPERATIONS.md) | — (none until its first release) |
+| Summandos (engine game, in development) | [`OPERATIONS.md`](../engine/summandos/OPERATIONS.md) | [`release-notes.md`](../engine/summandos/release-notes.md) |
 
 ## Plans
 
