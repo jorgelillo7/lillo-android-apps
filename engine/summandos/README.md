@@ -8,7 +8,8 @@ Status: **prototype** (spike S2 of the [technology study](../../docs/plans/fake-
 three modes (easy: + − ×2 ÷2; normal: percentages and small sums; grown-up: powers, roots and
 equations for x, with a 10-second thinking pause before a few gates), 30 generated levels each
 with 1–3 stars and the next level opening on a win, picked on a paged level map (three columns
-upright, five sideways), and a 1,000-unit performance test. Look: toon-shaded figures with an
+upright, five sideways) over an animated backdrop with a soldier and a monster in the corners;
+tiles pop in, buttons squish, gates leave a rising number, a win throws confetti, and a 1,000-unit performance test. Look: toon-shaded figures with an
 outline, a striped track whose halves take their gate's colour, a monster boss; two palettes,
 **sunset** (the game's look) and **night** (the menu's night mode, remembered).
 

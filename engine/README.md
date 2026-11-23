@@ -14,7 +14,10 @@ engine/
                               LilloFigure (cartoon characters, monsters and bullet streaks as
                               one vertex-coloured mesh, toon material with outline),
                               LilloSettings (player preferences kept between sessions),
-                              LilloMathPuzzle (a number written as a sum to work out)
+                              LilloMathPuzzle (a number written as a sum to work out),
+                              LilloBackdrop (rays, clouds and hills behind menus), LilloSticker
+                              (a waving soldier or swaying monster for corners), LilloFx
+                              (pop-ins, squishy buttons, rising numbers, confetti)
     tests/                    GUT tests, res://tests/test_*.gd
   summandos/                  game one, Summandos (com.jorgelillo.summandos), README there
     addons/lillo_core         symlink to ../../core/addons/lillo_core

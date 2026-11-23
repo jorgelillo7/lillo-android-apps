@@ -54,6 +54,9 @@ var next_button: Button
 var think_box: Control
 var think_label: Label
 var levels: Control
+## The menus' backdrop and the characters in its corners, hidden during a run.
+var decor: Control
+var shown_row := 0
 var level_grid: GridContainer
 var levels_title: Label
 var page_dots: Label
@@ -345,6 +348,7 @@ func _button(text: String, action: Callable) -> Button:
 	button.custom_minimum_size = Vector2(0, 72)
 	button.add_theme_font_size_override("font_size", 30)
 	button.pressed.connect(action)
+	LilloFx.squishy(button)
 	return button
 
 
@@ -383,6 +387,23 @@ func _title(text: String, size: int) -> Label:
 func _build_ui() -> void:
 	var layer := CanvasLayer.new()
 	add_child(layer)
+	decor = Control.new()
+	decor.set_anchors_preset(Control.PRESET_FULL_RECT)
+	decor.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	layer.add_child(decor)
+	decor.add_child(LilloBackdrop.new(palette))
+	var hero := LilloSticker.new("soldier", palette.squad, palette.skin, palette.squad_dark, palette.outline)
+	var boss := LilloSticker.new("monster", palette.boss, palette.boss_belly, palette.boss_horns, palette.outline)
+	for pair in [[hero, Control.PRESET_BOTTOM_LEFT, 1.0], [boss, Control.PRESET_BOTTOM_RIGHT, -1.0]]:
+		var sticker: Control = pair[0]
+		sticker.set_anchors_preset(pair[1])
+		sticker.size = Vector2(230, 230)
+		decor.add_child(sticker)
+	get_viewport().size_changed.connect(func() -> void:
+		var area := get_viewport().get_visible_rect().size
+		hero.position = Vector2(-10, area.y - 230)
+		boss.position = Vector2(area.x - 200, area.y - 215))
+	get_viewport().size_changed.emit.call_deferred()
 	var root := MarginContainer.new()
 	root.set_anchors_preset(Control.PRESET_FULL_RECT)
 	layer.add_child(root)
@@ -420,6 +441,11 @@ func _build_ui() -> void:
 	var title := _title(texts.title, 96)
 	title.add_theme_color_override("font_color", palette.weapon)
 	menu_box.add_child(title)
+	title.ready.connect(func() -> void:
+		title.pivot_offset = title.size * 0.5
+		var tween := title.create_tween().set_loops()
+		tween.tween_property(title, "scale", Vector2(1.06, 1.06), 0.9).set_trans(Tween.TRANS_SINE)
+		tween.tween_property(title, "scale", Vector2.ONE, 0.9).set_trans(Tween.TRANS_SINE))
 	for i in texts.modes.size():
 		var button := _button(texts.modes[i], _open_levels.bind(i))
 		button.custom_minimum_size.y = 96
@@ -442,15 +468,6 @@ func _build_ui() -> void:
 	levels.set_anchors_preset(Control.PRESET_FULL_RECT)
 	levels.gui_input.connect(_swipe_levels)
 	root.add_child(levels)
-	var rays := ColorRect.new()
-	rays.set_anchors_preset(Control.PRESET_FULL_RECT)
-	rays.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	rays.material = _rays()
-	for side in ["offset_left", "offset_top"]:
-		rays.set(side, -80.0)
-	for side in ["offset_right", "offset_bottom"]:
-		rays.set(side, 80.0)
-	levels.add_child(rays)
 	var column := VBoxContainer.new()
 	column.set_anchors_preset(Control.PRESET_FULL_RECT)
 	column.add_theme_constant_override("separation", 12)
@@ -574,28 +591,6 @@ func _round_button(text: String, action: Callable) -> Button:
 	return button
 
 
-## Sun rays behind the level map, in the palette's sky colours.
-func _rays() -> ShaderMaterial:
-	var shader := Shader.new()
-	shader.code = """
-shader_type canvas_item;
-uniform vec4 light : source_color;
-uniform vec4 dark : source_color;
-void fragment() {
-	vec2 p = UV - vec2(0.5, 1.05);
-	float angle = atan(p.x, -p.y);
-	float ray = step(0.5, fract(angle * 3.0));
-	vec3 colour = mix(dark.rgb, light.rgb, ray * 0.35 + (1.0 - length(p)) * 0.5);
-	COLOR = vec4(colour, 0.92);
-}
-"""
-	var material := ShaderMaterial.new()
-	material.shader = shader
-	material.set_shader_parameter("light", palette.sky)
-	material.set_shader_parameter("dark", palette.sky_top)
-	return material
-
-
 ## Opens the level map of `picked` mode (-1 keeps the current one), on the page of the next level
 ## to play.
 func _open_levels(picked: int) -> void:
@@ -611,6 +606,7 @@ func _open_levels(picked: int) -> void:
 	result.visible = false
 	hud.visible = false
 	levels.visible = true
+	decor.visible = true
 	_draw_idle()
 	_fill_levels()
 
@@ -647,7 +643,9 @@ func _fill_levels() -> void:
 	levels_title.text = "%s   ★ %d/%d" % [texts.modes[difficulty], total, SummandosLevel.LEVELS_PER_MODE * 3]
 	var first := page * LEVELS_PER_PAGE + 1
 	for number in range(first, mini(first + LEVELS_PER_PAGE, SummandosLevel.LEVELS_PER_MODE + 1)):
-		level_grid.add_child(_level_tile(number, side))
+		var tile := _level_tile(number, side)
+		level_grid.add_child(tile)
+		LilloFx.pop_in(tile, (number - first) * 0.03)
 	var pages := ceili(SummandosLevel.LEVELS_PER_MODE / float(LEVELS_PER_PAGE))
 	var dots := PackedStringArray()
 	for i in pages:
@@ -726,6 +724,7 @@ func _stars(count: int) -> String:
 func _show_menu() -> void:
 	run = null
 	menu.visible = true
+	decor.visible = true
 	levels.visible = false
 	result.visible = false
 	hud.visible = false
@@ -744,8 +743,10 @@ func _start(run_mode: String, number := level_number) -> void:
 	_build_rows()
 	menu.visible = false
 	levels.visible = false
+	decor.visible = false
 	result.visible = false
 	hud.visible = true
+	shown_row = 0
 
 
 func _finish() -> void:
@@ -756,6 +757,9 @@ func _finish() -> void:
 	result_detail.text = texts.detail % [run.soldiers, run.kills]
 	var stars := run.stars() if mode == "play" else 0
 	result_stars.text = _stars(stars) if won and mode == "play" else ""
+	LilloFx.pop_in(result_stars, 0.3)
+	if won:
+		LilloFx.confetti(result, [palette.weapon, palette.squad, palette.good_floor, Color.WHITE])
 	if mode == "play":
 		SummandosProgress.record(difficulty, level_number, stars)
 	next_button.visible = won and mode == "play" and level_number < SummandosLevel.LEVELS_PER_MODE
@@ -869,6 +873,12 @@ func _draw_run(delta: float) -> void:
 	count_pill.position = count_label.position
 	count_pill.visible = run.state == SummandosRun.State.RUNNING
 	count_label.text = str(run.soldiers) if run.state == SummandosRun.State.RUNNING else ""
+	if run.next_row > shown_row:
+		shown_row = run.next_row
+		var pick := run.last_pick
+		var text := (pick.gate as LilloGate).label() if pick.has("gate") else "%s ×%s" % [texts.weapon, str(pick.weapon).trim_suffix(".0")]
+		LilloFx.rising_text(count_label, Vector3(0, 0.7, 0), text, palette.weapon, palette.outline)
+		LilloFx.pulse(count_label)
 	for node in row_nodes:
 		node.visible = node.position.z > run.z - 0.5
 

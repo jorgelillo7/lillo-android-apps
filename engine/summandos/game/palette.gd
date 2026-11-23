@@ -15,6 +15,7 @@ const THEMES := {
 		"good_gate": Color(0.07, 0.66, 0.62, 0.45), "bad_gate": Color(0.48, 0.25, 0.82, 0.45),
 		"good_floor": Color("#3CC2B5"), "bad_floor": Color("#9C6BE0"),
 		"weapon": Color("#FFD23F"), "bullet": Color("#FFF3B0"), "outline": Color("#3A1C0E"),
+		"hill_far": Color("#F29A6E"), "hill_near": Color("#D9785A"), "cloud": Color("#FFF4E6"),
 	},
 	"night": {
 		"sky_top": Color("#070A1A"), "sky": Color("#26305E"), "ambient": Color("#6A74A8"),
@@ -25,6 +26,7 @@ const THEMES := {
 		"good_gate": Color(0.13, 0.83, 0.93, 0.4), "bad_gate": Color(1.0, 0.24, 0.55, 0.4),
 		"good_floor": Color("#1592A8"), "bad_floor": Color("#B0245E"),
 		"weapon": Color("#FFD60A"), "bullet": Color("#FFFFFF"), "outline": Color("#000000"),
+		"hill_far": Color("#2C3566"), "hill_near": Color("#1B2148"), "cloud": Color("#3B4580"),
 	},
 }
 
