@@ -18,7 +18,7 @@ func test_a_level_is_the_same_every_time() -> void:
 
 func test_every_level_can_be_won_with_the_best_choices() -> void:
 	for mode in SummandosLevel.Mode.values():
-		for number in range(1, SummandosLevel.LEVELS_PER_MODE + 1, 3):
+		for number in range(1, SummandosLevel.level_count(mode) + 1, 3):
 			var level := SummandosLevel.generate(mode, number)
 			var run := SummandosRun.simulate(level, SummandosLevel.best_sides(level))
 			assert_eq(run.state, SummandosRun.State.WON, "mode %d level %d" % [mode, number])
@@ -80,3 +80,23 @@ func test_progress_keeps_the_best_stars_and_opens_the_next_level() -> void:
 
 func _label(pick: Dictionary) -> String:
 	return pick.gate.label() if pick.has("gate") else "weapon %s" % pick.weapon
+
+
+func test_expert_is_ten_levels_of_two_step_sums_with_a_pause_at_every_gate() -> void:
+	assert_eq(SummandosLevel.level_count(SummandosLevel.Mode.EXPERT), 10)
+	var level := SummandosLevel.generate(SummandosLevel.Mode.EXPERT, 4)
+	assert_true(level.strict)
+	assert_eq(level.think_seconds, 7.0)
+	for row in level.rows:
+		assert_true(row.get("think", false), "every expert gate pauses")
+		assert_true(row.left.has("gate") and row.right.has("gate"), "no weapons in expert")
+
+
+func test_in_expert_the_worse_gate_loses_at_once() -> void:
+	var level := SummandosLevel.generate(SummandosLevel.Mode.EXPERT, 1)
+	var sides := SummandosLevel.best_sides(level)
+	sides[0] = -sides[0]
+	var run := SummandosRun.simulate(level, sides)
+	assert_eq(run.state, SummandosRun.State.LOST)
+	assert_eq(run.next_row, 1, "lost on the first gate")
+	assert_gt(run.failed_gate.other_result, run.failed_gate.taken_result)

@@ -64,3 +64,15 @@ func test_a_gate_shows_its_puzzle() -> void:
 	assert_eq(gate.label(), "×(3+4)")
 	gate.shown = "x"
 	assert_eq(gate.label(), "×x")
+	gate.shown = "√100÷2"
+	assert_eq(gate.label(), "×(√100÷2)", "a two-step root is bracketed")
+
+
+func test_two_step_puzzles_equal_their_value() -> void:
+	var random := _random(9)
+	for value in range(2, 121):
+		var puzzle := LilloMathPuzzle.express(value, 3, random)
+		var expression := Expression.new()
+		assert_eq(expression.parse(puzzle.check), OK, puzzle.check)
+		assert_almost_eq(float(expression.execute()), float(value), 0.001, "%s %s" % [puzzle.text, puzzle.note])
+		assert_true(puzzle.hard)

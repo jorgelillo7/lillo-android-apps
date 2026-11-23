@@ -47,8 +47,11 @@ licences), since Luckiest Guy is capitals only.
 
 ## Screens
 
-- **Menu**: the title breathing, three mode buttons, then night mode, squad colour and About.
-  The performance test is only a command-line option now (`--mode=stress`).
+- **Menu**: the title breathing and the four rank buttons (Recruit, Soldier, Captain, Legend),
+  each with its operations in small type underneath, nothing else. Two quiet round icons
+  top-right: a "?" with the How to play card, a speaker that mutes or unmutes everything, and a gear that
+  opens **Settings** (sound, music, vibration, night mode, squad colour, About). The performance
+  test is only a command-line option (`--mode=stress`).
 - **About**: the name and version, one block per credit (what, who, licence and a tappable link),
   and the no-ads line. A bought pack (KayKit Skeletons EXTRA) gets its own line once its models
   are in the game.
@@ -61,6 +64,23 @@ licences), since Luckiest Guy is capitals only.
   bolts fly to it, so the squad has to stand in front of a wave to hurt it;
   numbers rise when a gate is taken; "Think!" counts down before hard gates.
 - **Result**: a dark card with stars popping in and confetti on a win.
+
+## Expert
+
+Ten levels for the very keen: every gate is a two-step sum, every gate pauses for 7 seconds, gates
+are all gold, and taking the worse gate ends the level on the spot with "Wrong gate! ×(√100÷2)
+left 45 soldiers and +(2³+9) left 26." Random choices never win one (balance report).
+
+## Sound
+
+Every effect is synthesised by `tools/generate_sounds.py` (nothing sampled): a pop on every button,
+a rising arpeggio through a gate that adds (higher for a bigger gain) and a falling one through a
+gate that takes, soft crossbow ticks while shooting, bone crunches on hits (throttled, never more
+than one every 60 ms), a ticking countdown while thinking (sharper in the last three seconds), a
+low boom and a buzz when the boss wakes, a fanfare or a fall at the end, a ding per star. Two
+chiptune loops, calm for the menus and faster for the run, stand in until CC0 music is chosen.
+Sound, music and vibration each have a switch in Settings, saved, and the corner speaker mutes
+both sound and music at once; music pauses with the app.
 
 ## Icon
 

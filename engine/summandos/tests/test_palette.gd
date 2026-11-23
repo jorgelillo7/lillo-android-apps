@@ -34,7 +34,7 @@ func test_no_two_bosses_in_a_mode_look_alike_and_each_is_bigger() -> void:
 	for mode in SummandosLevel.Mode.values():
 		var seen := {}
 		var last_height := 0.0
-		for number in range(5, SummandosLevel.LEVELS_PER_MODE + 1, 5):
+		for number in range(5, SummandosLevel.level_count(mode) + 1, 5):
 			var look := SummandosLevel.boss_look(mode, number)
 			var key := "%s/%d" % [look.model, look.colour]
 			assert_false(seen.has(key), "mode %d level %d repeats %s" % [mode, number, key])

@@ -8,6 +8,8 @@ func _init() -> void:
 	random.seed = 1
 	for mode in SummandosLevel.Mode.values():
 		for number in [1, 5, 10, 15, 20, 25, 30]:
+			if number > SummandosLevel.level_count(mode):
+				continue
 			var level := SummandosLevel.generate(mode, number)
 			var wins := 0
 			for attempt in 20:

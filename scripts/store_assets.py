@@ -189,11 +189,13 @@ def feature_graphic(style, store, locale):
     return img
 
 
-def build(app_dir, style, locales):
-    """Writes the listing graphics of the app in app_dir (see the module docstring)."""
+def build(app_dir, style, locales, listings=None):
+    """Writes the listing graphics of the app in app_dir (see the module docstring); `listings`
+    overrides where the Gradle Play Publisher listings live (an engine game's play/ module)."""
     store = Path(app_dir) / "store"
+    listings = Path(listings) if listings else Path(app_dir) / "app" / "src" / "main" / "play" / "listings"
     for code, locale in locales.items():
-        graphics = Path(app_dir) / "app" / "src" / "main" / "play" / "listings" / code / "graphics"
+        graphics = listings / code / "graphics"
         screenshots = graphics / "phone-screenshots"
         for kind in ("phone-screenshots", "feature-graphic", "icon"):
             (graphics / kind).mkdir(parents=True, exist_ok=True)

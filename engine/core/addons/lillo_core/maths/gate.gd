@@ -48,7 +48,7 @@ static func better(left: LilloGate, right: LilloGate, crowd: int) -> int:
 
 func label() -> String:
 	var operand := str(value) if shown == "" else shown
-	if shown != "" and shown.length() > 1 and not shown.begins_with("√") and _has_operator(shown):
+	if shown != "" and shown.length() > 1 and _has_operator(shown):
 		operand = "(%s)" % shown
 	if op == Op.PERCENT:
 		return "%s %%" % operand

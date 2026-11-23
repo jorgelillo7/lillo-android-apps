@@ -52,6 +52,12 @@ scripts/engine-shot.sh --landscape engine/<game> /tmp/b.png 2 # sideways
   plays the real animation. Wash textures with the palette so the teams still read.
 - Credit the pack on the game's About card (`game/texts.gd`, `credits`).
 
+## Sound
+
+Effects come from `engine/<game>/tools/generate_sounds.py` on the shared synthesiser
+`engine/core/tools/lillo_sfx.py`; play them through `LilloAudio` (switches, throttling, button
+clicks). Third-party music is CC0 only, credited on the About card like models.
+
 ## Icons
 
 ```bash
@@ -62,6 +68,15 @@ scripts/engine-shot.sh --landscape engine/<game> /tmp/b.png 2 # sideways
 Read the preview: 48 px must still say what the game is; nothing important outside the round
 mask; the monochrome layer must read (cut details out rather than lose them). Send it to the owner
 before committing a new icon.
+
+## Store listing graphics
+
+The apps' pipeline, fed by the game: `tools/capture_store_screenshots.sh` takes 1080x2424 raws
+with `scripts/engine-shot.sh --store`, and 2560x1600 tablet raws with `--tablet` (drawn off-screen, so taller than the Mac's screen; the main
+scene calls `LilloCapture.rehost(self)` first), in every locale (`--lang=`), then
+`tools/generate_store_assets.py` frames them with headlines on `scripts/store_assets.py` into
+`play/src/main/play/listings/`. Pick moments by reading the level data (gate z, think rows):
+the run moves 9 m/s. Keep the frame rate and test-only labels off the pictures.
 
 ## A build for the owner's phone
 
