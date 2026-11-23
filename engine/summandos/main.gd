@@ -204,6 +204,8 @@ func _process(delta: float) -> void:
 	world.draw_run(run, delta)
 	_sound_run()
 	ui.update_hud(_heading(), _hud_text(), run.thinking, run.boss_health(), mode == "stress" and not capturing)
+	var armed := run.damage if mode == "play" else 1.0
+	ui.show_weapon(armed, world.weapon_text(armed))
 	if run.state != SummandosRun.State.RUNNING and not ui.result.visible:
 		_finish()
 
@@ -249,10 +251,7 @@ func _heading() -> String:
 
 
 func _hud_text() -> String:
-	var counts := "%s %d   ·   %s %d" % [texts.soldiers, run.soldiers, texts.kills, run.kills]
-	if mode == "play" and run.damage > 1.0:
-		counts += "   ·   " + world.weapon_text(run.damage)
-	return counts
+	return "%s %d   ·   %s %d" % [texts.soldiers, run.soldiers, texts.kills, run.kills]
 
 
 func _clamp_x(x: float) -> float:

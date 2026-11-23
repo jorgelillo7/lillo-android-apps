@@ -38,7 +38,7 @@ Lines are pruned as items ship. What has **shipped** lives in `apps/<app>/releas
 
 | | What is missing | Waiting on |
 |---|---|---|
-| 👤 | Fake-ad games, game one **Summandos** (`com.jorgelillo.summandos`, `engine/summandos`): built and on master (four ranks with help, 100 levels with stars, Legend mode, KayKit crossbowmen vs skeletons, aiming, squad colours, sound and music, store graphics for phone and tablet, slim engine 27 → 19 MB). **You**: test the slim-engine APK's frame rate on the handheld; okay the music (ours, or a CC0 track you download); buy KayKit Skeletons EXTRA (Golem, Necromancer; files go to `~/Projects/documentation/assets/`, not the public repo), then the store's "Giant bosses" shot is redone with the Golem. Next: S4, the Play internal track. Game two: pull the pin (lava, gold, a trapped hero; its engine profile keeps 2D physics) | Ready · [docs/plans/fake-ad-games.md](docs/plans/fake-ad-games.md) |
+| 👤 | Fake-ad games, game one **Summandos** (`com.jorgelillo.summandos`, `engine/summandos`): built and on master (four ranks with help, 100 levels with stars, Legend mode, KayKit crossbowmen vs skeletons, aiming, squad colours, sound and music, store graphics for phone and tablet, slim engine 27 → 19 MB). Golem and Necromancer bosses (bought KayKit Skeletons EXTRA, copied in from `~/Projects/documentation/assets/`, never the public repo) and Kenney weapons are in. **You**: test the latest APK on the handheld (Captain and Legend difficulty, the bosses, the weapon badge); okay the music (ours, or a CC0 track you download). Next: S4, the Play internal track. Game two: pull the pin (lava, gold, a trapped hero; its engine profile keeps 2D physics) | Ready · [docs/plans/fake-ad-games.md](docs/plans/fake-ad-games.md) |
 
 ## repo
 

@@ -32,6 +32,7 @@ static func for_language(language: String) -> Dictionary:
 			"colour": "Color del pelotón", "colour_title": "Elige el color de tu pelotón",
 			"credits": [
 				{"what": "Personajes 3D", "who": "KayKit, de Kay Lousberg", "licence": "CC0", "link": "kaylousberg.com"},
+				{"what": "Armas", "who": "Blaster Kit, de Kenney", "licence": "CC0", "link": "kenney.nl"},
 				{"what": "Tipografía", "who": "Luckiest Guy (Astigmatic) y Fredoka", "licence": "Apache 2.0 y OFL", "link": "fonts.google.com"},
 				{"what": "Motor", "who": "Godot Engine", "licence": "Licencia MIT", "link": "godotengine.org"},
 			],
@@ -67,6 +68,7 @@ static func for_language(language: String) -> Dictionary:
 		"colour": "Squad colour", "colour_title": "Pick your squad's colour",
 		"credits": [
 			{"what": "3D characters", "who": "KayKit by Kay Lousberg", "licence": "CC0", "link": "kaylousberg.com"},
+			{"what": "Weapons", "who": "Blaster Kit by Kenney", "licence": "CC0", "link": "kenney.nl"},
 			{"what": "Type", "who": "Luckiest Guy (Astigmatic) and Fredoka", "licence": "Apache 2.0 and OFL", "link": "fonts.google.com"},
 			{"what": "Engine", "who": "Godot Engine", "licence": "MIT licence", "link": "godotengine.org"},
 		],

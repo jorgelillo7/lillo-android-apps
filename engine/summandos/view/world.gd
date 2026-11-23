@@ -17,6 +17,9 @@ const LABEL_PIXEL := 0.01
 const GATE_TEXT_WIDTH := TRACK_WIDTH * 0.5 - 0.6
 ## The smallest font a gate's text shrinks to; the tests check every generated gate fits above it.
 const MIN_GATE_FONT := 60
+## How long the weapon on a crate is, and how high its name floats above it, in metres.
+const WEAPON_LENGTH := 2.4
+const WEAPON_LABEL_HEIGHT := 2.7
 const FIGURE_HEIGHT := 0.85
 const RUN := "Running_A"
 const SHOOT := "2H_Ranged_Shooting"
@@ -262,13 +265,18 @@ func _choice(pick: Dictionary, side: float) -> Node3D:
 	else:
 		var crate := MeshInstance3D.new()
 		var box := BoxMesh.new()
-		box.size = Vector3(1.4, 0.8, 0.8)
+		box.size = Vector3(2.2, 0.9, 1.0)
 		crate.mesh = box
 		crate.position.y = 0.4
 		crate.material_override = LilloMaterials.flat(palette.weapon, false, true)
 		node.add_child(crate)
+		var shown := SummandosModels.weapon(pick.weapon, WEAPON_LENGTH)
+		if shown:
+			shown.position.y = 0.95
+			node.add_child(shown)
 		var weapon_size := fit_font_size(weapon_text(pick.weapon), 110, GATE_TEXT_WIDTH)
-		var label := _label(weapon_text(pick.weapon), weapon_size, int(weapon_size * 0.2), 1.3)
+		var label := _label(weapon_text(pick.weapon), weapon_size, int(weapon_size * 0.2),
+			WEAPON_LABEL_HEIGHT if shown else 1.3)
 		label.modulate = palette.weapon
 		node.add_child(label)
 	return node

@@ -38,6 +38,12 @@ var hud_top: Label
 var boss_bar: ProgressBar
 var fps_label: Label
 var think_box: Control
+## Top right of the run: the weapon the squad carries, turning, with its name.
+var weapon_badge: VBoxContainer
+var weapon_label: Label
+var weapon_shown := 1.0
+const WEAPON_BADGE_TOP := 120.0
+const WEAPON_BADGE_SIZE := Vector2i(150, 110)
 var think_label: Label
 var result_heading: Label
 var result_title: Label
@@ -395,7 +401,36 @@ func _build_hud() -> Control:
 	hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	think_box.add_child(hint)
 	think_box.visible = false
+	weapon_badge = VBoxContainer.new()
+	weapon_badge.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
+	weapon_badge.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+	weapon_badge.position.y = WEAPON_BADGE_TOP
+	weapon_badge.add_theme_constant_override("separation", 0)
+	weapon_badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	weapon_badge.visible = false
+	screen.add_child(weapon_badge)
+	weapon_label = LilloTheme.title("", 26)
+	weapon_label.add_theme_color_override("font_color", palette.weapon)
+	weapon_badge.add_child(weapon_label)
 	return screen
+
+
+## Shows the weapon for damage `multiplier` in the badge, or hides it at 1 (bare crossbows).
+func show_weapon(multiplier: float, name: String) -> void:
+	if multiplier == weapon_shown:
+		return
+	weapon_shown = multiplier
+	for child in weapon_badge.get_children():
+		if child is LilloModelStage:
+			child.queue_free()
+	weapon_badge.visible = multiplier > 1.0
+	weapon_label.text = name
+	var model := SummandosModels.weapon(multiplier, 1.0) if multiplier > 1.0 else null
+	if model:
+		var stage := LilloModelStage.new(model, 0.8, WEAPON_BADGE_SIZE, -0.5)
+		stage.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+		weapon_badge.add_child(stage)
+		weapon_badge.move_child(stage, 0)
 
 
 ## The boss's health under the counts: a thick bar in the boss's colour on a dark track.

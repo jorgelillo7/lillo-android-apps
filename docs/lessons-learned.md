@@ -122,5 +122,9 @@ Short, one line each. Add to it whenever something bites.
   texture's luminance and the team hue (`LilloMaterials.team`).
 - **Third-party sources may refuse automated downloads** (OpenGameArt answers 403): plan for the
   owner to download by hand, or make the asset.
+- **A container resets its child's scale** (`fit_child_in_rect`): to shrink a card inside a
+  `CenterContainer`, scale the container, after a frame so the card is laid out.
+- **KayKit 1.1 characters ship without animations**: the clips live in the rig files
+  (`Rig_Medium_*.glb`, `Rig_Large_*.glb`); `scripts/glb_add_animations.py` copies them in by bone name.
 - **Paid assets never go in a public repo**, even CC0 ones: keep them in
   `~/Projects/documentation/assets/` and copy them in with a checksum.

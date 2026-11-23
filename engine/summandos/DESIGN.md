@@ -34,8 +34,11 @@ licences), since Luckiest Guy is capitals only.
 
 - In the run: KayKit's CC0 hooded crossbowmen as the squad (washed teal), running between waves
   and aiming and shooting bolts while a wave is in range; skeletons as the enemies (washed
-  purple). Bosses every fifth level reuse the four free skeleton models (warrior, mage, rogue,
-  minion) in six boss colours, each boss bigger than the last; no two bosses in a mode share both
+  purple). Bosses every fifth level take turns as six skeletons (warrior, mage, Golem,
+  rogue, Necromancer, minion) in six boss colours, each boss bigger than the last and the Golem a
+  third bigger again; the mage and the Necromancer throw fireballs. The Golem and Necromancer
+  come from a bought pack (KayKit Skeletons EXTRA); a build without it draws the warrior and the
+  mage in their place, with the same fight (`SummandosModels.STAND_INS`). No two bosses in a mode share both
   model and colour (`SummandosLevel.boss_look`). Boss colours keep ΔE ≥ 19 from every squad
   colour and both tracks for every kind of colour vision (tests). Crowds step through four baked poses per clip;
   the leader and the boss play the full animation. Without the models the game falls back to its
@@ -53,8 +56,8 @@ licences), since Luckiest Guy is capitals only.
   opens **Settings** (sound, music, vibration, night mode, squad colour, About). The performance
   test is only a command-line option (`--mode=stress`).
 - **About**: the name and version, one block per credit (side by side when sideways) (what, who, licence and a tappable link),
-  and the no-ads line. A bought pack (KayKit Skeletons EXTRA) gets its own line once its models
-  are in the game.
+  and the no-ads line. The bought pack (KayKit Skeletons EXTRA) gets its own line when its models
+  are in the build.
 - **Level map**: rays, clouds and hills; tiles of 3 columns upright and 5 sideways, stars in a
   tab, padlocks on locked levels; arrows, swipe and page dots; back bottom-left.
 - **Run**: the chase camera; gates are translucent panels with their half of the track painted,
@@ -64,8 +67,9 @@ licences), since Luckiest Guy is capitals only.
   bolts fly to it, so the squad has to stand in front of a wave to hurt it;
   numbers rise when a gate is taken; "Think!" counts down in the top-left corner, clear of the gates; the mode and level sit above
   the counts, and a boss's health bar under them while it is near. The mage boss throws fireballs at where the squad
-  stands, over a red ring on the track; moving out of the ring dodges them. Weapons go by name:
-  pistols ×2, a bazooka ×3, with thicker bolts.
+  stands, over a red ring on the track; moving out of the ring dodges them. Weapons go by name and
+  model (Kenney Blaster Kit): a pair of pistols ×2, a bazooka ×3, turning on their crate, with
+  thicker bolts; once taken, the weapon turns in a badge top-right with its name.
 - **Result**: the mode and level, then a dark card with stars popping in and confetti on a win.
 
 ## Expert
