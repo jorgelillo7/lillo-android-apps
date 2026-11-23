@@ -24,8 +24,9 @@ on a badge.
 
 ## Characters
 
-- In the run: KayKit's CC0 knights as the squad (washed teal) and skeletons as the enemies
-  (washed purple), a giant skeleton warrior as the boss. Crowds step through four baked poses;
+- In the run: KayKit's CC0 hooded crossbowmen as the squad (washed teal), running between waves
+  and aiming and shooting bolts while a wave is in range; skeletons as the enemies (washed
+  purple), a giant skeleton warrior as the boss. Crowds step through four baked poses per clip;
   the leader and the boss play the full animation. Without the models the game falls back to its
   own toon figures (`LilloFigure`) with a horned monster boss.
 - Credits for every third-party piece are on the About card (menu → About).

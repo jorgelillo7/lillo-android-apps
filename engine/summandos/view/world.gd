@@ -14,14 +14,17 @@ const BOSS_HEIGHT := 4.5
 const GATE_FLOOR_LENGTH := 7.0
 const FIGURE_HEIGHT := 0.85
 const MODELS := "res://assets/models/"
-## Spare kit on the knight model that the squad does not carry.
-const KNIGHT_SPARES := ["1H_Sword_Offhand", "Badge_Shield", "Rectangle_Shield", "Round_Shield",
-	"Spike_Shield", "2H_Sword"]
+## Spare kit on the crossbowman model that the squad does not carry.
+const ARCHER_SPARES := ["Knife_Offhand", "1H_Crossbow", "Knife", "Throwable"]
+const RUN := "Running_A"
+const SHOOT := "2H_Ranged_Shooting"
 
 var palette: Dictionary
 var texts: Dictionary
 var camera: Camera3D
 var leader: Node3D
+## The leader's AnimationPlayer when it is a model, to switch between running and shooting.
+var leader_player: AnimationPlayer
 var count_label: Label3D
 var count_badge: MeshInstance3D
 var soldiers_view: LilloAnimatedCrowd
@@ -111,14 +114,18 @@ func _build() -> void:
 		add_child(edge)
 
 	var outline := Color(palette.outline, 0.9)
-	var knight := _model("Knight.glb")
+	var archer := _model("Rogue_Hooded.glb")
 	var minion := _model("Skeleton_Minion.glb")
-	if knight and minion:
-		var running := LilloPoseBaker.bake(self, knight, "Running_A", 4, FIGURE_HEIGHT, KNIGHT_SPARES)
-		soldiers_view = LilloAnimatedCrowd.new(running, SOLDIER_CAPACITY, 10.0, _tinted(running[0], palette.squad))
+	if archer and minion:
+		var running := LilloPoseBaker.bake(self, archer, RUN, 4, FIGURE_HEIGHT, ARCHER_SPARES)
+		var tint := _tinted(running[0], palette.squad.lightened(0.25))
+		soldiers_view = LilloAnimatedCrowd.new(running, SOLDIER_CAPACITY, 10.0, tint)
+		soldiers_view.add_clip(SHOOT, LilloPoseBaker.bake(self, archer, SHOOT, 4, FIGURE_HEIGHT, ARCHER_SPARES))
 		var walking := LilloPoseBaker.bake(self, minion, "Walking_A", 4, FIGURE_HEIGHT)
 		enemies_view = LilloAnimatedCrowd.new(walking, ENEMY_CAPACITY, 6.0, _tinted(walking[0], palette.enemy))
-		leader = _animated(knight, "Running_A", 1.2, KNIGHT_SPARES, false, palette.squad)
+		leader = _animated(archer, RUN, 1.2, ARCHER_SPARES, false, palette.squad)
+		leader_player = leader.find_children("*", "AnimationPlayer", true, false)[0]
+		leader_player.get_animation(SHOOT).loop_mode = Animation.LOOP_LINEAR
 	else:
 		var soldier: Array[Mesh] = [LilloFigure.build(0.75, palette.squad_dark, palette.skin, palette.squad)]
 		soldiers_view = LilloAnimatedCrowd.new(soldier, SOLDIER_CAPACITY, 1.0, LilloFigure.material(outline))
@@ -143,7 +150,7 @@ func _build() -> void:
 		add_child(boss_model)
 	var bullet_material := LilloMaterials.flat(palette.bullet, false, true)
 	bullet_material.vertex_color_use_as_albedo = true
-	bullets_view = LilloCrowdView.new(LilloFigure.streak(0.7, 0.05, palette.bullet), bullet_material, BULLET_CAPACITY)
+	bullets_view = LilloCrowdView.new(LilloFigure.streak(0.9, 0.035, palette.bullet), bullet_material, BULLET_CAPACITY)
 	add_child(bullets_view)
 
 	count_label = Label3D.new()
@@ -295,6 +302,7 @@ func _enemy_offsets(count: int) -> PackedVector3Array:
 
 ## A small squad standing at the start, behind the menus.
 func draw_idle() -> void:
+	soldiers_view.play("default")
 	soldiers_view.show_at(Vector3.ZERO, _offsets(12).duplicate(), true)
 	enemies_view.show_points(PackedVector3Array())
 	bullets_view.show_points(PackedVector3Array())
@@ -319,6 +327,10 @@ func draw_run(run: SummandosRun, delta: float) -> void:
 	for i in squad_offsets.size():
 		var o := squad_offsets[i]
 		behind[i] = Vector3(clampf(o.x * 0.9 + x, -TRACK_WIDTH * 0.5 + 0.3, TRACK_WIDTH * 0.5 - 0.3), 0.0, -o.z - 0.6)
+	var shooting := not run.target().is_empty() and run.soldiers > 0
+	soldiers_view.play(SHOOT if shooting else "default")
+	if leader_player and leader_player.current_animation != (SHOOT if shooting else RUN):
+		leader_player.play(SHOOT if shooting else RUN, 0.2)
 	soldiers_view.show_at(Vector3(0, 0.0, run.z), behind, true)
 	leader.position = Vector3(x, 0.0, run.z + 0.2)
 	var running := run.state == SummandosRun.State.RUNNING

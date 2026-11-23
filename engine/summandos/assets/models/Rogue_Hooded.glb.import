@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://cc1meekdhi60k"
-path="res://.godot/imported/Knight.glb-082840718e221658a96caa7c01981d43.scn"
+uid="uid://cvl2jmruec8fs"
+path="res://.godot/imported/Rogue_Hooded.glb-5f8689af0c1659001a308ebccfe1a08a.scn"
 
 [deps]
 
-source_file="res://assets/models/Knight.glb"
-dest_files=["res://.godot/imported/Knight.glb-082840718e221658a96caa7c01981d43.scn"]
+source_file="res://assets/models/Rogue_Hooded.glb"
+dest_files=["res://.godot/imported/Rogue_Hooded.glb-5f8689af0c1659001a308ebccfe1a08a.scn"]
 
 [params]
 
