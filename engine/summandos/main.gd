@@ -1,7 +1,7 @@
 ## Summandos' scene: builds the track, the squad, the enemies and the HUD in code, and draws a
 ## SummandosRun every frame. Command-line options after `--`: `--mode=play|stress` starts a run
 ## (`--difficulty=easy|normal|adult` and `--level=<n>` pick which),
-## at once, `--palette=<name>` picks a SummandosPalette theme, `--shot=<png>` saves a screenshot
+## at once, `--levels` opens the level map, `--palette=<name>` picks a SummandosPalette theme, `--shot=<png>` saves a screenshot
 ## after `--after=<seconds>` (default 3) and quits.
 extends Node3D
 
@@ -13,6 +13,8 @@ const BULLET_CAPACITY := 300
 const BULLET_SPEED := 45.0
 const VISIBLE_AHEAD := 70.0
 
+const LEVELS_PER_PAGE := 15
+const FONT := preload("res://fonts/LuckiestGuy-Regular.ttf")
 const BOSS_HEIGHT := 4.5
 const GATE_FLOOR_LENGTH := 7.0
 
@@ -51,8 +53,12 @@ var result_stars: Label
 var next_button: Button
 var think_box: Control
 var think_label: Label
+var levels: Control
 var level_grid: GridContainer
-var mode_buttons: Array[Button] = []
+var levels_title: Label
+var page_dots: Label
+var page := 0
+var swipe := 0.0
 
 var shot_path := ""
 ## Camera rig for the current orientation: height, distance behind the squad, look-ahead.
@@ -85,6 +91,8 @@ func _ready() -> void:
 			shot_after = float(arg.trim_prefix("--after="))
 	if start_now:
 		_start(mode)
+	elif OS.get_cmdline_user_args().has("--levels"):
+		_open_levels(-1)
 	else:
 		_show_menu()
 
@@ -379,6 +387,7 @@ func _build_ui() -> void:
 	root.set_anchors_preset(Control.PRESET_FULL_RECT)
 	layer.add_child(root)
 	root.set_meta("safe", true)
+	root.theme = _theme()
 	get_viewport().size_changed.connect(_fit_safe_area.bind(root))
 	_fit_safe_area(root)
 
@@ -407,38 +416,78 @@ func _build_ui() -> void:
 	menu = Control.new()
 	menu.set_anchors_preset(Control.PRESET_FULL_RECT)
 	root.add_child(menu)
-	var menu_box := _centre_box(menu, true)
-	menu_box.add_child(_title(texts.title, 84))
-	var modes := HBoxContainer.new()
-	modes.add_theme_constant_override("separation", 8)
+	var menu_box := _centre_box(menu)
+	var title := _title(texts.title, 96)
+	title.add_theme_color_override("font_color", palette.weapon)
+	menu_box.add_child(title)
 	for i in texts.modes.size():
-		var button := _button(texts.modes[i], _pick_mode.bind(i))
-		button.toggle_mode = true
-		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		button.add_theme_font_size_override("font_size", 24)
-		modes.add_child(button)
-		mode_buttons.append(button)
-	menu_box.add_child(modes)
-	var scroll := ScrollContainer.new()
-	scroll.custom_minimum_size = Vector2(0, 300)
-	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	menu_box.add_child(scroll)
-	level_grid = GridContainer.new()
-	level_grid.columns = 5
-	level_grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	level_grid.add_theme_constant_override("h_separation", 8)
-	level_grid.add_theme_constant_override("v_separation", 8)
-	scroll.add_child(level_grid)
+		var button := _button(texts.modes[i], _open_levels.bind(i))
+		button.custom_minimum_size.y = 96
+		button.add_theme_font_size_override("font_size", 44)
+		button.set_meta("mode", i)
+		menu_box.add_child(button)
 	var extras := HBoxContainer.new()
-	extras.add_theme_constant_override("separation", 8)
+	extras.add_theme_constant_override("separation", 10)
 	var night: bool = LilloSettings.read("night", false)
 	for button in [_button(texts.night_on if night else texts.night_off, _toggle_night),
 			_button(texts.stress, _start.bind("stress"))]:
 		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		button.add_theme_font_size_override("font_size", 20)
+		button.add_theme_font_size_override("font_size", 22)
 		button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		button.add_theme_stylebox_override("normal", _box(Color(palette.outline, 0.75), Color(palette.outline, 0.9)))
 		extras.add_child(button)
 	menu_box.add_child(extras)
+
+	levels = Control.new()
+	levels.set_anchors_preset(Control.PRESET_FULL_RECT)
+	levels.gui_input.connect(_swipe_levels)
+	root.add_child(levels)
+	var rays := ColorRect.new()
+	rays.set_anchors_preset(Control.PRESET_FULL_RECT)
+	rays.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	rays.material = _rays()
+	for side in ["offset_left", "offset_top"]:
+		rays.set(side, -80.0)
+	for side in ["offset_right", "offset_bottom"]:
+		rays.set(side, 80.0)
+	levels.add_child(rays)
+	var column := VBoxContainer.new()
+	column.set_anchors_preset(Control.PRESET_FULL_RECT)
+	column.add_theme_constant_override("separation", 12)
+	column.mouse_filter = Control.MOUSE_FILTER_PASS
+	levels.add_child(column)
+	levels_title = _title("", 48)
+	column.add_child(levels_title)
+	var middle := HBoxContainer.new()
+	middle.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	middle.alignment = BoxContainer.ALIGNMENT_CENTER
+	middle.mouse_filter = Control.MOUSE_FILTER_PASS
+	column.add_child(middle)
+	middle.add_child(_round_button("<", _turn_page.bind(-1)))
+	var centre := CenterContainer.new()
+	centre.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	centre.mouse_filter = Control.MOUSE_FILTER_PASS
+	middle.add_child(centre)
+	level_grid = GridContainer.new()
+	level_grid.add_theme_constant_override("h_separation", 14)
+	level_grid.add_theme_constant_override("v_separation", 14)
+	centre.add_child(level_grid)
+	middle.add_child(_round_button(">", _turn_page.bind(1)))
+	var footer := HBoxContainer.new()
+	column.add_child(footer)
+	var back := _button("<", _show_menu)
+	back.custom_minimum_size = Vector2(84, 84)
+	back.add_theme_font_size_override("font_size", 44)
+	footer.add_child(back)
+	page_dots = _title("", 34)
+	page_dots.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	footer.add_child(page_dots)
+	var spacer := Control.new()
+	spacer.custom_minimum_size = Vector2(84, 0)
+	footer.add_child(spacer)
+	get_viewport().size_changed.connect(func() -> void:
+		if levels.visible:
+			_fill_levels())
 
 	result = Control.new()
 	result.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -455,7 +504,7 @@ func _build_ui() -> void:
 	next_button = _button(texts.next, func() -> void: _start("play", level_number + 1))
 	result_box.add_child(next_button)
 	result_box.add_child(_button(texts.again, func() -> void: _start(mode, level_number)))
-	result_box.add_child(_button(texts.menu, _show_menu))
+	result_box.add_child(_button(texts.menu, _open_levels.bind(-1)))
 
 
 ## Keeps the HUD and buttons clear of the display cutout and the system bars.
@@ -480,25 +529,194 @@ func _toggle_night() -> void:
 	get_tree().reload_current_scene()
 
 
-func _pick_mode(picked: int) -> void:
-	difficulty = picked as SummandosLevel.Mode
-	LilloSettings.write("difficulty", picked)
+## The game's look for every control: the chunky font, outlined text, buttons in the palette's
+## gold with a darker lip so they read as pressable.
+func _theme() -> Theme:
+	var theme := Theme.new()
+	theme.default_font = FONT
+	theme.set_color("font_color", "Button", Color.WHITE)
+	theme.set_color("font_outline_color", "Button", palette.outline)
+	theme.set_constant("outline_size", "Button", 10)
+	var gold := Color(palette.weapon)
+	theme.set_stylebox("normal", "Button", _box(gold, gold.darkened(0.35)))
+	theme.set_stylebox("hover", "Button", _box(gold.lightened(0.1), gold.darkened(0.35)))
+	theme.set_stylebox("pressed", "Button", _box(gold.darkened(0.15), gold.darkened(0.45), true))
+	theme.set_stylebox("disabled", "Button", _box(Color(0.55, 0.55, 0.6), Color(0.35, 0.35, 0.4)))
+	theme.set_stylebox("focus", "Button", StyleBoxEmpty.new())
+	theme.set_color("font_outline_color", "Label", palette.outline)
+	return theme
+
+
+## A rounded box with a darker lip under it; `pressed` flattens the lip.
+func _box(fill: Color, lip: Color, pressed := false) -> StyleBoxFlat:
+	var box := StyleBoxFlat.new()
+	box.bg_color = fill
+	box.border_color = lip
+	box.border_width_bottom = 2 if pressed else 8
+	box.border_width_top = 6 if pressed else 0
+	box.border_blend = false
+	box.set_corner_radius_all(18)
+	box.set_content_margin_all(10)
+	box.shadow_color = Color(0, 0, 0, 0.25)
+	box.shadow_size = 4
+	box.shadow_offset = Vector2(0, 3)
+	return box
+
+
+func _round_button(text: String, action: Callable) -> Button:
+	var button := _button(text, action)
+	button.custom_minimum_size = Vector2(64, 64)
+	button.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	button.add_theme_font_size_override("font_size", 36)
+	var style := _box(palette.squad, palette.squad_dark)
+	style.set_corner_radius_all(32)
+	button.add_theme_stylebox_override("normal", style)
+	return button
+
+
+## Sun rays behind the level map, in the palette's sky colours.
+func _rays() -> ShaderMaterial:
+	var shader := Shader.new()
+	shader.code = """
+shader_type canvas_item;
+uniform vec4 light : source_color;
+uniform vec4 dark : source_color;
+void fragment() {
+	vec2 p = UV - vec2(0.5, 1.05);
+	float angle = atan(p.x, -p.y);
+	float ray = step(0.5, fract(angle * 3.0));
+	vec3 colour = mix(dark.rgb, light.rgb, ray * 0.35 + (1.0 - length(p)) * 0.5);
+	COLOR = vec4(colour, 0.92);
+}
+"""
+	var material := ShaderMaterial.new()
+	material.shader = shader
+	material.set_shader_parameter("light", palette.sky)
+	material.set_shader_parameter("dark", palette.sky_top)
+	return material
+
+
+## Opens the level map of `picked` mode (-1 keeps the current one), on the page of the next level
+## to play.
+func _open_levels(picked: int) -> void:
+	if picked >= 0:
+		difficulty = picked as SummandosLevel.Mode
+		LilloSettings.write("difficulty", picked)
+	run = null
+	var next := 1
+	while next < SummandosLevel.LEVELS_PER_MODE and SummandosProgress.unlocked(difficulty, next + 1):
+		next += 1
+	page = (next - 1) / LEVELS_PER_PAGE
+	menu.visible = false
+	result.visible = false
+	hud.visible = false
+	levels.visible = true
+	_draw_idle()
 	_fill_levels()
 
 
-## The level map of the current mode: stars earned, the next level to play open, the rest locked.
+func _turn_page(step: int) -> void:
+	var pages := ceili(SummandosLevel.LEVELS_PER_MODE / float(LEVELS_PER_PAGE))
+	page = clampi(page + step, 0, pages - 1)
+	_fill_levels()
+
+
+func _swipe_levels(event: InputEvent) -> void:
+	if event is InputEventScreenDrag or (event is InputEventMouseMotion and event.button_mask != 0):
+		swipe += event.relative.x
+	elif event is InputEventScreenTouch or event is InputEventMouseButton:
+		if not event.pressed and absf(swipe) > 80.0:
+			_turn_page(-1 if swipe > 0.0 else 1)
+		swipe = 0.0
+
+
+## One page of the level map: a tile per level with its stars under it, locked levels greyed with
+## a padlock. Three columns upright, five sideways.
 func _fill_levels() -> void:
-	for i in mode_buttons.size():
-		mode_buttons[i].set_pressed_no_signal(i == difficulty)
+	var size := get_viewport().get_visible_rect().size
+	var upright := size.y > size.x
+	level_grid.columns = 3 if upright else 5
+	var rows := ceili(LEVELS_PER_PAGE / float(level_grid.columns))
+	var side := minf((size.x - 220.0) / level_grid.columns, (size.y - 190.0) / rows / 1.3) - 14.0
+	side = clampf(side, 72.0, 170.0)
 	for child in level_grid.get_children():
 		child.queue_free()
+	var total := 0
 	for number in range(1, SummandosLevel.LEVELS_PER_MODE + 1):
-		var stars := SummandosProgress.stars(difficulty, number)
-		var button := _button("%d\n%s" % [number, _stars(stars)], _start.bind("play", number))
-		button.custom_minimum_size = Vector2(72, 72)
-		button.add_theme_font_size_override("font_size", 20)
-		button.disabled = not SummandosProgress.unlocked(difficulty, number)
-		level_grid.add_child(button)
+		total += SummandosProgress.stars(difficulty, number)
+	levels_title.text = "%s   ★ %d/%d" % [texts.modes[difficulty], total, SummandosLevel.LEVELS_PER_MODE * 3]
+	var first := page * LEVELS_PER_PAGE + 1
+	for number in range(first, mini(first + LEVELS_PER_PAGE, SummandosLevel.LEVELS_PER_MODE + 1)):
+		level_grid.add_child(_level_tile(number, side))
+	var pages := ceili(SummandosLevel.LEVELS_PER_MODE / float(LEVELS_PER_PAGE))
+	var dots := PackedStringArray()
+	for i in pages:
+		dots.append("●" if i == page else "○")
+	page_dots.text = " ".join(dots)
+
+
+func _level_tile(number: int, side: float) -> Control:
+	var open := SummandosProgress.unlocked(difficulty, number)
+	var earned := SummandosProgress.stars(difficulty, number)
+	var tile := VBoxContainer.new()
+	tile.add_theme_constant_override("separation", 0)
+	var button := _button("" if not open else str(number), _start.bind("play", number))
+	button.custom_minimum_size = Vector2(side, side * 0.96)
+	button.add_theme_font_size_override("font_size", int(side * 0.5))
+	button.disabled = not open
+	var face := _box(palette.squad, palette.squad_dark)
+	face.border_width_top = 5
+	face.border_color = palette.squad_dark
+	button.add_theme_stylebox_override("normal", face)
+	if not open:
+		button.add_child(_padlock())
+	tile.add_child(button)
+	var tab := PanelContainer.new()
+	var tab_style := StyleBoxFlat.new()
+	tab_style.bg_color = Color(palette.outline, 0.7)
+	tab_style.corner_radius_bottom_left = 14
+	tab_style.corner_radius_bottom_right = 14
+	tab_style.content_margin_top = 4
+	tab_style.content_margin_bottom = 6
+	tab.add_theme_stylebox_override("panel", tab_style)
+	tab.custom_minimum_size = Vector2(0, side * 0.32)
+	tile.add_child(tab)
+	var stars := Control.new()
+	stars.custom_minimum_size = Vector2(0, side * 0.22)
+	stars.draw.connect(func() -> void: _draw_stars(stars, earned, side * 0.11))
+	tab.add_child(stars)
+	return tile
+
+
+func _draw_stars(where: Control, earned: int, star: float) -> void:
+	var gap := star * 2.4
+	var start := where.size.x * 0.5 - gap
+	for i in 3:
+		var centre := Vector2(start + i * gap, where.size.y * 0.5)
+		var points := PackedVector2Array()
+		for k in 10:
+			var radius := star if k % 2 == 0 else star * 0.44
+			var angle := -PI / 2.0 + k * PI / 5.0
+			points.append(centre + Vector2(cos(angle), sin(angle)) * radius)
+		var fill: Color = palette.weapon if i < earned else Color(1, 1, 1, 0.18)
+		where.draw_colored_polygon(points, fill)
+		if i < earned:
+			points.append(points[0])
+			where.draw_polyline(points, palette.weapon.darkened(0.4), 1.5, true)
+
+
+func _padlock() -> Control:
+	var lock := Control.new()
+	lock.set_anchors_preset(Control.PRESET_FULL_RECT)
+	lock.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	lock.draw.connect(func() -> void:
+		var k := lock.size.x / 96.0
+		var c := lock.size * 0.5 + Vector2(0, 6) * k
+		var colour := Color(1, 1, 1, 0.85)
+		lock.draw_arc(c + Vector2(0, -12) * k, 10.0 * k, PI, TAU, 16, colour, 5.0 * k, true)
+		lock.draw_rect(Rect2(c + Vector2(-16, -12) * k, Vector2(32, 26) * k), colour)
+		lock.draw_circle(c, 3.5 * k, Color(0.35, 0.35, 0.4)))
+	return lock
 
 
 func _stars(count: int) -> String:
@@ -507,8 +725,8 @@ func _stars(count: int) -> String:
 
 func _show_menu() -> void:
 	run = null
-	_fill_levels()
 	menu.visible = true
+	levels.visible = false
 	result.visible = false
 	hud.visible = false
 	_draw_idle()
@@ -525,6 +743,7 @@ func _start(run_mode: String, number := level_number) -> void:
 	formation_cache.clear()
 	_build_rows()
 	menu.visible = false
+	levels.visible = false
 	result.visible = false
 	hud.visible = true
 
@@ -560,6 +779,8 @@ func _unhandled_input(event: InputEvent) -> void:
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_WM_GO_BACK_REQUEST:
 		if run != null:
+			_open_levels(-1)
+		elif levels.visible:
 			_show_menu()
 		else:
 			get_tree().quit()

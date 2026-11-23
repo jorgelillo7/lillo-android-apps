@@ -7,7 +7,8 @@ Package `com.jorgelillo.summandos`. Plan and scope: [docs/plans/fake-ad-games.md
 Status: **prototype** (spike S2 of the [technology study](../../docs/plans/fake-ad-games-tech.md)):
 three modes (easy: + − ×2 ÷2; normal: percentages and small sums; grown-up: powers, roots and
 equations for x, with a 10-second thinking pause before a few gates), 30 generated levels each
-with 1–3 stars and the next level opening on a win, and a 1,000-unit performance test. Look: toon-shaded figures with an
+with 1–3 stars and the next level opening on a win, picked on a paged level map (three columns
+upright, five sideways), and a 1,000-unit performance test. Look: toon-shaded figures with an
 outline, a striped track whose halves take their gate's colour, a monster boss; two palettes,
 **sunset** (the game's look) and **night** (the menu's night mode, remembered).
 
@@ -15,6 +16,7 @@ outline, a striped track whose halves take their gate's colour, a monster boss; 
 game/level.gd        level data (rows of choices, enemy waves) and the level generator: the same
                      level for the same mode and number, waves sized so the best choices win
 game/progress.gd     stars per mode and level, saved; which levels are open
+fonts/               Luckiest Guy (Astigmatic, Apache 2.0, from google/fonts), the game's type
 game/palette.gd      the colour themes (sunset, night): every colour the scene uses
 game/run.gd          one run without drawing: steering, gates, shooting, clashes, win or loss
 main.gd              the scene, built in code: track, squad, enemies, bullets, HUD, menu
