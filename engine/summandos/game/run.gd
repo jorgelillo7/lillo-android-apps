@@ -1,7 +1,7 @@
 ## One run of a level, without any drawing: the squad moves forward, takes gates and weapons,
 ## shoots the nearest wave in range and loses a soldier for every enemy that reaches it. A boss is
 ## not traded away: once it reaches the squad it eats `bite` soldiers a second until shot down. A
-## ranged boss (the mage) also throws fireballs from afar at where the squad stands; moving away
+## ranged boss (the mage, the Necromancer) also throws fireballs from afar at where the squad stands; moving away
 ## before one lands dodges it.
 class_name SummandosRun
 extends RefCounted

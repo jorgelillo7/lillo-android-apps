@@ -13,6 +13,8 @@ func test_a_level_is_the_same_every_time() -> void:
 	assert_eq(a.rows.size(), b.rows.size())
 	for i in a.rows.size():
 		assert_eq(_label(a.rows[i].left), _label(b.rows[i].left))
+		assert_eq(_label(a.rows[i].right), _label(b.rows[i].right))
+		assert_eq(a.rows[i].get("think", false), b.rows[i].get("think", false))
 	assert_eq(a.reference, b.reference)
 
 
@@ -32,11 +34,15 @@ func test_later_levels_are_longer() -> void:
 
 
 func test_easy_gates_are_plain_and_adult_ones_are_puzzles() -> void:
-	var easy := SummandosLevel.generate(SummandosLevel.Mode.EASY, 20)
-	for row in easy.rows:
-		for side in [row.left, row.right]:
-			if side.has("gate"):
-				assert_eq(side.gate.shown, "", "easy shows plain numbers")
+	var Op := LilloGate.Op
+	for number in range(1, SummandosLevel.LEVELS_PER_MODE + 1):
+		for row in SummandosLevel.generate(SummandosLevel.Mode.EASY, number).rows:
+			for side in [row.left, row.right]:
+				if side.has("gate"):
+					var gate: LilloGate = side.gate
+					assert_eq(gate.shown, "", "easy shows plain numbers")
+					assert_true(gate.op in [Op.ADD, Op.SUBTRACT] or (gate.op in [Op.MULTIPLY, Op.DIVIDE]
+						and gate.value == 2), "recruit level %d: %s is + − ×2 or ÷2" % [number, gate.label()])
 	var puzzles := 0
 	var thinks := 0
 	for row in SummandosLevel.generate(SummandosLevel.Mode.ADULT, 20).rows:
@@ -46,6 +52,10 @@ func test_easy_gates_are_plain_and_adult_ones_are_puzzles() -> void:
 				puzzles += 1
 	assert_gt(puzzles, 2, "adult writes operands as puzzles")
 	assert_between(thinks, 1, 3, "a few thinking pauses, not every gate")
+	for number in range(1, SummandosLevel.LEVELS_PER_MODE + 1):
+		var rows := SummandosLevel.generate(SummandosLevel.Mode.ADULT, number).rows
+		assert_true(rows.any(func(row: Dictionary) -> bool: return row.get("think", false)),
+			"captain level %d pauses at least once" % number)
 
 
 func test_a_think_row_stops_the_run_for_five_seconds() -> void:
@@ -55,17 +65,23 @@ func test_a_think_row_stops_the_run_for_five_seconds() -> void:
 	level.rows = [{"z": 30.0, "think": true, "left": SummandosLevel.gate(LilloGate.Op.ADD, 5),
 		"right": SummandosLevel.gate(LilloGate.Op.ADD, 6)}]
 	var run := SummandosRun.new(level)
-	for i in 60 * 3:
+	while run.thinking <= 0.0:
 		run.step(1.0 / 60.0)
-	assert_gt(run.thinking, 0.0, "paused before the row")
 	var stopped_at := run.z
-	for i in 60 * 3:
+	for i in int(60 * 4.9):
 		run.step(1.0 / 60.0)
 	assert_eq(run.z, stopped_at, "nothing moves while thinking")
-	run.done_thinking()
-	for i in 60 * 3:
+	assert_gt(run.thinking, 0.0, "still thinking after 4.9 s")
+	for i in int(60 * 0.3):
 		run.step(1.0 / 60.0)
-	assert_eq(run.next_row, 1, "the row was taken after the pause")
+	assert_gt(run.z, stopped_at, "the pause ends by itself after five seconds")
+	var early := SummandosRun.new(level)
+	while early.thinking <= 0.0:
+		early.step(1.0 / 60.0)
+	early.done_thinking()
+	for i in 60 * 3:
+		early.step(1.0 / 60.0)
+	assert_eq(early.next_row, 1, "ended early, the row is taken")
 
 
 func test_progress_keeps_the_best_stars_and_opens_the_next_level() -> void:
@@ -87,9 +103,12 @@ func test_expert_is_ten_levels_of_two_step_sums_with_a_pause_at_every_gate() -> 
 	var level := SummandosLevel.generate(SummandosLevel.Mode.EXPERT, 4)
 	assert_true(level.strict)
 	assert_eq(level.think_seconds, 5.0)
-	for row in level.rows:
-		assert_true(row.get("think", false), "every expert gate pauses")
-		assert_true(row.left.has("gate") and row.right.has("gate"), "no weapons in expert")
+	for number in range(1, SummandosLevel.EXPERT_LEVELS + 1):
+		for row in SummandosLevel.generate(SummandosLevel.Mode.EXPERT, number).rows:
+			assert_true(row.get("think", false), "every expert gate pauses")
+			assert_true(row.left.has("gate") and row.right.has("gate"), "no weapons in expert")
+			for side in [row.left, row.right]:
+				assert_ne(side.gate.shown, "", "legend level %d: %s is a two-step sum" % [number, side.gate.label()])
 
 
 func test_in_expert_the_worse_gate_loses_at_once() -> void:
@@ -103,6 +122,7 @@ func test_in_expert_the_worse_gate_loses_at_once() -> void:
 
 
 func test_the_best_choices_lose_a_share_of_the_squad_and_more_in_harder_modes() -> void:
+	var kept := {}
 	for mode in [SummandosLevel.Mode.EASY, SummandosLevel.Mode.ADULT]:
 		var level := SummandosLevel.generate(mode, 10)
 		var gates_only := SummandosLevel.new()
@@ -114,10 +134,24 @@ func test_the_best_choices_lose_a_share_of_the_squad_and_more_in_harder_modes() 
 		var fought := SummandosRun.simulate(level, sides)
 		assert_eq(fought.state, SummandosRun.State.WON)
 		assert_lt(fought.soldiers, untouched, "the waves cost soldiers in mode %d" % mode)
+		kept[mode] = fought.soldiers / float(untouched)
+	assert_lt(kept[SummandosLevel.Mode.ADULT], kept[SummandosLevel.Mode.EASY], "captain keeps a smaller share")
 
 
-func test_a_boss_lasts_seconds_and_a_weapon_shortens_the_fight() -> void:
+func test_a_boss_takes_seconds_of_fire() -> void:
 	var level := SummandosLevel.generate(SummandosLevel.Mode.EASY, 5)
 	var boss: Dictionary = level.waves[-1]
 	assert_true(boss.boss)
 	assert_gt(boss.hp, level.reference * SummandosRun.SHOTS_PER_SECOND * 3.0, "several seconds of fire")
+
+
+func test_stars_follow_the_share_of_the_reference() -> void:
+	var level := SummandosLevel.new()
+	level.reference = 100
+	var run := SummandosRun.new(level)
+	run.state = SummandosRun.State.WON
+	for case in [[75, 3], [74, 2], [40, 2], [39, 1]]:
+		run.soldiers = case[0]
+		assert_eq(run.stars(), case[1], "%d of 100 left" % case[0])
+	run.state = SummandosRun.State.LOST
+	assert_eq(run.stars(), 0, "a loss earns nothing")

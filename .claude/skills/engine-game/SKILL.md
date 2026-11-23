@@ -17,6 +17,9 @@ Background: `engine/README.md` (layout, core classes, rules). Game specifics:
 - **Rules in `game/`, drawing in `view/`.** `game/` is plain `RefCounted` scripts, unit tested;
   `view/` builds nodes; `main.gd` only wires them.
 - Colours only in `game/palette.gd`, words only in `game/texts.gd` (English and Spanish).
+- **Behaviour lives in `openspec/specs/<game>/`** (shared addon: `engine-core/`). A change to a
+  rule updates its spec in the same PR, and each scenario names its GUT test
+  (`` `test_a_small_squad_is_overrun` ``); `python3 scripts/check_specs.py` checks the names.
 
 ## Loop
 
@@ -95,7 +98,8 @@ uninstall a build signed otherwise.
 2. Copy the layout in `engine/README.md`: `project.godot` (sensor orientation, 720x720 base,
    `canvas_items` + `expand`, mobile renderer, ETC2/ASTC on), `export_presets.cfg` from Summandos
    with the package changed, the `addons/lillo_core` symlink, `tests/test_core_link.gd`.
-3. README, DESIGN, OPERATIONS from the start; a row in the root README's engine table.
+3. README, DESIGN, OPERATIONS from the start; a row in the root README's engine table; its
+   capabilities in `openspec/specs/<game>/` and a row in `openspec/project.md`.
 4. CI picks the project up through `scripts/engine-test.sh`; check the Engine workflow runs it.
 
 ## Pitfalls already met

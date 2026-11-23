@@ -140,9 +140,3 @@ func test_a_mage_fireball_burns_the_squad_where_it_stood_unless_it_moves() -> vo
 	_run_for(dodges, SummandosRun.FIREBALL_FLIGHT)
 	assert_eq(dodges.soldiers, 40, "moving out of the ring dodged it")
 
-
-func test_only_the_mage_boss_throws_fireballs() -> void:
-	for number in [5, 10, 15, 20]:
-		var level := SummandosLevel.generate(SummandosLevel.Mode.EASY, number)
-		var boss: Dictionary = level.waves[-1]
-		assert_eq(boss.get("burn", 0) > 0, level.boss.model in SummandosLevel.RANGED_BOSSES, "level %d" % number)

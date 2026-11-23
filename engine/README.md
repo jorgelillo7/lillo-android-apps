@@ -16,7 +16,7 @@ engine/
                               LilloPoseBaker (an animated model as a few still, simplified
                               poses) and LilloAnimatedCrowd (a crowd stepping through them)
       maths/                  LilloGate (a maths gate), LilloMathPuzzle (a number as a sum to
-                              work out, three tiers)
+                              work out, four tiers)
       render/                 LilloMaterials (flat, banded ground, camera-facing badge, a
                               textured model repainted in a team colour) and their shaders
       ui/                     LilloTheme (font, outlined text, buttons with a lip, cards),
@@ -64,7 +64,8 @@ engine/<game>/
                               screenshots the listing graphics come from
   play/                       src/main/play/listings/: the generated Play listing graphics
   tools/                      game-specific scripts (icon generator, balance report, samples/)
-  tests/                      GUT tests of game/ (test_core_link.gd checks the addon link)
+  tests/                      GUT tests of game/ and of view/'s pure helpers (test_core_link.gd
+                              checks the addon link); each cited by openspec/specs/<game>/
   addons/lillo_core           symlink to ../../core/addons/lillo_core
 ```
 
