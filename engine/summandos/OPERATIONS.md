@@ -11,6 +11,7 @@ scripts/godot.sh --headless --path engine/summandos --script tools/balance.gd   
 .venv/bin/python engine/summandos/tools/generate_icon.py    # regenerate the icons
 .venv/bin/python engine/summandos/tools/generate_sounds.py  # regenerate effects and music
 .venv/bin/python scripts/engine_icon_preview.py engine/summandos /tmp/icon.png  # check them
+scripts/engine-template.sh engine/summandos                 # slim engine (5 min, once per profile change)
 scripts/engine-export.sh --arm64 engine/summandos           # APK for a phone (export/, debug key)
 ```
 

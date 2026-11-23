@@ -13,6 +13,7 @@ canonical guide (structure, commands, conventions). Behaviour lives in
 | [`upgrade-android-deps`](skills/upgrade-android-deps/SKILL.md) | Upgrade the toolchain and dependencies (AGP, Gradle, Kotlin, SDK levels, libraries). |
 | [`check-android-env`](skills/check-android-env/SKILL.md) | Health of the local Android setup, API levels across the repo, Play's target-SDK deadline, Renovate. |
 | [`engine-game`](skills/engine-game/SKILL.md) | A game in `engine/` (Godot): reuse the core, test, screenshot both ways round, check the icon, export an APK for the phone, start a new game. |
+| [`slim-engine`](skills/slim-engine/SKILL.md) | A lighter APK for an engine game: its engine profile, the profile check, the slim Godot template, export and verify; bring a module back; Godot upgrades. |
 | [`play-status`](skills/play-status/SKILL.md) | Every app's version in the repo against every Play track, as one table. |
 
 Machine-level skills (the Mac's toolchain, disk, contacts) are not here: they

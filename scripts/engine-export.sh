@@ -2,6 +2,8 @@
 # Exports a game-engine project for Android:
 #   scripts/engine-export.sh [--arm64] engine/summandos [out.apk]
 # --arm64 leaves out the x86_64 build (emulators only): half the size, for sending to a phone.
+# A game with an engine-profile.py and a built export/template-release.apk (scripts/engine-template.sh)
+# exports with that slim engine, arm64 only, after checking it uses nothing the profile removes.
 #
 # Uses the project's "Android" preset (export_presets.cfg) and the pinned Godot. Needs, once per
 # machine: the Android export templates of that Godot version installed (scripts/godot.sh
@@ -43,10 +45,30 @@ export GODOT_ANDROID_KEYSTORE_RELEASE_USER="${GODOT_ANDROID_KEYSTORE_RELEASE_USE
 export GODOT_ANDROID_KEYSTORE_RELEASE_PASSWORD="${GODOT_ANDROID_KEYSTORE_RELEASE_PASSWORD:-android}"
 
 presets="$project/export_presets.cfg"
-if $arm64_only; then
+template="$project/export/template-release.apk"
+use_template=false
+if [ -f "$project/engine-profile.py" ] && [ -f "$template" ]; then
+  python3 "$root/scripts/engine_profile_check.py" "$project" >/dev/null || {
+    python3 "$root/scripts/engine_profile_check.py" "$project"; exit 1; }
+  use_template=true
+  arm64_only=true   # the slim template carries arm64 only
+fi
+if $arm64_only || $use_template; then
   cp "$presets" "$presets.full"
   trap 'mv "$presets.full" "$presets"' EXIT
+fi
+if $arm64_only; then
   sed -i.bak 's#^architectures/x86_64=true#architectures/x86_64=false#' "$presets" && rm -f "$presets.bak"
+fi
+if $use_template; then
+  python3 - "$presets" "$template" <<'PY'
+import sys
+path, template = sys.argv[1], sys.argv[2]
+text = open(path).read()
+text = text.replace("[preset.0.options]\n", f'[preset.0.options]\n\ncustom_template/release="{template}"\n', 1)
+open(path, "w").write(text)
+PY
+  echo "Exporting with the slim engine ($template)"
 fi
 
 "$root/scripts/godot.sh" --headless --path "$project" --import >/dev/null 2>&1 || true
