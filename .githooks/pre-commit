@@ -1,0 +1,4 @@
+#!/bin/sh
+# Refuses a commit that carries a file from a bought asset pack. Enable once per clone:
+#   git config core.hooksPath .githooks
+exec python3 "$(git rev-parse --show-toplevel)/scripts/check_paid_assets.py"

@@ -42,7 +42,10 @@ PENDING.md                         Open work, one line per item
 engine/                            Games built on a game engine (Godot): shared addon in engine/core (README there)
 openspec/                          What each app must keep doing: specs per app, change proposals (map: openspec/project.md)
 docs/                              Runbook, Google Play guide, decisions, lessons learned (index: docs/README.md)
-scripts/                           Shared scripts: env, emulator, UI driver (ui_lib), smoke / capture libs, store graphics
+scripts/                           Shared scripts: env, emulator, UI driver (ui_lib), smoke / capture libs, store graphics, engine tools
+branding/                          Developer-profile graphics for Google Play, and the tool that draws them
+.claude/                           Claude Code notes, skills and hooks for this repo
+.githooks/                         pre-commit: no bought asset files (git config core.hooksPath .githooks, once per clone)
 build-logic/                       Gradle convention plugins: Android, Compose, screenshots, Robolectric, baseline profiles, publishing
 gradle/libs.versions.toml          Single source of truth for every dependency version
 core/
