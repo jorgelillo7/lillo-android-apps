@@ -40,23 +40,25 @@ def soldier(cx, base, k, body, helmet):
 
 def shapes():
     """(kind, box, radius, colour) in drawing order, inside the adaptive safe zone (radius 33)."""
-    left, top, right, bottom = 33, 18, 67, 72
+    left, top, right, bottom = 28, 19, 56, 62
+    pad, gap = 3.0, 1.6
+    key = (right - left - 2 * pad - 3 * gap) / 4
+    screen_bottom = top + pad + 9
+    cy = (top + pad + screen_bottom) / 2
     calculator = [
-        ("round", (left, top, right, bottom), 6, CASE),
-        ("round", (left + 3.5, top + 3.5, right - 3.5, top + 13), 2, SCREEN),
-        ("rect", (55, 24.5, 57.5, 30.5), 0, CASE),
-        ("rect", (53.25, 26.25, 59.25, 28.75), 0, CASE),
-        ("rect", (41, 26.25, 47, 28.75), 0, CASE),
+        ("round", (left, top, right, bottom), 5, CASE),
+        ("round", (left + pad, top + pad, right - pad, screen_bottom), 1.8, SCREEN),
+        ("rect", (45.5, cy - 0.9, 50.5, cy + 0.9), 0, CASE),
+        ("rect", (47.1, cy - 2.5, 48.9, cy + 2.5), 0, CASE),
+        ("rect", (34, cy - 0.9, 39, cy + 0.9), 0, CASE),
     ]
-    key_w, key_h, gap = 5.6, 5.6, 2.0
     for row in range(4):
         for col in range(4):
-            x0 = left + 3.5 + col * (key_w + gap)
-            y0 = top + 17 + row * (key_h + gap)
-            colour = GOLD if col == 3 else KEY
-            calculator.append(("round", (x0, y0, x0 + key_w, y0 + key_h), 1.4, colour))
-    return (calculator + soldier(57, 92, 0.58, BACK_ROW, SQUAD_DARK)
-            + soldier(80, 92, 0.58, BACK_ROW, SQUAD_DARK) + soldier(69, 95, 0.76, SQUAD, SQUAD_DARK))
+            x0 = left + pad + col * (key + gap)
+            y0 = screen_bottom + 2.4 + row * (key + gap)
+            calculator.append(("round", (x0, y0, x0 + key, y0 + key), 1.2, GOLD if col == 3 else KEY))
+    return (calculator + soldier(50, 93, 0.74, BACK_ROW, SQUAD_DARK)
+            + soldier(80, 91, 0.74, BACK_ROW, SQUAD_DARK) + soldier(65, 96, 0.98, SQUAD, SQUAD_DARK))
 
 
 def paint(img, P, colour_of=lambda c: c):
