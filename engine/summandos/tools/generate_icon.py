@@ -1,4 +1,4 @@
-"""Generates Summandos' icons: a teal soldier leading two more of his squad under a gold plus,
+"""Generates Summandos' icons: a teal soldier leading two more of his squad beside a gold calculator,
 on the sunset palette's sky.
 
 Drawn with the apps' shared scripts/icon_lib.py. Outputs (engine/summandos/):
@@ -39,13 +39,14 @@ def soldier(cx, base, k, body, helmet):
 
 def shapes():
     """(kind, box, radius, colour) in drawing order, inside the adaptive safe zone (radius 33)."""
-    plus = [
-        ("ellipse", (63, 25, 81, 43), 0, GOLD),
-        ("rect", (70.5, 28.5, 73.5, 39.5), 0, OUTLINE),
-        ("rect", (66.5, 32.5, 77.5, 35.5), 0, OUTLINE),
-    ]
-    return (soldier(38, 80, 0.72, BACK_ROW, SQUAD_DARK) + soldier(70, 80, 0.72, BACK_ROW, SQUAD_DARK)
-            + soldier(54, 86, 1.0, SQUAD, SQUAD_DARK) + plus)
+    calculator = [
+        ("round", (37, 21, 71, 62), 5, GOLD),
+        ("round", (40.5, 24.5, 67.5, 35.5), 2, OUTLINE),
+        ("rect", (52.5, 26.5, 55.5, 33.5), 0, SQUAD),
+        ("rect", (50.5, 28.5, 57.5, 31.5), 0, SQUAD),
+    ] + [("round", (41 + i * 9, 38.5, 48 + i * 9, 44.5), 1.5, OUTLINE) for i in range(3)]
+    return (calculator + soldier(37, 90, 0.66, BACK_ROW, SQUAD_DARK)
+            + soldier(71, 90, 0.66, BACK_ROW, SQUAD_DARK) + soldier(54, 93, 0.9, SQUAD, SQUAD_DARK))
 
 
 def paint(img, P, colour_of=lambda c: c):
@@ -65,7 +66,7 @@ def paint(img, P, colour_of=lambda c: c):
 
 
 def monochrome(colour):
-    """White shapes; faces and the plus are cut out so the soldiers still read in one colour."""
+    """White shapes; faces and the calculator's keys are cut out so the soldiers still read in one colour."""
     if colour in (SKIN, OUTLINE):
         return (0, 0, 0, 0)
     return "#FFFFFF"

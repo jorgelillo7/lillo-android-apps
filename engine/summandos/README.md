@@ -15,7 +15,7 @@ game/palette.gd      the colour themes (sunset, night): every colour the scene u
 game/run.gd          one run without drawing: steering, gates, shooting, clashes, win or loss
 main.gd              the scene, built in code: track, squad, enemies, bullets, HUD, menu
 tests/               GUT tests of the run (choices, weapons, waves, the first level is winnable)
-tools/generate_icon.py   icons (a soldier and his squad under a gold plus), on scripts/icon_lib.py
+tools/generate_icon.py   icons (a squad in front of a gold calculator), on scripts/icon_lib.py
 ```
 
 ## Commands
