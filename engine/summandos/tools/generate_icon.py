@@ -1,4 +1,4 @@
-"""Generates Summandos' icons: a teal soldier leading two more of his squad beside a gold calculator,
+"""Generates Summandos' icons: a teal soldier leading two more of his squad in front of a calculator,
 on the sunset palette's sky.
 
 Drawn with the apps' shared scripts/icon_lib.py. Outputs (engine/summandos/):
@@ -21,6 +21,7 @@ from icon_lib import LEGACY_CROP, STORE_CROP, canvas  # noqa: E402
 BG_TOP, BG_BOTTOM = "#FF8F6B", "#FFC58F"
 SQUAD, SQUAD_DARK, BACK_ROW = "#13A89E", "#0B5E58", "#0E7F77"
 SKIN, EYES, OUTLINE, GOLD = "#F2C9A0", "#14141F", "#3A1C0E", "#FFD23F"
+CASE, KEY, SCREEN = "#2B2F3A", "#EDE6DA", "#BFF3EA"
 
 
 def soldier(cx, base, k, body, helmet):
@@ -39,14 +40,23 @@ def soldier(cx, base, k, body, helmet):
 
 def shapes():
     """(kind, box, radius, colour) in drawing order, inside the adaptive safe zone (radius 33)."""
+    left, top, right, bottom = 33, 18, 67, 72
     calculator = [
-        ("round", (37, 21, 71, 62), 5, GOLD),
-        ("round", (40.5, 24.5, 67.5, 35.5), 2, OUTLINE),
-        ("rect", (52.5, 26.5, 55.5, 33.5), 0, SQUAD),
-        ("rect", (50.5, 28.5, 57.5, 31.5), 0, SQUAD),
-    ] + [("round", (41 + i * 9, 38.5, 48 + i * 9, 44.5), 1.5, OUTLINE) for i in range(3)]
-    return (calculator + soldier(37, 90, 0.66, BACK_ROW, SQUAD_DARK)
-            + soldier(71, 90, 0.66, BACK_ROW, SQUAD_DARK) + soldier(54, 93, 0.9, SQUAD, SQUAD_DARK))
+        ("round", (left, top, right, bottom), 6, CASE),
+        ("round", (left + 3.5, top + 3.5, right - 3.5, top + 13), 2, SCREEN),
+        ("rect", (55, 24.5, 57.5, 30.5), 0, CASE),
+        ("rect", (53.25, 26.25, 59.25, 28.75), 0, CASE),
+        ("rect", (41, 26.25, 47, 28.75), 0, CASE),
+    ]
+    key_w, key_h, gap = 5.6, 5.6, 2.0
+    for row in range(4):
+        for col in range(4):
+            x0 = left + 3.5 + col * (key_w + gap)
+            y0 = top + 17 + row * (key_h + gap)
+            colour = GOLD if col == 3 else KEY
+            calculator.append(("round", (x0, y0, x0 + key_w, y0 + key_h), 1.4, colour))
+    return (calculator + soldier(57, 92, 0.58, BACK_ROW, SQUAD_DARK)
+            + soldier(80, 92, 0.58, BACK_ROW, SQUAD_DARK) + soldier(69, 95, 0.76, SQUAD, SQUAD_DARK))
 
 
 def paint(img, P, colour_of=lambda c: c):
@@ -66,8 +76,8 @@ def paint(img, P, colour_of=lambda c: c):
 
 
 def monochrome(colour):
-    """White shapes; faces and the calculator's keys are cut out so the soldiers still read in one colour."""
-    if colour in (SKIN, OUTLINE):
+    """White shapes; faces, the calculator's screen and keys are cut out so the soldiers still read in one colour."""
+    if colour in (SKIN, OUTLINE, SCREEN, KEY, GOLD):
         return (0, 0, 0, 0)
     return "#FFFFFF"
 
