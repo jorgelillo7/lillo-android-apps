@@ -8,9 +8,11 @@ the tool, not the genre. Plans: [docs/plans/fake-ad-games.md](../docs/plans/fake
 ```
 engine/
   core/                       Godot project holding the shared addon and its tests
-    addons/lillo_core/        what every game reuses (LilloGate today: maths gates)
+    addons/lillo_core/        what every game reuses: LilloGate (maths gates), LilloFormation
+                              (where each member of a crowd stands), LilloCrowdView (draws
+                              hundreds of copies of a mesh in one call)
     tests/                    GUT tests, res://tests/test_*.gd
-  summandos/                  game one, Summandos (com.jorgelillo.summandos)
+  summandos/                  game one, Summandos (com.jorgelillo.summandos), README there
     addons/lillo_core         symlink to ../../core/addons/lillo_core
     tests/
 ```
@@ -21,9 +23,16 @@ engine/
 scripts/godot.sh --version                 # pinned Godot, downloaded on first use (checksum verified)
 scripts/godot.sh --path engine/summandos   # open a project in the editor
 scripts/engine-test.sh engine/core         # a project's tests, headless (GUT fetched on first use)
+scripts/engine-export.sh engine/summandos  # Android APK from the project's "Android" preset
 ```
 
 CI's **Engine** workflow runs every project's tests when `engine/` or these scripts change.
+
+Exporting needs, once per machine, Godot's Android export templates for the pinned version in
+Godot's data folder (`~/Library/Application Support/Godot/export_templates/<version>.stable/`:
+`android_release.apk`, `android_debug.apk`, `version.txt`, from the release's `.tpz`), and the
+Android SDK; `scripts/engine-export.sh` points Godot at the JDK from `scripts/env.sh` and signs
+with Godot's debug key unless `GODOT_ANDROID_KEYSTORE_RELEASE_*` are set.
 
 ## Rules
 

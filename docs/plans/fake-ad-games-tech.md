@@ -83,7 +83,7 @@ engine/
 | | Spike | Passes when |
 |---|---|---|
 | S1 ✅ | Pinned Godot install script, an `engine/core` addon and tests running headless, locally and in CI | Done: `scripts/godot.sh`, `scripts/engine-test.sh` (GUT 9.6.1), the Engine workflow; `LilloGate` and its tests in core, linked from `engine/summandos` |
-| S2 | Crowd runner prototype: 1,000 units on a track through two gates; a debug APK for a real phone | 60 fps on the owner's phone with 1,000 units; record the APK size |
+| S2 🟡 | Crowd runner prototype: 1,000 units on a track through two gates; a debug APK for a real phone | Prototype built (`engine/summandos`: one level, gates, weapons, waves, a 1,000-unit performance test; 60 fps on the emulator, which says little). **Waiting on the owner's phone**: fps in the performance test, and the APK size (50 MB with arm64 + x86_64; arm64 alone is about half) |
 | S3 | Pull-the-pin prototype: two pins, 300 bodies, lava meeting water | Pours read clearly and stay smooth on the phone |
 | S4 | Headless AAB export plus Gradle Play Publisher `artifactDir` dry run to the internal track | The bundle reaches internal testing through the Release workflow |
 

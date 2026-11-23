@@ -38,7 +38,7 @@ Lines are pruned as items ship. What has **shipped** lives in `apps/<app>/releas
 
 | | What is missing | Waiting on |
 |---|---|---|
-| 🔨 | Fake-ad games, game one **Summandos** (`com.jorgelillo.summandos`, `engine/summandos`): a shooting squad grown by maths gates, weapon power-ups that cost a gate, maths for adults with a think pause on the hardest gates, nothing to sell. Engine Godot 4.7.2 per the [technology study](docs/plans/fake-ad-games-tech.md); S1 done (pinned Godot, GUT tests in CI, `engine/core`); next S2 the squad prototype, S3 and S4 (S2 and S3 need you with a phone). Game two: pull the pin (lava, gold, a trapped hero) | Ready · [docs/plans/fake-ad-games.md](docs/plans/fake-ad-games.md) |
+| 🔨 | Fake-ad games, game one **Summandos** (`com.jorgelillo.summandos`, `engine/summandos`): a shooting squad grown by maths gates, weapon power-ups that cost a gate, maths for adults with a think pause on the hardest gates, nothing to sell. Engine Godot 4.7.2 per the [technology study](docs/plans/fake-ad-games-tech.md); S1 done; S2 prototype built (a demo APK): **you** play it on your phone and read the fps in "Performance test (1,000)"; then the design pass (palette, final icon), S3 and S4. Game two: pull the pin (lava, gold, a trapped hero) | Ready · [docs/plans/fake-ad-games.md](docs/plans/fake-ad-games.md) |
 
 ## repo
 
