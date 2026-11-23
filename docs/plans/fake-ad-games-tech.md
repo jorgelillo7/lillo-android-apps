@@ -60,12 +60,13 @@ each listing can show that mechanic, and it matches how this repo already ships 
 
 ```
 engine/
-  core/                 Godot addon shared by every game: crowd (MultiMesh), gates and number
-                        pop-ups, level loader, haptics, save, settings and About screen
-  <game>/               one Godot project per game; addons/lillo_core points at ../core
-    levels/             level data
-    play/               thin Gradle module: Gradle Play Publisher + listing in src/main/play
+  core/addons/lillo_core/   shared by every game: crowd/, maths/, render/, ui/, save/, dev/
+  <game>/                   one Godot project per game: game/ (rules), view/ (drawing), assets/,
+                            store/, tools/, tests/; README, DESIGN, OPERATIONS like an app
+    play/                   (S4) thin Gradle module: Gradle Play Publisher + listing in src/main/play
 ```
+
+The full layout and the class list: [engine/README.md](../../engine/README.md).
 
 - **Publishing reuses the Release workflow.** Godot exports the AAB; the game's `play/` module
   applies Gradle Play Publisher with `artifactDir` pointing at that AAB, so upload, promote,

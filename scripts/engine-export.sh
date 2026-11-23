@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
-# Exports a game-engine project for Android: scripts/engine-export.sh engine/summandos [out.apk]
+# Exports a game-engine project for Android:
+#   scripts/engine-export.sh [--arm64] engine/summandos [out.apk]
+# --arm64 leaves out the x86_64 build (emulators only): half the size, for sending to a phone.
 #
 # Uses the project's "Android" preset (export_presets.cfg) and the pinned Godot. Needs, once per
 # machine: the Android export templates of that Godot version installed (scripts/godot.sh
@@ -9,6 +11,11 @@
 set -euo pipefail
 
 root="$(cd "$(dirname "$0")/.." && pwd)"
+arm64_only=false
+if [ "${1:-}" = "--arm64" ]; then
+  arm64_only=true
+  shift
+fi
 project="$(cd "${1:?usage: scripts/engine-export.sh <project dir> [out.apk]}" && pwd)"
 out="${2:-$project/export/$(basename "$project").apk}"
 mkdir -p "$(dirname "$out")"
@@ -34,6 +41,13 @@ keystore="$settings_dir/keystores/debug.keystore"
 export GODOT_ANDROID_KEYSTORE_RELEASE_PATH="${GODOT_ANDROID_KEYSTORE_RELEASE_PATH:-$keystore}"
 export GODOT_ANDROID_KEYSTORE_RELEASE_USER="${GODOT_ANDROID_KEYSTORE_RELEASE_USER:-androiddebugkey}"
 export GODOT_ANDROID_KEYSTORE_RELEASE_PASSWORD="${GODOT_ANDROID_KEYSTORE_RELEASE_PASSWORD:-android}"
+
+presets="$project/export_presets.cfg"
+if $arm64_only; then
+  cp "$presets" "$presets.full"
+  trap 'mv "$presets.full" "$presets"' EXIT
+  sed -i.bak 's#^architectures/x86_64=true#architectures/x86_64=false#' "$presets" && rm -f "$presets.bak"
+fi
 
 "$root/scripts/godot.sh" --headless --path "$project" --import >/dev/null 2>&1 || true
 "$root/scripts/godot.sh" --headless --path "$project" --export-release "Android" "$out"

@@ -3,30 +3,62 @@
 Games built on a game engine (Godot today) instead of Kotlin and Compose. Games written in
 Compose, such as `whos-lying`, `league-cards` or `slipper`, stay in `apps/`: this folder is about
 the tool, not the genre. Plans: [docs/plans/fake-ad-games.md](../docs/plans/fake-ad-games.md) and
-[the technology study](../docs/plans/fake-ad-games-tech.md).
+[the technology study](../docs/plans/fake-ad-games-tech.md). Working on a game: the
+[`engine-game`](../.claude/skills/engine-game/SKILL.md) skill.
 
 ```
 engine/
   core/                       Godot project holding the shared addon and its tests
-    addons/lillo_core/        what every game reuses: LilloGate (maths gates), LilloFormation
-                              (where each member of a crowd stands, scattered into a mob),
-                              LilloCrowdView (draws hundreds of copies of a mesh in one call),
-                              LilloFigure (cartoon characters, monsters and bullet streaks as
-                              one vertex-coloured mesh, toon material with outline),
-                              LilloSettings (player preferences kept between sessions)
+    addons/lillo_core/
+      crowd/                  LilloFormation (where each member of a crowd stands, or a mob),
+                              LilloCrowdView (hundreds of copies of a mesh in one draw call),
+                              LilloFigure (cartoon characters, monsters, streaks; toon material)
+      maths/                  LilloGate (a maths gate), LilloMathPuzzle (a number as a sum to
+                              work out, three tiers)
+      render/                 LilloMaterials (flat, banded ground, camera-facing badge) and their
+                              shaders
+      ui/                     LilloTheme (font, outlined text, buttons with a lip, cards),
+                              LilloLevelMap (paged level map with stars and padlocks),
+                              LilloStars, LilloBackdrop (rays, clouds, hills), LilloSticker
+                              (a waving soldier or a swaying monster for corners), LilloFx
+                              (pop-ins, squishy buttons, rising numbers, confetti), LilloSafeArea
+      save/                   LilloSettings (player preferences and progress, kept on the phone)
+      dev/                    LilloCapture (--shot screenshots)
     tests/                    GUT tests, res://tests/test_*.gd
-  summandos/                  game one, Summandos (com.jorgelillo.summandos), README there
-    addons/lillo_core         symlink to ../../core/addons/lillo_core
-    tests/
+  <game>/                     one Godot project per game, laid out as below
+```
+
+## A game's layout
+
+The same shape as an app in `apps/` wherever the two overlap (README, DESIGN, OPERATIONS,
+`store/`, `tools/`), plus what a Godot project needs:
+
+```
+engine/<game>/
+  README.md                   what the game is, its status and structure
+  DESIGN.md                   palette, type, characters, screens
+  OPERATIONS.md               commands to run, test, screenshot, export and release
+  project.godot, export_presets.cfg, main.tscn
+  main.gd                     entry point: wires game/ and view/, input, back button, options
+  game/                       rules without drawing (levels, a run, progress, palette, texts),
+                              unit tested
+  view/                       drawing: the 3D world and the screens; no rules
+  assets/                     what the game loads: icons/ (launcher), fonts/, later models/, sounds/
+  store/                      Play listing graphics: play-icon-512.png, raw/<locale>/ screenshots
+  tools/                      game-specific scripts (icon generator, balance report, samples/)
+  tests/                      GUT tests of game/ (test_core_link.gd checks the addon link)
+  addons/lillo_core           symlink to ../../core/addons/lillo_core
 ```
 
 ## Commands
 
 ```bash
-scripts/godot.sh --version                 # pinned Godot, downloaded on first use (checksum verified)
-scripts/godot.sh --path engine/summandos   # open a project in the editor
-scripts/engine-test.sh engine/core         # a project's tests, headless (GUT fetched on first use)
-scripts/engine-export.sh engine/summandos  # Android APK from the project's "Android" preset
+scripts/godot.sh --version                                   # pinned Godot, downloaded on first use
+scripts/godot.sh --path engine/<game>                        # open a project in the editor
+scripts/engine-test.sh engine/core                           # a project's tests, headless
+scripts/engine-shot.sh engine/<game> out.png 3 -- --levels   # screenshot (--landscape, --progress f.cfg)
+.venv/bin/python scripts/engine_icon_preview.py engine/<game> out.png   # icon at every size
+scripts/engine-export.sh [--arm64] engine/<game>             # Android APK, debug-signed by default
 ```
 
 CI's **Engine** workflow runs every project's tests when `engine/` or these scripts change.
@@ -40,9 +72,13 @@ with Godot's debug key unless `GODOT_ANDROID_KEYSTORE_RELEASE_*` are set.
 ## Rules
 
 - **Reuse first**: anything a second game would need lives in `core/addons/lillo_core` from the
-  start, with its tests there; a game links it, never copies it.
+  start, with its tests there; a game links it, never copies it. Core classes take colours and
+  callbacks as arguments and never read a game's palette or progress themselves.
+- **Rules apart from drawing**: `game/` never touches a node; `view/` never decides an outcome.
 - **Upright and turned sideways**: projects use the sensor orientation and `canvas_items` /
   `expand` stretching, so a rotated phone gets a real layout, never a stretched one.
+- **New `class_name` scripts need an import** (`scripts/godot.sh --headless --path <project>
+  --import`) before other scripts can name them; `engine-test.sh` and `engine-export.sh` do it.
 - Godot's `.godot/` cache, exports and GUT are git-ignored; nothing downloaded is committed.
 - Upgrading Godot or GUT: change the version and checksum at the top of `scripts/godot.sh` or
   `scripts/engine-test.sh`.

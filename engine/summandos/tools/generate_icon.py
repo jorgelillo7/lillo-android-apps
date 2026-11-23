@@ -1,9 +1,9 @@
-"""Generates Summandos' icons: a teal soldier leading two more of his squad in front of a calculator,
+"""Generates Summandos' icons: a teal squad in front of a calculator,
 on the sunset palette's sky.
 
 Drawn with the apps' shared scripts/icon_lib.py. Outputs (engine/summandos/):
-  icons/main_192.png                       legacy launcher icon (Godot's main_192x192)
-  icons/adaptive_{foreground,background,monochrome}_432.png   adaptive icon layers
+  assets/icons/main_192.png                       legacy launcher icon (Godot's main_192x192)
+  assets/icons/adaptive_{foreground,background,monochrome}_432.png   adaptive icon layers
   store/play-icon-512.png                  Play Store icon
 
 Usage (repo root): .venv/bin/python engine/summandos/tools/generate_icon.py
@@ -101,8 +101,8 @@ def full(size, crop):
 
 
 if __name__ == "__main__":
-    icons = ROOT / "icons"
-    icons.mkdir(exist_ok=True)
+    icons = ROOT / "assets/icons"
+    icons.mkdir(parents=True, exist_ok=True)
     (ROOT / "store").mkdir(exist_ok=True)
     legacy = full(192, LEGACY_CROP).convert("RGBA")
     mask = Image.new("L", (768, 768), 0)

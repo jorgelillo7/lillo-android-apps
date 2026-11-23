@@ -12,6 +12,9 @@ const SHOTS_PER_SECOND := 1.5
 const TRACK_HALF_WIDTH := 4.0
 ## Enemies stand still until the squad is this close, then walk towards it.
 const WAKE_DISTANCE := 40.0
+## A row marked "think" stops the run this far before it, for this long, to work the sums out.
+const THINK_DISTANCE := 14.0
+const THINK_SECONDS := 10.0
 
 var level: SummandosLevel
 var state := State.RUNNING
@@ -25,6 +28,10 @@ var waves: Array[Dictionary] = []
 var next_row := 0
 ## The last thing the squad took, for the HUD: {"gate": LilloGate} or {"weapon": x}.
 var last_pick: Dictionary = {}
+## Seconds of thinking time left; the run stands still while it is above zero.
+var thinking := 0.0
+var think_enabled := true
+var _thought_row := -1
 
 
 func _init(run_level: SummandosLevel) -> void:
@@ -49,6 +56,15 @@ func target() -> Dictionary:
 func step(delta: float) -> void:
 	if state != State.RUNNING:
 		return
+	if thinking > 0.0:
+		thinking = maxf(0.0, thinking - delta)
+		return
+	if think_enabled and next_row < level.rows.size() and next_row != _thought_row:
+		var row: Dictionary = level.rows[next_row]
+		if row.get("think", false) and row.z - z <= THINK_DISTANCE:
+			_thought_row = next_row
+			thinking = THINK_SECONDS
+			return
 	var blocked: bool = not waves.is_empty() and waves[0].z - z <= 1.0
 	if not blocked:
 		z = minf(z + SPEED * delta, level.length)
@@ -99,3 +115,31 @@ func _advance_waves(delta: float) -> void:
 		soldiers -= clash
 		if front.count <= 0:
 			waves.pop_front()
+
+
+## Ends the thinking pause early, once the player has chosen.
+func done_thinking() -> void:
+	thinking = 0.0
+
+
+## 1 to 3 stars for a win, by soldiers left against the level's reference; 0 for a loss.
+func stars() -> int:
+	if state != State.WON:
+		return 0
+	var share := soldiers / float(maxi(1, level.reference))
+	if share >= 0.75:
+		return 3
+	return 2 if share >= 0.4 else 1
+
+
+## Plays `level` taking `sides[i]` (-1 left, 1 right) at row i, without thinking pauses.
+static func simulate(level: SummandosLevel, sides: Array[float]) -> SummandosRun:
+	var run := SummandosRun.new(level)
+	run.think_enabled = false
+	for i in 30 * 300:
+		if run.state != State.RUNNING:
+			break
+		var row := mini(run.next_row, sides.size() - 1)
+		run.steer(2.0 * sides[row] if row >= 0 else 0.0)
+		run.step(1.0 / 30.0)
+	return run

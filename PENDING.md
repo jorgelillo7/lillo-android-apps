@@ -38,7 +38,7 @@ Lines are pruned as items ship. What has **shipped** lives in `apps/<app>/releas
 
 | | What is missing | Waiting on |
 |---|---|---|
-| 🔨 | Fake-ad games, game one **Summandos** (`com.jorgelillo.summandos`, `engine/summandos`): a shooting squad grown by maths gates, weapon power-ups that cost a gate, maths for adults with a think pause on the hardest gates, nothing to sell. Engine Godot 4.7.2 per the [technology study](docs/plans/fake-ad-games-tech.md); S1 and S2 done (60 fps on a real handheld, Godot confirmed); next the design pass (palette, final icon), S3 and S4. Game two: pull the pin (lava, gold, a trapped hero) | Ready · [docs/plans/fake-ad-games.md](docs/plans/fake-ad-games.md) |
+| 🔨 | Fake-ad games, game one **Summandos** (`com.jorgelillo.summandos`, `engine/summandos`): a shooting squad grown by maths gates, weapon power-ups that cost a gate, maths for adults with a think pause on the hardest gates, nothing to sell. Engine Godot 4.7.2 per the [technology study](docs/plans/fake-ad-games-tech.md); S1 and S2 done (60 fps on a real handheld, Godot confirmed); design pass, three maths modes and a 30-level map per mode in PRs #220/#221; next CC0 3D models with credits in an About screen, an **Ultra** mode for the very keen (two-step sums, no hints, see the plan), S3 and S4. Game two: pull the pin (lava, gold, a trapped hero) | Ready · [docs/plans/fake-ad-games.md](docs/plans/fake-ad-games.md) |
 
 ## repo
 
