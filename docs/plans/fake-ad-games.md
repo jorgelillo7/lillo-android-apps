@@ -1,6 +1,6 @@
 # Fake-ad games (idea, a collection)
 
-Status: **idea, study pending**. Open item in [PENDING.md](../../PENDING.md).
+Status: **idea; technology study in [fake-ad-games-tech.md](fake-ad-games-tech.md)**. Open item in [PENDING.md](../../PENDING.md).
 
 Mobile ads often show a quick, satisfying mini-game that the installed app barely contains. The
 idea is a collection that delivers those ads as real games, as faithful to the ad as possible in
@@ -24,7 +24,7 @@ What each ad shows, and what the advertised game really is. The ad is what we bu
 
 | Ad mechanic | Seen in ads for | What the ad shows | What the real game is |
 |---|---|---|---|
-| Maths gates crowd runner — **game one** | Top War, Last War: Survival; real games built on it: Count Masters: Crowd Runner 3D (the genre's reference: lead a crowd down a corridor through + / × gates to a horde at the end), Mob Control (a cannon at the bottom fires the crowd up lanes of gates at an enemy base), Weapon Craft Run (gates upgrade the weapon instead of the crowd) | A squad runs along a bridge, shooting or passing through blue gates (+20, ×2) and red ones (−15) to grow before a giant boss or an enemy army | Base-building strategy and resource management; Last War has a few similar mini-games early on |
+| Maths gates crowd runner — **game one** (v1 as a shooting squad, see below) | Top War, Last War: Survival; real games built on it: Count Masters: Crowd Runner 3D (the genre's reference: lead a crowd down a corridor through + / × gates to a horde at the end), Mob Control (a cannon at the bottom fires the crowd up lanes of gates at an enemy base), Weapon Craft Run (gates upgrade the weapon instead of the crowd) | A squad runs along a bridge, shooting or passing through blue gates (+20, ×2) and red ones (−15) to grow before a giant boss or an enemy army | Base-building strategy and resource management; Last War has a few similar mini-games early on |
 | Number tower | Hero Wars | A knight picks which monster to fight by power (10 vs 5), absorbs the weaker ones and climbs to rescue a princess | Turn-based auto-battle RPG with little direct control |
 | Pull the pin (rescue) | Homescapes, Gardenscapes | A character trapped in a burning or freezing house; pull pins in the right order to save him | Match-3 to earn stars and decorate a mansion |
 | Pull the pin (treasure and lava) — **game two** | Evony: The King's Return, Royal Match, Homescapes | Pull pins so gold falls on the hero while lava or monsters fall elsewhere | Multiplayer empire strategy; a few pin levels added later |
@@ -36,6 +36,60 @@ What each ad shows, and what the advertised game really is. The ad is what we bu
 
 Other common ad mechanics to look at: draw a line to protect, rescue-the-hero doors, merge
 soldiers, stack runner that builds a bridge, parking jam, colour sort.
+
+## Game one: Summandos
+
+Name: **Sumandos** in Spanish, **Summandos** in English (a *summand* is each number in a sum, and
+both play on *Commandos*: a squad of sums). Package `com.jorgelillo.summandos` (English, like
+every app's), folder `games/summandos`. Outside the apps' question pattern on purpose: a game is
+found by its mechanic, and a short name reads better on the icon. No look borrowed from
+*Commandos*, a registered game title: only the word play.
+
+## Game one: v1 scope (chosen by the owner)
+
+- **A shooting squad, not a cannon**: a soldier runs up the track firing at the enemies coming the
+  other way; the gates grow or shrink the platoon behind him, and every soldier shoots.
+- **Weapon power-ups** on the track kill more enemies (spread, rate, damage), but they sit where
+  taking one means missing a gate: a real trade-off between firepower and platoon size.
+- **Maths for adults**: powers, roots, simple equations and percentages, all solvable in your head.
+- **Think pause**: time stops for 10 seconds only at the hardest pairs of gates.
+- **Nothing to sell**: no ads, no coins, no purchases.
+
+## Game one: modes
+
+The owner wants more than the ad's single pace. Two modes on the same tracks and engine, the second with think pauses:
+
+| Mode | Gates | Pace |
+|---|---|---|
+| **Classic** | What the ads show: `+20`, `×2`, `−15` | Real time, no stopping |
+| **Maths** | Expressions solvable in your head: `×(12 ÷ 4)`, `+(5² − 10)`, `−2³`, `×√49`, a simple equation (`+x` where `3x = 21`), percentages (`+50 %`) | Real time, except the hardest pairs: **think pause** |
+
+**Think pause**: only for the hardest pairs of gates (the generator rates each pair; the top tier pauses), time stops with 10 seconds to choose and a countdown on screen; no choice in time takes the left gate. Easy pairs never stop the run.
+
+What makes Maths a puzzle: the better gate depends on the crowd you bring. With 20 units,
+`×3` (60) beats `+30` (50); with 10 it loses (30 against 40). So gates are generated per level from
+the expected crowd, the better one is never always the bigger number, and a test checks every
+generated pair has exactly one better choice and stays within the mode's difficulty (operands,
+operations, size of the intermediate results).
+
+## Game one: competitors on Google Play (2026-11)
+
+| App | Downloads | Rating | Ads / purchases | What it is |
+|---|---|---|---|---|
+| Count Masters: Crowd Runner 3D (Freeplay) | 100M+ | 4.5 | ads + IAP | The genre's reference: + / × gates, a clash at the end |
+| Mob Control (Voodoo) | 100M+ | 4.0 | IAP | A cannon fires the crowd at an enemy base; cards, champions |
+| Epic Crowd Run 3D | 5K+ | 4.4 | ads + IAP | Count Masters clone |
+| Math Runners: Crowd War | 10K+ | — | ads | Crowd runner with maths gates |
+| Math Runner 3D (practical.labs) | 10+ | — | none | **Closest**: "is +25 better than ×2? it depends on your crowd", plus sums on the road; coins |
+| Math Rush (tinhammer) | 1+ | — | ads + IAP | **Closest**: add / × / − / % gates, pick the bigger result, 200 levels |
+| Math Blob Run, Race to Learn, Run with Math… | 500–100K+ | 4.4 | mixed | Kids' "run through the right answer" quizzes, not crowd maths |
+
+Complaints about the big two are ads (30–60 s, unskippable, missing rewards) and pay-to-win.
+
+**Honest reading**: comparing gates by the crowd you carry is not new, two tiny apps already do it.
+Nobody stops time to think, nobody goes past the four operations and percentages (powers, roots,
+equations), and no crowd game is free of ads, coins and purchases at once. The room is "done
+well, for adults who like mental maths, with nothing to sell", not a new genre.
 
 ## Leads
 
