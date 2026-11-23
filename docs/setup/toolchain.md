@@ -21,6 +21,7 @@ settings live in the convention plugins under `build-logic/`.
 
 ```bash
 source scripts/env.sh   # JAVA_HOME = Android Studio's JDK, ADB, ANDROID_HOME
+git config core.hooksPath .githooks   # once per clone: the pre-commit hook (no bought assets)
 ```
 
 The shell's default `java` (Homebrew) is newer than Gradle supports; always use Android Studio's JDK.

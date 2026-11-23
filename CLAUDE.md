@@ -71,7 +71,9 @@ use), `scripts/engine-test.sh engine/<project>` runs its GUT tests headless,
 `scripts/engine-export.sh [--arm64] engine/<project>` builds its APK (with the slim engine from
 `scripts/engine-template.sh` when the game has an `engine-profile.py`; the `slim-engine` skill); shared code goes in
 `engine/core/addons/lillo_core/<area>/`, linked from each game; rules in `game/`, drawing in
-`view/`. Details: `engine/README.md`; workflow: the `engine-game` skill.
+`view/`. Details: `engine/README.md`; workflow: the `engine-game` skill. Bought asset packs never
+enter the repo: `scripts/check_paid_assets.py` guards CI, the pre-commit hook (`git config
+core.hooksPath .githooks` once per clone) and a Claude Code hook (`engine/README.md`, "Bought assets").
 
 Project skills are indexed in [`.claude/CLAUDE.md`](.claude/CLAUDE.md).
 

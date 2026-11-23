@@ -20,6 +20,11 @@ Machine-level skills (the Mac's toolchain, disk, contacts) are not here: they
 are versioned in lillorepo `system/skills/` and installed into
 `~/.claude/skills/`, so they load in every project.
 
+## Hooks
+
+`settings.json` runs `scripts/check_paid_assets.py --hook` before Bash calls that add, commit,
+push or open a PR, and blocks one that would carry a file from a bought asset pack.
+
 ## Plans
 
 Product plans that outlive a session (an app's design, game ideas) live in
