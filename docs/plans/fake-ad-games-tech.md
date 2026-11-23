@@ -10,7 +10,7 @@ Compose apps, reusing what already works (Play publishing, signing, listings, pr
 | | Game one: maths-gates crowd runner | Game two: pull the pin |
 |---|---|---|
 | View | Real 3D, a chase camera over a track | 2D, a fixed vertical cut-away |
-| Many things at once | 1,000+ units on screen, moving as a crowd | 100–400 small bodies (gold, lava, water drops) |
+| Many things at once | 1,000+ units on screen: the platoon plus the enemies coming at it, and their bullets | 100–400 small bodies (gold, lava, water drops) |
 | Physics | Little: lanes, gates, collisions with the enemy | Everything: falling bodies, pins as removable walls, liquids that pour and mix (lava + water → stone) |
 | Feel | Numbers popping on gates, particles, haptics, a satisfying count-up | Pins that slide out under a finger, a pour that reads clearly |
 | Content | Levels as data: gate sequence, enemy size, boss | Levels as data: walls, pins, what sits behind each |

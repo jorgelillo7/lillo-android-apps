@@ -24,7 +24,7 @@ What each ad shows, and what the advertised game really is. The ad is what we bu
 
 | Ad mechanic | Seen in ads for | What the ad shows | What the real game is |
 |---|---|---|---|
-| Maths gates crowd runner — **game one** | Top War, Last War: Survival; real games built on it: Count Masters: Crowd Runner 3D (the genre's reference: lead a crowd down a corridor through + / × gates to a horde at the end), Mob Control (a cannon at the bottom fires the crowd up lanes of gates at an enemy base), Weapon Craft Run (gates upgrade the weapon instead of the crowd) | A squad runs along a bridge, shooting or passing through blue gates (+20, ×2) and red ones (−15) to grow before a giant boss or an enemy army | Base-building strategy and resource management; Last War has a few similar mini-games early on |
+| Maths gates crowd runner — **game one** (v1 as a shooting squad, see below) | Top War, Last War: Survival; real games built on it: Count Masters: Crowd Runner 3D (the genre's reference: lead a crowd down a corridor through + / × gates to a horde at the end), Mob Control (a cannon at the bottom fires the crowd up lanes of gates at an enemy base), Weapon Craft Run (gates upgrade the weapon instead of the crowd) | A squad runs along a bridge, shooting or passing through blue gates (+20, ×2) and red ones (−15) to grow before a giant boss or an enemy army | Base-building strategy and resource management; Last War has a few similar mini-games early on |
 | Number tower | Hero Wars | A knight picks which monster to fight by power (10 vs 5), absorbs the weaker ones and climbs to rescue a princess | Turn-based auto-battle RPG with little direct control |
 | Pull the pin (rescue) | Homescapes, Gardenscapes | A character trapped in a burning or freezing house; pull pins in the right order to save him | Match-3 to earn stars and decorate a mansion |
 | Pull the pin (treasure and lava) — **game two** | Evony: The King's Return, Royal Match, Homescapes | Pull pins so gold falls on the hero while lava or monsters fall elsewhere | Multiplayer empire strategy; a few pin levels added later |
@@ -36,6 +36,16 @@ What each ad shows, and what the advertised game really is. The ad is what we bu
 
 Other common ad mechanics to look at: draw a line to protect, rescue-the-hero doors, merge
 soldiers, stack runner that builds a bridge, parking jam, colour sort.
+
+## Game one: v1 scope (chosen by the owner)
+
+- **A shooting squad, not a cannon**: a soldier runs up the track firing at the enemies coming the
+  other way; the gates grow or shrink the platoon behind him, and every soldier shoots.
+- **Weapon power-ups** on the track kill more enemies (spread, rate, damage), but they sit where
+  taking one means missing a gate: a real trade-off between firepower and platoon size.
+- **Maths for adults**: powers, roots, simple equations and percentages, all solvable in your head.
+- **Think mode**: time stops at each pair of gates, 10 seconds to choose.
+- **Nothing to sell**: no ads, no coins, no purchases.
 
 ## Game one: modes
 
