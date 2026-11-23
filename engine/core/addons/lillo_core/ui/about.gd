@@ -33,15 +33,8 @@ func _init(title: String, version: String, credits: Array, note: String, close_t
 		box.add_child(_text(credit.who, reading, 26, Color.WHITE))
 		var line: String = credit.licence
 		if credit.has("link"):
-			var link := Button.new()
-			link.flat = true
-			link.text = "%s · %s" % [line, credit.link]
-			link.add_theme_font_override("font", reading)
-			link.add_theme_font_size_override("font_size", 20)
-			link.add_theme_color_override("font_color", Color(1, 1, 1, 0.8))
-			link.add_theme_color_override("font_hover_color", accent)
-			link.pressed.connect(OS.shell_open.bind("https://" + String(credit.link)))
-			box.add_child(link)
+			box.add_child(_text(line, reading, 20, Color(1, 1, 1, 0.8)))
+			box.add_child(_link(String(credit.link), reading, accent))
 		else:
 			box.add_child(_text(line, reading, 20, Color(1, 1, 1, 0.8)))
 	if note != "":
@@ -61,6 +54,22 @@ static func _text(text: String, font: Font, size: int, colour: Color) -> Label:
 	label.add_theme_color_override("font_color", colour)
 	label.add_theme_constant_override("outline_size", 0)
 	return label
+
+
+## A web address that opens in the browser when tapped: in the accent colour and underlined, so
+## it reads as something to press.
+static func _link(address: String, font: Font, accent: Color) -> Control:
+	var link := LinkButton.new()
+	link.text = address
+	link.underline = LinkButton.UNDERLINE_MODE_ALWAYS
+	link.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	link.add_theme_font_override("font", font)
+	link.add_theme_font_size_override("font_size", 21)
+	link.add_theme_color_override("font_color", accent)
+	link.add_theme_color_override("font_hover_color", accent.lightened(0.3))
+	link.add_theme_color_override("font_pressed_color", accent.lightened(0.5))
+	link.pressed.connect(OS.shell_open.bind("https://" + address))
+	return link
 
 
 static func _gap(height: float) -> Control:
