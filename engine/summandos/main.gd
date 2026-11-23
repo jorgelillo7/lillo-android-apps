@@ -2,7 +2,7 @@
 ## handles input and the back button. Options after `--`: `--mode=play|stress` starts a run at
 ## once (stress is the 1,000-unit performance test, reachable only from here;
 ## `--difficulty=easy|normal|adult|expert --level=<n>` pick a level, `--autosteer` takes the better gate),
-## `--levels` opens the level map, `--about` the About card, `--palette=sunset|night` and `--squad=<colour>` override the saved choices, `--colours` opens the
+## `--levels` opens the level map, `--cast` lines up the characters (store), `--about` the About card, `--palette=sunset|night` and `--squad=<colour>` override the saved choices, `--colours` opens the
 ## squad colour picker, and
 ## `--lang=es|en` overrides the phone's language, and LilloCapture's `--shot=<png> --after=<s>
 ## [--shot-size=WxH]` saves a screenshot and quits.
@@ -83,6 +83,12 @@ func _ready() -> void:
 		ui.show_screen("settings")
 	elif args.has("--help-card"):
 		ui.show_screen("help")
+	elif args.has("--cast"):
+		var bosses := []
+		for number in [5, 10, 15, 20]:
+			bosses.append(SummandosLevel.boss_look(SummandosLevel.Mode.EASY, number))
+		ui.show_cast([palette.squad, SummandosPalette.named(theme_name, "orange").squad,
+			SummandosPalette.named(theme_name, "sky").squad], bosses)
 	else:
 		_show_menu()
 

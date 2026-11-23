@@ -24,6 +24,7 @@ LOCALES = {
         "headlines": {
             "01-menu": ("Haz crecer tu pelotón", "con mates de cabeza"),
             "02-gates": ("¿Qué puerta da más?", "Elige bien y suma"),
+            "02b-cast": ("Ballesteros contra esqueletos", "tu pelotón, de tu color"),
             "03-battle": ("Cientos de ballesteros", "contra la horda"),
             "04-boss": ("Jefes enormes", "cada cinco niveles"),
             "05-think": ("Modo Leyenda:", "dos pasos, sin fallar"),
@@ -36,6 +37,7 @@ LOCALES = {
         "headlines": {
             "01-menu": ("Grow your squad", "with mental maths"),
             "02-gates": ("Which gate gives more?", "Pick well and add up"),
+            "02b-cast": ("Crossbows versus skeletons", "your squad, your colour"),
             "03-battle": ("Hundreds of crossbows", "against the horde"),
             "04-boss": ("Giant bosses", "every five levels"),
             "05-think": ("Legend mode:", "two steps, no mistakes"),

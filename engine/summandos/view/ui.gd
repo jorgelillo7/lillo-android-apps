@@ -109,7 +109,7 @@ func show_screen(screen: String) -> void:
 	level_map.visible = screen == "levels"
 	hud.visible = screen == "run"
 	result.visible = screen == "result"
-	decor.visible = screen in ["menu", "levels", "about", "colours", "settings", "help"]
+	decor.visible = screen in ["menu", "levels", "about", "colours", "settings", "help", "cast"]
 
 
 func show_levels(mode: int) -> void:
@@ -176,6 +176,32 @@ func _build_decor() -> void:
 		boss_corner.position = Vector2(area.x - boss_corner.size.x + 10, area.y - boss_corner.size.y)
 	decor.get_viewport().size_changed.connect(place)
 	place.call()
+
+
+## The cast, for the store: crossbowmen in three squad colours cheering, and the four bosses in
+## their combat stance below. Shown over the backdrop with nothing else; empty without models.
+func show_cast(squads: Array, bosses: Array) -> void:
+	show_screen("cast")
+	var column := VBoxContainer.new()
+	column.set_anchors_preset(Control.PRESET_FULL_RECT)
+	column.alignment = BoxContainer.ALIGNMENT_CENTER
+	column.add_theme_constant_override("separation", 0)
+	decor.add_child(column)
+	for row in [[squads, "Rogue_Hooded.glb", "Cheer", 1.0, Vector2i(230, 330)], [bosses, "", "Idle_Combat", 1.6, Vector2i(175, 300)]]:
+		var line := HBoxContainer.new()
+		line.alignment = BoxContainer.ALIGNMENT_CENTER
+		line.add_theme_constant_override("separation", -10)
+		column.add_child(line)
+		for entry in row[0]:
+			var file: String = row[1] if row[1] != "" else entry.model
+			var colour: Color = entry if entry is Color else SummandosPalette.BOSS_COLOURS[entry.colour]
+			var body := SummandosModels.character(file, row[2], row[3], colour, false,
+				SummandosModels.ARCHER_SPARES if row[1] != "" else [])
+			if body:
+				line.add_child(LilloModelStage.new(body, row[3], row[4], 0.25))
+	for child in decor.get_children():
+		if child != column and not child is LilloBackdrop:
+			child.visible = false
 
 
 ## Puts `look` (SummandosLevel.boss_look) in the bottom-right corner: the next boss to beat. An

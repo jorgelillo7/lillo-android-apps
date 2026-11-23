@@ -14,6 +14,7 @@ for pair in es-ES:es en-US:en; do
   shot() { scripts/engine-shot.sh --store "$@" >/dev/null; }
   shot --progress $progress $game "$out/01-menu.png" 2.5 -- --lang=$lang
   shot $game "$out/02-gates.png" 1.3 -- --lang=$lang --mode=play --difficulty=normal --level=8 --autosteer
+  shot $game "$out/02b-cast.png" 3 -- --lang=$lang --cast
   shot $game "$out/03-battle.png" 5 -- --lang=$lang --mode=stress
   shot $game "$out/04-boss.png" 17 -- --lang=$lang --mode=play --level=5 --autosteer
   shot $game "$out/05-think.png" 3 -- --lang=$lang --mode=play --difficulty=expert --level=3
