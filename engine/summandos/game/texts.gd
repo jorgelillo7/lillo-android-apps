@@ -14,6 +14,8 @@ static func for_language(language: String) -> Dictionary:
 			"modes": ["Fácil", "Normal", "Adulto"], "next": "Siguiente nivel", "level": "Nivel %d",
 			"think": "¡Piensa! %d", "think_hint": "Elige puerta y suelta el dedo",
 			"about": "Acerca de", "close": "Cerrar", "version": "Versión %s",
+			"sound_on": "Sonido: sí", "sound_off": "Sonido: no", "music_on": "Música: sí",
+			"music_off": "Música: no", "vibration_on": "Vibración: sí", "vibration_off": "Vibración: no",
 			"colour": "Color del pelotón", "colour_title": "Elige el color de tu pelotón",
 			"credits": [
 				{"what": "Personajes 3D", "who": "KayKit, de Kay Lousberg", "licence": "CC0", "link": "kaylousberg.com"},
@@ -33,6 +35,8 @@ static func for_language(language: String) -> Dictionary:
 		"modes": ["Easy", "Normal", "Grown-up"], "next": "Next level", "level": "Level %d",
 		"think": "Think! %d", "think_hint": "Pick a gate and lift your finger",
 		"about": "About", "close": "Close", "version": "Version %s",
+		"sound_on": "Sound: on", "sound_off": "Sound: off", "music_on": "Music: on",
+		"music_off": "Music: off", "vibration_on": "Vibration: on", "vibration_off": "Vibration: off",
 		"colour": "Squad colour", "colour_title": "Pick your squad's colour",
 		"credits": [
 			{"what": "3D characters", "who": "KayKit by Kay Lousberg", "licence": "CC0", "link": "kaylousberg.com"},

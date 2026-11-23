@@ -27,6 +27,7 @@ view/ui.gd           the screens: menu, level map, HUD, result card
 assets/icons/        launcher icons, written by tools/generate_icon.py
 assets/models/       KayKit crossbowmen and skeletons (CC0), listed in models.txt, fetched by
                      scripts/engine-assets.sh; without them the game draws its own figures
+assets/sounds/       effects and the two music loops, synthesised by tools/generate_sounds.py
 assets/fonts/        Luckiest Guy (Astigmatic, Apache 2.0) and Fredoka (OFL), from google/fonts, with
                      their licences
 store/               play-icon-512.png

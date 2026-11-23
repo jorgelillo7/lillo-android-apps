@@ -23,6 +23,7 @@ var swatches: LilloSwatchPicker
 ## {name -> colour} for the squad picker, and the current choice.
 var squad_choices := {}
 var squad_choice := "default"
+var audio: LilloAudio
 var decor: Control
 var boss_corner: Control
 var menu: Control
@@ -38,7 +39,9 @@ var result_stars: CenterContainer
 var next_button: Button
 
 
-func _init(colours: Dictionary, words: Dictionary, map: LilloLevelMap, squads: Dictionary, squad: String) -> void:
+func _init(colours: Dictionary, words: Dictionary, map: LilloLevelMap, squads: Dictionary, squad: String,
+		sounds: LilloAudio) -> void:
+	audio = sounds
 	palette = colours
 	texts = words
 	level_map = map
@@ -113,6 +116,8 @@ func show_result(won: bool, soldiers: int, kills: int, stars: int, has_next: boo
 		var row := LilloStars.new(stars, 30.0, palette.weapon)
 		result_stars.add_child(row)
 		LilloFx.pop_in(row, 0.3)
+		for i in stars:
+			get_tree().create_timer(0.35 + i * 0.25).timeout.connect(audio.play.bind("star", 1.0 + i * 0.12))
 		LilloFx.confetti(result, [palette.weapon, palette.squad, palette.good_floor, Color.WHITE])
 	next_button.visible = has_next
 
@@ -211,13 +216,28 @@ func _build_menu() -> Control:
 	var dark := LilloTheme.box(Color(palette.outline, 0.75), Color(palette.outline, 0.9))
 	for button in [LilloTheme.button(texts.night_on if night else texts.night_off, func() -> void: night_toggled.emit(), 22),
 			LilloTheme.button(texts.colour, show_screen.bind("colours"), 22),
-			LilloTheme.button(texts.about, show_screen.bind("about"), 22)]:
+			LilloTheme.button(texts.about, show_screen.bind("about"), 22),
+			_switch("sound", audio.sound_on, audio.set_sound),
+			_switch("music", audio.music_on, audio.set_music),
+			_switch("vibration", audio.vibration_on, audio.set_vibration)]:
 		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		button.add_theme_stylebox_override("normal", dark)
 		extras.add_child(button)
 	box.add_child(extras)
 	return screen
+
+
+## A menu button that flips a setting on and off, its text saying which (texts.<key>_on/_off).
+func _switch(key: String, on: bool, apply: Callable) -> Button:
+	var button := LilloTheme.button(texts[key + ("_on" if on else "_off")], func() -> void: pass, 22)
+	button.set_meta("on", on)
+	button.pressed.connect(func() -> void:
+		var now: bool = not button.get_meta("on")
+		button.set_meta("on", now)
+		button.text = texts[key + ("_on" if now else "_off")]
+		apply.call(now))
+	return button
 
 
 func _build_hud() -> Control:

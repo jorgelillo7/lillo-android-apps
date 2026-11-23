@@ -52,6 +52,12 @@ scripts/engine-shot.sh --landscape engine/<game> /tmp/b.png 2 # sideways
   plays the real animation. Wash textures with the palette so the teams still read.
 - Credit the pack on the game's About card (`game/texts.gd`, `credits`).
 
+## Sound
+
+Effects come from `engine/<game>/tools/generate_sounds.py` on the shared synthesiser
+`engine/core/tools/lillo_sfx.py`; play them through `LilloAudio` (switches, throttling, button
+clicks). Third-party music is CC0 only, credited on the About card like models.
+
 ## Icons
 
 ```bash

@@ -62,6 +62,16 @@ licences), since Luckiest Guy is capitals only.
   numbers rise when a gate is taken; "Think!" counts down before hard gates.
 - **Result**: a dark card with stars popping in and confetti on a win.
 
+## Sound
+
+Every effect is synthesised by `tools/generate_sounds.py` (nothing sampled): a pop on every button,
+a rising arpeggio through a gate that adds (higher for a bigger gain) and a falling one through a
+gate that takes, soft crossbow ticks while shooting, bone crunches on hits (throttled, never more
+than one every 60 ms), a ticking countdown while thinking (sharper in the last three seconds), a
+low boom and a buzz when the boss wakes, a fanfare or a fall at the end, a ding per star. Two
+chiptune loops, calm for the menus and faster for the run, stand in until CC0 music is chosen.
+Sound, music and vibration each have a switch in the menu, saved; music pauses with the app.
+
 ## Icon
 
 A teal squad in front of a calculator on the sunset sky (`tools/generate_icon.py`); checked at

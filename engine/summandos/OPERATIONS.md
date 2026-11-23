@@ -9,6 +9,7 @@ scripts/godot.sh --path engine/summandos                    # open in the editor
 scripts/godot.sh --path engine/summandos -- --mode=stress   # performance test (not in the menu)
 scripts/godot.sh --headless --path engine/summandos --script tools/balance.gd   # difficulty curve
 .venv/bin/python engine/summandos/tools/generate_icon.py    # regenerate the icons
+.venv/bin/python engine/summandos/tools/generate_sounds.py  # regenerate effects and music
 .venv/bin/python scripts/engine_icon_preview.py engine/summandos /tmp/icon.png  # check them
 scripts/engine-export.sh --arm64 engine/summandos           # APK for a phone (export/, debug key)
 ```
