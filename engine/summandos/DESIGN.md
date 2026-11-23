@@ -26,23 +26,32 @@ takes the hue from the squad colour.
 
 ## Type
 
-Luckiest Guy for everything on screen, white with a dark outline; numbers over the squad in gold
-on a badge.
+Luckiest Guy for titles, buttons and numbers, white with a dark outline; numbers over the squad in
+gold on a badge. Fredoka at a medium weight for text meant to be read (the About card's names and
+licences), since Luckiest Guy is capitals only.
 
 ## Characters
 
 - In the run: KayKit's CC0 hooded crossbowmen as the squad (washed teal), running between waves
   and aiming and shooting bolts while a wave is in range; skeletons as the enemies (washed
-  purple), a giant skeleton warrior as the boss. Crowds step through four baked poses per clip;
+  purple). Bosses every fifth level reuse the four free skeleton models (warrior, mage, rogue,
+  minion) in six boss colours, each boss bigger than the last; no two bosses in a mode share both
+  model and colour (`SummandosLevel.boss_look`). Boss colours keep ΔE ≥ 19 from every squad
+  colour and both tracks for every kind of colour vision (tests). Crowds step through four baked poses per clip;
   the leader and the boss play the full animation. Without the models the game falls back to its
   own toon figures (`LilloFigure`) with a horned monster boss.
 - Credits for every third-party piece are on the About card (menu → About).
-- In the menus: a waving soldier bottom-left and the swaying monster bottom-right
-  (`LilloSticker`).
+- In the menus and the level map: the crossbowman cheering bottom-left in the player's squad
+  colour, and the next boss of the chosen mode bottom-right in its combat stance
+  (`LilloModelStage`); without the models, the drawn soldier and monster (`LilloSticker`).
 
 ## Screens
 
-- **Menu**: the title breathing, three mode buttons, night mode and the performance test.
+- **Menu**: the title breathing, three mode buttons, then night mode, squad colour and About.
+  The performance test is only a command-line option now (`--mode=stress`).
+- **About**: the name and version, one block per credit (what, who, licence and a tappable link),
+  and the no-ads line. A bought pack (KayKit Skeletons EXTRA) gets its own line once its models
+  are in the game.
 - **Level map**: rays, clouds and hills; tiles of 3 columns upright and 5 sideways, stars in a
   tab, padlocks on locked levels; arrows, swipe and page dots; back bottom-left.
 - **Run**: the chase camera; gates are translucent panels with their half of the track painted,

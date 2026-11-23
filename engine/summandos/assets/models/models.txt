@@ -1,8 +1,11 @@
 # Models fetched by scripts/engine-assets.sh (not committed): <file> <sha256> <url> <animations kept>
 # The .import files are committed: they run lillo_core/dev/keep_animations.gd, which drops every
-# animation not in the last column.
+# animation not in the last column. After changing that column, delete the model's files in
+# .godot/imported/ so Godot imports it again (it only reimports when the model itself changes).
 # KayKit Adventurers and Skeletons by Kay Lousberg (kaylousberg.com), CC0, pinned to a commit of
 # the official KayKit-Game-Assets repositories on GitHub.
-Rogue_Hooded.glb 93e6e25213009952276d9cf34f5d96a243767334c66f280db0433ddfabb91545 https://raw.githubusercontent.com/KayKit-Game-Assets/KayKit-Character-Pack-Adventures-1.0/672074b73ba276876a19e8816ecdc5241817ab47/addons/kaykit_character_pack_adventures/Characters/gltf/Rogue_Hooded.glb Running_A,2H_Ranged_Shooting
-Skeleton_Minion.glb 6ffc003f895bed0b074791e0e490846210a2e2f8fc7da300aba53cc185f95968 https://raw.githubusercontent.com/KayKit-Game-Assets/KayKit-Character-Pack-Skeletons-1.0/15b62b9bad122f72926c10fb14d622c73819fa54/addons/kaykit_character_pack_skeletons/Characters/gltf/Skeleton_Minion.glb Walking_A
-Skeleton_Warrior.glb 178b6fda810b814c250d8a2010c24dfd9b458b9006dd323353e620b7ff118bbe https://raw.githubusercontent.com/KayKit-Game-Assets/KayKit-Character-Pack-Skeletons-1.0/15b62b9bad122f72926c10fb14d622c73819fa54/addons/kaykit_character_pack_skeletons/Characters/gltf/Skeleton_Warrior.glb Walking_B
+Rogue_Hooded.glb 93e6e25213009952276d9cf34f5d96a243767334c66f280db0433ddfabb91545 https://raw.githubusercontent.com/KayKit-Game-Assets/KayKit-Character-Pack-Adventures-1.0/672074b73ba276876a19e8816ecdc5241817ab47/addons/kaykit_character_pack_adventures/Characters/gltf/Rogue_Hooded.glb Running_A,2H_Ranged_Shooting,Cheer
+Skeleton_Minion.glb 6ffc003f895bed0b074791e0e490846210a2e2f8fc7da300aba53cc185f95968 https://raw.githubusercontent.com/KayKit-Game-Assets/KayKit-Character-Pack-Skeletons-1.0/15b62b9bad122f72926c10fb14d622c73819fa54/addons/kaykit_character_pack_skeletons/Characters/gltf/Skeleton_Minion.glb Walking_A,Walking_B,Idle_Combat
+Skeleton_Warrior.glb 178b6fda810b814c250d8a2010c24dfd9b458b9006dd323353e620b7ff118bbe https://raw.githubusercontent.com/KayKit-Game-Assets/KayKit-Character-Pack-Skeletons-1.0/15b62b9bad122f72926c10fb14d622c73819fa54/addons/kaykit_character_pack_skeletons/Characters/gltf/Skeleton_Warrior.glb Walking_B,Idle_Combat
+Skeleton_Mage.glb e05b0f5cfa395271c9f75fd07c0a0613c56f401ece4ab644e080001a79971075 https://raw.githubusercontent.com/KayKit-Game-Assets/KayKit-Character-Pack-Skeletons-1.0/15b62b9bad122f72926c10fb14d622c73819fa54/addons/kaykit_character_pack_skeletons/Characters/gltf/Skeleton_Mage.glb Walking_B,Idle_Combat
+Skeleton_Rogue.glb 4003f2b77891bb56f7e0de7d555abcb497aebbcaee35b614211f16275f9ccae3 https://raw.githubusercontent.com/KayKit-Game-Assets/KayKit-Character-Pack-Skeletons-1.0/15b62b9bad122f72926c10fb14d622c73819fa54/addons/kaykit_character_pack_skeletons/Characters/gltf/Skeleton_Rogue.glb Walking_B,Idle_Combat

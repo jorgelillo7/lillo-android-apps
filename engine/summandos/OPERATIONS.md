@@ -6,7 +6,7 @@ Shared engine commands and setup: [engine/README.md](../README.md). Run from the
 scripts/engine-assets.sh engine/summandos                   # fetch the 3D models (once; before export)
 scripts/engine-test.sh engine/summandos                     # tests
 scripts/godot.sh --path engine/summandos                    # open in the editor
-scripts/godot.sh --path engine/summandos -- --mode=stress   # performance test on the Mac
+scripts/godot.sh --path engine/summandos -- --mode=stress   # performance test (not in the menu)
 scripts/godot.sh --headless --path engine/summandos --script tools/balance.gd   # difficulty curve
 .venv/bin/python engine/summandos/tools/generate_icon.py    # regenerate the icons
 .venv/bin/python scripts/engine_icon_preview.py engine/summandos /tmp/icon.png  # check them

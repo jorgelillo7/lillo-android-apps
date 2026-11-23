@@ -5,7 +5,6 @@ extends CanvasLayer
 
 signal mode_picked(mode: int)
 signal level_picked(number: int)
-signal stress_picked
 signal night_toggled
 signal squad_picked(name: String)
 signal next_picked
@@ -14,6 +13,7 @@ signal levels_picked
 signal menu_picked
 
 const FONT := preload("res://assets/fonts/LuckiestGuy-Regular.ttf")
+const READING_FONT := preload("res://assets/fonts/Fredoka.ttf")
 
 var palette: Dictionary
 var texts: Dictionary
@@ -24,6 +24,7 @@ var swatches: LilloSwatchPicker
 var squad_choices := {}
 var squad_choice := "default"
 var decor: Control
+var boss_corner: Control
 var menu: Control
 var hud: Control
 var result: Control
@@ -62,13 +63,25 @@ func _ready() -> void:
 	result = _build_result()
 	root.add_child(result)
 	var version := str(ProjectSettings.get_setting("application/config/version", ""))
-	about = LilloAbout.new(texts.title, texts.version % version, PackedStringArray(texts.credits), texts.close, palette.outline)
+	var credits: Array = texts.credits.duplicate()
+	if SummandosModels.scene("Skeleton_Golem.glb"):
+		credits.insert(1, texts.golem_credit)
+	about = LilloAbout.new(texts.title, texts.version % version, credits, texts.about_note, texts.close,
+		palette.outline, palette.weapon, _reading())
 	about.closed.connect(show_screen.bind("menu"))
 	root.add_child(about)
 	swatches = LilloSwatchPicker.new(texts.colour_title, squad_choices, squad_choice, texts.close, palette.outline)
 	swatches.picked.connect(func(name: String) -> void: squad_picked.emit(name))
 	swatches.closed.connect(show_screen.bind("menu"))
 	root.add_child(swatches)
+
+
+## Fredoka at a medium weight, for text meant to be read rather than shouted.
+static func _reading() -> Font:
+	var font := FontVariation.new()
+	font.base_font = READING_FONT
+	font.variation_opentype = {TextServerManager.get_primary_interface().name_to_tag("wght"): 560}
+	return font
 
 
 ## Shows one screen: "menu", "levels", "run", "result" or "about".
@@ -117,17 +130,43 @@ func _build_decor() -> void:
 	decor.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(decor)
 	decor.add_child(LilloBackdrop.new(palette))
-	var hero := LilloSticker.new("soldier", palette.squad, palette.skin, palette.squad_dark, palette.outline)
-	var boss := LilloSticker.new("monster", palette.boss, palette.boss_belly, palette.boss_horns, palette.outline)
-	for sticker in [hero, boss]:
-		sticker.size = Vector2(230, 230)
-		decor.add_child(sticker)
+	var hero: Control = null
+	var archer := SummandosModels.character("Rogue_Hooded.glb", "Cheer", 1.0, palette.squad, false,
+		SummandosModels.ARCHER_SPARES)
+	if archer:
+		hero = LilloModelStage.new(archer, 1.0, Vector2i(240, 280), 0.35)
+	else:
+		hero = LilloSticker.new("soldier", palette.squad, palette.skin, palette.squad_dark, palette.outline)
+		hero.size = Vector2(230, 230)
+	decor.add_child(hero)
+	boss_corner = Control.new()
+	boss_corner.size = Vector2(240, 280)
+	boss_corner.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	decor.add_child(boss_corner)
+	show_boss({})
 	var place := func() -> void:
 		var area := decor.get_viewport().get_visible_rect().size
-		hero.position = Vector2(-10, area.y - 230)
-		boss.position = Vector2(area.x - 200, area.y - 215)
+		hero.position = Vector2(-10, area.y - hero.size.y)
+		boss_corner.position = Vector2(area.x - boss_corner.size.x + 10, area.y - boss_corner.size.y)
 	decor.get_viewport().size_changed.connect(place)
 	place.call()
+
+
+## Puts `look` (SummandosLevel.boss_look) in the bottom-right corner: the next boss to beat. An
+## empty look, or no models, shows the drawn monster.
+func show_boss(look: Dictionary) -> void:
+	for child in boss_corner.get_children():
+		child.queue_free()
+	var boss: Node3D = null
+	if not look.is_empty():
+		boss = SummandosModels.character(look.model, "Idle_Combat", 1.6, SummandosPalette.BOSS_COLOURS[look.colour])
+	if boss:
+		boss_corner.add_child(LilloModelStage.new(boss, 1.6, Vector2i(240, 280), -0.35))
+	else:
+		var monster := LilloSticker.new("monster", palette.boss, palette.boss_belly, palette.boss_horns, palette.outline)
+		monster.size = Vector2(230, 230)
+		monster.position = Vector2(10, 50)
+		boss_corner.add_child(monster)
 
 
 func _column(parent: Control, card := false) -> VBoxContainer:
@@ -165,15 +204,14 @@ func _build_menu() -> Control:
 	for i in texts.modes.size():
 		box.add_child(LilloTheme.button(texts.modes[i], func() -> void: mode_picked.emit(i), 44, 96.0))
 	var extras := GridContainer.new()
-	extras.columns = 2
+	extras.columns = 3
 	extras.add_theme_constant_override("h_separation", 10)
 	extras.add_theme_constant_override("v_separation", 10)
 	var night: bool = LilloSettings.read("night", false)
 	var dark := LilloTheme.box(Color(palette.outline, 0.75), Color(palette.outline, 0.9))
 	for button in [LilloTheme.button(texts.night_on if night else texts.night_off, func() -> void: night_toggled.emit(), 22),
 			LilloTheme.button(texts.colour, show_screen.bind("colours"), 22),
-			LilloTheme.button(texts.about, show_screen.bind("about"), 22),
-			LilloTheme.button(texts.stress, func() -> void: stress_picked.emit(), 22)]:
+			LilloTheme.button(texts.about, show_screen.bind("about"), 22)]:
 		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		button.add_theme_stylebox_override("normal", dark)
