@@ -37,6 +37,14 @@ What each ad shows, and what the advertised game really is. The ad is what we bu
 Other common ad mechanics to look at: draw a line to protect, rescue-the-hero doors, merge
 soldiers, stack runner that builds a bridge, parking jam, colour sort.
 
+## Game one: Summandos
+
+Name: **Sumandos** in Spanish, **Summandos** in English (a *summand* is each number in a sum, and
+both play on *Commandos*: a squad of sums). Package `com.jorgelillo.summandos` (English, like
+every app's), folder `games/summandos`. Outside the apps' question pattern on purpose: a game is
+found by its mechanic, and a short name reads better on the icon. No look borrowed from
+*Commandos*, a registered game title: only the word play.
+
 ## Game one: v1 scope (chosen by the owner)
 
 - **A shooting squad, not a cannon**: a soldier runs up the track firing at the enemies coming the

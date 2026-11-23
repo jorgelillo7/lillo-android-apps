@@ -20,7 +20,7 @@ purchases (the plan's rule).
 
 ## Options
 
-| | Compose Canvas (as `slipper`) | **Godot 4** | Unity 6 |
+| | Compose Canvas (as `slipper`) | **Godot 4** (4.7.2 stable) | Unity 6 |
 |---|---|---|---|
 | 3D and 1,000+ units | No real 3D; fake perspective only | Yes: `MultiMeshInstance3D` draws thousands of copies in one call | Yes, the strongest (GPU instancing, DOTS) |
 | 2D physics and liquids | Needs a library (JBox2D) and hand-made fluids | Built-in 2D physics; particles with collision for liquids | Built-in 2D physics; fluids via asset store |
@@ -33,7 +33,7 @@ purchases (the plan's rule).
 
 ## Recommendation
 
-**Godot 4 (pinned to the current stable, 4.6.x) for both games.** It covers real 3D crowds and 2D
+**Godot 4 (pinned to the current stable, 4.7.2) for both games.** It covers real 3D crowds and 2D
 physics in one engine, it is free with no strings, and its text formats keep the work reviewable
 and writable from a session like the rest of the repo. Unity stays the fallback only if spike S2
 cannot hold 60 fps with 1,000 units on a mid-range phone. Compose stays for the apps; it is the
@@ -41,6 +41,20 @@ wrong tool for a 3D crowd.
 
 **One app per game**, not a collection: people search Play for the mechanic they saw in an ad,
 each listing can show that mechanic, and it matches how this repo already ships one app per idea.
+
+## Requirements every game keeps
+
+- **Upright and landscape**: the phone turned sideways (and handhelds, tablets) gets a layout made
+  for it, never a stretched or cropped one; the 3D camera widens its view instead of zooming. Every
+  screen is checked both ways, as the apps' `+land` screenshots are.
+- **What the apps already learned**: display cutouts and system bars never cover the HUD; back
+  goes back (predictive back on Android 13+); "Remove animations" calms decorative motion;
+  English and Spanish; contrast 4.5:1 for text; test the release build, not only debug.
+- **Icons with care**: drawn by the repo's Pillow generators like the apps' (adaptive icon,
+  monochrome layer, store graphics), reviewed at launcher size on a light and a dark wallpaper
+  before any release.
+- **Reuse first**: anything a second game would need goes to `games/core` from the start; this is
+  the first of several games.
 
 ## How it lives in the repo
 
