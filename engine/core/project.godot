@@ -1,0 +1,11 @@
+; Godot project that holds the shared addon (addons/lillo_core) and its tests.
+config_version=5
+
+[application]
+
+config/name="Lillo core"
+config/features=PackedStringArray("4.7", "Mobile")
+
+[rendering]
+
+renderer/rendering_method="mobile"

@@ -53,13 +53,13 @@ each listing can show that mechanic, and it matches how this repo already ships 
 - **Icons with care**: drawn by the repo's Pillow generators like the apps' (adaptive icon,
   monochrome layer, store graphics), reviewed at launcher size on a light and a dark wallpaper
   before any release.
-- **Reuse first**: anything a second game would need goes to `games/core` from the start; this is
+- **Reuse first**: anything a second game would need goes to `engine/core` from the start; this is
   the first of several games.
 
 ## How it lives in the repo
 
 ```
-games/
+engine/
   core/                 Godot addon shared by every game: crowd (MultiMesh), gates and number
                         pop-ups, level loader, haptics, save, settings and About screen
   <game>/               one Godot project per game; addons/lillo_core points at ../core
@@ -82,7 +82,7 @@ games/
 
 | | Spike | Passes when |
 |---|---|---|
-| S1 | Pinned Godot install script, an empty `games/core` addon and one test running headless, locally and in CI | The test runs in CI with no manual step |
+| S1 ✅ | Pinned Godot install script, an `engine/core` addon and tests running headless, locally and in CI | Done: `scripts/godot.sh`, `scripts/engine-test.sh` (GUT 9.6.1), the Engine workflow; `LilloGate` and its tests in core, linked from `engine/summandos` |
 | S2 | Crowd runner prototype: 1,000 units on a track through two gates; a debug APK for a real phone | 60 fps on the owner's phone with 1,000 units; record the APK size |
 | S3 | Pull-the-pin prototype: two pins, 300 bodies, lava meeting water | Pours read clearly and stay smooth on the phone |
 | S4 | Headless AAB export plus Gradle Play Publisher `artifactDir` dry run to the internal track | The bundle reaches internal testing through the Release workflow |
