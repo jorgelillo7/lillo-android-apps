@@ -29,9 +29,12 @@ func show_at(origin: Vector3, offsets: PackedVector3Array, facing_back := false)
 	multimesh.visible_instance_count = shown
 
 
-## Places members at absolute positions.
-func show_points(points: PackedVector3Array) -> void:
+## Places members at absolute positions, each scaled by `scales[i]` when given.
+func show_points(points: PackedVector3Array, scales := PackedFloat32Array()) -> void:
 	var shown := mini(points.size(), multimesh.instance_count)
 	for i in shown:
-		multimesh.set_instance_transform(i, Transform3D(Basis.IDENTITY, points[i]))
+		var basis := Basis.IDENTITY
+		if i < scales.size():
+			basis = basis.scaled(Vector3.ONE * scales[i])
+		multimesh.set_instance_transform(i, Transform3D(basis, points[i]))
 	multimesh.visible_instance_count = shown

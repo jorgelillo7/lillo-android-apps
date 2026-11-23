@@ -1,6 +1,7 @@
 ## Summandos' scene: builds the track, the squad, the enemies and the HUD in code, and draws a
 ## SummandosRun every frame. Command-line options after `--`: `--mode=play|stress` starts a run
-## at once, `--shot=<png>` saves a screenshot after `--after=<seconds>` (default 3) and quits.
+## at once, `--palette=<name>` picks a SummandosPalette theme, `--shot=<png>` saves a screenshot
+## after `--after=<seconds>` (default 3) and quits.
 extends Node3D
 
 const SPACING := 0.42
@@ -11,13 +12,11 @@ const BULLET_CAPACITY := 300
 const BULLET_SPEED := 45.0
 const VISIBLE_AHEAD := 70.0
 
-const BLUE := Color(0.22, 0.5, 1.0)
-const RED := Color(0.95, 0.27, 0.25)
-const GOOD_GATE := Color(0.2, 0.55, 1.0, 0.45)
-const BAD_GATE := Color(1.0, 0.3, 0.3, 0.45)
-const WEAPON_COLOUR := Color(1.0, 0.75, 0.15)
+const BOSS_HEIGHT := 4.5
+const GATE_FLOOR_LENGTH := 7.0
 
 var texts := {}
+var palette := SummandosPalette.named("night" if LilloSettings.read("night", false) else "sunset")
 var run: SummandosRun
 var mode := "play"
 var target_x := 0.0
@@ -30,6 +29,8 @@ var count_label: Label3D
 var soldiers_view: LilloCrowdView
 var enemies_view: LilloCrowdView
 var bullets_view: LilloCrowdView
+var boss_view: LilloCrowdView
+var count_pill: MeshInstance3D
 var row_nodes: Array[Node3D] = []
 var formation_cache := {}
 
@@ -53,6 +54,9 @@ var elapsed := 0.0
 
 func _ready() -> void:
 	texts = _texts(OS.get_locale_language())
+	for arg in OS.get_cmdline_user_args():
+		if arg.begins_with("--palette="):
+			palette = SummandosPalette.named(arg.trim_prefix("--palette="))
 	_build_world()
 	_build_ui()
 	get_viewport().size_changed.connect(_fit_camera)
@@ -76,12 +80,14 @@ func _texts(language: String) -> Dictionary:
 	if language == "es":
 		return {
 			"title": "Sumandos", "play": "Jugar", "stress": "Prueba de rendimiento (1.000)",
+			"night_on": "Modo noche: sí", "night_off": "Modo noche: no",
 			"won": "¡Victoria!", "lost": "Derrota", "again": "Otra vez", "menu": "Menú",
 			"kills": "Bajas", "weapon": "ARMA", "soldiers": "Soldados",
 			"detail": "%d soldados en pie · %d bajas enemigas",
 		}
 	return {
 		"title": "Summandos", "play": "Play", "stress": "Performance test (1,000)",
+		"night_on": "Night mode: on", "night_off": "Night mode: off",
 		"won": "Victory!", "lost": "Defeat", "again": "Again", "menu": "Menu",
 		"kills": "Kills", "weapon": "WEAPON", "soldiers": "Soldiers",
 		"detail": "%d soldiers standing · %d enemies down",
@@ -103,27 +109,79 @@ func _material(colour: Color, transparent := false, emissive := false) -> Standa
 	return material
 
 
+## The track: bands across it in two tones, so speed reads at a glance.
+func _stripes(base: Color, stripe: Color) -> ShaderMaterial:
+	var shader := Shader.new()
+	shader.code = """
+shader_type spatial;
+render_mode diffuse_toon;
+uniform vec4 base : source_color;
+uniform vec4 stripe : source_color;
+varying vec3 world;
+void vertex() { world = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz; }
+void fragment() { ALBEDO = mod(world.z, 4.0) < 2.0 ? base.rgb : stripe.rgb; ROUGHNESS = 0.9; }
+"""
+	var material := ShaderMaterial.new()
+	material.shader = shader
+	material.set_shader_parameter("base", base)
+	material.set_shader_parameter("stripe", stripe)
+	return material
+
+
+## A rounded badge that always faces the camera, drawn behind the squad's count.
+func _pill(colour: Color) -> ShaderMaterial:
+	var shader := Shader.new()
+	shader.code = """
+shader_type spatial;
+render_mode unshaded, depth_test_disabled, cull_disabled;
+uniform vec4 colour : source_color;
+void vertex() {
+	MODELVIEW_MATRIX = VIEW_MATRIX * mat4(INV_VIEW_MATRIX[0], INV_VIEW_MATRIX[1], INV_VIEW_MATRIX[2], MODEL_MATRIX[3]);
+}
+void fragment() {
+	vec2 p = (UV - 0.5) * vec2(2.0, 0.95);
+	vec2 q = abs(p) - vec2(1.0 - 0.475, 0.0);
+	float d = length(max(q, 0.0)) - 0.475;
+	ALBEDO = colour.rgb;
+	ALPHA = colour.a * (1.0 - smoothstep(-0.02, 0.0, d));
+}
+"""
+	var material := ShaderMaterial.new()
+	material.shader = shader
+	material.set_shader_parameter("colour", colour)
+	material.render_priority = 0
+	return material
+
+
 func _build_world() -> void:
 	var environment := WorldEnvironment.new()
 	var env := Environment.new()
-	env.background_mode = Environment.BG_COLOR
-	env.background_color = Color(0.53, 0.75, 0.95)
+	env.background_mode = Environment.BG_SKY
+	var sky_material := ProceduralSkyMaterial.new()
+	sky_material.sky_top_color = palette.sky_top
+	sky_material.sky_horizon_color = palette.sky
+	sky_material.ground_horizon_color = palette.sky
+	sky_material.ground_bottom_color = palette.sky
+	sky_material.sun_angle_max = 0.0
+	var sky := Sky.new()
+	sky.sky_material = sky_material
+	env.sky = sky
 	env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
-	env.ambient_light_color = Color(0.85, 0.88, 0.95)
+	env.ambient_light_color = palette.ambient
 	env.ambient_light_energy = 0.6
 	environment.environment = env
 	add_child(environment)
 
 	var sun := DirectionalLight3D.new()
 	sun.rotation_degrees = Vector3(-55, -30, 0)
-	sun.light_energy = 1.1
+	sun.light_energy = 0.85
 	add_child(sun)
 
 	ground = MeshInstance3D.new()
 	var plane := PlaneMesh.new()
 	plane.size = Vector2(TRACK_WIDTH, 2000.0)
 	ground.mesh = plane
-	ground.material_override = _material(Color(0.78, 0.8, 0.84))
+	ground.material_override = _stripes(palette.track, palette.track_stripe)
 	add_child(ground)
 	for side in [-1.0, 1.0]:
 		var edge := MeshInstance3D.new()
@@ -131,28 +189,29 @@ func _build_world() -> void:
 		box.size = Vector3(0.3, 0.3, 2000.0)
 		edge.mesh = box
 		edge.position = Vector3(side * (TRACK_WIDTH * 0.5 + 0.15), 0.15, 0.0)
-		edge.material_override = _material(Color(0.35, 0.38, 0.45))
+		edge.material_override = _material(palette.edge)
 		add_child(edge)
 
-	var soldier := CapsuleMesh.new()
-	soldier.radius = 0.16
-	soldier.height = 0.7
-	soldiers_view = LilloCrowdView.new(soldier, _material(BLUE), SOLDIER_CAPACITY)
+	var outline := Color(palette.outline, 0.9)
+	var soldier := LilloFigure.build(0.75, palette.squad_dark, palette.skin, palette.squad)
+	soldiers_view = LilloCrowdView.new(soldier, LilloFigure.material(outline), SOLDIER_CAPACITY)
 	add_child(soldiers_view)
-	enemies_view = LilloCrowdView.new(soldier, _material(RED), ENEMY_CAPACITY)
+	var enemy := LilloFigure.build(0.75, palette.enemy, palette.enemy_skin)
+	enemies_view = LilloCrowdView.new(enemy, LilloFigure.material(outline), ENEMY_CAPACITY)
 	add_child(enemies_view)
-	var bullet := SphereMesh.new()
-	bullet.radius = 0.06
-	bullet.height = 0.12
-	bullets_view = LilloCrowdView.new(bullet, _material(Color(1.0, 0.9, 0.3), false, true), BULLET_CAPACITY)
+	var monster := LilloFigure.monster(BOSS_HEIGHT, palette.boss, palette.boss_belly, palette.boss_horns)
+	boss_view = LilloCrowdView.new(monster, LilloFigure.material(outline), 4)
+	add_child(boss_view)
+	var bullet := LilloFigure.streak(0.7, 0.05, palette.bullet)
+	var bullet_material := _material(palette.bullet, false, true)
+	bullet_material.vertex_color_use_as_albedo = true
+	bullets_view = LilloCrowdView.new(bullet, bullet_material, BULLET_CAPACITY)
 	add_child(bullets_view)
 
 	leader = MeshInstance3D.new()
-	var leader_mesh := CapsuleMesh.new()
-	leader_mesh.radius = 0.24
-	leader_mesh.height = 1.0
-	leader.mesh = leader_mesh
-	leader.material_override = _material(Color(0.1, 0.3, 0.85))
+	leader.mesh = LilloFigure.build(1.1, palette.squad_dark, palette.skin, palette.squad)
+	leader.material_override = LilloFigure.material(outline)
+	leader.rotation.y = PI
 	add_child(leader)
 
 	count_label = Label3D.new()
@@ -161,7 +220,17 @@ func _build_world() -> void:
 	count_label.outline_size = 24
 	count_label.pixel_size = 0.01
 	count_label.no_depth_test = true
+	count_label.render_priority = 2
+	count_label.outline_render_priority = 1
+	count_label.modulate = palette.weapon
+	count_label.outline_modulate = palette.outline
 	add_child(count_label)
+	count_pill = MeshInstance3D.new()
+	var pill := QuadMesh.new()
+	pill.size = Vector2(2.0, 0.95)
+	count_pill.mesh = pill
+	count_pill.material_override = _pill(palette.squad_dark)
+	add_child(count_pill)
 
 	camera = Camera3D.new()
 	add_child(camera)
@@ -172,7 +241,7 @@ func _fit_camera() -> void:
 	if size.y > size.x:
 		camera.keep_aspect = Camera3D.KEEP_WIDTH
 		camera.fov = 62.0
-		rig = Vector3(8.5, 7.0, 12.0)
+		rig = Vector3(7.0, 6.5, 12.0)
 	else:
 		camera.keep_aspect = Camera3D.KEEP_HEIGHT
 		camera.fov = 50.0
@@ -196,8 +265,8 @@ func _choice(pick: Dictionary, side: float) -> Node3D:
 	var node := Node3D.new()
 	node.position.x = _world_x(side * TRACK_WIDTH * 0.25)
 	var label := Label3D.new()
-	label.font_size = 140
-	label.outline_size = 28
+	label.font_size = 200
+	label.outline_size = 40
 	label.pixel_size = 0.01
 	label.rotation.y = PI
 	label.position.y = 1.3
@@ -209,8 +278,15 @@ func _choice(pick: Dictionary, side: float) -> Node3D:
 		panel.mesh = quad
 		panel.position.y = 1.2
 		var good := gate.apply(100) >= 100
-		panel.material_override = _material(GOOD_GATE if good else BAD_GATE, true)
+		panel.material_override = _material(palette.good_gate if good else palette.bad_gate, true)
 		node.add_child(panel)
+		var floor := MeshInstance3D.new()
+		var floor_plane := PlaneMesh.new()
+		floor_plane.size = Vector2(TRACK_WIDTH * 0.5 - 0.15, GATE_FLOOR_LENGTH)
+		floor.mesh = floor_plane
+		floor.position = Vector3(0, 0.01, -GATE_FLOOR_LENGTH * 0.5)
+		floor.material_override = _material(palette.good_floor if good else palette.bad_floor)
+		node.add_child(floor)
 		label.text = gate.label()
 	else:
 		var crate := MeshInstance3D.new()
@@ -218,11 +294,11 @@ func _choice(pick: Dictionary, side: float) -> Node3D:
 		box.size = Vector3(1.4, 0.8, 0.8)
 		crate.mesh = box
 		crate.position.y = 0.4
-		crate.material_override = _material(WEAPON_COLOUR, false, true)
+		crate.material_override = _material(palette.weapon, false, true)
 		node.add_child(crate)
 		label.text = "%s ×%s" % [texts.weapon, str(pick.weapon).trim_suffix(".0")]
 		label.font_size = 96
-		label.modulate = WEAPON_COLOUR
+		label.modulate = palette.weapon
 	node.add_child(label)
 	return node
 
@@ -238,14 +314,25 @@ func _button(text: String, action: Callable) -> Button:
 	return button
 
 
-func _centre_box(parent: Control) -> VBoxContainer:
+## A centred column; `backdrop` puts it on a dark rounded panel so it reads over the 3D scene.
+func _centre_box(parent: Control, backdrop := false) -> VBoxContainer:
 	var centre := CenterContainer.new()
 	centre.set_anchors_preset(Control.PRESET_FULL_RECT)
 	parent.add_child(centre)
+	var holder: Control = centre
+	if backdrop:
+		var panel := PanelContainer.new()
+		var style := StyleBoxFlat.new()
+		style.bg_color = Color(palette.outline, 0.72)
+		style.set_corner_radius_all(24)
+		style.set_content_margin_all(28)
+		panel.add_theme_stylebox_override("panel", style)
+		centre.add_child(panel)
+		holder = panel
 	var box := VBoxContainer.new()
-	box.custom_minimum_size = Vector2(minf(420.0, get_viewport().get_visible_rect().size.x - 48.0), 0)
+	box.custom_minimum_size = Vector2(minf(420.0, get_viewport().get_visible_rect().size.x - 104.0), 0)
 	box.add_theme_constant_override("separation", 18)
-	centre.add_child(box)
+	holder.add_child(box)
 	return box
 
 
@@ -255,7 +342,7 @@ func _title(text: String, size: int) -> Label:
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	label.add_theme_font_size_override("font_size", size)
 	label.add_theme_constant_override("outline_size", 12)
-	label.add_theme_color_override("font_outline_color", Color(0.05, 0.1, 0.25))
+	label.add_theme_color_override("font_outline_color", palette.outline)
 	return label
 
 
@@ -288,11 +375,13 @@ func _build_ui() -> void:
 	menu_box.add_child(_title(texts.title, 84))
 	menu_box.add_child(_button(texts.play, _start.bind("play")))
 	menu_box.add_child(_button(texts.stress, _start.bind("stress")))
+	var night: bool = LilloSettings.read("night", false)
+	menu_box.add_child(_button(texts.night_on if night else texts.night_off, _toggle_night))
 
 	result = Control.new()
 	result.set_anchors_preset(Control.PRESET_FULL_RECT)
 	root.add_child(result)
-	var result_box := _centre_box(result)
+	var result_box := _centre_box(result, true)
 	result_title = _title("", 72)
 	result_box.add_child(result_title)
 	result_detail = _title("", 28)
@@ -317,6 +406,11 @@ func _fit_safe_area(root: MarginContainer) -> void:
 		margins = {"margin_left": 16, "margin_top": 16, "margin_right": 16, "margin_bottom": 16}
 	for key in margins:
 		root.add_theme_constant_override(key, margins[key])
+
+
+func _toggle_night() -> void:
+	LilloSettings.write("night", not LilloSettings.read("night", false))
+	get_tree().reload_current_scene()
 
 
 func _show_menu() -> void:
@@ -415,11 +509,22 @@ func _offsets(count: int) -> PackedVector3Array:
 	return formation_cache[count]
 
 
+## Enemy waves stand as a loose mob rather than a parade block.
+func _enemy_offsets(count: int) -> PackedVector3Array:
+	var key := -count
+	if not formation_cache.has(key):
+		var offsets := LilloFormation.offsets(count, SPACING * 1.1, TRACK_WIDTH - 1.5)
+		formation_cache[key] = LilloFormation.scatter(offsets, SPACING * 0.35, count)
+	return formation_cache[key]
+
+
 func _draw_idle() -> void:
-	soldiers_view.show_at(Vector3.ZERO, _offsets(12).duplicate())
+	soldiers_view.show_at(Vector3.ZERO, _offsets(12).duplicate(), true)
 	enemies_view.show_points(PackedVector3Array())
 	bullets_view.show_points(PackedVector3Array())
-	leader.position = Vector3(0, 0.5, 0.6)
+	boss_view.show_points(PackedVector3Array())
+	count_pill.visible = false
+	leader.position = Vector3(0, 0.0, 0.6)
 	count_label.text = ""
 	camera.position = Vector3(0, rig.x, -rig.y)
 	camera.look_at(Vector3(0, 0, rig.z))
@@ -433,25 +538,31 @@ func _draw_run(delta: float) -> void:
 	for i in squad_offsets.size():
 		var o := squad_offsets[i]
 		behind[i] = Vector3(o.x * 0.9, 0.0, -o.z - 0.6)
-	soldiers_view.show_at(Vector3(0, 0.35, run.z), _shift(behind, _world_x(run.x)))
-	leader.position = squad + Vector3(0, 0.15, 0.2)
-	count_label.position = squad + Vector3(0, 1.6, 0)
+	soldiers_view.show_at(Vector3(0, 0.0, run.z), _shift(behind, _world_x(run.x)), true)
+	leader.position = Vector3(squad.x, 0.0, squad.z + 0.2)
+	count_label.position = squad + Vector3(0, 1.9, 0)
+	count_pill.position = count_label.position
+	count_pill.visible = run.state == SummandosRun.State.RUNNING
 	count_label.text = str(run.soldiers) if run.state == SummandosRun.State.RUNNING else ""
 	for node in row_nodes:
 		node.visible = node.position.z > run.z - 0.5
-	count_label.modulate = Color.WHITE
 
 	var enemy_points := PackedVector3Array()
+	var boss_points := PackedVector3Array()
 	for wave in run.waves:
 		if wave.z - run.z > VISIBLE_AHEAD or enemy_points.size() >= ENEMY_CAPACITY:
 			break
-		var wave_offsets := _offsets(wave.count)
+		var wave_offsets := _enemy_offsets(wave.count)
 		var big: bool = wave.hp >= 50.0
+		if big:
+			boss_points.append(Vector3(0.0, 0.0, wave.z))
+			continue
 		for o in wave_offsets:
 			if enemy_points.size() >= ENEMY_CAPACITY:
 				break
-			enemy_points.append(Vector3(o.x, 0.35 if not big else 1.2, wave.z + o.z))
+			enemy_points.append(Vector3(o.x, 0.0, wave.z + o.z))
 	enemies_view.show_points(enemy_points)
+	boss_view.show_points(boss_points)
 	_draw_bullets(delta)
 
 	hud_top.text = "%s %d   ·   %s %d%s" % [

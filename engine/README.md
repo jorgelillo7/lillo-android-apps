@@ -9,8 +9,11 @@ the tool, not the genre. Plans: [docs/plans/fake-ad-games.md](../docs/plans/fake
 engine/
   core/                       Godot project holding the shared addon and its tests
     addons/lillo_core/        what every game reuses: LilloGate (maths gates), LilloFormation
-                              (where each member of a crowd stands), LilloCrowdView (draws
-                              hundreds of copies of a mesh in one call)
+                              (where each member of a crowd stands, scattered into a mob),
+                              LilloCrowdView (draws hundreds of copies of a mesh in one call),
+                              LilloFigure (cartoon characters, monsters and bullet streaks as
+                              one vertex-coloured mesh, toon material with outline),
+                              LilloSettings (player preferences kept between sessions)
     tests/                    GUT tests, res://tests/test_*.gd
   summandos/                  game one, Summandos (com.jorgelillo.summandos), README there
     addons/lillo_core         symlink to ../../core/addons/lillo_core
