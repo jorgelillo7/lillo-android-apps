@@ -30,6 +30,13 @@ on_screen() {
   "$ADB" shell uiautomator dump /sdcard/ui.xml >/dev/null 2>&1 || true
   [[ "$("$ADB" shell cat /sdcard/ui.xml)" == *"resource-id=\"$1\""* ]]
 }
+# One UI dump for several checks: read_screen once, then `shown <id>` as often as needed (each
+# dump takes one to two seconds on a CI emulator, so a loop should not dump per check).
+read_screen() {
+  "$ADB" shell uiautomator dump /sdcard/ui.xml >/dev/null 2>&1 || true
+  SCREEN="$("$ADB" shell cat /sdcard/ui.xml)"
+}
+shown() { [[ "${SCREEN:-}" == *"resource-id=\"$1\""* ]]; }
 wait_for() {
   local _
   for _ in $(seq 1 "${2:-90}"); do on_screen "$1" && return 0; sleep 1; done

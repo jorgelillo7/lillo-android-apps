@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# Installs the release APK on the running emulator and plays a whole season: new season, cards
+# Installs the release APK on the running emulator and plays a whole short season (half the
+# matchdays: the same screens, half the time; the full length is a unit test): new season, cards
 # answered with the buttons (and the joker once), the matchday group chat, the table, the ending
 # and the trophies (endings, achievements, history).
 # Run it before every Play upload (R8 only affects release builds: it would break the JSON deck).
@@ -12,22 +13,23 @@ source "$(dirname "$0")/../../../scripts/smoke_lib.sh"
 smoke_start league-cards com.jorgelillo.leaguecards
 
 shot home
-tap new_season 3
+tap new_short_season 3
 shot card
 tap joker 2
 shot joker
 reports=0
 for i in $(seq 1 120); do
-  if on_screen next; then
+  read_screen   # one dump per round, checked for every screen below
+  if shown next; then
     reports=$((reports + 1))
     [ "$reports" = 1 ] && { sleep 3; shot chat; }
-    tap next 2 || true
-  elif on_screen choose_right; then
-    if [ $((i % 2)) = 0 ]; then tap choose_left 2 || true; else tap choose_right 2 || true; fi
-  elif on_screen ending; then
+    tap next 1 || true
+  elif shown choose_right; then
+    if [ $((i % 2)) = 0 ]; then tap choose_left 1 || true; else tap choose_right 1 || true; fi
+  elif shown ending; then
     break
   fi
-  if [ "$reports" = 3 ] && [ "${table_shot:-}" = "" ] && on_screen table; then
+  if [ "$reports" = 3 ] && [ "${table_shot:-}" = "" ] && shown table; then
     table_shot=1; tap table 2; shot table; back 1
   fi
 done
