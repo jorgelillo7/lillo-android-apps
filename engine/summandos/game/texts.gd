@@ -6,7 +6,7 @@ extends RefCounted
 static func for_language(language: String) -> Dictionary:
 	if language == "es":
 		return {
-			"title": "Sumandos", "stress": "Prueba de rendimiento (1.000)",
+			"title": "Sumandos", "stress": "Prueba de rendimiento",
 			"night_on": "Modo noche: sí", "night_off": "Modo noche: no",
 			"won": "¡Victoria!", "lost": "Derrota", "again": "Otra vez", "menu": "Niveles",
 			"kills": "Bajas", "weapon": "ARMA", "soldiers": "Soldados",
@@ -16,14 +16,16 @@ static func for_language(language: String) -> Dictionary:
 			"about": "Acerca de", "close": "Cerrar", "version": "Versión %s",
 			"colour": "Color del pelotón", "colour_title": "Elige el color de tu pelotón",
 			"credits": [
-				"Personajes 3D: KayKit de Kay Lousberg (kaylousberg.com), CC0",
-				"Tipografía: Luckiest Guy de Astigmatic, licencia Apache 2.0",
-				"Hecho con Godot Engine (godotengine.org), licencia MIT",
-				"Sin anuncios, sin compras, sin datos que salgan del móvil",
+				{"what": "Personajes 3D", "who": "KayKit, de Kay Lousberg", "licence": "CC0", "link": "kaylousberg.com"},
+				{"what": "Tipografía", "who": "Luckiest Guy (Astigmatic) y Fredoka", "licence": "Apache 2.0 y OFL", "link": "fonts.google.com"},
+				{"what": "Motor", "who": "Godot Engine", "licence": "Licencia MIT", "link": "godotengine.org"},
 			],
+			"golem_credit": {"what": "Golem y Nigromante", "who": "KayKit Skeletons EXTRA, comprado a su autor",
+				"licence": "CC0", "link": "kaylousberg.itch.io/kaykit-skeletons"},
+			"about_note": "Sin anuncios, sin compras y sin datos que salgan del móvil.",
 		}
 	return {
-		"title": "Summandos", "stress": "Performance test (1,000)",
+		"title": "Summandos", "stress": "Performance test",
 		"night_on": "Night mode: on", "night_off": "Night mode: off",
 		"won": "Victory!", "lost": "Defeat", "again": "Again", "menu": "Levels",
 		"kills": "Kills", "weapon": "WEAPON", "soldiers": "Soldiers",
@@ -33,9 +35,11 @@ static func for_language(language: String) -> Dictionary:
 		"about": "About", "close": "Close", "version": "Version %s",
 		"colour": "Squad colour", "colour_title": "Pick your squad's colour",
 		"credits": [
-			"3D characters: KayKit by Kay Lousberg (kaylousberg.com), CC0",
-			"Type: Luckiest Guy by Astigmatic, Apache License 2.0",
-			"Made with Godot Engine (godotengine.org), MIT licence",
-			"No ads, no purchases, no data leaves the phone",
+			{"what": "3D characters", "who": "KayKit by Kay Lousberg", "licence": "CC0", "link": "kaylousberg.com"},
+			{"what": "Type", "who": "Luckiest Guy (Astigmatic) and Fredoka", "licence": "Apache 2.0 and OFL", "link": "fonts.google.com"},
+			{"what": "Engine", "who": "Godot Engine", "licence": "MIT licence", "link": "godotengine.org"},
 		],
+		"golem_credit": {"what": "Golem and Necromancer", "who": "KayKit Skeletons EXTRA, bought from its author",
+			"licence": "CC0", "link": "kaylousberg.itch.io/kaykit-skeletons"},
+		"about_note": "No ads, no purchases, no data leaves the phone.",
 	}

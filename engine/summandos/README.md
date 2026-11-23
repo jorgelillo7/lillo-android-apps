@@ -11,8 +11,8 @@ Status: **in development**, not on Play yet.
   (powers, roots and equations for x, with a 10-second pause to think before a few gates).
 - 30 generated levels per mode, the same every time, each winnable by the best choices; 1–3 stars
   by soldiers left, the next level opening on a win; a boss every fifth level.
-- A paged level map, menus over an animated backdrop, night mode, English and Spanish, upright
-  and sideways; a 1,000-unit performance test.
+- A paged level map, menus over an animated backdrop, night mode, a squad colour, English and
+  Spanish, upright and sideways; a 1,000-unit performance test from the command line.
 
 ```
 main.gd              entry point: wires game/ and view/, input, back button, command-line options
@@ -27,7 +27,8 @@ view/ui.gd           the screens: menu, level map, HUD, result card
 assets/icons/        launcher icons, written by tools/generate_icon.py
 assets/models/       KayKit crossbowmen and skeletons (CC0), listed in models.txt, fetched by
                      scripts/engine-assets.sh; without them the game draws its own figures
-assets/fonts/        Luckiest Guy (Astigmatic, Apache 2.0, from google/fonts) and its licence
+assets/fonts/        Luckiest Guy (Astigmatic, Apache 2.0) and Fredoka (OFL), from google/fonts, with
+                     their licences
 store/               play-icon-512.png
 tools/               generate_icon.py, balance.gd (difficulty report), samples/ (progress files)
 tests/               GUT tests: runs, levels, progress, the addon link

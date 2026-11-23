@@ -1,6 +1,7 @@
 ## Summandos' entry point: wires the run (game/), the 3D world and the screens (view/) together and
 ## handles input and the back button. Options after `--`: `--mode=play|stress` starts a run at
-## once (`--difficulty=easy|normal|adult --level=<n>` pick it, `--autosteer` takes the better gate),
+## once (stress is the 1,000-unit performance test, reachable only from here;
+## `--difficulty=easy|normal|adult --level=<n>` pick a level, `--autosteer` takes the better gate),
 ## `--levels` opens the level map, `--about` the About card, `--palette=sunset|night` and `--squad=<colour>` override the saved choices, `--colours` opens the
 ## squad colour picker, and
 ## LilloCapture's `--shot=<png> --after=<s>` saves a screenshot and quits.
@@ -50,7 +51,6 @@ func _ready() -> void:
 	add_child(LilloCapture.new())
 	ui.mode_picked.connect(_open_levels)
 	ui.level_picked.connect(func(number: int) -> void: _start("play", number))
-	ui.stress_picked.connect(_start.bind("stress"))
 	ui.night_toggled.connect(_toggle_night)
 	ui.squad_picked.connect(_pick_squad)
 	ui.next_picked.connect(func() -> void: _start("play", level_number + 1))

@@ -5,7 +5,6 @@ extends CanvasLayer
 
 signal mode_picked(mode: int)
 signal level_picked(number: int)
-signal stress_picked
 signal night_toggled
 signal squad_picked(name: String)
 signal next_picked
@@ -14,6 +13,7 @@ signal levels_picked
 signal menu_picked
 
 const FONT := preload("res://assets/fonts/LuckiestGuy-Regular.ttf")
+const READING_FONT := preload("res://assets/fonts/Fredoka.ttf")
 
 var palette: Dictionary
 var texts: Dictionary
@@ -63,13 +63,25 @@ func _ready() -> void:
 	result = _build_result()
 	root.add_child(result)
 	var version := str(ProjectSettings.get_setting("application/config/version", ""))
-	about = LilloAbout.new(texts.title, texts.version % version, PackedStringArray(texts.credits), texts.close, palette.outline)
+	var credits: Array = texts.credits.duplicate()
+	if SummandosModels.scene("Skeleton_Golem.glb"):
+		credits.insert(1, texts.golem_credit)
+	about = LilloAbout.new(texts.title, texts.version % version, credits, texts.about_note, texts.close,
+		palette.outline, palette.weapon, _reading())
 	about.closed.connect(show_screen.bind("menu"))
 	root.add_child(about)
 	swatches = LilloSwatchPicker.new(texts.colour_title, squad_choices, squad_choice, texts.close, palette.outline)
 	swatches.picked.connect(func(name: String) -> void: squad_picked.emit(name))
 	swatches.closed.connect(show_screen.bind("menu"))
 	root.add_child(swatches)
+
+
+## Fredoka at a medium weight, for text meant to be read rather than shouted.
+static func _reading() -> Font:
+	var font := FontVariation.new()
+	font.base_font = READING_FONT
+	font.variation_opentype = {TextServerManager.get_primary_interface().name_to_tag("wght"): 560}
+	return font
 
 
 ## Shows one screen: "menu", "levels", "run", "result" or "about".
@@ -192,15 +204,14 @@ func _build_menu() -> Control:
 	for i in texts.modes.size():
 		box.add_child(LilloTheme.button(texts.modes[i], func() -> void: mode_picked.emit(i), 44, 96.0))
 	var extras := GridContainer.new()
-	extras.columns = 2
+	extras.columns = 3
 	extras.add_theme_constant_override("h_separation", 10)
 	extras.add_theme_constant_override("v_separation", 10)
 	var night: bool = LilloSettings.read("night", false)
 	var dark := LilloTheme.box(Color(palette.outline, 0.75), Color(palette.outline, 0.9))
 	for button in [LilloTheme.button(texts.night_on if night else texts.night_off, func() -> void: night_toggled.emit(), 22),
 			LilloTheme.button(texts.colour, show_screen.bind("colours"), 22),
-			LilloTheme.button(texts.about, show_screen.bind("about"), 22),
-			LilloTheme.button(texts.stress, func() -> void: stress_picked.emit(), 22)]:
+			LilloTheme.button(texts.about, show_screen.bind("about"), 22)]:
 		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		button.add_theme_stylebox_override("normal", dark)

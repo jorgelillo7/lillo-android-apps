@@ -26,8 +26,9 @@ takes the hue from the squad colour.
 
 ## Type
 
-Luckiest Guy for everything on screen, white with a dark outline; numbers over the squad in gold
-on a badge.
+Luckiest Guy for titles, buttons and numbers, white with a dark outline; numbers over the squad in
+gold on a badge. Fredoka at a medium weight for text meant to be read (the About card's names and
+licences), since Luckiest Guy is capitals only.
 
 ## Characters
 
@@ -46,7 +47,11 @@ on a badge.
 
 ## Screens
 
-- **Menu**: the title breathing, three mode buttons, night mode and the performance test.
+- **Menu**: the title breathing, three mode buttons, then night mode, squad colour and About.
+  The performance test is only a command-line option now (`--mode=stress`).
+- **About**: the name and version, one block per credit (what, who, licence and a tappable link),
+  and the no-ads line. A bought pack (KayKit Skeletons EXTRA) gets its own line once its models
+  are in the game.
 - **Level map**: rays, clouds and hills; tiles of 3 columns upright and 5 sideways, stars in a
   tab, padlocks on locked levels; arrows, swipe and page dots; back bottom-left.
 - **Run**: the chase camera; gates are translucent panels with their half of the track painted,
