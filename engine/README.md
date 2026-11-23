@@ -97,16 +97,25 @@ scripts/engine-assets.sh engine/<game>                       # fetch its models 
 scripts/engine-shot.sh engine/<game> out.png 3 -- --levels   # screenshot (--landscape, --progress f.cfg)
 .venv/bin/python scripts/engine_icon_preview.py engine/<game> out.png   # icon at every size
 scripts/engine-template.sh engine/<game>                     # slim engine from its engine-profile.py
-scripts/engine-export.sh [--arm64] engine/<game>             # Android APK, debug-signed by default
+scripts/godot-templates.sh                                   # Android export templates (once per machine)
+scripts/engine-export.sh [--arm64] engine/<game>             # Android APK
+scripts/engine-export.sh --aab engine/<game>                 # Play bundle, through Godot's Gradle build
 ```
 
 CI's **Engine** workflow runs every project's tests when `engine/` or these scripts change.
 
 Exporting needs, once per machine, Godot's Android export templates for the pinned version in
-Godot's data folder (`~/Library/Application Support/Godot/export_templates/<version>.stable/`:
-`android_release.apk`, `android_debug.apk`, `version.txt`, from the release's `.tpz`), and the
-Android SDK; `scripts/engine-export.sh` points Godot at the JDK from `scripts/env.sh` and signs
-with Godot's debug key unless `GODOT_ANDROID_KEYSTORE_RELEASE_*` are set.
+Godot's data folder (`scripts/godot-templates.sh` keeps `android_release.apk`, `android_debug.apk`
+and `android_source.zip` from the release's `.tpz`, checksum verified), and the Android SDK.
+`scripts/engine-export.sh` points Godot at the JDK from `scripts/env.sh` and signs with the
+game's upload key when `engine/<game>/keystore.properties` exists (`scripts/new-upload-key.sh
+<game>`, [docs/signing.md](../docs/signing.md)), else with Godot's debug key. An APK signed with
+one does not install over the other: uninstall first.
+
+The Play bundle (`--aab`) goes through Godot's Gradle build: the script reinstalls the Android
+build template in `engine/<game>/android/` (git-ignored), swaps the slim engine into its library
+when the game has one, and runs the template's Gradle 8 on a JDK 17 to 23 (`brew install
+openjdk@21`, or `ENGINE_JAVA_HOME`): Android Studio's JDK 25 is too new for it.
 
 ## Rules
 

@@ -68,7 +68,7 @@ such as `apps/whos-lying/tools/battery_test.py` run on); each app's `tools/` onl
 Engine games (`engine/`, Godot): `scripts/godot.sh` runs the pinned Godot (downloaded on first
 use), `scripts/engine-test.sh engine/<project>` runs its GUT tests headless,
 `scripts/engine-shot.sh` takes screenshots, `scripts/engine_icon_preview.py` checks an icon and
-`scripts/engine-export.sh [--arm64] engine/<project>` builds its APK (with the slim engine from
+`scripts/engine-export.sh [--arm64|--aab] engine/<project>` builds its APK or Play bundle (with the slim engine from
 `scripts/engine-template.sh` when the game has an `engine-profile.py`; the `slim-engine` skill); shared code goes in
 `engine/core/addons/lillo_core/<area>/`, linked from each game; rules in `game/`, drawing in
 `view/`. Details: `engine/README.md`; workflow: the `engine-game` skill. Bought asset packs never

@@ -58,5 +58,52 @@ and `--level=<n>` pick it, `--autosteer` takes the better gate, `--levels` opens
 `--palette=sunset|night` overrides the saved choice, `--shot=<png> --after=<s>` saves a
 screenshot and quits.
 
-Releasing (S4 of the [technology study](../../docs/plans/fake-ad-games-tech.md)) is not set up
-yet; `release-notes.md` and the Play listing arrive with it.
+## Play Console answers
+
+| Section | Answer |
+|---|---|
+| App or game | Game · category **Casual** · Free · default language Spanish (Spain) |
+| Privacy policy | `https://jorgelillo7.github.io/privacy/summandos/` |
+| App access | All functionality is available without special access |
+| Ads | No |
+| Content rating | IARC questionnaire, category **Game**. Violence: **yes**, fantasy and cartoon (crossbowmen shoot low-poly skeletons, which fall apart; no blood, no gore, no realistic people); no fear content, sex, nudity, language, drugs, alcohol, tobacco or gambling; no purchases; users can't interact, chat or share content; no location shared. Expected: PEGI 7 / ESRB Everyone 10+ |
+| Target audience | 13+ (13–15, 16–17, 18+), as slipper: under-13s bring in the Families policy (more review, its own rules). Appeal to children: say yes only if Play asks about the listing; nothing in it is aimed at children |
+| Data safety | **No data collected, no data shared.** No internet permission; the only permission is vibration. Data encrypted in transit: not applicable. Deletion request: not applicable (nothing leaves the phone) |
+| Advertising ID | No |
+| Government, financial, health, news | No / no financial features / no health features / not a news app |
+| Countries | All, like the other apps |
+| Store listing | `play/src/main/play/listings/<locale>/`: title, short and full description, icon, feature graphic, phone, 7" and 10" tablet screenshots (Spanish and English) |
+| Release notes | `play/src/main/play/release-notes/<locale>/default.txt` |
+
+## Release
+
+**First release, straight to production as a draft** (Play only takes a draft until the app has
+been published once; the API cannot create the app, so it is all by hand):
+
+1. Upload key, in your own terminal: `scripts/new-upload-key.sh summandos` (asks for a password,
+   writes `engine/summandos/keystore.properties`, git-ignored, and backs the key up to Google
+   Drive). Copy the serial and fingerprints into the table below.
+2. The bought models must be on this Mac (`scripts/engine-assets.sh engine/summandos` copies the
+   Golem and Necromancer), or the bundle ships the stand-ins.
+3. Signed bundle: `scripts/engine-export.sh --aab engine/summandos`, then
+   `scripts/verify-bundle.sh engine/summandos/export/summandos.aab`: the owner `CN=Jorge Lillo`,
+   versionCode 1, `android.permission.VIBRATE` only. Smoke test the same build first
+   (`engine/summandos/tools/smoke_test.sh`).
+4. Play Console → Create app: "Sumandos: suma y dispara", Spanish (Spain), Game, Free. Answer the
+   App content forms (table above), fill the store listing in both languages, pick the countries.
+5. Production → Create release → upload `summandos.aab` (Play App Signing on), release notes from
+   `play/release-notes/` → save as draft → Publishing overview → Send changes for review.
+6. Later releases: the Release workflow, once S4 wires the game into it (`play/` module, the
+   game's GitHub environment with `scripts/set-release-secrets.sh summandos`).
+
+Upload key: not created yet.
+
+| | |
+|---|---|
+| File | `~/Projects/documentation/keys/summandos/upload-summandos.jks` (+ Google Drive backup) |
+| Alias | `upload` |
+| Serial | — |
+| SHA-1 | — |
+| SHA-256 | — |
+
+Version history: [release-notes.md](release-notes.md).

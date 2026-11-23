@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# Backs up an app's Google Play upload key (the .jks named in apps/<app>/keystore.properties) and
+# Backs up an app's Google Play upload key (the .jks named in its keystore.properties, in apps/<app>/
+# or engine/<game>/) and
 # its credentials to the Google Drive for Desktop folder, one subfolder per app, and verifies the
 # copy by checksum. A different key already there is never overwritten. Passwords are never printed.
 #
@@ -18,6 +19,7 @@ ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 KEYCHAIN_ITEM="lillo-android-keys-backup"
 OPENSSL=/usr/bin/openssl
 CIPHER=(-aes-256-cbc -pbkdf2 -iter 600000 -md sha256)
+source "$(dirname "$0")/project_dir.sh"
 
 usage() { echo "usage: backup-upload-key.sh [--check] [--encrypt] <app-folder|all>" >&2; exit 2; }
 
@@ -111,7 +113,7 @@ store() {
 failures=0
 backup_app() {
   local app="$1" props jks name dest credentials key_sha cred_sha key_have cred_have
-  props="$ROOT/apps/$app/keystore.properties"
+  props="$(project_dir "$app")/keystore.properties"
   if [ ! -f "$props" ]; then
     echo "$app: no keystore.properties, no key to back up"
     [ "$target" = all ] || failures=$((failures + 1))
@@ -173,7 +175,7 @@ backup_app() {
   echo "$app: backed up and verified ($name + credentials$([ "$encrypt" = 1 ] && echo ", encrypted"))"
 }
 
-[ "$target" = all ] || [ -d "$ROOT/apps/$target" ] || { echo "No such app: apps/$target" >&2; exit 1; }
+[ "$target" = all ] || [ -n "$(project_dir "$target")" ] || { echo "No such app or engine game: $target" >&2; exit 1; }
 root="$(backup_root)" || exit 1
 umask 077   # the credentials copy holds the passwords: readable by you only
 work="$(mktemp -d "${TMPDIR:-/tmp}/upload-key-backup.XXXXXX")"
@@ -182,6 +184,9 @@ trap 'rm -rf "$work"' EXIT
 echo "Backup folder: $(printf '%s' "$root" | sed -E 's#/GoogleDrive-[^/]+/#/GoogleDrive-<account>/#')"
 if [ "$target" = all ]; then
   for dir in "$ROOT"/apps/*/; do backup_app "$(basename "$dir")"; done
+  for props in "$ROOT"/engine/*/keystore.properties; do
+    [ -f "$props" ] && backup_app "$(basename "$(dirname "$props")")"
+  done
 else
   backup_app "$target"
 fi

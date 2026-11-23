@@ -4,7 +4,8 @@
 # arguments, shell history, the process list or a chat.
 #
 # Usage:
-#   scripts/set-release-secrets.sh <app-folder>    the app's upload key (apps/<app>/keystore.properties)
+#   scripts/set-release-secrets.sh <app-folder>    the app's upload key (its keystore.properties, in
+#                                                  apps/<app>/ or engine/<game>/)
 #                                                  into the GitHub environment named like the app;
 #                                                  league-cards also gets its private league deck
 #   scripts/set-release-secrets.sh --play          the Play service account key
@@ -15,6 +16,7 @@
 # Run it again after changing a key or the league deck. See docs/publishing-on-google-play.md §6.
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+source "$(dirname "$0")/project_dir.sh"
 repo="$(cd "$ROOT" && gh repo view --json nameWithOwner -q .nameWithOwner)"
 
 environment() {
@@ -47,7 +49,7 @@ EOF
     ;;
   *)
     app="$1"
-    props="$ROOT/apps/$app/keystore.properties"
+    props="$(project_dir "$app")/keystore.properties"
     [ -f "$props" ] || { echo "No $props: scripts/new-upload-key.sh $app first (docs/signing.md)" >&2; exit 1; }
     jks="$(property "$props" storeFile)"
     [ -f "$jks" ] || { echo "The upload key $jks is missing" >&2; exit 1; }

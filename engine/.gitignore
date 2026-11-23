@@ -4,3 +4,5 @@ export/
 # GUT is fetched by scripts/engine-test.sh, never committed.
 addons/gut/
 */addons/gut/
+# The Android build template, reinstalled by scripts/engine-export.sh --aab.
+android/
