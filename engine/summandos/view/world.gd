@@ -12,17 +12,24 @@ const BULLET_SPEED := 45.0
 const VISIBLE_AHEAD := 70.0
 const BOSS_HEIGHT := 4.5
 const GATE_FLOOR_LENGTH := 7.0
+const FIGURE_HEIGHT := 0.85
+const MODELS := "res://assets/models/"
+## Spare kit on the knight model that the squad does not carry.
+const KNIGHT_SPARES := ["1H_Sword_Offhand", "Badge_Shield", "Rectangle_Shield", "Round_Shield",
+	"Spike_Shield", "2H_Sword"]
 
 var palette: Dictionary
 var texts: Dictionary
 var camera: Camera3D
-var leader: MeshInstance3D
+var leader: Node3D
 var count_label: Label3D
 var count_badge: MeshInstance3D
-var soldiers_view: LilloCrowdView
-var enemies_view: LilloCrowdView
+var soldiers_view: LilloAnimatedCrowd
+var enemies_view: LilloAnimatedCrowd
 var bullets_view: LilloCrowdView
 var boss_view: LilloCrowdView
+## The boss as one fully animated model, when the models are there; else boss_view draws it.
+var boss_model: Node3D
 var row_nodes: Array[Node3D] = []
 var formation_cache := {}
 var bullets := PackedVector3Array()
@@ -104,25 +111,40 @@ func _build() -> void:
 		add_child(edge)
 
 	var outline := Color(palette.outline, 0.9)
-	var soldier := LilloFigure.build(0.75, palette.squad_dark, palette.skin, palette.squad)
-	soldiers_view = LilloCrowdView.new(soldier, LilloFigure.material(outline), SOLDIER_CAPACITY)
+	var knight := _model("Knight.glb")
+	var minion := _model("Skeleton_Minion.glb")
+	if knight and minion:
+		var running := LilloPoseBaker.bake(self, knight, "Running_A", 4, FIGURE_HEIGHT, KNIGHT_SPARES)
+		soldiers_view = LilloAnimatedCrowd.new(running, SOLDIER_CAPACITY, 10.0, _tinted(running[0], palette.squad))
+		var walking := LilloPoseBaker.bake(self, minion, "Walking_A", 4, FIGURE_HEIGHT)
+		enemies_view = LilloAnimatedCrowd.new(walking, ENEMY_CAPACITY, 6.0, _tinted(walking[0], palette.enemy))
+		leader = _animated(knight, "Running_A", 1.2, KNIGHT_SPARES, false, palette.squad)
+	else:
+		var soldier: Array[Mesh] = [LilloFigure.build(0.75, palette.squad_dark, palette.skin, palette.squad)]
+		soldiers_view = LilloAnimatedCrowd.new(soldier, SOLDIER_CAPACITY, 1.0, LilloFigure.material(outline))
+		var enemy: Array[Mesh] = [LilloFigure.build(0.75, palette.enemy, palette.enemy_skin)]
+		enemies_view = LilloAnimatedCrowd.new(enemy, ENEMY_CAPACITY, 1.0, LilloFigure.material(outline))
+		var figure := MeshInstance3D.new()
+		figure.mesh = LilloFigure.build(1.1, palette.squad_dark, palette.skin, palette.squad)
+		figure.material_override = LilloFigure.material(outline)
+		figure.rotation.y = PI
+		leader = Node3D.new()
+		leader.add_child(figure)
 	add_child(soldiers_view)
-	var enemy := LilloFigure.build(0.75, palette.enemy, palette.enemy_skin)
-	enemies_view = LilloCrowdView.new(enemy, LilloFigure.material(outline), ENEMY_CAPACITY)
 	add_child(enemies_view)
+	add_child(leader)
 	var monster := LilloFigure.monster(BOSS_HEIGHT, palette.boss, palette.boss_belly, palette.boss_horns)
 	boss_view = LilloCrowdView.new(monster, LilloFigure.material(outline), 4)
 	add_child(boss_view)
+	var warrior := _model("Skeleton_Warrior.glb")
+	if warrior:
+		boss_model = _animated(warrior, "Walking_B", BOSS_HEIGHT, [], true, palette.boss)
+		boss_model.visible = false
+		add_child(boss_model)
 	var bullet_material := LilloMaterials.flat(palette.bullet, false, true)
 	bullet_material.vertex_color_use_as_albedo = true
 	bullets_view = LilloCrowdView.new(LilloFigure.streak(0.7, 0.05, palette.bullet), bullet_material, BULLET_CAPACITY)
 	add_child(bullets_view)
-
-	leader = MeshInstance3D.new()
-	leader.mesh = LilloFigure.build(1.1, palette.squad_dark, palette.skin, palette.squad)
-	leader.material_override = LilloFigure.material(outline)
-	leader.rotation.y = PI
-	add_child(leader)
 
 	count_label = Label3D.new()
 	count_label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
@@ -144,6 +166,41 @@ func _build() -> void:
 
 	camera = Camera3D.new()
 	add_child(camera)
+
+
+## The model's own textured material washed with `colour`, so the team reads at a glance.
+func _tinted(mesh: Mesh, colour: Color) -> Material:
+	var material: StandardMaterial3D = mesh.surface_get_material(0).duplicate()
+	material.albedo_color = Color.WHITE.lerp(colour, 0.65)
+	material.rim_enabled = true
+	material.rim = 0.4
+	return material
+
+
+func _model(file: String) -> PackedScene:
+	return load(MODELS + file) if ResourceLoader.exists(MODELS + file) else null
+
+
+## One animated character playing `animation` in a loop, `height` tall, washed with `tint`;
+## `facing_us` turns it to look down -z, towards the squad.
+func _animated(scene: PackedScene, animation: String, height: float, spares: Array, facing_us: bool,
+		tint: Color) -> Node3D:
+	var holder := Node3D.new()
+	var body: Node3D = scene.instantiate()
+	holder.add_child(body)
+	for name in spares:
+		var part := body.find_child(name, true, false)
+		if part:
+			part.queue_free()
+	for part in body.find_children("*", "MeshInstance3D", true, false):
+		if not spares.has(part.name) and part.mesh:
+			part.material_override = _tinted(part.mesh, tint)
+	var player: AnimationPlayer = body.find_children("*", "AnimationPlayer", true, false)[0]
+	player.get_animation(animation).loop_mode = Animation.LOOP_LINEAR
+	player.play(animation)
+	body.scale = Vector3.ONE * (height / 2.4)
+	body.rotation.y = PI if facing_us else 0.0
+	return holder
 
 
 func _fit_camera() -> void:
@@ -242,6 +299,8 @@ func draw_idle() -> void:
 	enemies_view.show_points(PackedVector3Array())
 	bullets_view.show_points(PackedVector3Array())
 	boss_view.show_points(PackedVector3Array())
+	if boss_model:
+		boss_model.visible = false
 	count_badge.visible = false
 	leader.position = Vector3(0, 0.0, 0.6)
 	count_label.text = ""
@@ -289,7 +348,12 @@ func draw_run(run: SummandosRun, delta: float) -> void:
 				break
 			enemy_points.append(Vector3(o.x, 0.0, wave.z + o.z))
 	enemies_view.show_points(enemy_points)
-	boss_view.show_points(boss_points)
+	if boss_model:
+		boss_model.visible = not boss_points.is_empty()
+		if boss_model.visible:
+			boss_model.position = boss_points[0]
+	else:
+		boss_view.show_points(boss_points)
 	_draw_bullets(run, delta)
 	camera.position = Vector3(x * 0.35, rig.x, run.z - rig.y)
 	camera.look_at(Vector3(x * 0.35, 0, run.z + rig.z))

@@ -21,6 +21,7 @@ Background: `engine/README.md` (layout, core classes, rules). Game specifics:
 ## Loop
 
 ```bash
+scripts/engine-assets.sh engine/<game>                       # third-party models, once
 scripts/godot.sh --headless --path engine/<game> --import   # after adding a class_name script
 scripts/engine-test.sh engine/core
 scripts/engine-test.sh engine/<game>
@@ -38,6 +39,18 @@ scripts/engine-shot.sh --landscape engine/<game> /tmp/b.png 2 # sideways
   (`scripts/emulator.sh start --headless`, install the APK, `adb exec-out screencap`).
 - Difficulty: `scripts/godot.sh --headless --path engine/<game> --script tools/balance.gd` where
   the game has one; early levels should be won by random choices about half the time or more.
+
+## Third-party models
+
+- Only CC0 (or similarly free) packs from the author's official source; pin the file by commit
+  URL and SHA-256 in `assets/models/models.txt`, with the animations the game uses in the fourth
+  column, then `scripts/engine-assets.sh engine/<game>`.
+- After the first import, set `import_script/path="res://addons/lillo_core/dev/keep_animations.gd"`
+  in the model's `.glb.import` and commit that file: it drops unused animations (a KayKit model
+  shrinks from ~4 MB of animations to one).
+- Crowds: `LilloPoseBaker.bake(...)` into a `LilloAnimatedCrowd`; one hero model at most per role
+  plays the real animation. Wash textures with the palette so the teams still read.
+- Credit the pack on the game's About card (`game/texts.gd`, `credits`).
 
 ## Icons
 

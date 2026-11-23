@@ -1,7 +1,7 @@
 ## Summandos' entry point: wires the run (game/), the 3D world and the screens (view/) together and
 ## handles input and the back button. Options after `--`: `--mode=play|stress` starts a run at
 ## once (`--difficulty=easy|normal|adult --level=<n>` pick it, `--autosteer` takes the better gate),
-## `--levels` opens the level map, `--palette=sunset|night` overrides the saved choice, and
+## `--levels` opens the level map, `--about` the About card, `--palette=sunset|night` overrides the saved choice, and
 ## LilloCapture's `--shot=<png> --after=<s>` saves a screenshot and quits.
 extends Node3D
 
@@ -53,6 +53,8 @@ func _ready() -> void:
 		_start(start, level_number)
 	elif args.has("--levels"):
 		_open_levels(-1)
+	elif args.has("--about"):
+		ui.show_screen("about")
 	else:
 		_show_menu()
 
@@ -115,7 +117,7 @@ func _notification(what: int) -> void:
 		return
 	if run != null:
 		_open_levels(-1)
-	elif ui.level_map.visible:
+	elif ui.level_map.visible or ui.about.visible:
 		_show_menu()
 	else:
 		get_tree().quit()

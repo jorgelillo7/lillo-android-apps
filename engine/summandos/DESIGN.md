@@ -24,9 +24,11 @@ on a badge.
 
 ## Characters
 
-- In the run: toon-shaded figures with an outline (`LilloFigure`): soldiers in helmets, enemies
-  with their own skin tone, a horned monster for the boss. Placeholder for CC0 models (KayKit,
-  Quaternius), credited in an About screen when they arrive.
+- In the run: KayKit's CC0 knights as the squad (washed teal) and skeletons as the enemies
+  (washed purple), a giant skeleton warrior as the boss. Crowds step through four baked poses;
+  the leader and the boss play the full animation. Without the models the game falls back to its
+  own toon figures (`LilloFigure`) with a horned monster boss.
+- Credits for every third-party piece are on the About card (menu → About).
 - In the menus: a waving soldier bottom-left and the swaying monster bottom-right
   (`LilloSticker`).
 

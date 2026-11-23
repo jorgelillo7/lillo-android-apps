@@ -17,6 +17,7 @@ const FONT := preload("res://assets/fonts/LuckiestGuy-Regular.ttf")
 var palette: Dictionary
 var texts: Dictionary
 var level_map: LilloLevelMap
+var about: LilloAbout
 var decor: Control
 var menu: Control
 var hud: Control
@@ -53,15 +54,20 @@ func _ready() -> void:
 	level_map.back_pressed.connect(func() -> void: menu_picked.emit())
 	result = _build_result()
 	root.add_child(result)
+	var version := str(ProjectSettings.get_setting("application/config/version", ""))
+	about = LilloAbout.new(texts.title, texts.version % version, PackedStringArray(texts.credits), texts.close, palette.outline)
+	about.closed.connect(show_screen.bind("menu"))
+	root.add_child(about)
 
 
-## Shows one screen: "menu", "levels", "run" or "result".
+## Shows one screen: "menu", "levels", "run", "result" or "about".
 func show_screen(screen: String) -> void:
+	about.visible = screen == "about"
 	menu.visible = screen == "menu"
 	level_map.visible = screen == "levels"
 	hud.visible = screen == "run"
 	result.visible = screen == "result"
-	decor.visible = screen == "menu" or screen == "levels"
+	decor.visible = screen in ["menu", "levels", "about"]
 
 
 func show_levels(mode: int) -> void:
@@ -151,6 +157,7 @@ func _build_menu() -> Control:
 	var night: bool = LilloSettings.read("night", false)
 	var dark := LilloTheme.box(Color(palette.outline, 0.75), Color(palette.outline, 0.9))
 	for button in [LilloTheme.button(texts.night_on if night else texts.night_off, func() -> void: night_toggled.emit(), 22),
+			LilloTheme.button(texts.about, show_screen.bind("about"), 22),
 			LilloTheme.button(texts.stress, func() -> void: stress_picked.emit(), 22)]:
 		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART

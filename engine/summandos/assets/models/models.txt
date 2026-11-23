@@ -1,0 +1,8 @@
+# Models fetched by scripts/engine-assets.sh (not committed): <file> <sha256> <url> <animations kept>
+# The .import files are committed: they run lillo_core/dev/keep_animations.gd, which drops every
+# animation not in the last column.
+# KayKit Adventurers and Skeletons by Kay Lousberg (kaylousberg.com), CC0, pinned to a commit of
+# the official KayKit-Game-Assets repositories on GitHub.
+Knight.glb 60428e3abc09ba83e595d256e3af8c5c976b46cdae599f0802fc82b4a3445168 https://raw.githubusercontent.com/KayKit-Game-Assets/KayKit-Character-Pack-Adventures-1.0/672074b73ba276876a19e8816ecdc5241817ab47/addons/kaykit_character_pack_adventures/Characters/gltf/Knight.glb Running_A Running_A
+Skeleton_Minion.glb 6ffc003f895bed0b074791e0e490846210a2e2f8fc7da300aba53cc185f95968 https://raw.githubusercontent.com/KayKit-Game-Assets/KayKit-Character-Pack-Skeletons-1.0/15b62b9bad122f72926c10fb14d622c73819fa54/addons/kaykit_character_pack_skeletons/Characters/gltf/Skeleton_Minion.glb Walking_A
+Skeleton_Warrior.glb 178b6fda810b814c250d8a2010c24dfd9b458b9006dd323353e620b7ff118bbe https://raw.githubusercontent.com/KayKit-Game-Assets/KayKit-Character-Pack-Skeletons-1.0/15b62b9bad122f72926c10fb14d622c73819fa54/addons/kaykit_character_pack_skeletons/Characters/gltf/Skeleton_Warrior.glb Walking_B

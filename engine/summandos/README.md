@@ -24,6 +24,8 @@ game/texts.gd        every word on screen, English and Spanish
 view/world.gd        the 3D world: track, gates, squad, enemies, boss, bullets, chase camera
 view/ui.gd           the screens: menu, level map, HUD, result card
 assets/icons/        launcher icons, written by tools/generate_icon.py
+assets/models/       KayKit knights and skeletons (CC0), listed in models.txt, fetched by
+                     scripts/engine-assets.sh; without them the game draws its own figures
 assets/fonts/        Luckiest Guy (Astigmatic, Apache 2.0, from google/fonts) and its licence
 store/               play-icon-512.png
 tools/               generate_icon.py, balance.gd (difficulty report), samples/ (progress files)
