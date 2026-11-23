@@ -104,3 +104,45 @@ func test_an_awake_wave_edges_towards_the_squad() -> void:
 	run.steer(-3.0)
 	_run_for(run, 1.0)
 	assert_lt(run.waves[0].x, 3.0)
+
+
+func test_a_boss_is_not_traded_away_on_contact_but_eats_soldiers() -> void:
+	var waves: Array[Dictionary] = [{"z": 3.0, "count": 1, "hp": 1000.0, "boss": true, "bite": 5.0}]
+	var run := SummandosRun.new(_level([], waves, 30))
+	_run_for(run, 3.0)
+	assert_eq(run.waves.size(), 1, "the boss is still standing")
+	assert_between(run.soldiers, 13, 20, "about 5 soldiers a second eaten")
+	assert_between(run.boss_health(), 0.0, 0.99)
+
+
+func test_a_weapon_brings_a_boss_down_sooner() -> void:
+	var waves: Array[Dictionary] = [{"z": 3.0, "count": 1, "hp": 300.0, "boss": true, "bite": 1.0}]
+	var plain := SummandosRun.new(_level([], waves, 40, 4.0))
+	var armed := SummandosRun.new(_level([], waves, 40, 4.0))
+	armed.damage = 2.0
+	_run_for(plain, 3.0)
+	_run_for(armed, 3.0)
+	assert_eq(armed.state, SummandosRun.State.WON)
+	assert_eq(plain.state, SummandosRun.State.RUNNING, "still fighting without the weapon")
+
+
+func test_a_mage_fireball_burns_the_squad_where_it_stood_unless_it_moves() -> void:
+	var waves: Array[Dictionary] = [{"z": 30.0, "count": 1, "hp": 100000.0, "boss": true, "bite": 1.0, "burn": 4}]
+	var stays := SummandosRun.new(_level([], waves, 40))
+	stays.steer(0.0)
+	_run_for(stays, SummandosRun.FIREBALL_EVERY + SummandosRun.FIREBALL_FLIGHT + 0.05)
+	assert_eq(stays.soldiers, 36, "one fireball landed on the squad")
+	var dodges := SummandosRun.new(_level([], waves, 40))
+	dodges.steer(0.0)
+	_run_for(dodges, SummandosRun.FIREBALL_EVERY + 0.1)
+	assert_eq(dodges.fireballs.size(), 1, "a fireball is in the air")
+	dodges.steer(3.0)
+	_run_for(dodges, SummandosRun.FIREBALL_FLIGHT)
+	assert_eq(dodges.soldiers, 40, "moving out of the ring dodged it")
+
+
+func test_only_the_mage_boss_throws_fireballs() -> void:
+	for number in [5, 10, 15, 20]:
+		var level := SummandosLevel.generate(SummandosLevel.Mode.EASY, number)
+		var boss: Dictionary = level.waves[-1]
+		assert_eq(boss.get("burn", 0) > 0, level.boss.model == SummandosLevel.RANGED_BOSS, "level %d" % number)

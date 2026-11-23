@@ -71,6 +71,7 @@ func _ready() -> void:
 	ui.again_picked.connect(func() -> void: _start(mode, level_number))
 	ui.levels_picked.connect(_open_levels.bind(-1))
 	ui.menu_picked.connect(_show_menu)
+	ui.show_boss(_next_boss())
 	if start != "":
 		_start(start, level_number)
 	elif args.has("--levels"):
@@ -161,7 +162,7 @@ func _finish() -> void:
 		SummandosProgress.record(difficulty, level_number, stars)
 	audio.play("win" if won else "lose")
 	audio.buzz(80 if won else 200)
-	ui.show_result(won, run.soldiers, run.kills, stars,
+	ui.show_result(_heading(), won, run.soldiers, run.kills, stars,
 		won and playing and level_number < SummandosLevel.level_count(difficulty), run.failed_gate)
 
 
@@ -202,7 +203,7 @@ func _process(delta: float) -> void:
 	run.step(delta)
 	world.draw_run(run, delta)
 	_sound_run()
-	ui.update_hud(_hud_text(), run.thinking, mode == "stress" and not capturing)
+	ui.update_hud(_heading(), _hud_text(), run.thinking, run.boss_health(), mode == "stress" and not capturing)
 	if run.state != SummandosRun.State.RUNNING and not ui.result.visible:
 		_finish()
 
@@ -226,24 +227,32 @@ func _sound_run() -> void:
 		audio.play("tick", 1.3 if seconds <= 3 else 1.0)
 	if not heard.boss:
 		for wave in run.waves:
-			if wave.hp >= 50.0 and wave.z - run.z < SummandosRun.WAKE_DISTANCE:
+			if wave.boss and wave.z - run.z < SummandosRun.WAKE_DISTANCE:
 				heard.boss = true
 				audio.play("boss")
 				audio.buzz(120)
+	if run.burnt > 0:
+		run.burnt = 0
+		audio.play("lose", 1.6, -6.0)
+		audio.buzz(60)
 	heard.row = run.next_row
 	heard.soldiers = run.soldiers
 	heard.kills = run.kills
 	heard.think = seconds
 
 
+## The mode and level being played, e.g. "Captain · Level 5"; empty in the performance test.
+func _heading() -> String:
+	if mode != "play":
+		return ""
+	return "%s  ·  %s" % [texts.modes[difficulty], texts.level % level_number]
+
+
 func _hud_text() -> String:
 	var counts := "%s %d   ·   %s %d" % [texts.soldiers, run.soldiers, texts.kills, run.kills]
-	if mode != "play":
-		return counts
-	return "%s   ·   %s%s" % [
-		texts.level % level_number, counts,
-		("   ·   " + world.weapon_text(run.damage)) if run.damage > 1.0 else "",
-	]
+	if mode == "play" and run.damage > 1.0:
+		counts += "   ·   " + world.weapon_text(run.damage)
+	return counts
 
 
 func _clamp_x(x: float) -> float:

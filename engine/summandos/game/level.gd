@@ -9,6 +9,8 @@ const LEVELS_PER_MODE := 30
 ## Expert is a short, brutal set: two-step sums at every gate, and the worse gate loses the level.
 const EXPERT_LEVELS := 10
 const ROW_GAP := 28.0
+## The most enemies one wave holds.
+const MAX_WAVE := 300
 
 var length := 0.0
 var start_soldiers := 1
@@ -17,15 +19,19 @@ var reference := 0
 ## Taking the worse gate of a pair loses the level at once (expert).
 var strict := false
 ## How long a "think" row stops the run, in seconds.
-var think_seconds := 10.0
+var think_seconds := 5.0
 ## The boss at the end, or empty: {"model": file, "colour": index into BOSS_COLOURS, "height": m}.
 var boss := {}
 
+## The boss that throws fireballs.
+const RANGED_BOSS := "Skeleton_Mage.glb"
 ## The skeleton models a boss can be, in turn.
 const BOSS_MODELS := ["Skeleton_Warrior.glb", "Skeleton_Mage.glb", "Skeleton_Rogue.glb", "Skeleton_Minion.glb"]
 ## [{z, left, right, think?}] where left/right are {"gate": LilloGate} or {"weapon": damage multiplier}.
 var rows: Array[Dictionary] = []
-## [{z, x, count, hp}]: x is the lane the wave comes down (0 the middle), hp each enemy's.
+## [{z, x, count, hp, boss?, bite?, burn?}]: x is the lane the wave comes down (0 the middle), hp
+## each enemy's; a boss wave is one enemy that eats `bite` soldiers a second once it reaches the
+## squad, and a ranged one throws fireballs that burn `burn` soldiers each.
 var waves: Array[Dictionary] = []
 
 
@@ -55,7 +61,7 @@ static func first() -> SummandosLevel:
 		{"z": 75.0, "count": 25, "hp": 1.0},
 		{"z": 145.0, "count": 60, "hp": 1.5},
 		{"z": 215.0, "count": 120, "hp": 2.0},
-		{"z": 250.0, "count": 1, "hp": 400.0},
+		{"z": 250.0, "count": 1, "hp": 400.0, "boss": true, "bite": 8.0},
 	]
 	return level
 
@@ -88,7 +94,6 @@ static func generate(mode: Mode, number: int) -> SummandosLevel:
 	var expert := mode == Mode.EXPERT
 	var level := SummandosLevel.new()
 	level.strict = expert
-	level.think_seconds = 7.0 if expert else 10.0
 	level.start_soldiers = 5 + random.randi_range(0, 5)
 	var row_count := 6 + number / 3 if expert else 5 + mini(4, number / 6)
 	var weapon_row := random.randi_range(2, row_count - 1) if number >= 3 and not expert else -1
@@ -122,8 +127,9 @@ static func generate(mode: Mode, number: int) -> SummandosLevel:
 	var has_boss := number % 5 == 0
 	if has_boss:
 		level.boss = boss_look(mode, number)
-	level.waves.append({"z": level.length - 10.0, "x": 0.0, "count": 1, "hp": 1.0 if not has_boss else 50.0})
-	_size_waves(level, d, has_boss)
+	level.waves.append({"z": level.length - 10.0, "x": 0.0, "count": 1, "hp": 1.0, "boss": has_boss,
+		"ranged": has_boss and level.boss.model == RANGED_BOSS})
+	_size_waves(level, mode, d)
 	return level
 
 
@@ -174,26 +180,56 @@ static func _option(mode: Mode, d: float, crowd: int, random: RandomNumberGenera
 	return {"gate": gate}
 
 
-## Sizes the waves from the crowd the best choices bring to each, then shrinks them until the best
-## choices win; records what those choices leave standing as the level's reference.
-static func _size_waves(level: SummandosLevel, d: float, boss: bool) -> void:
+## What share of the soldiers the best choices should still have at the end of a level: the waves
+## and the boss take the rest. Lower for later levels and harder modes.
+static func keep_share(mode: Mode, d: float) -> float:
+	return 0.85 - d * 0.2 - mode * 0.1
+
+
+## Sizes the waves and the boss from the crowd the best choices bring to each, scaled until those
+## choices finish with keep_share() of their soldiers; records what they leave as the reference.
+## Enemies get tougher with the level and the mode, so a weapon is worth more than a few soldiers.
+static func _size_waves(level: SummandosLevel, mode: Mode, d: float) -> void:
+	var enemy_hp := 2.0 + d * 3.0 + mode
+	var boss_seconds := 6.0 + d * 3.0 + mode * 1.5
 	var sides := best_sides(level)
 	var crowd_at := _crowd_by_row(level, sides)
-	var strength := 0.6 + d * 0.5 if level.strict else 0.25 + d * 0.75
-	for attempt in 12:
-		for wave in level.waves:
-			var crowd := _crowd_before(level, crowd_at, wave.z)
-			if wave == level.waves[-1] and boss:
-				wave.count = 1
-				wave.hp = maxf(20.0, crowd * strength * 6.0)
-			else:
-				wave.count = maxi(3, int(crowd * strength))
+	var keep := keep_share(mode, d)
+	var goal := maxf(2.0, crowd_at[-1] * keep)
+	var low := 0.02
+	var high := 8.0
+	for attempt in 16:
+		var scale := sqrt(low * high)
+		_scale_waves(level, crowd_at, scale, enemy_hp, boss_seconds, keep)
 		var run := SummandosRun.simulate(level, sides)
-		if run.state == SummandosRun.State.WON and run.soldiers >= maxi(2, level.start_soldiers / 2):
-			level.reference = run.soldiers
-			return
-		strength *= 0.8
+		if run.state == SummandosRun.State.WON and run.soldiers >= goal:
+			low = scale
+		else:
+			high = scale
+	_scale_waves(level, crowd_at, low, enemy_hp, boss_seconds, keep)
+	sides = best_sides(level)
 	level.reference = maxi(1, SummandosRun.simulate(level, sides).soldiers)
+
+
+## A boss lasts about `boss_seconds` under the fire of the crowd expected to reach it (`keep` of
+## the gates' crowd) armed with the level's weapon, so skipping the weapon makes the fight longer,
+## and eats a tenth of that crowd over the fight; the other waves grow with `scale`. Past MAX_WAVE enemies a wave stops
+## growing and its enemies get tougher instead, so the screen never holds more than it can draw.
+static func _scale_waves(level: SummandosLevel, crowd_at: Array[int], scale: float, enemy_hp: float,
+		boss_seconds: float, keep: float) -> void:
+	for wave in level.waves:
+		var crowd := _crowd_before(level, crowd_at, wave.z)
+		if wave.get("boss", false):
+			crowd = maxi(1, int(crowd * keep))
+			wave.count = 1
+			wave.hp = maxf(30.0, crowd * SummandosRun.SHOTS_PER_SECOND * boss_seconds * sqrt(_weapon_power(level)))
+			wave.bite = maxf(1.0, crowd * 0.1 / boss_seconds)
+			if wave.get("ranged", false):
+				wave.burn = maxi(1, int(crowd * 0.04))
+		else:
+			var wanted := maxf(3.0, crowd * scale)
+			wave.count = int(minf(wanted, MAX_WAVE))
+			wave.hp = enemy_hp * wanted / wave.count
 
 
 ## The side (-1 left, 1 right) to take at each row: the gate leaving more soldiers, and for a
@@ -232,6 +268,16 @@ static func _crowd_by_row(level: SummandosLevel, sides: Array[float]) -> Array[i
 			crowd = (pick.gate as LilloGate).apply(crowd)
 		result.append(crowd)
 	return result
+
+
+## The damage the level's weapons give together; 1 without any.
+static func _weapon_power(level: SummandosLevel) -> float:
+	var power := 1.0
+	for row in level.rows:
+		for side in [row.left, row.right]:
+			if side.has("weapon"):
+				power *= side.weapon
+	return power
 
 
 static func _crowd_before(level: SummandosLevel, crowd_at: Array[int], z: float) -> int:

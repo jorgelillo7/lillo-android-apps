@@ -48,7 +48,7 @@ func test_easy_gates_are_plain_and_adult_ones_are_puzzles() -> void:
 	assert_between(thinks, 1, 3, "a few thinking pauses, not every gate")
 
 
-func test_a_think_row_stops_the_run_for_ten_seconds() -> void:
+func test_a_think_row_stops_the_run_for_five_seconds() -> void:
 	var level := SummandosLevel.new()
 	level.length = 100.0
 	level.start_soldiers = 10
@@ -59,7 +59,7 @@ func test_a_think_row_stops_the_run_for_ten_seconds() -> void:
 		run.step(1.0 / 60.0)
 	assert_gt(run.thinking, 0.0, "paused before the row")
 	var stopped_at := run.z
-	for i in 60 * 5:
+	for i in 60 * 3:
 		run.step(1.0 / 60.0)
 	assert_eq(run.z, stopped_at, "nothing moves while thinking")
 	run.done_thinking()
@@ -86,7 +86,7 @@ func test_expert_is_ten_levels_of_two_step_sums_with_a_pause_at_every_gate() -> 
 	assert_eq(SummandosLevel.level_count(SummandosLevel.Mode.EXPERT), 10)
 	var level := SummandosLevel.generate(SummandosLevel.Mode.EXPERT, 4)
 	assert_true(level.strict)
-	assert_eq(level.think_seconds, 7.0)
+	assert_eq(level.think_seconds, 5.0)
 	for row in level.rows:
 		assert_true(row.get("think", false), "every expert gate pauses")
 		assert_true(row.left.has("gate") and row.right.has("gate"), "no weapons in expert")
@@ -100,3 +100,24 @@ func test_in_expert_the_worse_gate_loses_at_once() -> void:
 	assert_eq(run.state, SummandosRun.State.LOST)
 	assert_eq(run.next_row, 1, "lost on the first gate")
 	assert_gt(run.failed_gate.other_result, run.failed_gate.taken_result)
+
+
+func test_the_best_choices_lose_a_share_of_the_squad_and_more_in_harder_modes() -> void:
+	for mode in [SummandosLevel.Mode.EASY, SummandosLevel.Mode.ADULT]:
+		var level := SummandosLevel.generate(mode, 10)
+		var gates_only := SummandosLevel.new()
+		gates_only.start_soldiers = level.start_soldiers
+		gates_only.length = level.length
+		gates_only.rows = level.rows
+		var sides := SummandosLevel.best_sides(level)
+		var untouched := SummandosRun.simulate(gates_only, sides).soldiers
+		var fought := SummandosRun.simulate(level, sides)
+		assert_eq(fought.state, SummandosRun.State.WON)
+		assert_lt(fought.soldiers, untouched, "the waves cost soldiers in mode %d" % mode)
+
+
+func test_a_boss_lasts_seconds_and_a_weapon_shortens_the_fight() -> void:
+	var level := SummandosLevel.generate(SummandosLevel.Mode.EASY, 5)
+	var boss: Dictionary = level.waves[-1]
+	assert_true(boss.boss)
+	assert_gt(boss.hp, level.reference * SummandosRun.SHOTS_PER_SECOND * 3.0, "several seconds of fire")
