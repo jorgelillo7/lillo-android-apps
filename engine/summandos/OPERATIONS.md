@@ -14,11 +14,12 @@ scripts/godot.sh --headless --path engine/summandos --script tools/balance.gd   
 scripts/engine-export.sh --arm64 engine/summandos           # APK for a phone (export/, debug key)
 ```
 
-Store listing graphics (6 screenshots and the feature graphic, Spanish and English):
+Store listing graphics (7 phone and 7 tablet screenshots and the feature graphic, Spanish and
+English):
 
 ```bash
 scripts/engine-assets.sh engine/summandos                   # models, if not fetched yet
-engine/summandos/tools/capture_store_screenshots.sh         # store/raw/<locale>/, 1080x2424
+engine/summandos/tools/capture_store_screenshots.sh         # store/raw[-tablet]/<locale>/
 .venv/bin/python engine/summandos/tools/generate_store_assets.py   # play/src/main/play/listings/
 ```
 

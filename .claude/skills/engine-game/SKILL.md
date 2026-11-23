@@ -72,7 +72,7 @@ before committing a new icon.
 ## Store listing graphics
 
 The apps' pipeline, fed by the game: `tools/capture_store_screenshots.sh` takes 1080x2424 raws
-with `scripts/engine-shot.sh --store` (drawn off-screen, so taller than the Mac's screen; the main
+with `scripts/engine-shot.sh --store`, and 2560x1600 tablet raws with `--tablet` (drawn off-screen, so taller than the Mac's screen; the main
 scene calls `LilloCapture.rehost(self)` first), in every locale (`--lang=`), then
 `tools/generate_store_assets.py` frames them with headlines on `scripts/store_assets.py` into
 `play/src/main/play/listings/`. Pick moments by reading the level data (gate z, think rows):

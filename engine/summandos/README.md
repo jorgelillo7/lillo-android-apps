@@ -37,7 +37,7 @@ store/               play-icon-512.png
 tools/               generate_icon.py, generate_sounds.py, balance.gd (difficulty report),
                      capture_store_screenshots.sh + generate_store_assets.py (Play listing
                      graphics), samples/ (progress files)
-store/raw/<locale>/  raw 1080x2424 store screenshots (captured off-screen on the Mac)
+store/raw/<locale>/  raw store screenshots, phone 1080x2424 (raw-tablet/: 2560x1600), off-screen
 play/src/main/play/  listing graphics for Gradle Play Publisher (the play/ module comes with S4)
 tests/               GUT tests: runs, levels, progress, the addon link
 ```
