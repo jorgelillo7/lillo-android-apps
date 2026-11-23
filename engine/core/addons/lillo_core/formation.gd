@@ -20,3 +20,14 @@ static func offsets(count: int, spacing: float, max_width: float) -> PackedVecto
 		var x := (column - (in_row - 1) * 0.5) * spacing + stagger
 		result[i] = Vector3(clampf(x, -max_width * 0.5, max_width * 0.5), 0.0, row * spacing)
 	return result
+
+
+## A copy of `offsets` with each member nudged up to `amount` metres in x and z, the same way for
+## the same `seed`, so a crowd looks like a mob rather than a grid without flickering frame to frame.
+static func scatter(offsets: PackedVector3Array, amount: float, seed: int) -> PackedVector3Array:
+	var random := RandomNumberGenerator.new()
+	random.seed = seed
+	var result := offsets.duplicate()
+	for i in result.size():
+		result[i] += Vector3(random.randf_range(-amount, amount), 0.0, random.randf_range(-amount, amount))
+	return result

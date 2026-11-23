@@ -5,14 +5,17 @@ other way; maths gates grow or shrink the platoon, weapon crates make it deadlie
 Package `com.jorgelillo.summandos`. Plan and scope: [docs/plans/fake-ad-games.md](../../docs/plans/fake-ad-games.md).
 
 Status: **prototype** (spike S2 of the [technology study](../../docs/plans/fake-ad-games-tech.md)):
-one level, a 1,000-unit performance test, placeholder art and icon.
+one level, a 1,000-unit performance test. Look: toon-shaded figures with an
+outline, a striped track whose halves take their gate's colour, a monster boss; two palettes,
+**sunset** (the game's look) and **night** (the menu's night mode, remembered).
 
 ```
 game/level.gd        level data: rows of choices (gate or weapon) and enemy waves
+game/palette.gd      the colour themes (sunset, night): every colour the scene uses
 game/run.gd          one run without drawing: steering, gates, shooting, clashes, win or loss
 main.gd              the scene, built in code: track, squad, enemies, bullets, HUD, menu
 tests/               GUT tests of the run (choices, weapons, waves, the first level is winnable)
-tools/generate_icon.py   icons (placeholder until the design pass), on scripts/icon_lib.py
+tools/generate_icon.py   icons (a squad in front of a calculator), on scripts/icon_lib.py
 ```
 
 ## Commands
@@ -26,7 +29,8 @@ scripts/engine-export.sh engine/summandos                 # APK in engine/summan
 ```
 
 `--mode=play|stress` starts a run at once, `--autosteer` takes the better gate by itself,
-`--shot=<png> --after=<s>` saves a screenshot and quits. With the screen locked, Godot does not
+`--palette=sunset|night` overrides the saved choice, `--shot=<png> --after=<s>` saves a screenshot
+and quits. With the screen locked, Godot does not
 draw a window; `--write-movie <png> --fixed-fps 10 --quit-after <frames>` renders frames anyway.
 
 ## What the prototype already does right
