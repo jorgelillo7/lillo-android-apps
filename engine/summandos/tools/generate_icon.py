@@ -1,14 +1,13 @@
-"""Generates Summandos' icons: a white plus and a gold times over the squad's blue.
+"""Generates Summandos' icons: a teal soldier leading two more of his squad under a gold plus,
+on the sunset palette's sky.
 
-Placeholder until the game's design pass; drawn with the apps' shared scripts/icon_lib.py so the
-final one follows the same pipeline. Outputs (engine/summandos/):
+Drawn with the apps' shared scripts/icon_lib.py. Outputs (engine/summandos/):
   icons/main_192.png                       legacy launcher icon (Godot's main_192x192)
   icons/adaptive_{foreground,background,monochrome}_432.png   adaptive icon layers
   store/play-icon-512.png                  Play Store icon
 
 Usage (repo root): .venv/bin/python engine/summandos/tools/generate_icon.py
 """
-import math
 import sys
 from pathlib import Path
 
@@ -18,31 +17,58 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT.parent.parent / "scripts"))
 from icon_lib import LEGACY_CROP, STORE_CROP, canvas  # noqa: E402
 
-BG_TOP, BG_BOTTOM = "#3A7BFF", "#1B3FA8"   # the squad's blue
-PLUS, TIMES = "#FFFFFF", "#FFC233"
+# Colours from game/palette.gd ("sunset").
+BG_TOP, BG_BOTTOM = "#FF8F6B", "#FFC58F"
+SQUAD, SQUAD_DARK, BACK_ROW = "#13A89E", "#0B5E58", "#0E7F77"
+SKIN, EYES, OUTLINE, GOLD = "#F2C9A0", "#14141F", "#3A1C0E", "#FFD23F"
 
 
-def cross(cx, cy, half, thickness, angle=0.0):
-    """A plus sign's 12 corners in the 108x108 viewport, rotated by `angle` radians."""
-    t = thickness / 2
-    points = [(-t, -half), (t, -half), (t, -t), (half, -t), (half, t), (t, t),
-              (t, half), (-t, half), (-t, t), (-half, t), (-half, -t), (-t, -t)]
-    c, s = math.cos(angle), math.sin(angle)
-    return [(cx + x * c - y * s, cy + x * s + y * c) for x, y in points]
+def soldier(cx, base, k, body, helmet):
+    """Shapes of one soldier facing the viewer, feet at `base`, scaled by `k`."""
+    def box(x0, y0, x1, y1):
+        return (cx + x0 * k, base + y0 * k, cx + x1 * k, base + y1 * k)
+    return [
+        ("round", box(-14, -30, 14, 0), 11 * k, body),
+        ("ellipse", box(-10, -46, 10, -26), 0, SKIN),
+        ("chord", box(-12, -50, 12, -28), 0, helmet),
+        ("rect", box(-13, -40, 13, -37), 0, helmet),
+        ("ellipse", box(-5.5, -35, -2.5, -32), 0, EYES),
+        ("ellipse", box(2.5, -35, 5.5, -32), 0, EYES),
+    ]
 
 
 def shapes():
-    """(polygon, colour) in drawing order, inside the adaptive safe zone (radius 33)."""
-    return [
-        (cross(46, 47, 18, 11), PLUS),
-        (cross(69, 69, 10, 7, math.pi / 4), TIMES),
+    """(kind, box, radius, colour) in drawing order, inside the adaptive safe zone (radius 33)."""
+    plus = [
+        ("ellipse", (63, 25, 81, 43), 0, GOLD),
+        ("rect", (70.5, 28.5, 73.5, 39.5), 0, OUTLINE),
+        ("rect", (66.5, 32.5, 77.5, 35.5), 0, OUTLINE),
     ]
+    return (soldier(38, 80, 0.72, BACK_ROW, SQUAD_DARK) + soldier(70, 80, 0.72, BACK_ROW, SQUAD_DARK)
+            + soldier(54, 86, 1.0, SQUAD, SQUAD_DARK) + plus)
 
 
 def paint(img, P, colour_of=lambda c: c):
     d = ImageDraw.Draw(img)
-    for points, colour in shapes():
-        d.polygon([P(*p) for p in points], fill=colour_of(colour))
+    scale = P(1, 0)[0] - P(0, 0)[0]
+    for kind, (x0, y0, x1, y1), radius, colour in shapes():
+        box = [*P(x0, y0), *P(x1, y1)]
+        fill = colour_of(colour)
+        if kind == "round":
+            d.rounded_rectangle(box, radius=radius * scale, fill=fill)
+        elif kind == "ellipse":
+            d.ellipse(box, fill=fill)
+        elif kind == "chord":
+            d.chord(box, 180, 360, fill=fill)
+        else:
+            d.rectangle(box, fill=fill)
+
+
+def monochrome(colour):
+    """White shapes; faces and the plus are cut out so the soldiers still read in one colour."""
+    if colour in (SKIN, OUTLINE):
+        return (0, 0, 0, 0)
+    return "#FFFFFF"
 
 
 def layer(size, crop, colour_of=lambda c: c):
@@ -73,6 +99,6 @@ if __name__ == "__main__":
     layer(432, (0, 108)).save(icons / "adaptive_foreground_432.png", optimize=True)
     canvas(432, (0, 108), BG_TOP, BG_BOTTOM)[0].resize((432, 432), Image.LANCZOS).save(
         icons / "adaptive_background_432.png", optimize=True)
-    layer(432, (0, 108), lambda _: "#FFFFFF").save(icons / "adaptive_monochrome_432.png", optimize=True)
+    layer(432, (0, 108), monochrome).save(icons / "adaptive_monochrome_432.png", optimize=True)
     full(512, STORE_CROP).save(ROOT / "store/play-icon-512.png", optimize=True)
     print("Icons generated.")

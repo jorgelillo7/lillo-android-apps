@@ -5,7 +5,7 @@ other way; maths gates grow or shrink the platoon, weapon crates make it deadlie
 Package `com.jorgelillo.summandos`. Plan and scope: [docs/plans/fake-ad-games.md](../../docs/plans/fake-ad-games.md).
 
 Status: **prototype** (spike S2 of the [technology study](../../docs/plans/fake-ad-games-tech.md)):
-one level, a 1,000-unit performance test, placeholder icon. Look: toon-shaded figures with an
+one level, a 1,000-unit performance test. Look: toon-shaded figures with an
 outline, a striped track whose halves take their gate's colour, a monster boss; two palettes,
 **sunset** (the game's look) and **night** (the menu's night mode, remembered).
 
@@ -15,7 +15,7 @@ game/palette.gd      the colour themes (sunset, night): every colour the scene u
 game/run.gd          one run without drawing: steering, gates, shooting, clashes, win or loss
 main.gd              the scene, built in code: track, squad, enemies, bullets, HUD, menu
 tests/               GUT tests of the run (choices, weapons, waves, the first level is winnable)
-tools/generate_icon.py   icons (placeholder until the design pass), on scripts/icon_lib.py
+tools/generate_icon.py   icons (a soldier and his squad under a gold plus), on scripts/icon_lib.py
 ```
 
 ## Commands
