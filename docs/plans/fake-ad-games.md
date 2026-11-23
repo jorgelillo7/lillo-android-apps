@@ -53,6 +53,25 @@ the expected crowd, the better one is never always the bigger number, and a test
 generated pair has exactly one better choice and stays within the mode's difficulty (operands,
 operations, size of the intermediate results).
 
+## Game one: competitors on Google Play (2026-11)
+
+| App | Downloads | Rating | Ads / purchases | What it is |
+|---|---|---|---|---|
+| Count Masters: Crowd Runner 3D (Freeplay) | 100M+ | 4.5 | ads + IAP | The genre's reference: + / × gates, a clash at the end |
+| Mob Control (Voodoo) | 100M+ | 4.0 | IAP | A cannon fires the crowd at an enemy base; cards, champions |
+| Epic Crowd Run 3D | 5K+ | 4.4 | ads + IAP | Count Masters clone |
+| Math Runners: Crowd War | 10K+ | — | ads | Crowd runner with maths gates |
+| Math Runner 3D (practical.labs) | 10+ | — | none | **Closest**: "is +25 better than ×2? it depends on your crowd", plus sums on the road; coins |
+| Math Rush (tinhammer) | 1+ | — | ads + IAP | **Closest**: add / × / − / % gates, pick the bigger result, 200 levels |
+| Math Blob Run, Race to Learn, Run with Math… | 500–100K+ | 4.4 | mixed | Kids' "run through the right answer" quizzes, not crowd maths |
+
+Complaints about the big two are ads (30–60 s, unskippable, missing rewards) and pay-to-win.
+
+**Honest reading**: comparing gates by the crowd you carry is not new, two tiny apps already do it.
+Nobody stops time to think, nobody goes past the four operations and percentages (powers, roots,
+equations), and no crowd game is free of ads, coins and purchases at once. The room is "done
+well, for adults who like mental maths, with nothing to sell", not a new genre.
+
 ## Leads
 
 - KFC's "Original Fake Games": playable versions of fake ads (rolling barrels, a trapped king, a
