@@ -26,6 +26,7 @@ engine/
                               (pop-ins, squishy buttons, rising numbers, confetti), LilloSafeArea,
                               LilloAbout (name, version, credit blocks with links), LilloSwatchPicker,
                               LilloModelStage (an animated 3D character standing in a 2D screen),
+                              LilloIconButton (small round drawn icons: gear, sound, muted, info),
                               LilloColours (ΔE under simulated colour blindness, for palette tests)
                               LilloAudio (effects, looping music and vibration, each with a saved
                               switch; throttles rapid effects; clicks on every button)

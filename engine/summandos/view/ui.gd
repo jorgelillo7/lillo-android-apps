@@ -20,6 +20,9 @@ var texts: Dictionary
 var level_map: LilloLevelMap
 var about: LilloAbout
 var swatches: LilloSwatchPicker
+var settings: Control
+var corner: Control
+var mute_button: LilloIconButton
 ## {name -> colour} for the squad picker, and the current choice.
 var squad_choices := {}
 var squad_choice := "default"
@@ -71,12 +74,16 @@ func _ready() -> void:
 		credits.insert(1, texts.golem_credit)
 	about = LilloAbout.new(texts.title, texts.version % version, credits, texts.about_note, texts.close,
 		palette.outline, palette.weapon, _reading())
-	about.closed.connect(show_screen.bind("menu"))
+	about.closed.connect(show_screen.bind("settings"))
 	root.add_child(about)
 	swatches = LilloSwatchPicker.new(texts.colour_title, squad_choices, squad_choice, texts.close, palette.outline)
 	swatches.picked.connect(func(name: String) -> void: squad_picked.emit(name))
-	swatches.closed.connect(show_screen.bind("menu"))
+	swatches.closed.connect(show_screen.bind("settings"))
 	root.add_child(swatches)
+	settings = _build_settings()
+	root.add_child(settings)
+	corner = _build_corner()
+	root.add_child(corner)
 
 
 ## Fredoka at a medium weight, for text meant to be read rather than shouted.
@@ -91,11 +98,13 @@ static func _reading() -> Font:
 func show_screen(screen: String) -> void:
 	about.visible = screen == "about"
 	swatches.visible = screen == "colours"
+	settings.visible = screen == "settings"
+	corner.visible = screen == "menu" or screen == "levels"
 	menu.visible = screen == "menu"
 	level_map.visible = screen == "levels"
 	hud.visible = screen == "run"
 	result.visible = screen == "result"
-	decor.visible = screen in ["menu", "levels", "about", "colours"]
+	decor.visible = screen in ["menu", "levels", "about", "colours", "settings"]
 
 
 func show_levels(mode: int) -> void:
@@ -208,36 +217,74 @@ func _build_menu() -> Control:
 		tween.tween_property(title, "scale", Vector2.ONE, 0.9).set_trans(Tween.TRANS_SINE))
 	for i in texts.modes.size():
 		box.add_child(LilloTheme.button(texts.modes[i], func() -> void: mode_picked.emit(i), 44, 96.0))
-	var extras := GridContainer.new()
-	extras.columns = 3
-	extras.add_theme_constant_override("h_separation", 10)
-	extras.add_theme_constant_override("v_separation", 10)
-	var night: bool = LilloSettings.read("night", false)
-	var dark := LilloTheme.box(Color(palette.outline, 0.75), Color(palette.outline, 0.9))
-	for button in [LilloTheme.button(texts.night_on if night else texts.night_off, func() -> void: night_toggled.emit(), 22),
-			LilloTheme.button(texts.colour, show_screen.bind("colours"), 22),
-			LilloTheme.button(texts.about, show_screen.bind("about"), 22),
-			_switch("sound", audio.sound_on, audio.set_sound),
-			_switch("music", audio.music_on, audio.set_music),
-			_switch("vibration", audio.vibration_on, audio.set_vibration)]:
-		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		button.add_theme_stylebox_override("normal", dark)
-		extras.add_child(button)
-	box.add_child(extras)
+
 	return screen
 
 
 ## A menu button that flips a setting on and off, its text saying which (texts.<key>_on/_off).
 func _switch(key: String, on: bool, apply: Callable) -> Button:
-	var button := LilloTheme.button(texts[key + ("_on" if on else "_off")], func() -> void: pass, 22)
+	var button := LilloTheme.button(texts[key + ("_on" if on else "_off")], func() -> void: pass, 26, 64.0)
 	button.set_meta("on", on)
 	button.pressed.connect(func() -> void:
 		var now: bool = not button.get_meta("on")
 		button.set_meta("on", now)
 		button.text = texts[key + ("_on" if now else "_off")]
-		apply.call(now))
+		apply.call(now)
+		if mute_button:
+			mute_button.set_kind("sound" if audio.sound_on or audio.music_on else "muted"))
 	return button
+
+
+## The two quiet buttons in the top-right corner: mute everything, and the settings card.
+func _build_corner() -> Control:
+	var layer := Control.new()
+	layer.set_anchors_preset(Control.PRESET_FULL_RECT)
+	layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var row := HBoxContainer.new()
+	row.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
+	row.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+	row.add_theme_constant_override("separation", 10)
+	layer.add_child(row)
+	var quiet := Color(palette.outline, 0.55)
+	mute_button = LilloIconButton.new("sound" if audio.sound_on or audio.music_on else "muted", quiet)
+	mute_button.pressed.connect(func() -> void:
+		var on := not (audio.sound_on or audio.music_on)
+		audio.set_sound(on)
+		audio.set_music(on)
+		mute_button.set_kind("sound" if on else "muted")
+		_refresh_settings())
+	row.add_child(mute_button)
+	var gear := LilloIconButton.new("gear", quiet)
+	gear.pressed.connect(show_screen.bind("settings"))
+	row.add_child(gear)
+	return layer
+
+
+## The settings card: sound, music and vibration switches, night mode, squad colour, About.
+func _build_settings() -> Control:
+	var screen := _screen()
+	var box := _column(screen, true)
+	box.add_child(LilloTheme.title(texts.settings, 48))
+	for entry in [["sound", audio.sound_on, audio.set_sound], ["music", audio.music_on, audio.set_music],
+			["vibration", audio.vibration_on, audio.set_vibration]]:
+		var button := _switch(entry[0], entry[1], entry[2])
+		button.name = entry[0]
+		box.add_child(button)
+	var night: bool = LilloSettings.read("night", false)
+	box.add_child(LilloTheme.button(texts.night_on if night else texts.night_off, func() -> void: night_toggled.emit(), 26, 64.0))
+	box.add_child(LilloTheme.button(texts.colour, show_screen.bind("colours"), 26, 64.0))
+	box.add_child(LilloTheme.button(texts.about, show_screen.bind("about"), 26, 64.0))
+	box.add_child(LilloTheme.button(texts.close, show_screen.bind("menu"), 26, 64.0))
+	return screen
+
+
+## Puts the switches back in line with the settings after the mute button changed them.
+func _refresh_settings() -> void:
+	for key in ["sound", "music"]:
+		var button: Button = settings.find_child(key, true, false)
+		var on: bool = audio.sound_on if key == "sound" else audio.music_on
+		button.set_meta("on", on)
+		button.text = texts[key + ("_on" if on else "_off")]
 
 
 func _build_hud() -> Control:

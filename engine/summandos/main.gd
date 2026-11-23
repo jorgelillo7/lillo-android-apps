@@ -72,6 +72,8 @@ func _ready() -> void:
 		ui.show_screen("about")
 	elif args.has("--colours"):
 		ui.show_screen("colours")
+	elif args.has("--settings"):
+		ui.show_screen("settings")
 	else:
 		_show_menu()
 
@@ -165,7 +167,9 @@ func _notification(what: int) -> void:
 		return
 	if run != null:
 		_open_levels(-1)
-	elif ui.level_map.visible or ui.about.visible or ui.swatches.visible:
+	elif ui.about.visible or ui.swatches.visible:
+		ui.show_screen("settings")
+	elif ui.level_map.visible or ui.settings.visible:
 		_show_menu()
 	else:
 		get_tree().quit()

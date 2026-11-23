@@ -47,8 +47,10 @@ licences), since Luckiest Guy is capitals only.
 
 ## Screens
 
-- **Menu**: the title breathing, three mode buttons, then night mode, squad colour and About.
-  The performance test is only a command-line option now (`--mode=stress`).
+- **Menu**: the title breathing and the three mode buttons, nothing else. Two quiet round icons
+  top-right (on the level map too): a speaker that mutes or unmutes everything, and a gear that
+  opens **Settings** (sound, music, vibration, night mode, squad colour, About). The performance
+  test is only a command-line option (`--mode=stress`).
 - **About**: the name and version, one block per credit (what, who, licence and a tappable link),
   and the no-ads line. A bought pack (KayKit Skeletons EXTRA) gets its own line once its models
   are in the game.
@@ -70,7 +72,8 @@ gate that takes, soft crossbow ticks while shooting, bone crunches on hits (thro
 than one every 60 ms), a ticking countdown while thinking (sharper in the last three seconds), a
 low boom and a buzz when the boss wakes, a fanfare or a fall at the end, a ding per star. Two
 chiptune loops, calm for the menus and faster for the run, stand in until CC0 music is chosen.
-Sound, music and vibration each have a switch in the menu, saved; music pauses with the app.
+Sound, music and vibration each have a switch in Settings, saved, and the corner speaker mutes
+both sound and music at once; music pauses with the app.
 
 ## Icon
 
