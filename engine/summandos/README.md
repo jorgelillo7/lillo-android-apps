@@ -42,8 +42,11 @@ assets/fonts/        Luckiest Guy (Astigmatic, Apache 2.0) and Fredoka (OFL), fr
 store/               play-icon-512.png
 tools/               generate_icon.py, generate_sounds.py, balance.gd (difficulty report),
                      capture_store_screenshots.sh + generate_store_assets.py (Play listing
-                     graphics), samples/ (progress files)
+                     graphics), smoke_test.sh (the release APK played on the emulator),
+                     samples/ (progress files)
 store/raw/<locale>/  raw store screenshots, phone 1080x2424 (raw-tablet/: 2560x1600), off-screen
-play/src/main/play/  listing graphics for Gradle Play Publisher (the play/ module comes with S4)
+play/src/main/play/  listing graphics and release notes for Gradle Play Publisher (the play/ module
+                     comes with S4)
+release-notes.md     version history
 tests/               GUT tests: runs, levels, progress, the addon link
 ```

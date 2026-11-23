@@ -81,6 +81,19 @@ scene calls `LilloCapture.rehost(self)` first), in every locale (`--lang=`), the
 `play/src/main/play/listings/`. Pick moments by reading the level data (gate z, think rows):
 the run moves 9 m/s. Keep the frame rate and test-only labels off the pictures.
 
+## Smoke test before an upload
+
+```bash
+scripts/emulator.sh start --headless
+engine/summandos/tools/smoke_test.sh          # exports the release APK, plays it, PASSED/FAILED
+```
+
+The tests and the editor never run the exported build: the smoke test is what catches a script
+error or a resource the export or the slim engine left out (it fails on any Godot error in
+logcat, a crash or the process gone). Taps go by screen fractions on the Pixel_9_API_37 AVD;
+when a screen moves, update them from its screenshots in `build/smoke-test/<game>/`. Add a line
+to `release-notes.md` and `play/src/main/play/release-notes/<locale>/default.txt` with each version.
+
 ## A build for the owner's phone
 
 ```bash

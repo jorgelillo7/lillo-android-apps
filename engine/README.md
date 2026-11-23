@@ -62,8 +62,11 @@ engine/<game>/
                               any small free CC0 models committed whole (summandos: weapons/)
   store/                      play-icon-512.png, raw/<locale>/ phone and raw-tablet/<locale>/ tablet
                               screenshots the listing graphics come from
-  play/                       src/main/play/listings/: the generated Play listing graphics
-  tools/                      game-specific scripts (icon generator, balance report, samples/)
+  play/                       src/main/play/: the generated Play listing graphics (listings/) and
+                              the current version's release notes (release-notes/<locale>/)
+  release-notes.md            version history, as for an app
+  tools/                      game-specific scripts (icon generator, balance report, samples/) and
+                              smoke_test.sh: the exported release APK played on the emulator
   tests/                      GUT tests of game/ and of view/'s pure helpers (test_core_link.gd
                               checks the addon link); each cited by openspec/specs/<game>/
   addons/lillo_core           symlink to ../../core/addons/lillo_core

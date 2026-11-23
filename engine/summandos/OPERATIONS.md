@@ -5,6 +5,7 @@ Shared engine commands and setup: [engine/README.md](../README.md). Run from the
 ```bash
 scripts/engine-assets.sh engine/summandos                   # fetch the 3D models (once; before export)
 scripts/engine-test.sh engine/summandos                     # tests
+engine/summandos/tools/smoke_test.sh                        # release APK played on the emulator (before an upload)
 scripts/godot.sh --path engine/summandos                    # open in the editor
 scripts/godot.sh --path engine/summandos -- --mode=stress   # performance test (not in the menu)
 scripts/godot.sh --headless --path engine/summandos --script tools/balance.gd   # difficulty curve
