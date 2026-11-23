@@ -49,6 +49,7 @@ engine/<game>/
   README.md                   what the game is, its status and structure
   DESIGN.md                   palette, type, characters, screens
   OPERATIONS.md               commands to run, test, screenshot, export and release
+  engine-profile.py           the Godot modules this game's engine leaves out (slim-engine skill)
   project.godot, export_presets.cfg, main.tscn
   main.gd                     entry point: wires game/ and view/, input, back button, options
   game/                       rules without drawing (levels, a run, progress, palette, texts),
@@ -72,6 +73,7 @@ scripts/engine-test.sh engine/core                           # a project's tests
 scripts/engine-assets.sh engine/<game>                       # fetch its models (pinned, checksummed)
 scripts/engine-shot.sh engine/<game> out.png 3 -- --levels   # screenshot (--landscape, --progress f.cfg)
 .venv/bin/python scripts/engine_icon_preview.py engine/<game> out.png   # icon at every size
+scripts/engine-template.sh engine/<game>                     # slim engine from its engine-profile.py
 scripts/engine-export.sh [--arm64] engine/<game>             # Android APK, debug-signed by default
 ```
 

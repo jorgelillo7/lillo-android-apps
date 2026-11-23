@@ -100,3 +100,27 @@ Short, one line each. Add to it whenever something bites.
   the job it was started for, so reminders only arrived when the app happened to be alive.
   Start-up uses `LilloSchedule.ensure`; only the job itself replaces. Reproduce with the process
   killed (`am kill` after HOME, never `force-stop`, which drops the jobs) and wait for the slot.
+
+- **SCons profiles are read as variables**: one `module_x_enabled = "no"` per line. A loop through
+  `globals()` is ignored without a word, and the engine builds with the modules still in.
+- **Godot's fallback text server can break a display font's kerning** ("CAPTAIN" drew as "AIN
+  CAPT" with Luckiest Guy). Keep `text_server_adv` in slim engines; it costs ~1.7 MB.
+- **Godot's Gradle template build needs JDK 17**; with only JDK 25/26 installed, drop the custom
+  `libgodot_android.so` into the official template APK of the same version instead.
+- **`sdkmanager` is deprecated**, and `yes | sdkmanager` exits 141 under `pipefail` even when it
+  worked: use `cmdline-tools/latest/bin/android sdk install <package>`.
+- **A cold Android emulator can fail to create the Vulkan surface** on an app's first launch.
+  Launch again before blaming the build.
+- **The Mac window can't be taller than the screen**: Godot store screenshots (1080x2424) are drawn
+  off-screen in a SubViewport (`LilloCapture.rehost`).
+- **Godot only reimports a model when the model file changes**: after editing an import script's
+  input (the kept-animations list), delete the model's `.godot/imported` files.
+- **GDScript's `PackedStringArray` has no `any()`** (twice): join it, or convert to `Array`.
+- **Stacked PRs and squash merges conflict**: once the base PR is squashed, merge master into the
+  child keeping the already-reviewed tree (`read-tree`), instead of force-pushing a rewrite.
+- **A tint multiplies a texture**: a green model tinted orange comes out olive. Repaint with the
+  texture's luminance and the team hue (`LilloMaterials.team`).
+- **Third-party sources may refuse automated downloads** (OpenGameArt answers 403): plan for the
+  owner to download by hand, or make the asset.
+- **Paid assets never go in a public repo**, even CC0 ones: keep them in
+  `~/Projects/documentation/assets/` and copy them in with a checksum.
