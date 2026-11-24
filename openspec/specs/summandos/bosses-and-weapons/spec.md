@@ -13,17 +13,22 @@ away, and the mage and the Necromancer throw fireballs the player can dodge.
 
 ### Requirement: A boss is a fight that lasts and that a weapon shortens
 
-A boss SHALL NOT die on contact: while it touches the squad it SHALL eat soldiers at its
-`bite` rate, and it SHALL stand until its health is shot away. A generated boss SHALL hold
-several seconds of the expected squad's fire, and a weapon SHALL bring it down sooner.
+A boss SHALL NOT die on contact: it SHALL strike as it reaches the squad, eating its `slam` on
+top of a second's `bite`, then strike every second while it touches the squad, and it SHALL
+stand until its health is shot away; a squad that cannot shoot it down is eaten. A generated boss
+SHALL be sized for the squad the best choices bring within range of it: it holds several seconds
+of that squad's fire, no more than BOSS_MAX_SECONDS, and a weapon SHALL bring it down sooner.
 
-Playtesting found bosses that vanished on contact; a boss the player does not notice is not a boss.
+Playtesting found bosses that vanished on contact, then bosses that only stood there while the
+squad shot them; a boss the player does not notice is not a boss.
 
 #### Scenario: biting and lasting
 - **WHEN** a boss that bites 5 a second meets 30 soldiers for 3 s **THEN** it is still standing, 13 to 20 soldiers are left and its health bar is below full
+- **WHEN** a boss with a slam of 10 and a bite of 5 reaches 30 soldiers it cannot be shot down by **THEN** its first blow leaves 15, and within 4 s the run is lost
 - **WHEN** a squad with damage 2 and one with damage 1 fight the same boss for 3 s **THEN** the armed run is won and the other is still fighting
 - **WHEN** Recruit level 5 is generated **THEN** its boss holds more than 3 s of the reference squad's fire
 - *Verifies:* `test_a_boss_is_not_traded_away_on_contact_but_eats_soldiers`,
+  `test_a_boss_strikes_as_it_arrives_and_can_eat_the_squad`,
   `test_a_weapon_brings_a_boss_down_sooner`, `test_a_boss_takes_seconds_of_fire`
 
 ### Requirement: Fireballs land where the squad stood

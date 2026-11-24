@@ -20,11 +20,15 @@ func test_a_level_is_the_same_every_time() -> void:
 
 func test_every_level_can_be_won_with_the_best_choices() -> void:
 	for mode in SummandosLevel.Mode.values():
-		for number in range(1, SummandosLevel.level_count(mode) + 1, 3):
+		for number in range(1, SummandosLevel.level_count(mode) + 1):
 			var level := SummandosLevel.generate(mode, number)
 			var run := SummandosRun.simulate(level, SummandosLevel.best_sides(level))
 			assert_eq(run.state, SummandosRun.State.WON, "mode %d level %d" % [mode, number])
 			assert_eq(run.stars(), 3, "mode %d level %d: best play earns three stars" % [mode, number])
+			assert_gte(run.lowest, SummandosLevel.floor_soldiers(level, mode),
+				"mode %d level %d: best play never falls below the floor" % [mode, number])
+			if mode == SummandosLevel.Mode.EASY:
+				assert_gte(run.lowest, level.start_soldiers, "Recruit level %d dips below the start" % number)
 
 
 func test_later_levels_are_longer() -> void:

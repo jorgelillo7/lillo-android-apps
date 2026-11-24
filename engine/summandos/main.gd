@@ -237,6 +237,10 @@ func _sound_run() -> void:
 		run.burnt = 0
 		audio.play("lose", 1.6, -6.0)
 		audio.buzz(60)
+	if run.struck > 0:
+		run.struck = 0
+		audio.play("lose", 0.8, -4.0)
+		audio.buzz(90)
 	heard.row = run.next_row
 	heard.soldiers = run.soldiers
 	heard.kills = run.kills

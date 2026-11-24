@@ -12,6 +12,7 @@ with our own art. Colours live in `game/palette.gd`; change them there, nowhere 
 | Enemies | purple `#7B3FD1` | neon pink `#FF3D8B` |
 | Boss | `#9B2FD1`, belly `#F2A6E0` | `#E11D74`, belly `#FFB3D1` |
 | Accent (buttons, numbers, stars) | gold `#FFD23F` | `#FFD60A` |
+| Hurt (soldiers a boss's blow eats) | red `#FF3B30` | `#FF5C5C` |
 | Outline | `#3A1C0E` | `#000000` |
 
 Squad against enemies is teal against purple: told apart with red–green colour blindness, and
@@ -66,7 +67,7 @@ licences), since Luckiest Guy is capitals only.
   heading through lights up and grows as it nears, the other dims; waves come down a lane and
   bolts fly to it, so the squad has to stand in front of a wave to hurt it;
   numbers rise when a gate is taken; "Think!" counts down in the top-left corner, clear of the gates; the mode and level sit above
-  the counts, and a boss's health bar under them while it is near. The mage boss throws fireballs at where the squad
+  the counts, and a boss's health bar under them while it is near. A boss strikes as it reaches the squad and then every second: it lunges (swinging its weapon when the model has the clip; the bought Golem and Necromancer only lunge), the camera shakes and what it ate rises over the squad in red. The mage boss throws fireballs at where the squad
   stands, over a red ring on the track; moving out of the ring dodges them. Weapons go by name and
   model (Kenney Blaster Kit): a pair of pistols ×2, a bazooka ×3, turning on their crate, with
   thicker bolts; once taken, the weapon turns in a badge top-right with its name.

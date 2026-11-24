@@ -115,6 +115,17 @@ func test_a_boss_is_not_traded_away_on_contact_but_eats_soldiers() -> void:
 	assert_between(run.boss_health(), 0.0, 0.99)
 
 
+func test_a_boss_strikes_as_it_arrives_and_can_eat_the_squad() -> void:
+	var waves: Array[Dictionary] = [{"z": 3.0, "count": 1, "hp": 100000.0, "boss": true, "bite": 5.0, "slam": 10}]
+	var run := SummandosRun.new(_level([], waves, 30))
+	_run_for(run, 0.5)
+	assert_eq(run.strikes, 1, "one blow as it arrives")
+	assert_eq(run.soldiers, 15, "the first blow eats its slam and a second's bite")
+	assert_eq(run.last_strike, 15)
+	_run_for(run, 4.0)
+	assert_eq(run.state, SummandosRun.State.LOST, "a squad that cannot shoot it down is eaten")
+
+
 func test_a_weapon_brings_a_boss_down_sooner() -> void:
 	var waves: Array[Dictionary] = [{"z": 3.0, "count": 1, "hp": 300.0, "boss": true, "bite": 1.0}]
 	var plain := SummandosRun.new(_level([], waves, 40, 4.0))
@@ -127,7 +138,7 @@ func test_a_weapon_brings_a_boss_down_sooner() -> void:
 
 
 func test_a_mage_fireball_burns_the_squad_where_it_stood_unless_it_moves() -> void:
-	var waves: Array[Dictionary] = [{"z": 30.0, "count": 1, "hp": 100000.0, "boss": true, "bite": 1.0, "burn": 4}]
+	var waves: Array[Dictionary] = [{"z": 30.0, "count": 1, "hp": 100000.0, "boss": true, "bite": 0.0, "burn": 4}]
 	var stays := SummandosRun.new(_level([], waves, 40))
 	stays.steer(0.0)
 	_run_for(stays, SummandosRun.FIREBALL_EVERY + SummandosRun.FIREBALL_FLIGHT + 0.05)

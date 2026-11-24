@@ -46,12 +46,17 @@ thinking pause is what makes working it out fair on a running track.
 
 ### Requirement: The best choices win, and still cost soldiers
 
-Every level SHALL be won, with three stars, by taking the better side at every row. The waves
-SHALL be sized so that even the best play loses part of the squad (a larger share in harder
-modes), so the choices matter all the way.
+Every level SHALL be won, with three stars, by taking the better side at every row, and that
+play SHALL never leave the squad below its floor: the starting squad in Recruit; in the other
+modes the starting squad or what the gates alone bring it down to, and never under 3. A level
+whose gates cannot keep it SHALL draw other gates. The waves SHALL be sized so that even the best
+play loses part of the squad (a larger share in harder modes), so the choices matter all the way.
+
+Playtesting found a Recruit level that good maths could not win (the squad fell to one soldier
+between waves) and one that best play lost outright.
 
 #### Scenario: winnable but not free
-- **WHEN** every third level of every mode is played with the best sides **THEN** it is won with three stars
+- **WHEN** every level of every mode is played with the best sides **THEN** it is won with three stars and the squad never falls below its floor (in Recruit, below the soldiers it started with)
 - **WHEN** Recruit and Captain level 10 are played with the best sides **THEN** they are won with fewer soldiers than the same gates without waves leave, and Captain keeps the smaller share
 - *Verifies:* `test_every_level_can_be_won_with_the_best_choices`,
   `test_the_best_choices_lose_a_share_of_the_squad_and_more_in_harder_modes`
