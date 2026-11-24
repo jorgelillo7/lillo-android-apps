@@ -62,6 +62,8 @@ var struck := 0
 var strikes := 0
 ## Soldiers the latest blow ate.
 var last_strike := 0
+## Gates taken that left fewer soldiers than the other side would have.
+var mistakes := 0
 var _fire_timer := 0.0
 var _thought_row := -1
 
@@ -139,6 +141,8 @@ func _take_rows() -> void:
 				next_row += 1
 				return
 		if pick.has("gate"):
+			if other.has("gate") and (other.gate as LilloGate).apply(soldiers) > (pick.gate as LilloGate).apply(soldiers):
+				mistakes += 1
 			soldiers = (pick.gate as LilloGate).apply(soldiers)
 		else:
 			damage *= pick.weapon
@@ -215,14 +219,14 @@ func done_thinking() -> void:
 	thinking = 0.0
 
 
-## 1 to 3 stars for a win, by soldiers left against the level's reference; 0 for a loss.
+## 1 to 3 stars for a win, by soldiers left against the level's reference, one fewer at most for
+## each wrong gate taken; 0 for a loss.
 func stars() -> int:
 	if state != State.WON:
 		return 0
 	var share := soldiers / float(maxi(1, level.reference))
-	if share >= 0.75:
-		return 3
-	return 2 if share >= 0.4 else 1
+	var earned := 3 if share >= 0.75 else (2 if share >= 0.4 else 1)
+	return maxi(1, mini(earned, 3 - mistakes))
 
 
 ## Plays `level` taking `sides[i]` (-1 left, 1 right) at row i, without thinking pauses.
