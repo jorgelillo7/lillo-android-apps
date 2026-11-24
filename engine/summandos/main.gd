@@ -25,9 +25,14 @@ var capturing := " ".join(OS.get_cmdline_user_args()).contains("--shot=")
 var world: SummandosWorld
 var ui: SummandosUi
 var audio: LilloAudio
+var levels := SummandosLevelsAhead.new()
 ## What the last frame saw, to sound what changed: rows taken, soldiers, kills, thinking seconds,
 ## whether the boss has shown up.
 var heard := {}
+
+
+func _exit_tree() -> void:
+	levels.finish()
 
 
 func _ready() -> void:
@@ -130,6 +135,7 @@ func _open_levels(picked: int) -> void:
 	world.draw_idle()
 	ui.show_boss(_next_boss())
 	ui.show_levels(difficulty)
+	levels.prepare(difficulty, ui.level_map.next_to_play())
 
 
 func _pick_squad(name: String) -> void:
@@ -145,7 +151,7 @@ func _toggle_night() -> void:
 func _start(run_mode: String, number := level_number) -> void:
 	mode = run_mode
 	level_number = clampi(number, 1, SummandosLevel.level_count(difficulty))
-	var level := SummandosLevel.stress() if mode == "stress" else SummandosLevel.generate(difficulty, level_number)
+	var level := SummandosLevel.stress() if mode == "stress" else levels.take(difficulty, level_number)
 	run = SummandosRun.new(level)
 	target_x = 0.0
 	world.reset(level, mode == "play" and difficulty >= SummandosLevel.Mode.ADULT)
@@ -160,6 +166,8 @@ func _finish() -> void:
 	var stars := run.stars() if playing else 0
 	if playing:
 		SummandosProgress.record(difficulty, level_number, stars)
+		if won:
+			levels.prepare(difficulty, level_number + 1)
 	audio.play("win" if won else "lose")
 	audio.buzz(80 if won else 200)
 	ui.show_result(_heading(), won, run.soldiers, run.kills, stars,
@@ -237,6 +245,10 @@ func _sound_run() -> void:
 		run.burnt = 0
 		audio.play("lose", 1.6, -6.0)
 		audio.buzz(60)
+	if run.struck > 0:
+		run.struck = 0
+		audio.play("lose", 0.8, -4.0)
+		audio.buzz(90)
 	heard.row = run.next_row
 	heard.soldiers = run.soldiers
 	heard.kills = run.kills

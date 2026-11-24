@@ -1,6 +1,7 @@
 ## One run of a level, without any drawing: the squad moves forward, takes gates and weapons,
 ## shoots the nearest wave in range and loses a soldier for every enemy that reaches it. A boss is
-## not traded away: once it reaches the squad it eats `bite` soldiers a second until shot down. A
+## not traded away: it strikes as it reaches the squad, eating `slam` soldiers on top of the blow,
+## then strikes every BOSS_STRIKE_EVERY seconds, eating `bite` soldiers a second, until shot down. A
 ## ranged boss (the mage, the Necromancer) also throws fireballs from afar at where the squad stands; moving away
 ## before one lands dodges it.
 class_name SummandosRun
@@ -25,6 +26,8 @@ const AIM_MISS := 4.5
 const WAVE_DRIFT := 1.2
 ## A ranged boss throws a fireball this often while awake and not yet at the squad, in seconds.
 const FIREBALL_EVERY := 1.6
+## Seconds between a boss's blows while it stands against the squad.
+const BOSS_STRIKE_EVERY := 1.0
 ## Seconds a fireball flies before landing.
 const FIREBALL_FLIGHT := 1.1
 ## A fireball burns soldiers when the squad is within this many metres of where it lands.
@@ -47,11 +50,20 @@ var thinking := 0.0
 ## Set when a strict level is lost on a gate: {"taken", "other": LilloGate, "taken_result",
 ## "other_result": soldiers each would have left}.
 var failed_gate := {}
+## The fewest soldiers the squad has had so far.
+var lowest := 0
 var think_enabled := true
 ## Fireballs in the air: [{x: where they land, from_z: the boss when thrown, left: seconds, burn}].
 var fireballs: Array[Dictionary] = []
 ## Fireballs that landed on the squad and how many they burnt, since the last read (for sound).
 var burnt := 0
+## Soldiers a boss's blows ate since the last read, and every blow so far (for drawing them).
+var struck := 0
+var strikes := 0
+## Soldiers the latest blow ate.
+var last_strike := 0
+## Gates taken that left fewer soldiers than the other side would have.
+var mistakes := 0
 var _fire_timer := 0.0
 var _thought_row := -1
 
@@ -59,9 +71,11 @@ var _thought_row := -1
 func _init(run_level: SummandosLevel) -> void:
 	level = run_level
 	soldiers = level.start_soldiers
+	lowest = soldiers
 	for wave in level.waves:
 		waves.append({"z": wave.z, "x": wave.get("x", 0.0), "count": wave.count, "hp": wave.hp,
 			"boss": wave.get("boss", false), "bite": wave.get("bite", 0.0), "burn": wave.get("burn", 0),
+			"slam": wave.get("slam", 0), "strike_in": 0.0,
 			"damage_taken": 0.0, "bitten": 0.0})
 
 
@@ -106,6 +120,7 @@ func step(delta: float) -> void:
 	_shoot(delta)
 	_advance_waves(delta)
 	_throw_fireballs(delta)
+	lowest = mini(lowest, soldiers)
 	if soldiers <= 0:
 		state = State.LOST
 	elif waves.is_empty() and z >= level.length:
@@ -126,6 +141,8 @@ func _take_rows() -> void:
 				next_row += 1
 				return
 		if pick.has("gate"):
+			if other.has("gate") and (other.gate as LilloGate).apply(soldiers) > (pick.gate as LilloGate).apply(soldiers):
+				mistakes += 1
 			soldiers = (pick.gate as LilloGate).apply(soldiers)
 		else:
 			damage *= pick.weapon
@@ -155,10 +172,17 @@ func _advance_waves(delta: float) -> void:
 	if not waves.is_empty() and waves[0].z - z <= 1.0:
 		var front: Dictionary = waves[0]
 		if front.boss:
-			front.bitten += front.bite * delta
-			var eaten := mini(soldiers, int(front.bitten))
-			front.bitten -= eaten
-			soldiers -= eaten
+			front.strike_in -= delta
+			if front.strike_in <= 0.0:
+				front.strike_in += BOSS_STRIKE_EVERY
+				front.bitten += front.bite * BOSS_STRIKE_EVERY
+				var eaten := mini(soldiers, int(front.bitten) + front.slam)
+				front.bitten -= int(front.bitten)
+				front.slam = 0
+				soldiers -= eaten
+				struck += eaten
+				strikes += 1
+				last_strike = eaten
 			return
 		var clash := mini(front.count, maxi(1, int(ceil(soldiers * 2.0 * delta))))
 		clash = mini(clash, soldiers)
@@ -195,14 +219,14 @@ func done_thinking() -> void:
 	thinking = 0.0
 
 
-## 1 to 3 stars for a win, by soldiers left against the level's reference; 0 for a loss.
+## 1 to 3 stars for a win, by soldiers left against the level's reference, one fewer at most for
+## each wrong gate taken; 0 for a loss.
 func stars() -> int:
 	if state != State.WON:
 		return 0
 	var share := soldiers / float(maxi(1, level.reference))
-	if share >= 0.75:
-		return 3
-	return 2 if share >= 0.4 else 1
+	var earned := 3 if share >= 0.75 else (2 if share >= 0.4 else 1)
+	return maxi(1, mini(earned, 3 - mistakes))
 
 
 ## Plays `level` taking `sides[i]` (-1 left, 1 right) at row i, without thinking pauses.

@@ -6,7 +6,7 @@ Recruit, Soldier and Captain with 30 levels each, Legend with 10.
 
 - **Source:** `engine/summandos/game/level.gd` (`SummandosLevel`), gates and puzzles from
   `engine/core/addons/lillo_core/maths/`
-- **Verified by:** `engine/summandos/tests/` (`test_levels`, `test_gate_text`)
+- **Verified by:** `engine/summandos/tests/` (`test_levels`, `test_levels_ahead`, `test_gate_text`)
 
 ---
 
@@ -21,7 +21,9 @@ the stars meaningless.
 #### Scenario: same level, longer later
 - **WHEN** Soldier level 7 is generated twice **THEN** both have the same rows, gate labels on both sides, pauses and reference
 - **WHEN** Recruit level 1 and level 30 are compared **THEN** level 30 has more rows
-- *Verifies:* `test_a_level_is_the_same_every_time`, `test_later_levels_are_longer`
+- **WHEN** a level is made ahead on a worker thread and then taken twice **THEN** it matches the generated one and the second take is the same level
+- *Verifies:* `test_a_level_is_the_same_every_time`, `test_later_levels_are_longer`,
+  `test_a_level_made_ahead_is_the_generated_one_and_is_kept`
 
 ### Requirement: Each mode asks for its own maths
 
@@ -46,15 +48,32 @@ thinking pause is what makes working it out fair on a running track.
 
 ### Requirement: The best choices win, and still cost soldiers
 
-Every level SHALL be won, with three stars, by taking the better side at every row. The waves
-SHALL be sized so that even the best play loses part of the squad (a larger share in harder
-modes), so the choices matter all the way.
+Every level SHALL be won, with three stars, by taking the better side at every row, and that
+play SHALL never leave the squad below its floor: the starting squad in Recruit; in the other
+modes the starting squad or what the gates alone bring it down to, and never under 3. A level
+whose gates cannot keep it SHALL draw other gates. The waves SHALL be sized so that even the best
+play loses part of the squad (a larger share in harder modes), so the choices matter all the way.
+
+Playtesting found a Recruit level that good maths could not win (the squad fell to one soldier
+between waves) and one that best play lost outright.
 
 #### Scenario: winnable but not free
-- **WHEN** every third level of every mode is played with the best sides **THEN** it is won with three stars
+- **WHEN** every level of every mode is played with the best sides **THEN** it is won with three stars and the squad never falls below its floor (in Recruit, below the soldiers it started with)
 - **WHEN** Recruit and Captain level 10 are played with the best sides **THEN** they are won with fewer soldiers than the same gates without waves leave, and Captain keeps the smaller share
 - *Verifies:* `test_every_level_can_be_won_with_the_best_choices`,
   `test_the_best_choices_lose_a_share_of_the_squad_and_more_in_harder_modes`
+
+### Requirement: One wrong gate is forgiven in the easy modes, not in the hard ones
+
+With one row's gate the wrong one and best play everywhere else, at least 75 % of those runs
+SHALL still win in Recruit, 50 % in Soldier and 25 % in Captain; a level short of that SHALL ease
+its waves and boss until it gets there. In Legend a wrong gate loses at once.
+
+Playtesting found one slip lost the level in every mode, Recruit included.
+
+#### Scenario: forgiveness by mode
+- **WHEN** every Recruit, Soldier and Captain level is played with one wrong gate at each row in turn **THEN** each level wins at least its mode's share, and Recruit forgives more than Soldier, Soldier more than Captain
+- *Verifies:* `test_one_wrong_gate_is_forgiven_more_in_easier_modes`
 
 ### Requirement: Every gate text fits its gate
 

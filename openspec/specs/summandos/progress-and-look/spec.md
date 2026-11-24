@@ -12,12 +12,14 @@ everybody must be able to tell apart: their squad against the enemies, bosses an
 ### Requirement: Stars keep the best result and open the next level
 
 A win SHALL earn 1 to 3 stars by the soldiers left against the level's reference (3 at 75 %,
-2 at 40 %). The saved stars SHALL be the best ever earned, and winning a level SHALL open the
+2 at 40 %), one fewer at most for each wrong gate taken (one that left fewer soldiers than the
+other side would have), and never fewer than 1. The saved stars SHALL be the best ever earned, and winning a level SHALL open the
 next one, and only that one.
 
 #### Scenario: stars for a win
 - **WHEN** a won run keeps 75, 74, 40 or 39 of a reference of 100 **THEN** it earns 3, 2, 2 or 1 stars, and a lost run earns none
-- *Verifies:* `test_stars_follow_the_share_of_the_reference`
+- **WHEN** a run takes +10 where ×3 was beside it and still keeps all of the reference **THEN** it earns 2 stars; with three wrong gates, 1
+- *Verifies:* `test_stars_follow_the_share_of_the_reference`, `test_a_wrong_gate_costs_a_star`
 
 #### Scenario: best stars, next level
 - **WHEN** Captain level 1 is won with 2 stars and then with 1 **THEN** it keeps 2, level 2 is open and level 3 is not

@@ -20,11 +20,15 @@ func test_a_level_is_the_same_every_time() -> void:
 
 func test_every_level_can_be_won_with_the_best_choices() -> void:
 	for mode in SummandosLevel.Mode.values():
-		for number in range(1, SummandosLevel.level_count(mode) + 1, 3):
+		for number in range(1, SummandosLevel.level_count(mode) + 1):
 			var level := SummandosLevel.generate(mode, number)
 			var run := SummandosRun.simulate(level, SummandosLevel.best_sides(level))
 			assert_eq(run.state, SummandosRun.State.WON, "mode %d level %d" % [mode, number])
 			assert_eq(run.stars(), 3, "mode %d level %d: best play earns three stars" % [mode, number])
+			assert_gte(run.lowest, SummandosLevel.floor_soldiers(level, mode),
+				"mode %d level %d: best play never falls below the floor" % [mode, number])
+			if mode == SummandosLevel.Mode.EASY:
+				assert_gte(run.lowest, level.start_soldiers, "Recruit level %d dips below the start" % number)
 
 
 func test_later_levels_are_longer() -> void:
@@ -155,3 +159,35 @@ func test_stars_follow_the_share_of_the_reference() -> void:
 		assert_eq(run.stars(), case[1], "%d of 100 left" % case[0])
 	run.state = SummandosRun.State.LOST
 	assert_eq(run.stars(), 0, "a loss earns nothing")
+
+
+func test_a_wrong_gate_costs_a_star() -> void:
+	var level := SummandosLevel.new()
+	level.start_soldiers = 10
+	level.length = 20.0
+	level.rows = [{"z": 5.0, "left": SummandosLevel.gate(LilloGate.Op.ADD, 10), "right": SummandosLevel.gate(LilloGate.Op.MULTIPLY, 3)}]
+	level.waves = []
+	level.reference = 20
+	var run := SummandosRun.new(level)
+	run.steer(-2.0)
+	for i in 180:
+		run.step(1.0 / 60.0)
+	assert_eq(run.state, SummandosRun.State.WON)
+	assert_eq(run.mistakes, 1, "+10 left 20 where ×3 would have left 30")
+	assert_eq(run.stars(), 2, "all of the reference kept, but one wrong gate")
+	run.mistakes = 3
+	assert_eq(run.stars(), 1, "a win always earns a star")
+
+
+func test_one_wrong_gate_is_forgiven_more_in_easier_modes() -> void:
+	var averages: Array[float] = []
+	for mode in [SummandosLevel.Mode.EASY, SummandosLevel.Mode.NORMAL, SummandosLevel.Mode.ADULT]:
+		var total := 0.0
+		for number in range(1, SummandosLevel.LEVELS_PER_MODE + 1):
+			var level := SummandosLevel.generate(mode, number)
+			var forgiven := SummandosLevel.forgiven(level, SummandosLevel.best_sides(level))
+			assert_gte(forgiven, SummandosLevel.FORGIVEN[mode], "mode %d level %d" % [mode, number])
+			total += forgiven
+		averages.append(total / SummandosLevel.LEVELS_PER_MODE)
+	assert_gt(averages[0], averages[1], "Recruit forgives more than Soldier")
+	assert_gt(averages[1], averages[2], "Soldier forgives more than Captain")

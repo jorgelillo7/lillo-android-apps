@@ -11,6 +11,20 @@ const EXPERT_LEVELS := 10
 const ROW_GAP := 28.0
 ## The most enemies one wave holds.
 const MAX_WAVE := 300
+## The fewest soldiers good play may be brought down to (see floor_soldiers).
+const MIN_SQUAD := 3
+## How many sets of gates a level may draw before it keeps the last.
+const MAX_DRAWS := 20
+## The longest a boss holds out against the squad expected to reach it, armed, in seconds.
+const BOSS_MAX_SECONDS := 6.5
+## The share of the squad a boss's first blow eats on top of its bite.
+const BOSS_SLAM_SHARE := 0.08
+## Per mode, the share of runs with one wrong gate (best play otherwise) that must still win: a
+## slip is forgiven in Recruit, costly in Captain; in Legend a wrong gate loses at once.
+const FORGIVEN := [0.75, 0.5, 0.25, 0.0]
+## How much each easing step shrinks the waves and the boss, and how many steps there are at most.
+const EASE_STEP := 0.85
+const EASE_STEPS := 14
 
 var length := 0.0
 var start_soldiers := 1
@@ -88,10 +102,34 @@ static func level_count(mode: Mode) -> int:
 
 
 ## Level `number` (from 1) of a mode, the same every time: more rows, harder sums and bigger waves
-## as the number grows. Waves are sized from the best choices and shrunk until those choices win.
+## as the number grows. Waves are sized from the best choices and shrunk until those choices win
+## without the squad ever falling below `floor_soldiers`; gates that cannot manage it are drawn again.
 static func generate(mode: Mode, number: int) -> SummandosLevel:
+	var level: SummandosLevel
+	for attempt in MAX_DRAWS:
+		var seed_text := "summandos-%d-%d" % [mode, number] + ("" if attempt == 0 else "-%d" % attempt)
+		level = _draw(mode, number, hash(seed_text))
+		var run := SummandosRun.simulate(level, best_sides(level))
+		if run.state == SummandosRun.State.WON and run.lowest >= floor_soldiers(level, mode):
+			break
+	return level
+
+
+## The fewest soldiers the best choices may be left with at any moment: the starting squad, or in
+## the harder modes what the gates alone bring it down to; never under MIN_SQUAD. A squad of one or
+## two is a coin toss.
+static func floor_soldiers(level: SummandosLevel, mode: Mode) -> int:
+	var gates_low := level.start_soldiers
+	if mode == Mode.EASY:
+		return maxi(MIN_SQUAD, gates_low)
+	for crowd in _crowd_by_row(level, _gate_sides(level)):
+		gates_low = mini(gates_low, crowd)
+	return maxi(MIN_SQUAD, gates_low)
+
+
+static func _draw(mode: Mode, number: int, seed_value: int) -> SummandosLevel:
 	var random := RandomNumberGenerator.new()
-	random.seed = hash("summandos-%d-%d" % [mode, number])
+	random.seed = seed_value
 	var d := clampf((number - 1) / float(level_count(mode) - 1), 0.0, 1.0)
 	var expert := mode == Mode.EXPERT
 	var level := SummandosLevel.new()
@@ -206,39 +244,71 @@ static func keep_share(mode: Mode, d: float) -> float:
 ## Enemies get tougher with the level and the mode, so a weapon is worth more than a few soldiers.
 static func _size_waves(level: SummandosLevel, mode: Mode, d: float) -> void:
 	var enemy_hp := 2.0 + d * 3.0 + mode
-	var boss_seconds := 6.0 + d * 3.0 + mode * 1.5
+	var boss_seconds := minf(BOSS_MAX_SECONDS, 4.0 + d * 2.0 + mode * 0.75)
 	var sides := best_sides(level)
 	var crowd_at := _crowd_by_row(level, sides)
 	var keep := keep_share(mode, d)
-	var goal := maxf(2.0, crowd_at[-1] * keep)
+	var boss_cost := boss_bite_share(mode) + BOSS_SLAM_SHARE if not level.boss.is_empty() else 0.0
+	var goal := maxf(2.0, crowd_at[-1] * keep * (1.0 - boss_cost))
+	var lowest := floor_soldiers(level, mode)
 	var low := 0.02
 	var high := 8.0
 	for attempt in 16:
 		var scale := sqrt(low * high)
-		_scale_waves(level, crowd_at, scale, enemy_hp, boss_seconds, keep)
+		_scale_waves(level, crowd_at, scale, enemy_hp, boss_seconds, keep, boss_bite_share(mode))
+		_fit_boss(level, sides, boss_seconds, boss_bite_share(mode))
 		var run := SummandosRun.simulate(level, sides)
-		if run.state == SummandosRun.State.WON and run.soldiers >= goal:
+		if run.state == SummandosRun.State.WON and run.soldiers >= goal and run.lowest >= lowest:
 			low = scale
 		else:
 			high = scale
-	_scale_waves(level, crowd_at, low, enemy_hp, boss_seconds, keep)
+	var ease := 1.0
+	for step in EASE_STEPS + 1:
+		_scale_waves(level, crowd_at, low * ease, enemy_hp, boss_seconds, keep, boss_bite_share(mode))
+		_fit_boss(level, sides, boss_seconds, boss_bite_share(mode), ease)
+		if forgiven(level, sides) >= FORGIVEN[mode]:
+			break
+		ease *= EASE_STEP
 	sides = best_sides(level)
 	level.reference = maxi(1, SummandosRun.simulate(level, sides).soldiers)
 
 
+## The share of runs that still win when one row's gate is the wrong one and every other row is
+## taken as in `sides`; weapon rows are left as they are. 1 for a level without such rows.
+static func forgiven(level: SummandosLevel, sides: Array[float]) -> float:
+	var tried := 0
+	var won := 0
+	for i in level.rows.size():
+		if level.rows[i].left.has("weapon") or level.rows[i].right.has("weapon"):
+			continue
+		var slip := sides.duplicate()
+		slip[i] = -slip[i]
+		tried += 1
+		if SummandosRun.simulate(level, slip).state == SummandosRun.State.WON:
+			won += 1
+	return 1.0 if tried == 0 else won / float(tried)
+
+
+## The share of the squad reaching a boss that its bite eats over the fight: more in harder modes.
+static func boss_bite_share(mode: Mode) -> float:
+	return 0.2 + mode * 0.05
+
+
 ## A boss lasts about `boss_seconds` under the fire of the crowd expected to reach it (`keep` of
-## the gates' crowd) armed with the level's weapon, so skipping the weapon makes the fight longer,
-## and eats a tenth of that crowd over the fight; the other waves grow with `scale`. Past MAX_WAVE enemies a wave stops
+## the gates' crowd) armed with the level's weapon, so skipping the weapon makes the fight longer;
+## its first blow eats BOSS_SLAM_SHARE of that crowd and its bite boss_bite_share() more over the
+## fight, so a squad that arrives small can die there. The other waves grow with `scale`. Past MAX_WAVE enemies a wave stops
 ## growing and its enemies get tougher instead, so the screen never holds more than it can draw.
 static func _scale_waves(level: SummandosLevel, crowd_at: Array[int], scale: float, enemy_hp: float,
-		boss_seconds: float, keep: float) -> void:
+		boss_seconds: float, keep: float, bite_share: float) -> void:
 	for wave in level.waves:
 		var crowd := _crowd_before(level, crowd_at, wave.z)
 		if wave.get("boss", false):
 			crowd = maxi(1, int(crowd * keep))
 			wave.count = 1
 			wave.hp = maxf(30.0, crowd * SummandosRun.SHOTS_PER_SECOND * boss_seconds * sqrt(_weapon_power(level)))
-			wave.bite = maxf(1.0, crowd * 0.1 / boss_seconds)
+			wave.bite = maxf(1.0, crowd * bite_share / boss_seconds)
+			wave.slam = int(crowd * BOSS_SLAM_SHARE)
 			if wave.get("ranged", false):
 				wave.burn = maxi(1, int(crowd * 0.04))
 		else:
@@ -247,15 +317,76 @@ static func _scale_waves(level: SummandosLevel, crowd_at: Array[int], scale: flo
 			wave.hp = enemy_hp * wanted / wave.count
 
 
+## Resizes the boss for the squad `sides` actually bring within range of it, with their weapon:
+## it then holds out about `boss_seconds` and its blows eat the same shares of that squad, all
+## scaled by `ease`.
+static func _fit_boss(level: SummandosLevel, sides: Array[float], boss_seconds: float, bite_share: float,
+		ease := 1.0) -> void:
+	var boss: Dictionary = level.waves[-1]
+	if not boss.get("boss", false):
+		return
+	var run := SummandosRun.new(level)
+	run.think_enabled = false
+	for i in 30 * 300:
+		var front := run.target()
+		if run.state != SummandosRun.State.RUNNING or front.get("boss", false):
+			break
+		run.steer(run.steer_hint(2.0 * sides[mini(run.next_row, sides.size() - 1)]))
+		run.step(1.0 / 30.0)
+	var arriving := maxi(1, int(run.soldiers * ease))
+	boss.hp = maxf(30.0, arriving * SummandosRun.SHOTS_PER_SECOND * run.damage * boss_seconds)
+	boss.bite = maxf(1.0, arriving * bite_share / boss_seconds)
+	boss.slam = int(arriving * BOSS_SLAM_SHARE)
+	if boss.get("ranged", false):
+		boss.burn = maxi(1, int(arriving * 0.04))
+
+
 ## The side (-1 left, 1 right) to take at each row: the gate leaving more soldiers, and for a
 ## weapon row whichever of weapon or gate finishes the level with more soldiers.
 static func best_sides(level: SummandosLevel) -> Array[float]:
+	var sides := _gate_sides(level)
+	var weapon_rows: Array[int] = []
+	for i in level.rows.size():
+		if level.rows[i].left.has("weapon") or level.rows[i].right.has("weapon"):
+			weapon_rows.append(i)
+	if weapon_rows.is_empty() or level.waves.is_empty():
+		return _on_the_spot(level, sides)
+	var with_weapon := _on_the_spot(level, sides.duplicate())
+	for i in weapon_rows:
+		with_weapon[i] = -sides[i]
+	with_weapon = _on_the_spot(level, with_weapon)
+	sides = _on_the_spot(level, sides)
+	var plain := SummandosRun.simulate(level, sides)
+	var armed := SummandosRun.simulate(level, with_weapon)
+	return with_weapon if armed.soldiers > plain.soldiers else sides
+
+
+## `sides` with each gate row re-picked for the soldiers the squad really has when it gets there
+## (the waves before it may have changed which gate leaves more); weapon rows are kept.
+static func _on_the_spot(level: SummandosLevel, sides: Array[float]) -> Array[float]:
+	var picked := sides.duplicate()
+	var run := SummandosRun.new(level)
+	run.think_enabled = false
+	for i in 30 * 300:
+		if run.state != SummandosRun.State.RUNNING:
+			break
+		if run.next_row < level.rows.size():
+			var row: Dictionary = level.rows[run.next_row]
+			if row.left.has("gate") and row.right.has("gate"):
+				var pick := LilloGate.better(row.left.gate, row.right.gate, run.soldiers)
+				if pick != -1:
+					picked[run.next_row] = -1.0 if pick == 0 else 1.0
+		run.steer(run.steer_hint(2.0 * picked[mini(run.next_row, picked.size() - 1)]))
+		run.step(1.0 / 30.0)
+	return picked
+
+
+## The side of the gate leaving more soldiers at each row; at a weapon row, the gate.
+static func _gate_sides(level: SummandosLevel) -> Array[float]:
 	var sides: Array[float] = []
 	var crowd := level.start_soldiers
-	var weapon_rows: Array[int] = []
 	for row in level.rows:
 		if row.left.has("weapon") or row.right.has("weapon"):
-			weapon_rows.append(sides.size())
 			var gate: LilloGate = row.right.gate if row.left.has("weapon") else row.left.gate
 			sides.append(1.0 if row.left.has("weapon") else -1.0)
 			crowd = gate.apply(crowd)
@@ -263,14 +394,7 @@ static func best_sides(level: SummandosLevel) -> Array[float]:
 			var pick := LilloGate.better(row.left.gate, row.right.gate, crowd)
 			sides.append(-1.0 if pick == 0 else 1.0)
 			crowd = (row.left.gate if pick == 0 else row.right.gate).apply(crowd)
-	if weapon_rows.is_empty() or level.waves.is_empty():
-		return sides
-	var with_weapon := sides.duplicate()
-	for i in weapon_rows:
-		with_weapon[i] = -sides[i]
-	var plain := SummandosRun.simulate(level, sides)
-	var armed := SummandosRun.simulate(level, with_weapon)
-	return with_weapon if armed.soldiers > plain.soldiers else sides
+	return sides
 
 
 ## Soldiers after each row when taking `sides`, ignoring the waves.

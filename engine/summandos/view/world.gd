@@ -23,6 +23,12 @@ const WEAPON_LABEL_HEIGHT := 2.7
 const FIGURE_HEIGHT := 0.85
 const RUN := "Running_A"
 const SHOOT := "2H_Ranged_Shooting"
+## The boss's blow; models without it (the bought Golem and Necromancer) only lunge.
+const BOSS_ATTACK := "2H_Melee_Attack_Chop"
+## How long a boss's lunge lasts and how far it reaches, and how long the camera shakes after it.
+const LUNGE_SECONDS := 0.4
+const LUNGE_REACH := 1.2
+const SHAKE_SECONDS := 0.3
 
 var palette: Dictionary
 var texts: Dictionary
@@ -41,6 +47,12 @@ var landing_view: LilloCrowdView
 var boss_view: LilloCrowdView
 ## The boss as one fully animated model, when the models are there; else boss_view draws it.
 var boss_model: Node3D
+var boss_player: AnimationPlayer
+var boss_walk := ""
+var seen_strikes := 0
+## Seconds left of the boss's lunge and of the camera shake after a blow.
+var lunge := 0.0
+var shake := 0.0
 var row_nodes: Array[Node3D] = []
 var formation_cache := {}
 var bullets := PackedVector3Array()
@@ -69,6 +81,9 @@ func _ready() -> void:
 func reset(level: SummandosLevel, neutral := false) -> void:
 	neutral_gates = neutral
 	_dress_boss(level)
+	seen_strikes = 0
+	lunge = 0.0
+	shake = 0.0
 	bullets.clear()
 	bullet_ends.clear()
 	bullet_drift.clear()
@@ -205,9 +220,14 @@ func _dress_boss(level: SummandosLevel) -> void:
 	var look := level.boss if not level.boss.is_empty() else {"model": "Skeleton_Warrior.glb", "colour": 0, "height": BOSS_HEIGHT}
 	var colour: Color = SummandosPalette.BOSS_COLOURS[look.colour]
 	boss_model = SummandosModels.character(look.model, "Walking_B", look.height, colour, true)
+	boss_player = null
 	if boss_model:
 		boss_model.visible = false
 		add_child(boss_model)
+		boss_player = boss_model.get_meta("player")
+		boss_walk = boss_player.current_animation
+		if boss_player.has_animation(BOSS_ATTACK):
+			boss_player.get_animation(BOSS_ATTACK).loop_mode = Animation.LOOP_NONE
 
 
 func _fit_camera() -> void:
@@ -390,16 +410,39 @@ func draw_run(run: SummandosRun, delta: float) -> void:
 			var ex := clampf(world_x(wave.x) + o.x * 0.6, -TRACK_WIDTH * 0.5 + 0.3, TRACK_WIDTH * 0.5 - 0.3)
 			enemy_points.append(Vector3(ex, 0.0, wave.z + o.z))
 	enemies_view.show_points(enemy_points)
+	if run.strikes > seen_strikes:
+		seen_strikes = run.strikes
+		_boss_strikes(run.last_strike)
+	lunge = maxf(0.0, lunge - delta)
+	shake = maxf(0.0, shake - delta)
+	var reach := Vector3(0, 0, -LUNGE_REACH * sin(PI * (1.0 - lunge / LUNGE_SECONDS))) if lunge > 0.0 else Vector3.ZERO
 	if boss_model:
 		boss_model.visible = not boss_points.is_empty()
 		if boss_model.visible:
-			boss_model.position = boss_points[0]
+			boss_model.position = boss_points[0] + reach
 	else:
+		if not boss_points.is_empty():
+			boss_points[0] += reach
 		boss_view.show_points(boss_points)
 	_draw_bullets(run, delta)
 	_draw_fireballs(run)
-	camera.position = Vector3(x * 0.35, rig.x, run.z - rig.y)
-	camera.look_at(Vector3(x * 0.35, 0, run.z + rig.z))
+	var jolt := Vector3(randf_range(-1.0, 1.0), randf_range(-1.0, 1.0), 0.0) * 0.15 * shake / SHAKE_SECONDS
+	camera.position = Vector3(x * 0.35, rig.x, run.z - rig.y) + jolt
+	camera.look_at(Vector3(x * 0.35, 0, run.z + rig.z) + jolt)
+
+
+## A boss's blow: it lunges (swinging its weapon when the model has the clip), the camera shakes
+## and what it ate rises over the squad.
+func _boss_strikes(eaten: int) -> void:
+	lunge = LUNGE_SECONDS
+	shake = SHAKE_SECONDS
+	if boss_player and boss_player.has_animation(BOSS_ATTACK):
+		boss_player.play(BOSS_ATTACK, 0.1, 1.6)
+		if boss_walk != "":
+			boss_player.queue(boss_walk)
+	if eaten > 0:
+		LilloFx.rising_text(count_label, Vector3(0, 0.7, 0), "−%d" % eaten, palette.hurt, palette.outline)
+		LilloFx.pulse(count_label)
 
 
 ## Lights the gate the squad is heading through and dims the other, so the choice is never a

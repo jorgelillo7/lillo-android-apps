@@ -96,14 +96,14 @@ been published once; the API cannot create the app, so it is all by hand):
 6. Later releases: the Release workflow, once S4 wires the game into it (`play/` module, the
    game's GitHub environment with `scripts/set-release-secrets.sh summandos`).
 
-Upload key: not created yet.
+Upload key (created 24 Nov 2026 with `scripts/new-upload-key.sh`, see [docs/signing.md](../../docs/signing.md)):
 
 | | |
 |---|---|
 | File | `~/Projects/documentation/keys/summandos/upload-summandos.jks` (+ Google Drive backup) |
 | Alias | `upload` |
-| Serial | — |
-| SHA-1 | — |
-| SHA-256 | — |
+| Serial | `3ee65971bab61913` (valid until Apr 2054) |
+| SHA-1 | `03:50:CA:63:09:02:76:59:92:D1:BA:B7:14:13:25:AB:9D:73:14:21` |
+| SHA-256 | `B2:9B:D4:00:3E:72:A5:B0:7C:68:3C:1C:43:77:43:49:0F:75:1B:F9:84:B3:28:55:11:14:D6:C2:C7:A1:BD:0A` |
 
 Version history: [release-notes.md](release-notes.md).
