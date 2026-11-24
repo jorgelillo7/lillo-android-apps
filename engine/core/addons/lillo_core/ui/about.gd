@@ -14,9 +14,10 @@ const FIT_MARGIN := 24.0
 
 ## `credits`: [{"what", "who", "licence", "link"}] ("link" optional, opened in the browser).
 ## `reading` is the font for names and licences; `accent` colours the headings; `story`, when
-## given, is a line under the version (where the name comes from, say).
+## given, is a line under the version (where the name comes from, say). `privacy`, when given, is
+## [text, address]: a link to the privacy policy under the note.
 func _init(title: String, version: String, credits: Array, note: String, close_text: String,
-		outline: Color, accent: Color, reading: Font, story := "") -> void:
+		outline: Color, accent: Color, reading: Font, story := "", privacy: Array = []) -> void:
 	set_anchors_preset(Control.PRESET_FULL_RECT)
 	var centre := CenterContainer.new()
 	centre.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -53,6 +54,9 @@ func _init(title: String, version: String, credits: Array, note: String, close_t
 	if note != "":
 		box.add_child(_gap(16))
 		box.add_child(_text(note, reading, 22, Color(1, 1, 1, 0.85)))
+	if privacy.size() == 2:
+		box.add_child(_gap(4))
+		box.add_child(_link(String(privacy[1]), reading, accent, String(privacy[0])))
 	box.add_child(_gap(16))
 	box.add_child(LilloTheme.button(close_text, func() -> void: closed.emit()))
 	var lay_out := func() -> void:
@@ -85,11 +89,11 @@ static func _text(text: String, font: Font, size: int, colour: Color) -> Label:
 	return label
 
 
-## A web address that opens in the browser when tapped: in the accent colour and underlined, so
-## it reads as something to press.
-static func _link(address: String, font: Font, accent: Color) -> Control:
+## A web address that opens in the browser when tapped, showing `text` or else the address: in the
+## accent colour and underlined, so it reads as something to press.
+static func _link(address: String, font: Font, accent: Color, text := "") -> Control:
 	var link := LinkButton.new()
-	link.text = address
+	link.text = text if text != "" else address
 	link.underline = LinkButton.UNDERLINE_MODE_ALWAYS
 	link.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	link.add_theme_font_override("font", font)

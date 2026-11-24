@@ -1,12 +1,12 @@
 # Capability: shared-pieces
 
 What the shared Godot addon guarantees to every engine game beyond the maths: saved
-settings, sound switches, the level map, colour checks for colour blindness and crowd
-formations.
+settings, sound switches, the level map, colour checks for colour blindness, crowd
+formations and the About card.
 
 - **Source:** `engine/core/addons/lillo_core/` (`save/`, `ui/`, `crowd/`)
 - **Verified by:** `engine/core/tests/` (`test_settings`, `test_audio`, `test_level_map`,
-  `test_colours`, `test_formation`)
+  `test_colours`, `test_formation`, `test_about`)
 
 ---
 
@@ -62,3 +62,13 @@ SHALL be stable for its seed and bounded.
 - *Verifies:* `test_one_offset_per_member`, `test_a_lone_member_stands_on_the_leader`,
   `test_a_big_crowd_never_spills_off_the_track`, `test_members_do_not_overlap`,
   `test_scatter_is_stable_and_bounded`
+
+### Requirement: The About card links the privacy policy
+
+An About card given a privacy policy SHALL show a link named for it (opening its address in
+the browser) after the credits' links; without one it SHALL show only the credits' links.
+
+#### Scenario: privacy link
+- **WHEN** a card is made with ["Privacy policy", an address] **THEN** its links read the credit's address, then "Privacy policy"
+- **WHEN** a card is made without one **THEN** its only link is the credit's address
+- *Verifies:* `test_the_privacy_policy_link_shows_its_name`, `test_without_a_privacy_policy_only_the_credits_link`

@@ -21,7 +21,7 @@ Status: **in development**, not on Play yet.
   Spanish, upright and sideways; a 1,000-unit performance test from the command line.
 
 ```
-main.gd              entry point: wires game/ and view/, input, back button, command-line options
+main.gd              entry point: wires game/ and view/, input, pause, back button, command-line options
 game/level.gd        level data (rows of choices, enemy waves) and the level generator
 game/run.gd          one run without drawing: steering, gates, aimed shooting at waves in lanes,
                      clashes, thinking pauses
@@ -29,7 +29,7 @@ game/progress.gd     stars per mode and level, saved; which levels are open
 game/palette.gd      the colour themes (sunset, night): every colour the game uses
 game/texts.gd        every word on screen, English and Spanish
 view/world.gd        the 3D world: track, gates, squad, enemies, boss, bullets, chase camera
-view/ui.gd           the screens: menu, level map, HUD, result card
+view/ui.gd           the screens: menu, level map, HUD, pause card, result card
 assets/icons/        launcher icons, written by tools/generate_icon.py
 assets/models/       KayKit crossbowmen and skeletons (CC0), listed in models.txt, fetched by
                      scripts/engine-assets.sh; without them the game draws its own figures. The
@@ -45,8 +45,8 @@ tools/               generate_icon.py, generate_sounds.py, balance.gd (difficult
                      graphics), smoke_test.sh (the release APK played on the emulator),
                      samples/ (progress files)
 store/raw/<locale>/  raw store screenshots, phone 1080x2424 (raw-tablet/: 2560x1600), off-screen
-play/src/main/play/  listing graphics and release notes for Gradle Play Publisher (the play/ module
-                     comes with S4)
+play/                Gradle module :engine:summandos:play, Gradle Play Publisher only (publishes the
+                     listing); src/main/play/ holds the listing texts, graphics and release notes
 release-notes.md     version history
 tests/               GUT tests: runs, levels, progress, the addon link
 ```

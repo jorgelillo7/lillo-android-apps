@@ -62,8 +62,9 @@ screenshot and quits.
 
 | Section | Answer |
 |---|---|
+| Package name | `com.jorgelillo.summandos` (versionCode 1, version 1.0) |
 | App or game | Game · category **Casual** · Free · default language Spanish (Spain) |
-| Privacy policy | `https://jorgelillo7.github.io/privacy/summandos/` |
+| Privacy policy | `https://jorgelillo7.github.io/privacy/summandos/` (also linked from the game's About card) |
 | App access | All functionality is available without special access |
 | Ads | No |
 | Content rating | IARC questionnaire, category **Game**. Violence: **yes**, fantasy and cartoon (crossbowmen shoot low-poly skeletons, which fall apart; no blood, no gore, no realistic people); no fear content, sex, nudity, language, drugs, alcohol, tobacco or gambling; no purchases; users can't interact, chat or share content; no location shared. Expected: PEGI 7 / ESRB Everyone 10+ |
@@ -72,6 +73,7 @@ screenshot and quits.
 | Advertising ID | No |
 | Government, financial, health, news | No / no financial features / no health features / not a news app |
 | Countries | All, like the other apps |
+| Store settings | App category **Casual**; tags: up to 5 from Play's list, the closest to casual, arcade, maths and shooting; contact e-mail the developer account's, website `https://jorgelillo7.github.io/` |
 | Store listing | `play/src/main/play/listings/<locale>/`: title, short and full description, icon, feature graphic, phone, 7" and 10" tablet screenshots (Spanish and English) |
 | Release notes | `play/src/main/play/release-notes/<locale>/default.txt` |
 
@@ -89,11 +91,21 @@ been published once; the API cannot create the app, so it is all by hand):
    `scripts/verify-bundle.sh engine/summandos/export/summandos.aab`: the owner `CN=Jorge Lillo`,
    versionCode 1, `android.permission.VIBRATE` only. Smoke test the same build first
    (`engine/summandos/tools/smoke_test.sh`).
-4. Play Console → Create app: "Sumandos: suma y dispara", Spanish (Spain), Game, Free. Answer the
-   App content forms (table above), fill the store listing in both languages, pick the countries.
+4. Play Console → Create app: "Sumandos: suma y dispara", package name
+   `com.jorgelillo.summandos` (it can never change), Spanish (Spain), Game, Free. Answer the
+   App content forms (table above), pick the countries. The store listing goes from here:
+   `./gradlew :engine:summandos:play:publishReleaseListing` (the `play/` module, Gradle Play
+   Publisher), the first time with `listings/*/graphics` moved aside, then again with them: Play
+   rejects a language's graphics until its listing exists.
 5. Production → Create release → upload `summandos.aab` (Play App Signing on), release notes from
    `play/release-notes/` → save as draft → Publishing overview → Send changes for review.
-6. Later releases: the Release workflow, once S4 wires the game into it (`play/` module, the
+   The review warns of native code without debug symbols (Godot's `.so`): accept it.
+6. Once the draft is saved, Play has made the app signing key: Android developer verification →
+   register the package name `com.jorgelillo.summandos` with the **app signing key** fingerprint
+   (Integrity → App signing), as for the Kotlin apps (docs/publishing-on-google-play.md §0).
+7. Users and permissions: give the publishing service account this app (release to testing and
+   production, manage store presence), so later releases can go from CI.
+8. Later releases: the Release workflow, once S4 wires the game into it (`play/` module, the
    game's GitHub environment with `scripts/set-release-secrets.sh summandos`).
 
 Upload key (created 24 Nov 2026 with `scripts/new-upload-key.sh`, see [docs/signing.md](../../docs/signing.md)):
