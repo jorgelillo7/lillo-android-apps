@@ -1,5 +1,6 @@
-## Summandos' screens over the 3D world: the menu, the level map, the HUD during a run and the
-## result card. Emits what the player chose; main.gd decides what happens.
+## Summandos' screens over the 3D world: the menu, the level map, the HUD during a run, the pause
+## card and the result card. Emits what the player chose; main.gd decides what happens. It keeps
+## working while the game is paused.
 class_name SummandosUi
 extends CanvasLayer
 
@@ -11,9 +12,12 @@ signal next_picked
 signal again_picked
 signal levels_picked
 signal menu_picked
+signal pause_picked
+signal resume_picked
 
 const FONT := preload("res://assets/fonts/LuckiestGuy-Regular.ttf")
 const READING_FONT := preload("res://assets/fonts/Fredoka.ttf")
+const PRIVACY_POLICY := "jorgelillo7.github.io/privacy/summandos/"
 
 var palette: Dictionary
 var texts: Dictionary
@@ -33,6 +37,8 @@ var boss_corner: Control
 var menu: Control
 var hud: Control
 var result: Control
+var paused_card: Control
+var pause_button: LilloIconButton
 var hud_heading: Label
 var hud_top: Label
 var boss_bar: ProgressBar
@@ -63,6 +69,7 @@ func _init(colours: Dictionary, words: Dictionary, map: LilloLevelMap, squads: D
 
 
 func _ready() -> void:
+	process_mode = Node.PROCESS_MODE_ALWAYS
 	_build_decor()
 	var root := MarginContainer.new()
 	root.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -78,12 +85,14 @@ func _ready() -> void:
 	level_map.back_pressed.connect(func() -> void: menu_picked.emit())
 	result = _build_result()
 	root.add_child(result)
+	paused_card = _build_paused()
+	root.add_child(paused_card)
 	var version := str(ProjectSettings.get_setting("application/config/version", ""))
 	var credits: Array = texts.credits.duplicate()
 	if SummandosModels.scene("Skeleton_Golem.glb"):
 		credits.insert(1, texts.golem_credit)
 	about = LilloAbout.new(texts.title, texts.version % version, credits, texts.about_note, texts.close,
-		palette.outline, palette.weapon, _reading(), texts.name_story)
+		palette.outline, palette.weapon, _reading(), texts.name_story, [texts.privacy, PRIVACY_POLICY])
 	about.closed.connect(show_screen.bind("settings"))
 	root.add_child(about)
 	swatches = LilloSwatchPicker.new(texts.colour_title, squad_choices, squad_choice, texts.close, palette.outline)
@@ -107,7 +116,8 @@ static func _reading() -> Font:
 	return font
 
 
-## Shows one screen: "menu", "levels", "run", "result" or "about".
+## Shows one screen: "menu", "levels", "run", "paused", "result", "about", "colours", "settings"
+## or "help".
 func show_screen(screen: String) -> void:
 	about.visible = screen == "about"
 	swatches.visible = screen == "colours"
@@ -116,7 +126,9 @@ func show_screen(screen: String) -> void:
 	corner.visible = screen == "menu"
 	menu.visible = screen == "menu"
 	level_map.visible = screen == "levels"
-	hud.visible = screen == "run"
+	hud.visible = screen in ["run", "paused"]
+	pause_button.visible = screen == "run"
+	paused_card.visible = screen == "paused"
 	result.visible = screen == "result"
 	decor.visible = screen in ["menu", "levels", "about", "colours", "settings", "help", "cast"]
 
@@ -412,6 +424,10 @@ func _build_hud() -> Control:
 	weapon_label = LilloTheme.title("", 26)
 	weapon_label.add_theme_color_override("font_color", palette.weapon)
 	weapon_badge.add_child(weapon_label)
+	pause_button = LilloIconButton.new("pause", Color(palette.outline, 0.55))
+	pause_button.position = Vector2(16, 16)
+	pause_button.pressed.connect(func() -> void: pause_picked.emit())
+	screen.add_child(pause_button)
 	return screen
 
 
@@ -473,6 +489,17 @@ func _build_result() -> Control:
 	box.add_child(result_stars)
 	next_button = LilloTheme.button(texts.next, func() -> void: next_picked.emit())
 	box.add_child(next_button)
+	box.add_child(LilloTheme.button(texts.again, func() -> void: again_picked.emit()))
+	box.add_child(LilloTheme.button(texts.menu, func() -> void: levels_picked.emit()))
+	return screen
+
+
+## The card over a paused run: carry on, start the level again, or back to the level map.
+func _build_paused() -> Control:
+	var screen := _screen()
+	var box := _column(screen, true)
+	box.add_child(LilloTheme.title(texts.paused, 72))
+	box.add_child(LilloTheme.button(texts.resume, func() -> void: resume_picked.emit()))
 	box.add_child(LilloTheme.button(texts.again, func() -> void: again_picked.emit()))
 	box.add_child(LilloTheme.button(texts.menu, func() -> void: levels_picked.emit()))
 	return screen

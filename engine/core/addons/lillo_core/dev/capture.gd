@@ -45,6 +45,7 @@ static func _shot_size() -> Vector2i:
 
 
 func _ready() -> void:
+	process_mode = Node.PROCESS_MODE_ALWAYS
 	for arg in OS.get_cmdline_user_args():
 		if arg.begins_with("--shot="):
 			path = arg.trim_prefix("--shot=")

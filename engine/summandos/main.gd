@@ -2,13 +2,15 @@
 ## handles input and the back button. Options after `--`: `--mode=play|stress` starts a run at
 ## once (stress is the 1,000-unit performance test, reachable only from here;
 ## `--difficulty=easy|normal|adult|expert --level=<n>` pick a level, `--autosteer` takes the better gate),
-## `--levels` opens the level map, `--cast` lines up the characters (store), `--about` the About card, `--palette=sunset|night` and `--squad=<colour>` override the saved choices, `--colours` opens the
+## `--paused` pauses the run a moment after it starts, `--levels` opens the level map, `--cast` lines up the characters (store), `--about` the About card, `--palette=sunset|night` and `--squad=<colour>` override the saved choices, `--colours` opens the
 ## squad colour picker, and
 ## `--lang=es|en` overrides the phone's language, and LilloCapture's `--shot=<png> --after=<s>
 ## [--shot-size=WxH]` saves a screenshot and quits.
 extends Node3D
 
 const MODES := ["easy", "normal", "adult", "expert"]
+## How long `--paused` lets the run go before pausing it, in seconds.
+const PAUSED_AFTER := 2.0
 
 var texts := SummandosTexts.for_language(OS.get_locale_language())
 var theme_name := "night" if LilloSettings.read("night", false) else "sunset"
@@ -56,6 +58,7 @@ func _ready() -> void:
 		elif arg.begins_with("--level="):
 			level_number = int(arg.trim_prefix("--level="))
 	audio = LilloAudio.new(_sounds())
+	audio.process_mode = Node.PROCESS_MODE_ALWAYS
 	add_child(audio)
 	audio.click_on_buttons("click")
 	world = SummandosWorld.new(palette, texts)
@@ -76,9 +79,13 @@ func _ready() -> void:
 	ui.again_picked.connect(func() -> void: _start(mode, level_number))
 	ui.levels_picked.connect(_open_levels.bind(-1))
 	ui.menu_picked.connect(_show_menu)
+	ui.pause_picked.connect(_pause)
+	ui.resume_picked.connect(_resume)
 	ui.show_boss(_next_boss())
 	if start != "":
 		_start(start, level_number)
+		if args.has("--paused"):
+			get_tree().create_timer(PAUSED_AFTER).timeout.connect(_pause)
 	elif args.has("--levels"):
 		_open_levels(-1)
 	elif args.has("--about"):
@@ -112,6 +119,7 @@ func _music(name: String) -> void:
 
 
 func _show_menu() -> void:
+	get_tree().paused = false
 	run = null
 	_music("menu")
 	world.draw_idle()
@@ -130,6 +138,7 @@ func _open_levels(picked: int) -> void:
 	if picked >= 0:
 		difficulty = picked as SummandosLevel.Mode
 		LilloSettings.write("difficulty", picked)
+	get_tree().paused = false
 	run = null
 	_music("menu")
 	world.draw_idle()
@@ -149,6 +158,7 @@ func _toggle_night() -> void:
 
 
 func _start(run_mode: String, number := level_number) -> void:
+	get_tree().paused = false
 	mode = run_mode
 	level_number = clampi(number, 1, SummandosLevel.level_count(difficulty))
 	var level := SummandosLevel.stress() if mode == "stress" else levels.take(difficulty, level_number)
@@ -186,10 +196,34 @@ func _unhandled_input(event: InputEvent) -> void:
 		target_x = _clamp_x(target_x + event.relative.x / width * SummandosWorld.TRACK_WIDTH * 1.4)
 
 
+## Stops a run in progress where it stands and shows the pause card; nothing moves until
+## `_resume`. Not once the run is over.
+func _pause() -> void:
+	if run == null or run.state != SummandosRun.State.RUNNING or get_tree().paused:
+		return
+	dragging = false
+	get_tree().paused = true
+	ui.show_screen("paused")
+
+
+func _resume() -> void:
+	get_tree().paused = false
+	ui.show_screen("run")
+
+
+## Leaving the game (a call, the home button, the notification shade) pauses the run; the back
+## button pauses it too, and on the pause card carries on.
 func _notification(what: int) -> void:
+	# Only on the phone: a desktop window losing focus would pause the runs screenshots are taken of.
+	if what == NOTIFICATION_APPLICATION_PAUSED or (what == NOTIFICATION_APPLICATION_FOCUS_OUT and OS.has_feature("mobile")):
+		_pause()
 	if what != NOTIFICATION_WM_GO_BACK_REQUEST:
 		return
-	if run != null:
+	if run != null and get_tree().paused:
+		_resume()
+	elif run != null and run.state == SummandosRun.State.RUNNING:
+		_pause()
+	elif run != null:
 		_open_levels(-1)
 	elif ui.about.visible or ui.swatches.visible:
 		ui.show_screen("settings")

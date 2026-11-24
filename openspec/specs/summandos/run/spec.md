@@ -4,8 +4,9 @@ One run of a level, without drawing: the squad runs forward, the player steers i
 right through gates, it shoots the waves coming down the lanes, and the run ends won at the
 finish or lost when no soldier is left. Stepped at a fixed rate, so it is deterministic.
 
-- **Source:** `engine/summandos/game/run.gd` (`SummandosRun`)
-- **Verified by:** `engine/summandos/tests/` (`test_run`, `test_levels`)
+- **Source:** `engine/summandos/game/run.gd` (`SummandosRun`); pausing: `main.gd`, `view/ui.gd`
+- **Verified by:** `engine/summandos/tests/` (`test_run`, `test_levels`); pausing:
+  `engine/summandos/tools/smoke_test.sh` on the emulator
 
 ---
 
@@ -59,3 +60,16 @@ The hand-made first level SHALL be won by sensible choices.
 #### Scenario: first level
 - **WHEN** the first level is played taking the sensible side at each row **THEN** it is won
 - *Verifies:* `test_the_first_level_can_be_won_by_good_choices`
+
+### Requirement: A run can be paused
+
+A run in progress SHALL stop where it stands, the squad, the waves, the boss and the thinking
+countdown, when the player taps the pause button, presses back, or leaves the game (a call, the
+home button, the notification shade), and show a card to carry on, start the level again or go
+back to the level map. Back on that card SHALL carry on. A run that is over SHALL not pause.
+
+#### Scenario: pausing on the phone
+- **WHEN** the pause button is tapped during level 1 on the emulator **THEN** two screens taken 3 s apart are the same, and back carries on to the result card
+
+> **GAP — no GUT test.** Pausing stops the whole scene tree, GUT's runner with it; the
+> emulator smoke test (`engine/summandos/tools/smoke_test.sh`) checks it instead.

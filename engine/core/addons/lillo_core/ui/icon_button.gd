@@ -1,4 +1,5 @@
-## A small round button with a drawn icon ("gear", "sound", "muted", "info", "help", "back"), for the
+## A small round button with a drawn icon ("gear", "sound", "muted", "info", "help", "back",
+## "pause"), for the
 ## corners of a screen where a text button would be too loud.
 class_name LilloIconButton
 extends Button
@@ -55,6 +56,9 @@ func _draw() -> void:
 			draw_arc(c + Vector2(0, -r * 0.35), r * 0.5, PI * 1.05, TAU + PI * 0.45, 14, ink, r * 0.24, true)
 			draw_line(c + Vector2(r * 0.08, r * 0.05), c + Vector2(0, r * 0.4), ink, r * 0.24, true)
 			draw_circle(c + Vector2(0, r * 0.85), r * 0.16, ink)
+		"pause":
+			for side in [-1.0, 1.0]:
+				draw_rect(Rect2(c + Vector2(side * r * 0.42 - r * 0.2, -r * 0.75), Vector2(r * 0.4, r * 1.5)), ink)
 		"back":
 			draw_colored_polygon(PackedVector2Array([c + Vector2(-r * 0.8, 0), c + Vector2(r * 0.3, -r * 0.8),
 				c + Vector2(r * 0.3, r * 0.8)]), ink)

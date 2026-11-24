@@ -40,6 +40,8 @@ static func for_language(language: String) -> Dictionary:
 				"licence": "CC0", "link": "kaylousberg.itch.io/kaykit-skeletons"},
 			"name_story": "¿Por qué Sumandos? Por los sumandos, los números que se suman, y por los comandos, el pelotón que los convierte en soldados.",
 			"about_note": "Sin anuncios, sin compras y sin datos que salgan del móvil.",
+			"privacy": "Política de privacidad",
+			"paused": "Pausa", "resume": "Seguir",
 		}
 	return {
 		"title": "Summandos", "stress": "Performance test",
@@ -76,4 +78,6 @@ static func for_language(language: String) -> Dictionary:
 			"licence": "CC0", "link": "kaylousberg.itch.io/kaykit-skeletons"},
 		"name_story": "Why Summandos? Summands, the numbers you add, and commandos, the squad that turns them into soldiers.",
 		"about_note": "No ads, no purchases, no data leaves the phone.",
+		"privacy": "Privacy policy",
+		"paused": "Paused", "resume": "Resume",
 	}

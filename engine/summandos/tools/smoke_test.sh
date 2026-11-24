@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # Exports the release APK (slim engine, arm64), installs it clean on the running emulator and plays
-# through the real screens: menu, Recruit's level map, level 1 to its result card, "Again", the
-# level map again, then the menu turned sideways. Fails on a crash, the process gone, or any
+# through the real screens: menu, Recruit's level map, level 1 (paused on the way: it must stand
+# still, and the back button carries on) to its result card, "Again", the level map again, then
+# the menu turned sideways. Fails on a crash, the process gone, or any
 # error Godot logs (a script error, a missing resource the export left out). Run it before every
 # Play upload: the editor and the tests never run the exported build.
 #
@@ -39,6 +40,13 @@ at 0.27 0.24 4        # level 1
 shot run
 # A drag steers: to the right, through level 1's first gate (+17 beats ÷2).
 "$ADB" shell input swipe "$((width / 2))" "$((height * 3 / 4))" "$((width * 2 / 3))" "$((height * 3 / 4))" 400
+sleep 3
+at 0.09 0.08 2        # the pause button, top left
+"$ADB" shell screencap -p /sdcard/paused-a.png; sleep 3; "$ADB" shell screencap -p /sdcard/paused-b.png
+shot paused
+still="$("$ADB" shell 'cmp -s /sdcard/paused-a.png /sdcard/paused-b.png && echo 1 || echo 0' | tr -d '\r')"
+"$ADB" shell rm -f /sdcard/paused-a.png /sdcard/paused-b.png
+"$ADB" shell input keyevent KEYCODE_BACK; sleep 1   # on the pause card, back carries on
 sleep 45              # long enough for level 1 to end, won or lost
 shot result
 at 0.50 0.585 4       # Again (the first button on the card)
@@ -56,4 +64,5 @@ sleep 2
 
 errors="$("$ADB" logcat -d | grep -cE "(E|W) godot +: (ERROR|SCRIPT ERROR|USER ERROR|USER SCRIPT ERROR)" || true)"
 [ "$errors" = 0 ] || "$ADB" logcat -d | grep -E "(E|W) godot +: " | head -20
-smoke_finish "$([ "$errors" = 0 ] && echo 1 || echo 0)" "Godot errors logged: $errors"
+smoke_finish "$([ "$errors" = 0 ] && [ "$still" = 1 ] && echo 1 || echo 0)" \
+  "Godot errors logged: $errors · paused run stood still: $([ "$still" = 1 ] && echo yes || echo NO)"

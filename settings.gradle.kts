@@ -67,3 +67,6 @@ include(":apps:slipper:baselineprofile")
 include(":apps:stadium-events:app")
 include(":apps:stadium-events:domain")
 include(":apps:stadium-events:baselineprofile")
+
+// Sumandos: suma y dispara (Godot game in engine/; this module only publishes it)
+include(":engine:summandos:play")
