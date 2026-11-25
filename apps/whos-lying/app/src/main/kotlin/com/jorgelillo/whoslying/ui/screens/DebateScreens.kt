@@ -225,11 +225,13 @@ private fun CircularTimer(seconds: Int, onTimeUp: () -> Unit) {
 }
 
 internal fun beep() {
-    runCatching {
-        val tone = ToneGenerator(AudioManager.STREAM_NOTIFICATION, ToneGenerator.MAX_VOLUME)
-        tone.startTone(ToneGenerator.TONE_PROP_BEEP2, 600)
-        Handler(Looper.getMainLooper()).postDelayed({ tone.release() }, 1_000)
+    val tone = runCatching { ToneGenerator(AudioManager.STREAM_NOTIFICATION, ToneGenerator.MAX_VOLUME) }.getOrNull()
+        ?: return
+    if (runCatching { tone.startTone(ToneGenerator.TONE_PROP_BEEP2, 600) }.isFailure) {
+        tone.release()
+        return
     }
+    Handler(Looper.getMainLooper()).postDelayed({ tone.release() }, 1_000)
 }
 
 /** "Time's up!" for a moment, then straight to the vote. */

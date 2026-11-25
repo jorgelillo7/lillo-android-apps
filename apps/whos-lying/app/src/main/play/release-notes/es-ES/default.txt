@@ -1,6 +1,2 @@
-Modos nuevos 🕵️
-- Original: cada uno sabe qué es; el impostor tiene pista o nada
-- Misterioso: nadie sabe qué es, y podéis añadir periodistas
-- Caos: más impostores cada pocas rondas, a veces todos; sin puntos
-- Configuración más sencilla; rondas y tiempo según el grupo; renombrar jugadores
-- Sigue una partida o empieza otra desde el inicio
+El color, siempre entero 🎨
+- En horizontal, la rueda de color se hace más pequeña y se desliza: el brillo y el botón Usar siempre se ven

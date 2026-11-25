@@ -38,7 +38,7 @@ internal fun JaleoApp(app: StadiumEventsApplication) {
     val state by vm.state.collectAsStateWithLifecycle()
     val widget by vm.widget.collectAsStateWithLifecycle()
     LifecycleResumeEffect(Unit) {
-        vm.refreshWidget()
+        vm.onResume()
         onPauseOrDispose { }
     }
     var about by rememberSaveable { mutableStateOf(false) }

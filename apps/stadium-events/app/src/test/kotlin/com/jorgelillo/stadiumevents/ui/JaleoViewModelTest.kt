@@ -102,6 +102,27 @@ class JaleoViewModelTest {
     }
 
     @Test
+    fun backInTheAppOnANewDayTheAnswersMoveOn() = runTest {
+        var day = today
+        val saved = store(AppState(SampleFeed.feed(today), fetchedAt = now))
+        val vm = JaleoViewModel(
+            FeedRepository(saved, FeedFetcher { SampleFeed.json(today) }),
+            Launcher(pinnable = true),
+            today = { day },
+            now = { now }
+        ).also { main.cancelAtEnd(it.viewModelScope) }
+        vm.state.filterNotNull().test(timeout = StoreTimeout) {
+            assertIs<Day.Busy>(awaitMatching { it.fetchedAt != null }.tomorrow)
+            day = today.plusDays(1)
+            vm.onResume()
+            val next = awaitMatching { it.today == today.plusDays(1) }
+            assertEquals("atletico-vs-viking", assertIs<Day.Busy>(next.todayAnswer).event.id)
+            assertIs<Day.Calm>(next.tomorrow)
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
     fun aCalmTodayIsNotAnswered() = runTest {
         val vm = viewModel(store(AppState(SampleFeed.feed(today), fetchedAt = now)))
         vm.state.filterNotNull().test(timeout = StoreTimeout) {

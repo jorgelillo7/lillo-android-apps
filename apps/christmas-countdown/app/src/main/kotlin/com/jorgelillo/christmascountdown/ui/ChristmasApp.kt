@@ -82,6 +82,7 @@ internal fun ChristmasApp(app: ChristmasCountdownApplication, openAdvent: Boolea
     // Granted (or revoked) in system settings while away: check again on the way back.
     LifecycleResumeEffect(Unit) {
         canNotify = LilloNotifications.canNotify(context)
+        adventViewModel.onResume()
         onPauseOrDispose { }
     }
     val promptDismissed by app.settings.reminderPromptDismissed.collectAsStateWithLifecycle(initialValue = true)

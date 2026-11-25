@@ -20,6 +20,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.DisplayMode
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
@@ -367,7 +368,11 @@ private fun <T> Segmented(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun DateDialog(day: Long, onPick: (Long) -> Unit, onDismiss: () -> Unit) {
-    val state = rememberDatePickerState(initialSelectedDateMillis = day * DAY_MILLIS)
+    // The calendar grid is taller than a landscape phone: there, type the date instead.
+    val state = rememberDatePickerState(
+        initialSelectedDateMillis = day * DAY_MILLIS,
+        initialDisplayMode = if (isShortScreen()) DisplayMode.Input else DisplayMode.Picker
+    )
     DatePickerDialog(
         onDismissRequest = onDismiss,
         modifier = TestTagsAsResourceIds,

@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import com.jorgelillo.core.platform.LilloToday
 import com.jorgelillo.core.platform.WidgetOffer
 import com.jorgelillo.core.platform.WidgetPins
 import com.jorgelillo.stadiumevents.data.FeedRepository
@@ -55,9 +56,10 @@ data class JaleoUiState(
 class JaleoViewModel(
     private val repository: FeedRepository,
     private val widgets: WidgetPins,
-    private val today: () -> LocalDate = LocalDate::now,
+    today: () -> LocalDate = LocalDate::now,
     private val now: () -> Long = System::currentTimeMillis
 ) : ViewModel() {
+    private val day = LilloToday(today)
     private val refreshing = MutableStateFlow(false)
     private val offline = MutableStateFlow(false)
     private val _widget = MutableStateFlow(widgets.offer())
@@ -66,8 +68,13 @@ class JaleoViewModel(
     val widget: StateFlow<WidgetOffer> = _widget.asStateFlow()
 
     /** Null until the first read from disk, so the screen doesn't flash the wrong answer. */
-    val state: StateFlow<JaleoUiState?> = combine(repository.state, refreshing, offline) { app, busy, failed ->
-        JaleoUiState.from(app, today(), busy, failed)
+    val state: StateFlow<JaleoUiState?> = combine(repository.state, refreshing, offline, day.date) {
+            app,
+            busy,
+            failed,
+            date
+        ->
+        JaleoUiState.from(app, date, busy, failed)
     }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     init {
@@ -94,7 +101,17 @@ class JaleoViewModel(
         }
     }
 
-    /** Back in the app: the user may have added (or removed) the widget from the launcher meanwhile. */
+    /**
+     * Back in the app: the day may have changed (the answers move on and an old feed is downloaded
+     * again), and the user may have added or removed the widget meanwhile.
+     */
+    fun onResume() {
+        day.check()
+        refreshIfStale()
+        refreshWidget()
+    }
+
+    /** Whether the widget is placed, as the launcher says now. */
     fun refreshWidget() {
         _widget.value = widgets.offer()
     }

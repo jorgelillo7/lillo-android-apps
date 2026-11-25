@@ -54,6 +54,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jorgelillo.core.designsystem.LilloBigButton
+import com.jorgelillo.core.designsystem.LilloSheet
 import com.jorgelillo.core.designsystem.TestTagsAsResourceIds
 import com.jorgelillo.tournaments.R
 import com.jorgelillo.tournaments.domain.Match
@@ -259,103 +260,91 @@ internal fun ResultSheet(
                 (it.winsA + it.winsB > 0)
         }
 
-    ModalBottomSheet(
-        onDismissRequest = onDismiss,
-        sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
-        containerColor = Arena.Raised
-    ) {
-        Column(
-            TestTagsAsResourceIds.verticalScroll(
-                rememberScrollState()
-            ).padding(horizontal = 20.dp).navigationBarsPadding(),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            Text(res.roundName(t, match), color = Arena.GoldText, fontWeight = FontWeight.Bold)
-            Text(stringResource(R.string.result_who_won), fontSize = 22.sp, fontWeight = FontWeight.Black)
-            Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                WinnerButton(a, outcome == 0, { outcome = 0 }, "winner_a", Modifier.weight(1f))
-                WinnerButton(b, outcome == 1, { outcome = 1 }, "winner_b", Modifier.weight(1f))
+    LilloSheet(onDismiss, Arena.Raised) {
+        Text(res.roundName(t, match), color = Arena.GoldText, fontWeight = FontWeight.Bold)
+        Text(stringResource(R.string.result_who_won), fontSize = 22.sp, fontWeight = FontWeight.Black)
+        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+            WinnerButton(a, outcome == 0, { outcome = 0 }, "winner_a", Modifier.weight(1f))
+            WinnerButton(b, outcome == 1, { outcome = 1 }, "winner_b", Modifier.weight(1f))
+        }
+        if (allowDraw) {
+            OutlinedButton(onClick = { outcome = 2 }, modifier = Modifier.fillMaxWidth().testTag("draw")) {
+                Text(
+                    stringResource(R.string.result_draw),
+                    color = if (outcome ==
+                        2
+                    ) {
+                        Arena.GoldText
+                    } else {
+                        Arena.Cream
+                    },
+                    fontWeight = if (outcome ==
+                        2
+                    ) {
+                        FontWeight.Bold
+                    } else {
+                        FontWeight.Normal
+                    }
+                )
             }
-            if (allowDraw) {
-                OutlinedButton(onClick = { outcome = 2 }, modifier = Modifier.fillMaxWidth().testTag("draw")) {
-                    Text(
-                        stringResource(R.string.result_draw),
-                        color = if (outcome ==
-                            2
-                        ) {
-                            Arena.GoldText
-                        } else {
-                            Arena.Cream
-                        },
-                        fontWeight = if (outcome ==
-                            2
-                        ) {
-                            FontWeight.Bold
-                        } else {
-                            FontWeight.Normal
-                        }
+        }
+        val scores = when (outcome) {
+            0, 1 -> (0 until needed).toList()
+            2 -> (needed - 1 downTo 0).toList()
+            else -> emptyList()
+        }
+        if (scores.size > 1) {
+            FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                scores.forEach { k ->
+                    val label = if (outcome == 2) "$k - $k" else "$needed - $k"
+                    FilterChip(
+                        selected = loserGames == k,
+                        onClick = { loserGames = k },
+                        label = { Text(label, fontSize = 18.sp, fontWeight = FontWeight.Bold) },
+                        colors = FilterChipDefaults.filterChipColors(
+                            selectedContainerColor = Arena.Gold,
+                            selectedLabelColor = Arena.OnGold
+                        ),
+                        modifier = Modifier.testTag("score_$k")
                     )
                 }
             }
-            val scores = when (outcome) {
-                0, 1 -> (0 until needed).toList()
-                2 -> (needed - 1 downTo 0).toList()
-                else -> emptyList()
-            }
-            if (scores.size > 1) {
-                FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    scores.forEach { k ->
-                        val label = if (outcome == 2) "$k - $k" else "$needed - $k"
-                        FilterChip(
-                            selected = loserGames == k,
-                            onClick = { loserGames = k },
-                            label = { Text(label, fontSize = 18.sp, fontWeight = FontWeight.Bold) },
-                            colors = FilterChipDefaults.filterChipColors(
-                                selectedContainerColor = Arena.Gold,
-                                selectedLabelColor = Arena.OnGold
-                            ),
-                            modifier = Modifier.testTag("score_$k")
-                        )
-                    }
-                }
-            }
-            OutlinedTextField(
-                value = comment,
-                onValueChange = { comment = it.take(80) },
-                label = { Text(stringResource(R.string.result_comment)) },
-                placeholder = { Text(stringResource(R.string.result_comment_hint)) },
-                singleLine = true,
-                keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences),
-                modifier = Modifier.fillMaxWidth().testTag("comment")
+        }
+        OutlinedTextField(
+            value = comment,
+            onValueChange = { comment = it.take(80) },
+            label = { Text(stringResource(R.string.result_comment)) },
+            placeholder = { Text(stringResource(R.string.result_comment_hint)) },
+            singleLine = true,
+            keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences),
+            modifier = Modifier.fillMaxWidth().testTag("comment")
+        )
+        preview?.let {
+            Text(
+                it,
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth().testTag("preview")
             )
-            preview?.let {
-                Text(
-                    it,
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth().testTag("preview")
-                )
+        }
+        if (laterReset) {
+            Text(
+                stringResource(R.string.result_resets_later),
+                color = Arena.CoralText,
+                fontSize = 13.sp
+            )
+        }
+        LilloBigButton(stringResource(R.string.result_save), {
+            onSave(winsA, winsB, outcome == 2, comment)
+        }, enabled = outcome >= 0, modifier = Modifier.testTag("save"))
+        if (match.isDone(t.bestOf)) {
+            TextButton(
+                onClick = onClear,
+                modifier = Modifier.align(Alignment.CenterHorizontally).testTag("clear")
+            ) {
+                Text(stringResource(R.string.result_clear), color = Arena.Muted)
             }
-            if (laterReset) {
-                Text(
-                    stringResource(R.string.result_resets_later),
-                    color = Arena.CoralText,
-                    fontSize = 13.sp
-                )
-            }
-            LilloBigButton(stringResource(R.string.result_save), {
-                onSave(winsA, winsB, outcome == 2, comment)
-            }, enabled = outcome >= 0, modifier = Modifier.testTag("save"))
-            if (match.isDone(t.bestOf)) {
-                TextButton(
-                    onClick = onClear,
-                    modifier = Modifier.align(Alignment.CenterHorizontally).testTag("clear")
-                ) {
-                    Text(stringResource(R.string.result_clear), color = Arena.Muted)
-                }
-            }
-            Spacer(Modifier.height(12.dp))
         }
     }
 }
