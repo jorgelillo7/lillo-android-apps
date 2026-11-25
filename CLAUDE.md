@@ -178,7 +178,9 @@ Project skills are indexed in [`.claude/CLAUDE.md`](.claude/CLAUDE.md).
   Secrets (upload keys per app environment, Play service account, league-cards' private deck) go
   in with `scripts/set-release-secrets.sh`, run by the user. Details: docs/publishing-on-google-play.md §6.
   Publish the listing together with the release that adds what it describes. A new app goes into
-  the workflow's `app` choices.
+  the workflow's `app` choices. An engine game is uploaded from the Mac with
+  `scripts/engine-release.sh engine/<game>` (its bundle carries bought models); the workflow
+  promotes it and publishes its listing.
 - **Baseline profiles**: each app has `apps/<app>/baselineprofile` (`jorgelillo.android.baselineprofile`,
   on `:core:baselineprofile`: startup plus the app's main journeys by test tag). The generated
   `app/src/release/generated/baselineProfiles/` is committed and ships in the bundle; regenerate it

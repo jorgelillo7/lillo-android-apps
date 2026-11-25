@@ -103,10 +103,18 @@ been published once; the API cannot create the app, so it is all by hand):
 6. Android developer verification: Play registers an app it distributes by itself, as it did for
    the Kotlin apps. Only if Play Console raises a task for it, register `com.jorgelillo.summandos`
    with the **app signing key** fingerprint (Protected with Play → Manage Play app signing; docs/publishing-on-google-play.md §0).
-7. Users and permissions: give the publishing service account this app (release to testing and
-   production, manage store presence), so later releases can go from CI.
-8. Later releases: the Release workflow, once S4 wires the game into it (`play/` module, the
-   game's GitHub environment with `scripts/set-release-secrets.sh summandos`).
+7. Later releases: bump `version/code` and `version/name` in `export_presets.cfg`, rewrite
+   `play/src/main/play/release-notes/<locale>/default.txt`, add a row to `release-notes.md`, merge,
+   run the smoke test, then upload from master on the Mac:
+
+   ```bash
+   scripts/engine-release.sh engine/summandos --track internal       # or production; --listing, --dry-run
+   gh workflow run release.yml -f app=summandos -f action=promote -f track=production
+   ```
+
+   The upload stays on the Mac: the bundle carries the bought models, which never reach CI. The
+   Release workflow promotes it and publishes the listing (`-f action=listing`), with the same
+   production approval as the apps. The script tags the commit `summandos/v<versionCode>`.
 
 Upload key (created 24 Nov 2026 with `scripts/new-upload-key.sh`, see [docs/signing.md](../../docs/signing.md)):
 

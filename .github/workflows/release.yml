@@ -16,6 +16,10 @@
 # scripts/set-release-secrets.sh puts them there. What an app must not ship without is a secret of
 # its environment too, and a release without it fails: league-cards' private league deck (else
 # the public sample).
+#
+# An engine game (engine/<game>, Godot) is uploaded from the Mac with scripts/engine-release.sh: its
+# bundle carries models from bought packs, which never leave that machine. Here it only promotes the
+# uploaded release and publishes the listing, through its play/ module.
 name: Release
 # What each run ships, in the list of runs and in the approval: "league-cards · upload → production (draft)".
 run-name: "${{ inputs.app }} · ${{ inputs.action }} → ${{ inputs.track }}${{ inputs.draft && ' (draft)' || '' }}${{ inputs.listing && ' + listing' || '' }}${{ inputs.dry_run && ' (dry run)' || '' }}"
@@ -26,7 +30,7 @@ on:
       app:
         description: App
         type: choice
-        options: [christmas-countdown, decision-wheel, whos-lying, tournaments, league-cards, slipper, stadium-events]
+        options: [christmas-countdown, decision-wheel, whos-lying, tournaments, league-cards, slipper, stadium-events, summandos]
       action:
         description: "upload: build and upload this version · promote: move the internal release on · listing: only the store listing (texts and graphics)"
         type: choice
@@ -88,6 +92,18 @@ jobs:
           java-version: 25
       - uses: gradle/actions/setup-gradle@8da46b539cd8fe6ab27ca75128919a18d757604c # v6.4.1
 
+      # Where the app lives: apps/<app> (a Gradle app) or engine/<game> (a Godot game, play/ module).
+      - name: App paths
+        run: |
+          if [ -d "engine/$APP" ]; then
+            if [ "$ACTION" = upload ]; then
+              echo "::error::$APP is an engine game: upload it from the Mac with scripts/engine-release.sh engine/$APP, then promote or publish the listing here"; exit 1
+            fi
+            { echo "MODULE=:engine:$APP:play"; echo "LISTINGS=engine/$APP/play/src/main/play/listings"; } >> "$GITHUB_ENV"
+          else
+            { echo "MODULE=:apps:$APP:app"; echo "LISTINGS=apps/$APP/app/src/main/play/listings"; } >> "$GITHUB_ENV"
+          fi
+
       # The upload key, as the build reads it locally (apps/<app>/keystore.properties, git-ignored).
       - name: Upload key
         if: inputs.action == 'upload'
@@ -129,7 +145,11 @@ jobs:
       - name: Version
         id: version
         run: |
-          code=$(grep -oE 'versionCode = [0-9]+' "apps/$APP/app/build.gradle.kts" | grep -oE '[0-9]+')
+          if [ -d "engine/$APP" ]; then
+            code=$(sed -n 's/^version\/code=//p' "engine/$APP/export_presets.cfg")
+          else
+            code=$(grep -oE 'versionCode = [0-9]+' "apps/$APP/app/build.gradle.kts" | grep -oE '[0-9]+')
+          fi
           echo "code=$code" >> "$GITHUB_OUTPUT"
           echo "## $APP versionCode $code ($ACTION → $TRACK)" >> "$GITHUB_STEP_SUMMARY"
 
@@ -156,9 +176,9 @@ jobs:
           tasks=()
           if [ "$ACTION" = upload ]; then
             # Same inputs as the build above: Gradle reuses that bundle, it doesn't build another.
-            tasks+=(":apps:$APP:app:publishBundle" --track "$TRACK")
+            tasks+=("$MODULE:publishBundle" --track "$TRACK")
           elif [ "$ACTION" = promote ]; then
-            tasks+=(":apps:$APP:app:promoteArtifact" --from-track internal --promote-track "$TRACK")
+            tasks+=("$MODULE:promoteArtifact" --from-track internal --promote-track "$TRACK")
           fi
           if [ "${#tasks[@]}" -gt 0 ]; then
             if [ "${{ inputs.draft }}" = true ]; then tasks+=(--release-status draft); fi
@@ -168,19 +188,19 @@ jobs:
             # Texts first, then everything: Google rejects a language's graphics until its listing
             # exists, and Gradle Play Publisher sends both in one edit (a new app's second language
             # failed with "Listing for language 'en-US' not found").
-            listings="apps/$APP/app/src/main/play/listings"
+            listings="$LISTINGS"
             aside="$(mktemp -d)"
             for graphics in "$listings"/*/graphics; do
               [ -d "$graphics" ] || continue
               locale="$(basename "$(dirname "$graphics")")"
               mkdir -p "$aside/$locale" && mv "$graphics" "$aside/$locale/"
             done
-            ./gradlew ":apps:$APP:app:publishListing"
+            ./gradlew "$MODULE:publishListing"
             for saved in "$aside"/*/graphics; do
               [ -d "$saved" ] || continue
               mv "$saved" "$listings/$(basename "$(dirname "$saved")")/"
             done
-            ./gradlew ":apps:$APP:app:publishListing"
+            ./gradlew "$MODULE:publishListing"
           fi
 
       # <app>/v<versionCode>, on the commit that was published (once: a promote tags nothing new).

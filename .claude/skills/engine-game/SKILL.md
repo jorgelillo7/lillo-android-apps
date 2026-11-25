@@ -94,6 +94,14 @@ logcat, a crash or the process gone). Taps go by screen fractions on the Pixel_9
 when a screen moves, update them from its screenshots in `build/smoke-test/<game>/`. Add a line
 to `release-notes.md` and `play/src/main/play/release-notes/<locale>/default.txt` with each version.
 
+## Release
+
+Bump `version/code` and `version/name` in `export_presets.cfg`, merge, smoke test, then upload from
+master on the Mac with `scripts/engine-release.sh engine/<game> --track internal|production`
+(`--listing`, `--draft`, `--dry-run`). Promote and listing-only runs go through the Release
+workflow (`-f app=<game> -f action=promote|listing`); its `upload` refuses an engine game, whose
+bundle carries bought models that never leave the Mac. Steps: the game's `OPERATIONS.md` → Release.
+
 ## A build for the owner's phone
 
 ```bash
