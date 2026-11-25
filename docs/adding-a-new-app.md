@@ -105,5 +105,5 @@ home page. Link it from the app's About screen.
 
 ## 5. Publish
 
-Follow [publishing-on-google-play.md](publishing-on-google-play.md), including registering the
-package name in Android developer verification.
+Follow [publishing-on-google-play.md](publishing-on-google-play.md). Android developer
+verification is done by Play for apps it distributes; act only if Play Console raises a task.

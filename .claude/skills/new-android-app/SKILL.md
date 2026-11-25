@@ -114,8 +114,7 @@ Follow [docs/adding-a-new-app.md](../../../docs/adding-a-new-app.md). Checklist:
 ## 7. First release
 
 Hand over to the `release-android-app` skill. For a brand-new app the Play Console also needs, by
-hand and once (the Play API can't do them): create the app, register the package name in Android
-developer verification, the App content declarations (data safety, content rating, target
+hand and once (the Play API can't do them): create the app, the App content declarations (data safety, content rating, target
 audience, ads, privacy policy…) and the **first bundle**. A personal developer account created
 after November 2023 also needs a closed test (12 testers, 14 days) before production.
 
