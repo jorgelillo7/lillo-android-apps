@@ -9,8 +9,9 @@ inProgress for a staged rollout, halted). Google's publishing API doesn't say wh
 app also gets its last Release workflow run (when, what, how it ended), the best hint for "just
 sent, probably in review".
 
-Reads the Play service account key from $ANDROID_PUBLISHER_CREDENTIALS (the JSON itself, as the
-Release workflow has it) or from ~/.config/lillo-android-apps/play-service-account.json. Prints a
+Reads the Play service account key from $ANDROID_PUBLISHER_CREDENTIALS (the JSON itself) or from
+~/.config/lillo-android-apps/play-service-account.json, else Application Default Credentials (the
+workflow's Workload Identity Federation). Prints a
 Markdown table. Run by the "Play status" workflow (Actions → Play status), or locally:
   pip3 install google-auth requests && python3 scripts/play_status.py
 """
@@ -22,6 +23,7 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
+import google.auth
 import requests
 from google.oauth2 import service_account
 from google.auth.transport.requests import Request
@@ -36,9 +38,12 @@ def credentials(scopes=SCOPE):
     raw = os.environ.get("ANDROID_PUBLISHER_CREDENTIALS")
     if not raw and KEY_FILE.is_file():
         raw = KEY_FILE.read_text()
-    if not raw:
-        sys.exit("No Play service account key: set ANDROID_PUBLISHER_CREDENTIALS or create " + str(KEY_FILE))
-    creds = service_account.Credentials.from_service_account_info(json.loads(raw), scopes=scopes)
+    if raw:
+        creds = service_account.Credentials.from_service_account_info(json.loads(raw), scopes=scopes)
+    elif os.environ.get("GOOGLE_APPLICATION_CREDENTIALS"):
+        creds, _ = google.auth.default(scopes=scopes)
+    else:
+        sys.exit("No Play service account: set ANDROID_PUBLISHER_CREDENTIALS or create " + str(KEY_FILE))
     creds.refresh(Request())
     return creds
 

@@ -8,8 +8,6 @@
 #                                                  apps/<app>/ or engine/<game>/)
 #                                                  into the GitHub environment named like the app;
 #                                                  league-cards also gets its private league deck
-#   scripts/set-release-secrets.sh --play          the Play service account key
-#                                                  (~/.config/lillo-android-apps/play-service-account.json)
 #   scripts/set-release-secrets.sh --approval      the "production" environment: releases to
 #                                                  production wait for your approval
 #
@@ -34,12 +32,7 @@ for line in open(sys.argv[1], encoding="latin-1"):
 PY
 }
 
-case "${1:?usage: set-release-secrets.sh <app-folder> | --play | --approval}" in
-  --play)
-    key="$HOME/.config/lillo-android-apps/play-service-account.json"
-    [ -f "$key" ] || { echo "No service account key at $key (docs/publishing-on-google-play.md §6)" >&2; exit 1; }
-    gh secret set PLAY_SERVICE_ACCOUNT_JSON --repo "$repo" < "$key"
-    ;;
+case "${1:?usage: set-release-secrets.sh <app-folder> | --approval}" in
   --approval)
     me="$(gh api user -q .id)"
     environment production --input - <<EOF

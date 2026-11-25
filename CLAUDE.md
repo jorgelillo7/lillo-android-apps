@@ -175,8 +175,9 @@ Project skills are indexed in [`.claude/CLAUDE.md`](.claude/CLAUDE.md).
   (`gh workflow run release.yml -f app=<app> -f action=upload|promote -f track=internal|production`,
   optional `-f listing=true`, `-f dry_run=true`); production waits for the user's approval in GitHub.
   The same tasks run from the terminal (`publishBundle`, `promoteArtifact`, `publishListing`).
-  Secrets (upload keys per app environment, Play service account, league-cards' private deck) go
-  in with `scripts/set-release-secrets.sh`, run by the user. Details: docs/publishing-on-google-play.md §6.
+  Secrets (upload keys per app environment, league-cards' private deck) go in with
+  `scripts/set-release-secrets.sh`, run by the user; the Play service account needs none (Workload
+  Identity Federation from `master`). Details: docs/publishing-on-google-play.md §6.
   Publish the listing together with the release that adds what it describes. A new app goes into
   the workflow's `app` choices. An engine game is uploaded from the Mac with
   `scripts/engine-release.sh engine/<game>` (its bundle carries bought models); the workflow
