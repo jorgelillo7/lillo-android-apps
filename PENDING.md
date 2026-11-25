@@ -38,7 +38,7 @@ Lines are pruned as items ship. What has **shipped** lives in `apps/<app>/releas
 
 | | What is missing | Waiting on |
 |---|---|---|
-| 👤 | Fake-ad games, game one **Summandos** (`com.jorgelillo.summandos`, `engine/summandos`): built and on master (four ranks with help, 100 levels with stars, Legend mode, KayKit crossbowmen vs skeletons, aiming, squad colours, sound and music, store graphics for phone and tablet, slim engine 27 → 19 MB). Golem and Necromancer bosses (bought KayKit Skeletons EXTRA, copied in from `~/Projects/documentation/assets/`, never the public repo) and Kenney weapons are in. **On Google Play since 1.0**; releases: `scripts/engine-release.sh` and the Release workflow. Endless mode built for 1.1: release it once tried on the handheld (`scripts/engine-release.sh engine/summandos`, then promote). Game two: pull the pin (lava, gold, a trapped hero; its engine profile keeps 2D physics) | Ready · [docs/plans/fake-ad-games.md](docs/plans/fake-ad-games.md) |
+| 🔨 | Fake-ad games: game one **Summandos** is done (1.0 and 1.1 with Endless on Google Play; releases with `scripts/engine-release.sh` and the Release workflow). Next: game two, pull the pin (lava, gold, a trapped hero; its engine profile keeps 2D physics) | Ready · [docs/plans/fake-ad-games.md](docs/plans/fake-ad-games.md) |
 
 ## repo
 
