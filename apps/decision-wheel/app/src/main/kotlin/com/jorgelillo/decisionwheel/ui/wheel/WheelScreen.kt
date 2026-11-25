@@ -32,8 +32,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.TextAutoSize
@@ -48,7 +46,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -88,6 +85,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jorgelillo.core.designsystem.ConfettiBurst
 import com.jorgelillo.core.designsystem.LilloColors
+import com.jorgelillo.core.designsystem.LilloSheet
 import com.jorgelillo.core.designsystem.isShortScreen
 import com.jorgelillo.decisionwheel.R
 import com.jorgelillo.decisionwheel.domain.AppState
@@ -489,33 +487,28 @@ private fun OptionChip(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun HistorySheet(entries: List<Pair<String, Long>>, onClear: () -> Unit, onDismiss: () -> Unit) {
-    ModalBottomSheet(onDismissRequest = onDismiss, containerColor = MaterialTheme.colorScheme.surfaceContainer) {
-        Column(Modifier.padding(horizontal = 24.dp).padding(bottom = 24.dp)) {
-            Text(stringResource(R.string.history_title), style = MaterialTheme.typography.titleLarge)
-            Spacer(Modifier.height(12.dp))
-            if (entries.isEmpty()) {
-                Text(stringResource(R.string.history_empty), color = MaterialTheme.colorScheme.onSurfaceVariant)
-            } else {
-                LazyColumn(Modifier.height((entries.size.coerceAtMost(8) * 44).dp)) {
-                    items(entries) { (option, at) ->
-                        Row(Modifier.fillMaxWidth().padding(vertical = 10.dp)) {
-                            Text(option, Modifier.weight(1f), fontWeight = FontWeight.SemiBold)
-                            Text(
-                                if (System.currentTimeMillis() - at < DateUtils.MINUTE_IN_MILLIS) {
-                                    stringResource(R.string.history_just_now)
-                                } else {
-                                    DateUtils.getRelativeTimeSpanString(at).toString()
-                                },
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
-                    }
+    LilloSheet(onDismiss, MaterialTheme.colorScheme.surfaceContainer, verticalArrangement = Arrangement.Top) {
+        Text(stringResource(R.string.history_title), style = MaterialTheme.typography.titleLarge)
+        Spacer(Modifier.height(12.dp))
+        if (entries.isEmpty()) {
+            Text(stringResource(R.string.history_empty), color = MaterialTheme.colorScheme.onSurfaceVariant)
+        } else {
+            entries.forEach { (option, at) ->
+                Row(Modifier.fillMaxWidth().padding(vertical = 10.dp)) {
+                    Text(option, Modifier.weight(1f), fontWeight = FontWeight.SemiBold)
+                    Text(
+                        if (System.currentTimeMillis() - at < DateUtils.MINUTE_IN_MILLIS) {
+                            stringResource(R.string.history_just_now)
+                        } else {
+                            DateUtils.getRelativeTimeSpanString(at).toString()
+                        },
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
                 }
-                TextButton(onClick = onClear) { Text(stringResource(R.string.history_clear)) }
             }
+            TextButton(onClick = onClear) { Text(stringResource(R.string.history_clear)) }
         }
     }
 }
