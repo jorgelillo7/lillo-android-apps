@@ -1,5 +1,4 @@
-First release! ➕
-- Add, subtract and multiply to grow your squad of crossbowmen
-- 100 levels across four ranks, from Recruit to Legend
-- Giant bosses every five levels; dodge the fireballs
-- No ads, no purchases, no data leaves the phone
+New: Endless mode ♾️
+- Win the last level of all four ranks to open it
+- Levels one after another, each harder, until you lose one
+- Beat your record of levels cleared

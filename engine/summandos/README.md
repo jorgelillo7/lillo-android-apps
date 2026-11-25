@@ -17,6 +17,8 @@ Status: [on Google Play](https://play.google.com/store/apps/details?id=com.jorge
   at every gate, where the worse gate loses the level at once.
 - 30 generated levels per mode (10 in expert), the same every time, each winnable by the best choices; 1–3 stars
   by soldiers left, the next level opening on a win; a boss every fifth level with a health bar, which eats soldiers until shot down; enemies take several shots, so a weapon shows.
+- **Endless**, once every rank's last level is won: levels one after another, harder each time,
+  until one is lost; the levels cleared are the record (`SummandosLevel.endless`, `SummandosProgress`).
 - A paged level map, menus over an animated backdrop, night mode, a squad colour, English and
   Spanish, upright and sideways; a 1,000-unit performance test from the command line.
 
@@ -25,7 +27,7 @@ main.gd              entry point: wires game/ and view/, input, pause, back butt
 game/level.gd        level data (rows of choices, enemy waves) and the level generator
 game/run.gd          one run without drawing: steering, gates, aimed shooting at waves in lanes,
                      clashes, thinking pauses
-game/progress.gd     stars per mode and level, saved; which levels are open
+game/progress.gd     stars per mode and level, saved; which levels are open; the endless record
 game/palette.gd      the colour themes (sunset, night): every colour the game uses
 game/texts.gd        every word on screen, English and Spanish
 view/world.gd        the 3D world: track, gates, squad, enemies, boss, bullets, chase camera

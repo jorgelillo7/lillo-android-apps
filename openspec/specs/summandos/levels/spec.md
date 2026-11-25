@@ -2,11 +2,12 @@
 
 Every level is generated from its mode and number: rows of two choices (maths gates or a
 weapon crate), enemy waves down the lanes and, every fifth level, a boss. Four modes:
-Recruit, Soldier and Captain with 30 levels each, Legend with 10.
+Recruit, Soldier and Captain with 30 levels each, Legend with 10; and the endless run, opened
+by winning every mode's last level.
 
 - **Source:** `engine/summandos/game/level.gd` (`SummandosLevel`), gates and puzzles from
   `engine/core/addons/lillo_core/maths/`
-- **Verified by:** `engine/summandos/tests/` (`test_levels`, `test_levels_ahead`, `test_gate_text`)
+- **Verified by:** `engine/summandos/tests/` (`test_levels`, `test_levels_ahead`, `test_gate_text`, `test_endless`)
 
 ---
 
@@ -86,3 +87,23 @@ equation SHALL shrink and a short label SHALL stay at full size.
 - **WHEN** `+x  3x+4=x+18` and `+5` are fitted **THEN** the equation gets a smaller size and `+5` keeps the largest
 - *Verifies:* `test_every_gate_text_fits_its_gate`,
   `test_a_long_equation_shrinks_and_a_short_one_stays_big`
+
+### Requirement: The endless run opens after every rank and goes on until a level is lost
+
+Once the last level of Recruit, Soldier, Captain and Legend has been won, the menu SHALL offer
+Endless with the record underneath. It SHALL play generated levels one after another, each the
+same every time, with Captain's gates and waves, enemies and a boss every fifth level that grow
+past Captain's last level; every one SHALL be winnable with the best choices. A won level SHALL
+lead to the next; the first lost one SHALL end the run, and the levels cleared SHALL be kept as
+the record when they beat it. Each next level SHALL be generated while the current one is played.
+
+#### Scenario: opening and the record
+- **WHEN** the last level of each rank is won in turn **THEN** Endless opens only after the fourth; a run of 7 sets the record and a later run of 4 keeps it
+- *Verifies:* `test_endless_opens_once_every_rank_is_finished_and_keeps_the_record`
+
+#### Scenario: winnable, harder and repeatable
+- **WHEN** endless levels 1 to 60 are played with the best choices **THEN** each is won and the squad never falls below its floor
+- **WHEN** levels 30 to 34 are compared with levels 1 to 5 **THEN** the best choices keep a smaller share of their soldiers; level 12 is the same twice and level 10 has a boss
+- **WHEN** an endless level is made ahead **THEN** it is the one generated on the spot
+- *Verifies:* `test_every_endless_level_can_be_won_with_the_best_choices`,
+  `test_endless_levels_get_harder_and_are_the_same_every_time`, `test_endless_levels_are_made_ahead`

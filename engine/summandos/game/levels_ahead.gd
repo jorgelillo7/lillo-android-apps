@@ -8,20 +8,21 @@ var _levels := {}
 var _tasks := {}
 
 
-## Starts generating level `number` of `mode` in the background, unless it is already there.
-func prepare(mode: SummandosLevel.Mode, number: int) -> void:
-	if number < 1 or number > SummandosLevel.level_count(mode):
+## Starts generating level `number` of `mode` (SummandosLevel.ENDLESS for the endless run) in the
+## background, unless it is already there.
+func prepare(mode: int, number: int) -> void:
+	if number < 1 or (mode != SummandosLevel.ENDLESS and number > SummandosLevel.level_count(mode as SummandosLevel.Mode)):
 		return
 	var key := _key(mode, number)
 	if _levels.has(key):
 		return
 	var box: Array[SummandosLevel] = []
 	_levels[key] = box
-	_tasks[key] = WorkerThreadPool.add_task(func() -> void: box.append(SummandosLevel.generate(mode, number)))
+	_tasks[key] = WorkerThreadPool.add_task(func() -> void: box.append(SummandosLevel.make(mode, number)))
 
 
 ## Level `number` of `mode`, waiting for it if it is still being generated.
-func take(mode: SummandosLevel.Mode, number: int) -> SummandosLevel:
+func take(mode: int, number: int) -> SummandosLevel:
 	prepare(mode, number)
 	var key := _key(mode, number)
 	if _tasks.has(key):
@@ -37,5 +38,5 @@ func finish() -> void:
 	_tasks.clear()
 
 
-func _key(mode: SummandosLevel.Mode, number: int) -> String:
+func _key(mode: int, number: int) -> String:
 	return "%d-%d" % [mode, number]
