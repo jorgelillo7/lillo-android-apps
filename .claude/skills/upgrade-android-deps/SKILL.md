@@ -70,6 +70,7 @@ aar androidx/compose/foundation foundation-android 1.12.1
 1. Edit `gradle/libs.versions.toml`.
 2. Install a new platform if `compileSdk` changes:
    `$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "platforms;android-<N>.0" "build-tools;<N>.0.0"`
+   (a minor platform such as `"37.1"` in the catalog installs as `"platforms;android-37.1"`)
    (check disk space first: `df -h ~`).
 3. Gradle wrapper: edit `distributionUrl` **by hand first** (the `wrapper` task fails if the old
    Gradle can't load the new AGP), then refresh `gradlew`, `gradlew.bat`, the jar and the
