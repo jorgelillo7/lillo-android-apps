@@ -1,49 +1,17 @@
 # Pending work
 
-The index of what is still open. **One line per item.** If it needs more than that, the
-reasoning lives where it belongs (the app's docs, a PR, `git log`) and this file links to it.
+What is still open, one line per item; the detail lives in the linked docs, PRs or `git log`.
+Lines go once done. What shipped is in each app's `release-notes.md`.
 
-Lines are pruned as items ship. What has **shipped** lives in `apps/<app>/release-notes.md`.
-
-**👤 needs you** · **⏳ waiting on a trigger or on data** · **🔨 ready to pick up** ·
-**🚧 blocked on you, and parked by your call**
+**👤 you** · **🔨 ready to pick up** · **⏳ waiting on a date or a dependency**
 
 ---
 
-## christmas-countdown
-
-| | What is missing | Waiting on |
+| | What | When / waiting on |
 |---|---|---|
-| ⏳ | Grow the advent pool (activities, songs, public-domain villancicos) between January and November, never during an Advent in progress | January · ideas from you · `AdventActivity` / `AdventSong` in the domain |
-
-## whos-lying
-
-| | What is missing | Waiting on |
-|---|---|---|
-| ⏳ | Version 14 (1.10: Original, Mysterious and Chaos modes, journalists, setup in cards, continue a match from the home) sent to production with the listing on 16/11, nothing left to approve in GitHub; once Google's review puts it live, play every mode on a real phone (Original with and without a clue, Mysterious with journalists, Chaos, "Seguir partida" from the home) | Google's review (only Play Console shows it), then you |
-
-## stadium-events (new app, v1 built 2026-11; feed live at `jorgelillo7.github.io/stadium/events.json`)
-
-| | What is missing | Waiting on |
-|---|---|---|
-| ⏳ | Try it with the family for a couple of weeks: do the evening and morning reminders arrive (1.2 fixed reminders that were lost with the app closed), is the widget clear? | Real use |
-
-## tournaments (new app)
-
-| | What is missing | Waiting on |
-|---|---|---|
-| 🚧 | Double elimination and round robin | Parked by your call until someone uses the app |
-
-## fake-ad games (idea, a collection)
-
-| | What is missing | Waiting on |
-|---|---|---|
-| 🔨 | Fake-ad games: game one **Summandos** is done (1.0 and 1.1 with Endless on Google Play; releases with `scripts/engine-release.sh` and the Release workflow). Next: game two, pull the pin (lava, gold, a trapped hero; its engine profile keeps 2D physics) | Ready · [docs/plans/fake-ad-games.md](docs/plans/fake-ad-games.md) |
-
-## repo
-
-| | What is missing | Waiting on |
-|---|---|---|
-| ⏳ | Engine games target API 36, from Godot 4.7.2's Gradle template (the apps target 37). Play requires 36 today; before Play's next target-SDK deadline (usually August), move to a Godot whose template targets 37, re-export with `--aab` and smoke test | Summer 2027 |
-| ⏳ | Play's new app-quality thresholds (memory and code optimisation) are enforced from February 2027: in January, run `scripts/play_vitals.py` and compare with the thresholds once published (2026-11-07: no app has enough users for Google to report vitals; R8 is on everywhere and the apps are 1–2 MB) | January 2027 |
-| ⏳ | Release round of 2026-11-15 approved and with Google (production 11, 8, 13, 7, 9, 5, 4 for christmas-countdown, decision-wheel, whos-lying, tournaments, league-cards, slipper, stadium-events; tracks match the repo per `scripts/play_status.py`). Once live: check About in landscape on the handheld, and that a reminder arrives with the app closed (christmas-countdown, stadium-events) | Google's review, then you · same phone session: the new light and dark looks (whos-lying's night stages under light status-bar icons, tournaments' bracket image and christmas-countdown's widget kept night-coloured, hand-picked light palettes) with a debug build, `./gradlew :apps:<app>:app:installDebug` |
+| 👤 | **Try everything on the phones** once Google has them live: whos-lying 1.10 (every mode, "Seguir partida"), the 2026-11-15 round (About sideways, reminders with the app closed in christmas-countdown and stadium-events, the light and dark looks), stadium-events with the family, Summandos 1.1 (Endless, the seven taps) | Google's reviews |
+| 🔨 | **Release round for the 7 Kotlin apps** to ship compileSdk 37.2 with Compose BOM 2026.11 and Lifecycle 2.11.1 (#242); decision-wheel's history and league-cards' table also open full height (#240). Bump each `versionCode`, notes, smoke tests, Release workflow | When convenient |
+| ⏳ | **Play's quality thresholds** (memory, code optimisation), enforced from February 2027: run `scripts/play_vitals.py` and compare | January 2027 |
+| ⏳ | **Engine games to API 37**: today 36, from Godot 4.7.2's template; move to a Godot whose template targets 37, re-export with `--aab`, smoke test | A Godot release targeting 37 · before Play's deadline (summer 2027) |
+| 🔨 | **Next game**: pull the pin (lava, gold, a trapped hero; its engine profile keeps 2D physics) · [docs/plans/fake-ad-games.md](docs/plans/fake-ad-games.md) | When you want |
+| ⏳ | Parked ideas: christmas-countdown's advent pool (January to November, never during Advent); tournaments' double elimination and round robin (once someone uses the app) | — |
