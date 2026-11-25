@@ -16,9 +16,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -47,6 +45,7 @@ import com.jorgelillo.core.designsystem.LilloAboutSheet
 import com.jorgelillo.core.designsystem.LilloBigButton
 import com.jorgelillo.core.designsystem.LilloPage
 import com.jorgelillo.core.designsystem.LilloSecondaryButton
+import com.jorgelillo.core.designsystem.LilloSheet
 import com.jorgelillo.core.designsystem.LilloSummaryHero
 import com.jorgelillo.core.designsystem.TestTagsAsResourceIds
 import com.jorgelillo.core.designsystem.isShortScreen
@@ -398,23 +397,16 @@ private fun EndScreen(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun TableSheet(league: League, season: Season, onDismiss: () -> Unit) {
-    ModalBottomSheet(onDismissRequest = onDismiss, containerColor = Chat.Raised, modifier = TestTagsAsResourceIds) {
-        Column(
-            Modifier.verticalScroll(
-                rememberScrollState()
-            ).padding(horizontal = 24.dp).padding(bottom = 32.dp).testTag("standings")
-        ) {
-            Text(
-                stringResource(R.string.table),
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold
-            )
-            Spacer(Modifier.height(12.dp))
-            Standings(league, season)
-        }
+    LilloSheet(onDismiss, Chat.Raised, Modifier.testTag("standings"), verticalArrangement = Arrangement.Top) {
+        Text(
+            stringResource(R.string.table),
+            style = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.Bold
+        )
+        Spacer(Modifier.height(12.dp))
+        Standings(league, season)
     }
 }
 
