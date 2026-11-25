@@ -16,6 +16,8 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.AlertDialog
@@ -152,7 +154,11 @@ internal fun AdventScreen(
                         textAlign = TextAlign.Center
                     )
 
-                    is AdventDoor.Song -> Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    // Scrolls so "Listen" stays reachable on a landscape phone.
+                    is AdventDoor.Song -> Column(
+                        Modifier.verticalScroll(rememberScrollState()),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
                         Text(stringResource(R.string.advent_song_title), style = MaterialTheme.typography.titleMedium)
                         Text(
                             stringResource(R.string.advent_song_text, content.song.title, content.song.artist),

@@ -11,7 +11,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
@@ -37,6 +39,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.jorgelillo.core.designsystem.isShortScreen
 import com.jorgelillo.whoslying.R
 import com.jorgelillo.whoslying.ui.theme.Neon
 import kotlin.math.atan2
@@ -82,7 +85,12 @@ internal fun ColorWheel(initial: Color, onChange: (Color) -> Unit) {
     val color = Color.hsv(hue, saturation, brightness)
     val changed by rememberUpdatedState(onChange)
     LaunchedEffect(color) { changed(color) }
-    Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+    // In a dialog on a landscape phone the full-size wheel would push the slider out of sight.
+    val wheel = if (isShortScreen()) 150.dp else 220.dp
+    Column(
+        Modifier.fillMaxWidth().verticalScroll(rememberScrollState()),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         fun pick(p: Offset, side: Float) {
             val radius = side / 2
             val dx = p.x - radius
@@ -92,7 +100,7 @@ internal fun ColorWheel(initial: Color, onChange: (Color) -> Unit) {
         }
         Canvas(
             Modifier
-                .size(220.dp)
+                .size(wheel)
                 .testTag("color_wheel")
                 .pointerInput(Unit) { detectTapGestures { pick(it, size.width.toFloat()) } }
                 .pointerInput(Unit) {

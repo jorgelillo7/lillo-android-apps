@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jorgelillo.core.designsystem.LilloBigButton
 import com.jorgelillo.core.designsystem.LilloQrCode
+import com.jorgelillo.core.designsystem.LilloSheet
 import com.jorgelillo.core.designsystem.TestTagsAsResourceIds
 import com.jorgelillo.core.platform.shareText
 import com.jorgelillo.tournaments.R
@@ -39,27 +40,26 @@ import com.jorgelillo.tournaments.ui.theme.Arena
  * Hand the tournament to another phone: a QR code the other phone's camera opens, or the link
  * through any chat. The whole tournament travels inside the link; nothing is uploaded.
  */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun ShareSheet(t: Tournament, onDismiss: () -> Unit) {
-    ModalBottomSheet(
-        onDismissRequest = onDismiss,
-        sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
-        containerColor = Arena.Raised
-    ) {
-        ShareContent(t)
-    }
+    LilloSheet(onDismiss, Arena.Raised) { ShareContent(t, scrolls = false) }
 }
 
-/** The share sheet's content: QR code and link (or why the link can't be sent), image and CSV. */
+/**
+ * The share sheet's content: QR code and link (or why the link can't be sent), image and CSV.
+ * [scrolls] off when it already sits in a scrolling sheet ([LilloSheet]).
+ */
 @Composable
-internal fun ShareContent(t: Tournament, modifier: Modifier = Modifier) {
+internal fun ShareContent(t: Tournament, modifier: Modifier = Modifier, scrolls: Boolean = true) {
     val context = LocalContext.current
     val link = remember(t) { Share.sendableLink(t) }
+    val own = if (scrolls) {
+        Modifier.verticalScroll(rememberScrollState()).padding(horizontal = 20.dp).navigationBarsPadding()
+    } else {
+        Modifier
+    }
     Column(
-        modifier.then(TestTagsAsResourceIds).verticalScroll(
-            rememberScrollState()
-        ).padding(horizontal = 20.dp).navigationBarsPadding(),
+        modifier.fillMaxWidth().then(TestTagsAsResourceIds).then(own),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {

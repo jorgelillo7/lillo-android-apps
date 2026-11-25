@@ -15,6 +15,8 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -37,8 +39,12 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.toggleableState
+import androidx.compose.ui.state.ToggleableState
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -111,7 +117,11 @@ internal fun HomeScreen(
             val sound = stringResource(if (saved.muted) R.string.sound_off else R.string.sound_on)
             TextButton(
                 onClick = onToggleSound,
-                modifier = Modifier.testTag("sound").semantics { contentDescription = sound }
+                modifier = Modifier.testTag("sound").semantics {
+                    contentDescription = sound
+                    role = Role.Switch
+                    toggleableState = ToggleableState(!saved.muted)
+                }
             ) {
                 Text(if (saved.muted) "🔇" else "🔊", style = MaterialTheme.typography.titleLarge)
             }
@@ -216,7 +226,7 @@ private fun SkinPicker(saved: Saved, sprites: GameSprites, onSkin: (SlipperSkin)
         color = Kitchen.Muted,
         modifier = Modifier.padding(top = 12.dp, bottom = 6.dp)
     )
-    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+    Row(Modifier.fillMaxWidth().selectableGroup(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         SlipperSkin.entries.forEach { skin ->
             val unlocked = skin.unlocked(saved.croquetas)
             val selected = saved.skin == skin
@@ -227,7 +237,7 @@ private fun SkinPicker(saved: Saved, sprites: GameSprites, onSkin: (SlipperSkin)
                     .clip(RoundedCornerShape(16.dp))
                     .background(if (selected) Kitchen.Raised else Kitchen.Raised.copy(alpha = 0.5f))
                     .border(2.dp, if (selected) Kitchen.Green else Color.Transparent, RoundedCornerShape(16.dp))
-                    .clickable(enabled = unlocked) { onSkin(skin) }
+                    .selectable(selected, enabled = unlocked, role = Role.RadioButton) { onSkin(skin) }
                     .padding(vertical = 8.dp)
                     .testTag("skin_${skin.name.lowercase()}"),
                 horizontalAlignment = Alignment.CenterHorizontally
