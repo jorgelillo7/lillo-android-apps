@@ -1,2 +1,2 @@
-About, always within reach 🩴
-- About fits any screen: in landscape or on handheld consoles it scrolls, so Appearance, Language, Rate and Privacy are always within reach
+More accessible 🩴
+- With TalkBack, each slipper says whether it is picked and sound is announced as a switch

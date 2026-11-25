@@ -1,3 +1,2 @@
-Acerca de, siempre a mano 🏟️
-- Acerca de cabe en cualquier pantalla: en horizontal o en consolas portátiles se desliza y llegas a Apariencia, Idioma, Valorar y Privacidad
-- El widget se llama «¿Hay jaleo?»: responde por hoy los días de evento y, si no, por mañana
+Siempre al día 🏟️
+- Si dejas la app abierta, al volver otro día el aviso de hoy y de mañana se actualiza y descarga los eventos nuevos

@@ -5,6 +5,7 @@ Newest first. User-facing notes per language (as uploaded to Play) are in
 
 | versionCode | Version | Date | Notes |
 |---|---|---|---|
+| 12 | 4.8 | 2026-11-25 (production upload through the Release workflow) | Advent moves on to a new day when the app comes back (core LilloToday), not only on a cold start; the song door's dialog scrolls; compileSdk 37.2, Compose BOM 2026.11, Lifecycle 2.11.1; baseline profile |
 | 11 | 4.7 | 2026-11-15 (production upload through the Release workflow; waits for the approval in GitHub, then Google's review) | About opens expanded and scrolls (core LilloSheet): Appearance, language, rate and privacy reachable in landscape and on handhelds, also under the widget card; baseline profile |
 | 10 | 4.6 | 2026-11-14 (production upload through the Release workflow; waits for the approval in GitHub, then Google's review) | Reminders arrive with the app's process dead (start-up no longer cancels the due job, core LilloSchedule.ensure); baseline profile |
 | 9 | 4.5 | 2026-11-13 (production) | Light and dark looks (a snowy morning by day, the midnight sky by night, Appearance in About); the widget offered in About; targetSdk 37; baseline profile, new store screenshots |

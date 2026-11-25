@@ -1,3 +1,3 @@
-Información, siempre a mano 🎄
-- Acerca de cabe en cualquier pantalla: en horizontal o en consolas portátiles se desliza y llegas a Apariencia, Idioma, Valorar y Privacidad
-- También con la tarjeta del widget: ya no tapa el resto
+El Adviento, al día 🎄
+- Si dejas la app abierta, al día siguiente la puerta nueva ya se puede abrir, sin cerrar la app
+- La ventana de la canción se desliza en horizontal: el botón Escuchar siempre a mano

@@ -1,3 +1,2 @@
-About, always within reach 🏟️
-- About fits any screen: in landscape or on handheld consoles it scrolls, so Appearance, Language, Rate and Privacy are always within reach
-- The widget is called "Busy day?": it answers for today on event days, otherwise for tomorrow
+Always up to date 🏟️
+- Left open, coming back another day updates today's and tomorrow's answer and downloads the latest events

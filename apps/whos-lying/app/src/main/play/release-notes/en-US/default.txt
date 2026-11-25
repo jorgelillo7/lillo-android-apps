@@ -1,6 +1,2 @@
-New game modes 🕵️
-- Original: everyone knows their role; impostors get a hint or nothing
-- Mysterious: nobody knows what they are, with optional Journalists
-- Chaos: more impostors every few rounds, sometimes everyone; no points
-- Simpler setup; rounds and time follow the group; rename players
-- Continue a match or start a new one from the home
+The whole colour picker 🎨
+- In landscape the colour wheel gets smaller and scrolls: brightness and Use are always in view

@@ -1,2 +1,2 @@
-Información, siempre a mano 🩴
-- Acerca de cabe en cualquier pantalla: en horizontal o en consolas portátiles se desliza y llegas a Apariencia, Idioma, Valorar y Privacidad
+Más accesible 🩴
+- Con TalkBack, cada chancla dice si está elegida y el sonido se anuncia como interruptor
