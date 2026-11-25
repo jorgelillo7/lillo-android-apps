@@ -11,9 +11,11 @@ app; for an update, jump to [6. Release](#6-release).
 - [ ] Developer profile (Play Console → Developer page): icon 512×512, header 4096×2304,
       promotional text ≤ 140 chars. Assets: [`branding/developer-profile/`](../branding/developer-profile).
 - [ ] **Android developer verification** (2026+): each package name must be registered to the
-      verified identity. Play Console → Android developer verification → Register package name.
-      For an app using Play App Signing, register the **app signing key** fingerprint (Integrity →
-      App signing), not the upload key. Proving ownership may need an APK signed by that key with
+      verified identity. Apps distributed on Google Play are registered by Play itself (none of
+      ours needed a step); act only if Play Console raises a task. Then: Android developer
+      verification → Register package name. For an app using Play App Signing, register the
+      **app signing key** fingerprint (Protected with Play → Manage Play app signing), not the
+      upload key. Proving ownership may need an APK signed by that key with
       a token file in `assets/adi-registration.properties`.
 
 ## 1. Package name and signing (once per app)

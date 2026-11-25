@@ -100,9 +100,9 @@ been published once; the API cannot create the app, so it is all by hand):
 5. Production → Create release → upload `summandos.aab` (Play App Signing on), release notes from
    `play/release-notes/` → save as draft → Publishing overview → Send changes for review.
    The review warns of native code without debug symbols (Godot's `.so`): accept it.
-6. Once the draft is saved, Play has made the app signing key: Android developer verification →
-   register the package name `com.jorgelillo.summandos` with the **app signing key** fingerprint
-   (Integrity → App signing), as for the Kotlin apps (docs/publishing-on-google-play.md §0).
+6. Android developer verification: Play registers an app it distributes by itself, as it did for
+   the Kotlin apps. Only if Play Console raises a task for it, register `com.jorgelillo.summandos`
+   with the **app signing key** fingerprint (Protected with Play → Manage Play app signing; docs/publishing-on-google-play.md §0).
 7. Users and permissions: give the publishing service account this app (release to testing and
    production, manage store presence), so later releases can go from CI.
 8. Later releases: the Release workflow, once S4 wires the game into it (`play/` module, the

@@ -110,8 +110,8 @@ gh workflow run release.yml -f app=<app> -f action=promote -f track=production  
 --promote-track production`, `publishListing`.
 
 **By hand in Play Console**: creating the app (the API can't), the App content forms, sending a
-draft for review, and registering the package in Android developer verification (with the app
-signing key, after the first upload). The first bundle itself goes through the workflow with
+draft for review. Android developer verification needs nothing: Play registers its apps (only
+if Play Console raises a task, register the package with the app signing key). The first bundle itself goes through the workflow with
 `-f draft=true`.
 
 Managed publishing on? The user presses "Publish" in Play Console after approval.

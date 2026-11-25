@@ -91,8 +91,9 @@ days without releases, not a lost app.
 The first bundle you upload to a new app **registers** that upload key with Play App Signing
 (Google generates the app signing key). From then on every upload must be signed with it.
 
-For Android developer verification, register the package with the **app signing key**
-fingerprint (Play Console → Test and release → App integrity → App signing), not the upload key.
+Android developer verification: Play registers apps it distributes by itself. If Play Console
+ever asks for it, register the package with the **app signing key** fingerprint (Play Console →
+Protected with Play → Play Store protection → Manage Play app signing), not the upload key.
 
 ## Check which key a bundle has
 
@@ -102,7 +103,7 @@ scripts/verify-bundle.sh <path/to/app-release.aab>
 
 ## Lost key or forgotten password
 
-Play Console → the app → Test and release → App integrity → App signing →
+Play Console → the app → Protected with Play → Play Store protection → Manage Play app signing →
 **Request upload key reset**. Create a new key with the script (move the old
 `keystore.properties` away first), export its certificate:
 
