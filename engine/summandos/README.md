@@ -8,7 +8,7 @@ Look: [DESIGN.md](DESIGN.md). Commands: [OPERATIONS.md](OPERATIONS.md).
 The name joins *summands*, the numbers that are added, and *commandos*, the squad that turns them
 into soldiers (Spanish "Sumandos": *sumandos* and *comandos*); the About card says so.
 
-Status: **in development**, not on Play yet.
+Status: [on Google Play](https://play.google.com/store/apps/details?id=com.jorgelillo.summandos) since version 1.0.
 
 - Four ranks, each with its operations under its name on the menu and a "How to play" card
   behind the corner "?": **Recruit** (+ − ×2 ÷2), **Soldier** (percentages and small sums),

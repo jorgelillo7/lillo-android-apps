@@ -67,7 +67,7 @@ screenshot and quits.
 | Privacy policy | `https://jorgelillo7.github.io/privacy/summandos/` (also linked from the game's About card) |
 | App access | All functionality is available without special access |
 | Ads | No |
-| Content rating | IARC questionnaire, category **Game**. Violence: **yes**, fantasy and cartoon (crossbowmen shoot low-poly skeletons, which fall apart; no blood, no gore, no realistic people); no fear content, sex, nudity, language, drugs, alcohol, tobacco or gambling; no purchases; users can't interact, chat or share content; no location shared. Expected: PEGI 7 / ESRB Everyone 10+ |
+| Content rating | IARC questionnaire, category **Game**. Violence: **yes**, against humans (the bosses and fireballs take soldiers) and against non-humans (the skeletons): fantasy, childlike style, unrealistic reactions, often shown from a distance, no blood; the creatures don't act human, no sinister characters, violent sounds or dark settings; no fear content, sex, nudity, language, drugs, alcohol, tobacco or gambling; no purchases; users can't interact, chat or share content; no location shared. Result: PEGI 3 / ESRB Everyone 10+ (Korea 12+) |
 | Target audience | 13+ (13–15, 16–17, 18+), as slipper: under-13s bring in the Families policy (more review, its own rules). Appeal to children: say yes only if Play asks about the listing; nothing in it is aimed at children |
 | Data safety | **No data collected, no data shared.** No internet permission; the only permission is vibration. Data encrypted in transit: not applicable. Deletion request: not applicable (nothing leaves the phone) |
 | Advertising ID | No |

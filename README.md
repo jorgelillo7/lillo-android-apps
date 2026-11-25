@@ -34,7 +34,7 @@ Games built on a game engine (Godot) live in [`engine/`](engine/README.md), next
 
 | | Game | Status | Folder |
 |---|---|---|---|
-| <img src="engine/summandos/store/play-icon-512.png" width="48" alt=""> | ➕ Summandos · Maths squad shooter | In development | `engine/summandos` |
+| <img src="engine/summandos/store/play-icon-512.png" width="48" alt=""> | ➕ [Summandos · Maths squad shooter](engine/summandos) | [On Google Play](https://play.google.com/store/apps/details?id=com.jorgelillo.summandos) | `engine/summandos` |
 
 ## 🗂️ Repository layout
 
