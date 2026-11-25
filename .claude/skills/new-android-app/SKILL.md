@@ -107,7 +107,7 @@ Follow [docs/adding-a-new-app.md](../../../docs/adding-a-new-app.md). Checklist:
   closest one, e.g. `tournaments` for an app with no data) and an app card in the pinned "Apps" block of `index.html` and
   `en/index.html`. Publish only after the user previews it.
 - `apps/<app>/README.md`, `OPERATIONS.md` (uppercase), `release-notes.md`; add the app to the
-  root README table, `docs/README.md` per-app table and `PENDING.md` (its own section).
+  root README table, `docs/README.md` per-app table and `PENDING.md` (a line per open item).
 - Add the app to the `app` choices of `.github/workflows/release.yml` (CI and Smoke need nothing).
 - Branch + PR; merged once CI is green.
 
