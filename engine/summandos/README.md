@@ -17,7 +17,7 @@ Status: [on Google Play](https://play.google.com/store/apps/details?id=com.jorge
   at every gate, where the worse gate loses the level at once.
 - 30 generated levels per mode (10 in expert), the same every time, each winnable by the best choices; 1–3 stars
   by soldiers left, the next level opening on a win; a boss every fifth level with a health bar, which eats soldiers until shot down; enemies take several shots, so a weapon shows.
-- **Endless**, once every rank's last level is won: levels one after another, harder each time,
+- **Endless**, once every rank's last level is won (or after seven quick taps on the menu's crossbowman): levels one after another, harder each time,
   until one is lost; the levels cleared are the record (`SummandosLevel.endless`, `SummandosProgress`).
 - A paged level map, menus over an animated backdrop, night mode, a squad colour, English and
   Spanish, upright and sideways; a 1,000-unit performance test from the command line.
