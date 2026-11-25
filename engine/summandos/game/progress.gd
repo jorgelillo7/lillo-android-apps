@@ -22,8 +22,11 @@ static func unlocked(mode: SummandosLevel.Mode, number: int, path := LilloSettin
 	return number == 1 or stars(mode, number - 1, path) > 0
 
 
-## Endless mode opens once every rank's last level has been won.
+## Endless mode opens once every rank's last level has been won, or through the secret taps on the
+## menu's crossbowman (unlock_endless).
 static func endless_unlocked(path := LilloSettings.PATH) -> bool:
+	if LilloSettings.read("endless_open", false, path):
+		return true
 	for mode in SummandosLevel.Mode.values():
 		if stars(mode, SummandosLevel.level_count(mode), path) == 0:
 			return false
@@ -41,3 +44,8 @@ static func record_endless(cleared: int, path := LilloSettings.PATH) -> bool:
 		return false
 	LilloSettings.write("endless_best", cleared, path)
 	return true
+
+
+## Opens endless mode without finishing the ranks.
+static func unlock_endless(path := LilloSettings.PATH) -> void:
+	LilloSettings.write("endless_open", true, path)

@@ -90,8 +90,9 @@ equation SHALL shrink and a short label SHALL stay at full size.
 
 ### Requirement: The endless run opens after every rank and goes on until a level is lost
 
-Once the last level of Recruit, Soldier, Captain and Legend has been won, the menu SHALL offer
-Endless with the record underneath. It SHALL play generated levels one after another, each the
+Once the last level of Recruit, Soldier, Captain and Legend has been won, or the menu's
+crossbowman has been tapped seven times in a row (a hidden shortcut, like Android's developer
+options), the menu SHALL offer Endless with the record underneath. It SHALL play generated levels one after another, each the
 same every time, with Captain's gates and waves, enemies and a boss every fifth level that grow
 past Captain's last level; every one SHALL be winnable with the best choices. A won level SHALL
 lead to the next; the first lost one SHALL end the run, and the levels cleared SHALL be kept as
@@ -100,6 +101,12 @@ the record when they beat it. Each next level SHALL be generated while the curre
 #### Scenario: opening and the record
 - **WHEN** the last level of each rank is won in turn **THEN** Endless opens only after the fourth; a run of 7 sets the record and a later run of 4 keeps it
 - *Verifies:* `test_endless_opens_once_every_rank_is_finished_and_keeps_the_record`
+
+#### Scenario: the secret way in
+- **WHEN** the menu's crossbowman is tapped seven times in quick succession (under 1.5 s apart) **THEN** the last three taps say how many are left, the seventh opens Endless without finishing the ranks and says so; once open, seven taps say it already is
+- **WHEN** a pause longer than 1.5 s breaks the taps **THEN** the count starts again
+- *Verifies:* `test_the_secret_taps_open_endless_without_finishing_the_ranks`,
+  `test_seven_quick_taps_unlock_and_count_down_on_the_way`, `test_a_pause_starts_the_count_again`
 
 #### Scenario: winnable, harder and repeatable
 - **WHEN** endless levels 1 to 60 are played with the best choices **THEN** each is won and the squad never falls below its floor

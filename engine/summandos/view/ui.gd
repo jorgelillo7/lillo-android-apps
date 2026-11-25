@@ -6,6 +6,8 @@ extends CanvasLayer
 
 signal mode_picked(mode: int)
 signal endless_picked
+## The menu's crossbowman was tapped (the secret way into endless mode).
+signal hero_tapped
 signal level_picked(number: int)
 signal night_toggled
 signal squad_picked(name: String)
@@ -62,6 +64,9 @@ var endless_button: Button
 var endless_hint: Label
 var menu_box: VBoxContainer
 var menu_buttons: Array[Button] = []
+## The crossbowman in the menu's corner, and the invisible area over it that takes taps.
+var hero: Control
+var hero_zone: Control
 
 
 func _init(colours: Dictionary, words: Dictionary, map: LilloLevelMap, squads: Dictionary, squad: String,
@@ -192,7 +197,6 @@ func _build_decor() -> void:
 	decor.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(decor)
 	decor.add_child(LilloBackdrop.new(palette))
-	var hero: Control = null
 	var archer := SummandosModels.character("Rogue_Hooded.glb", "Cheer", 1.0, palette.squad, false,
 		SummandosModels.ARCHER_SPARES)
 	if archer:
@@ -298,6 +302,14 @@ func _build_menu() -> Control:
 	box.add_child(endless_button)
 	menu_box = box
 	get_viewport().size_changed.connect(_fit_menu)
+	hero_zone = Control.new()
+	hero_zone.gui_input.connect(func(event: InputEvent) -> void:
+		# A touch also arrives as an emulated mouse click: count only the click.
+		if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+			hero_tapped.emit())
+	screen.add_child(hero_zone)
+	get_viewport().size_changed.connect(_place_hero_zone)
+	_place_hero_zone.call_deferred()
 
 	return screen
 
@@ -369,6 +381,17 @@ func _mode_button(i: int) -> Button:
 	if i < 0:
 		endless_hint = hint
 	return button
+
+
+## Keeps the tap area over the crossbowman, which the decor layer places in the corner.
+func _place_hero_zone() -> void:
+	hero_zone.size = hero.size
+	hero_zone.global_position = hero.global_position
+
+
+## A short message at the bottom of the screen.
+func toast(text: String) -> void:
+	LilloFx.toast(menu, text, palette.weapon, palette.outline)
 
 
 ## Shows the menu's Endless button when it is open, with the record.
