@@ -29,6 +29,7 @@ LOCALES = {
             "04-boss": ("Jefes enormes", "cada cinco niveles"),
             "05-think": ("Modo Leyenda:", "dos pasos, sin fallar"),
             "06-levels": ("Cuatro rangos", "y 100 niveles con estrellas"),
+            "07-night": ("Modo noche", "y tu pelotón, de tu color"),
         },
     },
     "en-US": {
@@ -42,6 +43,7 @@ LOCALES = {
             "04-boss": ("Giant bosses", "every five levels"),
             "05-think": ("Legend mode:", "two steps, no mistakes"),
             "06-levels": ("Four ranks", "and 100 levels with stars"),
+            "07-night": ("Night mode", "and your squad, your colour"),
         },
     },
 }

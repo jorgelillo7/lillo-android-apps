@@ -34,7 +34,7 @@ python3 $T $E/characters/gltf/Necromancer.glb Necromancer.glb \
 The weapons (Kenney Blaster Kit, CC0 and free) are committed in `assets/weapons/`: `blaster-a`
 (pistol) and `blaster-h` (bazooka) with the kit's shared `Textures/colormap.png`.
 
-Store listing graphics (7 phone and 7 tablet screenshots and the feature graphic, Spanish and
+Store listing graphics (8 phone and 8 tablet screenshots and the feature graphic, Spanish and
 English):
 
 ```bash
