@@ -142,9 +142,10 @@ def check_repo_levels():
     """Every place that states an API level must agree with the version catalog."""
     catalog = read("gradle/libs.versions.toml")
     target = major(search(r'^targetSdk = "([^"]+)"', catalog))
-    compile_sdk = major(search(r'^compileSdk = "([^"]+)"', catalog))
+    compile_sdk = search(r'^compileSdk = "([^"]+)"', catalog)
+    compile_sdk = compile_sdk if "." in compile_sdk else f"{compile_sdk}.0"
     avd = default_avd()
-    toolchain = re.search(r"compileSdk / targetSdk / minSdk \| (\d+) / (\d+) /", read("docs/setup/toolchain.md"))
+    toolchain = re.search(r"compileSdk / targetSdk / minSdk \| ([\d.]+) / (\d+) /", read("docs/setup/toolchain.md"))
     stated = {
         "smoke.yml api-level": major(search(r'api-level: "([^"]+)"', read(".github/workflows/smoke.yml"))),
         "emulator.sh default AVD": major(search(r"API_(\d+)$", avd or "")),
@@ -158,8 +159,8 @@ def check_repo_levels():
         report(YELLOW, "API levels in the repo", f"targetSdk is {target}; " + ", ".join(wrong), "Align them")
     else:
         report(GREEN, "API levels in the repo", f"all at {target}")
-    if not list((SDK / "platforms").glob(f"android-{compile_sdk}*")):
-        report(RED, "compileSdk platform", f"android-{compile_sdk} not installed", f'sdkmanager "platforms;android-{compile_sdk}.0"')
+    if not (SDK / "platforms" / f"android-{compile_sdk}").is_dir():
+        report(RED, "compileSdk platform", f"android-{compile_sdk} not installed", f'sdkmanager "platforms;android-{compile_sdk}"')
     return target
 
 

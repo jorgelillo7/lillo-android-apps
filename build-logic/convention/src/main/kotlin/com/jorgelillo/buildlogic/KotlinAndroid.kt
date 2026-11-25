@@ -16,7 +16,10 @@ private val JVM_TARGET = JvmTarget.JVM_17
 /** SDK levels, Java level and core library desugaring shared by every Android module (Kotlin is built into AGP 9). */
 internal fun Project.configureKotlinAndroid(commonExtension: CommonExtension) {
     commonExtension.apply {
-        compileSdk = libs.intVersion("compileSdk")
+        val (api, minor) = libs.compileSdk()
+        compileSdk {
+            version = release(api) { minorApiLevel = minor }
+        }
         defaultConfig.minSdk = libs.intVersion("minSdk")
         compileOptions.sourceCompatibility = JAVA_VERSION
         compileOptions.targetCompatibility = JAVA_VERSION

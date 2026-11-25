@@ -9,7 +9,7 @@
 | Gradle | 9.9.0 | `gradle/wrapper/gradle-wrapper.properties` |
 | Android Gradle Plugin | 9.5.1 | `gradle/libs.versions.toml` |
 | Kotlin | 2.4.21 | `gradle/libs.versions.toml` |
-| compileSdk / targetSdk / minSdk | 37 / 37 / 24 | `gradle/libs.versions.toml` |
+| compileSdk / targetSdk / minSdk | 37.2 / 37 / 24 | `gradle/libs.versions.toml` |
 | Compose BOM | 2026.09.00 | `gradle/libs.versions.toml` |
 | Baseline profile plugin / Macrobenchmark | 1.5.0 | `gradle/libs.versions.toml` |
 | Java bytecode target | 17 | `build-logic/.../KotlinAndroid.kt` |
@@ -37,7 +37,8 @@ The shell's default `java` (Homebrew) is newer than Gradle supports; always use 
    `gradle/wrapper/gradle-wrapper.properties`, then run `./gradlew wrapper --gradle-version X` to
    refresh the scripts.
 3. If `checkDebugAarMetadata` fails with *"requires compileSdk N / AGP X"*, a library needs a newer
-   platform: bump `compileSdk` (and install it: `sdkmanager "platforms;android-N.0"`) or AGP.
+   platform: bump `compileSdk` (and install it: `sdkmanager "platforms;android-N.0"`; a minor level
+   such as `37.1` goes in the catalog as `"37.1"` and installs as `"platforms;android-37.1"`) or AGP.
 4. Run `./gradlew test lint bundleRelease`, then the app's `tools/smoke_test.sh`
    (**release build**, not debug: R8 rules only bite there).
 

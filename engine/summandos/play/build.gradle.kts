@@ -14,7 +14,7 @@ fun presetValue(key: String) = preset.first { it.startsWith("$key=") }.substring
 
 android {
     namespace = "com.jorgelillo.summandos"
-    compileSdk = libs.versions.compileSdk.get().toInt()
+    compileSdk = libs.versions.compileSdk.get().substringBefore('.').toInt()
     defaultConfig {
         applicationId = presetValue("package/unique_name")
         minSdk = libs.versions.appMinSdk.get().toInt()
