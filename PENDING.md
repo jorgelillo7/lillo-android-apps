@@ -14,4 +14,4 @@ Lines go once done. What shipped is in each app's `release-notes.md`.
 | ⏳ | **Play's quality thresholds** (memory, code optimisation), enforced from February 2027: run `scripts/play_vitals.py` and compare | January 2027 |
 | ⏳ | **Engine games to API 37**: today 36, from Godot 4.7.2's template; move to a Godot whose template targets 37, re-export with `--aab`, smoke test | A Godot release targeting 37 · before Play's deadline (summer 2027) |
 | 🔨 | **Next game**: pull the pin (lava, gold, a trapped hero; its engine profile keeps 2D physics) · [docs/plans/fake-ad-games.md](docs/plans/fake-ad-games.md) | When you want |
-| ⏳ | Parked ideas: christmas-countdown's advent pool (January to November, never during Advent); tournaments' double elimination and round robin (once someone uses the app) | — |
+| ⏳ | **More for Christmas** in christmas-countdown: grow the advent pool (activities, songs, public-domain villancicos), never during an Advent in progress | January to November |
