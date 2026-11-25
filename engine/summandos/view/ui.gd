@@ -6,6 +6,8 @@ extends CanvasLayer
 
 signal mode_picked(mode: int)
 signal endless_picked
+## The menu's crossbowman was tapped (the secret way into endless mode).
+signal hero_tapped
 signal level_picked(number: int)
 signal night_toggled
 signal squad_picked(name: String)
@@ -57,11 +59,14 @@ var result_title: Label
 var result_detail: Label
 var result_stars: CenterContainer
 var next_button: Button
-## The menu's Endless button, shown once every rank's last level is won.
+## The menu's Endless button: dimmed with how to open it until every rank's last level is won.
 var endless_button: Button
 var endless_hint: Label
 var menu_box: VBoxContainer
 var menu_buttons: Array[Button] = []
+## The crossbowman in the menu's corner, and the invisible area over it that takes taps.
+var hero: Control
+var hero_zone: Control
 
 
 func _init(colours: Dictionary, words: Dictionary, map: LilloLevelMap, squads: Dictionary, squad: String,
@@ -192,7 +197,6 @@ func _build_decor() -> void:
 	decor.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(decor)
 	decor.add_child(LilloBackdrop.new(palette))
-	var hero: Control = null
 	var archer := SummandosModels.character("Rogue_Hooded.glb", "Cheer", 1.0, palette.squad, false,
 		SummandosModels.ARCHER_SPARES)
 	if archer:
@@ -293,11 +297,19 @@ func _build_menu() -> Control:
 		menu_buttons.append(_mode_button(i))
 		box.add_child(menu_buttons[-1])
 	endless_button = _mode_button(-1)
-	endless_button.visible = false
 	menu_buttons.append(endless_button)
 	box.add_child(endless_button)
 	menu_box = box
 	get_viewport().size_changed.connect(_fit_menu)
+	_fit_menu.call_deferred()
+	hero_zone = Control.new()
+	hero_zone.gui_input.connect(func(event: InputEvent) -> void:
+		# A touch also arrives as an emulated mouse click: count only the click.
+		if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+			hero_tapped.emit())
+	screen.add_child(hero_zone)
+	get_viewport().size_changed.connect(_place_hero_zone)
+	_place_hero_zone.call_deferred()
 
 	return screen
 
@@ -371,16 +383,26 @@ func _mode_button(i: int) -> Button:
 	return button
 
 
-## Shows the menu's Endless button when it is open, with the record.
+## Keeps the tap area over the crossbowman, which the decor layer places in the corner.
+func _place_hero_zone() -> void:
+	hero_zone.size = hero.size
+	hero_zone.global_position = hero.global_position
+
+
+## A short message at the bottom of the screen.
+func toast(text: String) -> void:
+	LilloFx.toast(menu, text, palette.weapon, palette.outline)
+
+
+## The menu's Endless button: with the record when it is open, dimmed with how to open it if not.
 func show_endless(open: bool, best: int) -> void:
-	endless_button.visible = open
-	endless_hint.text = texts.endless_hint % best
-	_fit_menu()
+	endless_button.modulate = Color.WHITE if open else Color(1, 1, 1, 0.6)
+	endless_hint.text = texts.endless_hint % best if open else texts.endless_locked
 
 
 ## Five buttons do not fit a landscape phone at full height: shorter buttons, closer together.
 func _fit_menu() -> void:
-	var short := endless_button.visible and get_viewport().get_visible_rect().size.y < 900.0
+	var short := get_viewport().get_visible_rect().size.y < 900.0
 	menu_box.add_theme_constant_override("separation", 8 if short else 18)
 	for button in menu_buttons:
 		button.custom_minimum_size.y = 84.0 if short else 100.0

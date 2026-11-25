@@ -36,6 +36,12 @@ func test_endless_opens_once_every_rank_is_finished_and_keeps_the_record() -> vo
 	assert_eq(SummandosProgress.endless_best(PATH), 7)
 
 
+func test_the_secret_taps_open_endless_without_finishing_the_ranks() -> void:
+	assert_false(SummandosProgress.endless_unlocked(PATH))
+	SummandosProgress.unlock_endless(PATH)
+	assert_true(SummandosProgress.endless_unlocked(PATH))
+
+
 func test_endless_levels_are_made_ahead() -> void:
 	var levels := SummandosLevelsAhead.new()
 	levels.prepare(SummandosLevel.ENDLESS, 3)

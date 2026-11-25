@@ -20,6 +20,8 @@ var difficulty: SummandosLevel.Mode = LilloSettings.read("difficulty", Summandos
 var level_number := 1
 ## The run in progress (or just over) is the endless one: level_number counts its levels.
 var endless := false
+## Seven quick taps on the menu's crossbowman open endless mode, like Android's developer options.
+var secret := LilloSecretTaps.new()
 var mode := "play"
 var run: SummandosRun
 var target_x := 0.0
@@ -74,7 +76,8 @@ func _ready() -> void:
 	add_child(ui)
 	add_child(LilloCapture.new())
 	ui.mode_picked.connect(_open_levels)
-	ui.endless_picked.connect(_start_endless.bind(1))
+	ui.endless_picked.connect(_pick_endless)
+	ui.hero_tapped.connect(_tap_hero)
 	ui.level_picked.connect(func(number: int) -> void: _start("play", number))
 	ui.night_toggled.connect(_toggle_night)
 	ui.squad_picked.connect(_pick_squad)
@@ -138,6 +141,34 @@ func _show_menu() -> void:
 	ui.show_screen("menu")
 	if SummandosProgress.endless_unlocked():
 		levels.prepare(SummandosLevel.ENDLESS, 1)
+
+
+## The menu's Endless button: starts the run once open, else says how to open it.
+func _pick_endless() -> void:
+	if SummandosProgress.endless_unlocked():
+		_start_endless(1)
+	else:
+		ui.toast(texts.endless_how)
+
+
+## A tap on the menu's crossbowman: the last few of seven quick ones count down, the seventh opens
+## endless mode.
+func _tap_hero() -> void:
+	if SummandosProgress.endless_unlocked():
+		if secret.tap(Time.get_ticks_msec() / 1000.0) == 0:
+			ui.toast(texts.endless_already)
+		return
+	var left := secret.tap(Time.get_ticks_msec() / 1000.0)
+	if left == 0:
+		SummandosProgress.unlock_endless()
+		audio.play("win")
+		audio.buzz(120)
+		ui.toast(texts.endless_unlocked)
+		ui.show_endless(true, SummandosProgress.endless_best())
+		levels.prepare(SummandosLevel.ENDLESS, 1)
+	elif left <= 3:
+		audio.play("click")
+		ui.toast(texts.endless_taps_one if left == 1 else texts.endless_taps % left)
 
 
 ## The result card's second button and the back button after a run: the level map, or the menu

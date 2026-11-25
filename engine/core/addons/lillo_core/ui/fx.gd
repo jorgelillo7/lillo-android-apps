@@ -74,3 +74,31 @@ static func confetti(parent: Control, colours: Array[Color]) -> void:
 		parent.add_child(burst)
 		burst.emitting = true
 		burst.finished.connect(burst.queue_free)
+
+
+## A short message at the bottom of `parent` that fades away after `seconds`, like Android's toast;
+## a newer one replaces it.
+static func toast(parent: Control, text: String, font_colour: Color, outline: Color, seconds := 2.0) -> void:
+	for old in parent.get_children():
+		if old.has_meta("lillo_toast"):
+			old.queue_free()
+	var label := Label.new()
+	label.set_meta("lillo_toast", true)
+	label.text = text
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	label.add_theme_font_size_override("font_size", 30)
+	label.add_theme_color_override("font_color", font_colour)
+	label.add_theme_color_override("font_outline_color", outline)
+	label.add_theme_constant_override("outline_size", 12)
+	label.set_anchors_and_offsets_preset(Control.PRESET_CENTER_BOTTOM)
+	label.offset_left = -parent.size.x * 0.4
+	label.offset_right = parent.size.x * 0.4
+	label.offset_top = -200.0
+	label.offset_bottom = -140.0
+	parent.add_child(label)
+	var tween := label.create_tween()
+	tween.tween_interval(seconds)
+	tween.tween_property(label, "modulate:a", 0.0, 0.4)
+	tween.tween_callback(label.queue_free)
