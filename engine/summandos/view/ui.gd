@@ -5,6 +5,7 @@ class_name SummandosUi
 extends CanvasLayer
 
 signal mode_picked(mode: int)
+signal endless_picked
 signal level_picked(number: int)
 signal night_toggled
 signal squad_picked(name: String)
@@ -56,6 +57,11 @@ var result_title: Label
 var result_detail: Label
 var result_stars: CenterContainer
 var next_button: Button
+## The menu's Endless button, shown once every rank's last level is won.
+var endless_button: Button
+var endless_hint: Label
+var menu_box: VBoxContainer
+var menu_buttons: Array[Button] = []
 
 
 func _init(colours: Dictionary, words: Dictionary, map: LilloLevelMap, squads: Dictionary, squad: String,
@@ -284,7 +290,14 @@ func _build_menu() -> Control:
 		tween.tween_property(title, "scale", Vector2(1.06, 1.06), 0.9).set_trans(Tween.TRANS_SINE)
 		tween.tween_property(title, "scale", Vector2.ONE, 0.9).set_trans(Tween.TRANS_SINE))
 	for i in texts.modes.size():
-		box.add_child(_mode_button(i))
+		menu_buttons.append(_mode_button(i))
+		box.add_child(menu_buttons[-1])
+	endless_button = _mode_button(-1)
+	endless_button.visible = false
+	menu_buttons.append(endless_button)
+	box.add_child(endless_button)
+	menu_box = box
+	get_viewport().size_changed.connect(_fit_menu)
 
 	return screen
 
@@ -331,23 +344,46 @@ func _build_corner() -> Control:
 	return layer
 
 
-## A rank button: its name large, and what its gates hold underneath in the reading font.
+## A rank button: its name large, and what its gates hold underneath in the reading font. -1 is
+## the Endless button, its record underneath.
 func _mode_button(i: int) -> Button:
-	var button := LilloTheme.button("", func() -> void: mode_picked.emit(i), 40, 100.0)
+	var pick := func() -> void:
+		if i < 0:
+			endless_picked.emit()
+		else:
+			mode_picked.emit(i)
+	var button := LilloTheme.button("", pick, 40, 100.0)
 	var lines := VBoxContainer.new()
 	lines.set_anchors_preset(Control.PRESET_FULL_RECT)
 	lines.alignment = BoxContainer.ALIGNMENT_CENTER
 	lines.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	lines.add_theme_constant_override("separation", -2)
 	button.add_child(lines)
-	var name := LilloTheme.title(texts.modes[i], 40)
+	var name := LilloTheme.title(texts.endless if i < 0 else texts.modes[i], 40)
 	name.add_theme_color_override("font_color", Color.WHITE)
 	name.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	lines.add_child(name)
-	var hint := LilloAbout._text(texts.mode_hints[i], _reading(), 22, Color(palette.outline, 0.9))
+	var hint := LilloAbout._text("" if i < 0 else texts.mode_hints[i], _reading(), 22, Color(palette.outline, 0.9))
 	hint.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	lines.add_child(hint)
+	if i < 0:
+		endless_hint = hint
 	return button
+
+
+## Shows the menu's Endless button when it is open, with the record.
+func show_endless(open: bool, best: int) -> void:
+	endless_button.visible = open
+	endless_hint.text = texts.endless_hint % best
+	_fit_menu()
+
+
+## Five buttons do not fit a landscape phone at full height: shorter buttons, closer together.
+func _fit_menu() -> void:
+	var short := endless_button.visible and get_viewport().get_visible_rect().size.y < 900.0
+	menu_box.add_theme_constant_override("separation", 8 if short else 18)
+	for button in menu_buttons:
+		button.custom_minimum_size.y = 84.0 if short else 100.0
 
 
 ## The settings card: sound, music and vibration switches, night mode, squad colour, About.

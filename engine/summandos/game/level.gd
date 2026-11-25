@@ -25,6 +25,12 @@ const FORGIVEN := [0.75, 0.5, 0.25, 0.0]
 ## How much each easing step shrinks the waves and the boss, and how many steps there are at most.
 const EASE_STEP := 0.85
 const EASE_STEPS := 14
+## Endless mode, opened by winning every rank's last level: one level after another until one is
+## lost. Not a rank: it plays Captain's gates, each level a step harder than Captain's last.
+const ENDLESS := -1
+const ENDLESS_STEP := 0.05
+## Endless levels stop getting harder here.
+const ENDLESS_MAX_D := 2.5
 
 var length := 0.0
 var start_soldiers := 1
@@ -101,14 +107,35 @@ static func level_count(mode: Mode) -> int:
 	return EXPERT_LEVELS if mode == Mode.EXPERT else LEVELS_PER_MODE
 
 
+## Level `number` of `mode`, or of the endless run when `mode` is ENDLESS.
+static func make(mode: int, number: int) -> SummandosLevel:
+	return endless(number) if mode == ENDLESS else generate(mode as Mode, number)
+
+
+## How far into its rank level `number` of `mode` is: 0 for the first, 1 for the last.
+static func depth(mode: Mode, number: int) -> float:
+	return clampf((number - 1) / float(level_count(mode) - 1), 0.0, 1.0)
+
+
+## Level `number` (from 1) of the endless run, the same every time: Captain's gates and waves at a
+## depth past Captain's last level, growing by ENDLESS_STEP a level up to ENDLESS_MAX_D.
+static func endless(number: int) -> SummandosLevel:
+	var d := minf(ENDLESS_MAX_D, 1.0 + number * ENDLESS_STEP)
+	return _generate(Mode.ADULT, number, d, "summandos-endless-%d" % number)
+
+
 ## Level `number` (from 1) of a mode, the same every time: more rows, harder sums and bigger waves
 ## as the number grows. Waves are sized from the best choices and shrunk until those choices win
 ## without the squad ever falling below `floor_soldiers`; gates that cannot manage it are drawn again.
 static func generate(mode: Mode, number: int) -> SummandosLevel:
+	return _generate(mode, number, depth(mode, number), "summandos-%d-%d" % [mode, number])
+
+
+static func _generate(mode: Mode, number: int, d: float, seed_name: String) -> SummandosLevel:
 	var level: SummandosLevel
 	for attempt in MAX_DRAWS:
-		var seed_text := "summandos-%d-%d" % [mode, number] + ("" if attempt == 0 else "-%d" % attempt)
-		level = _draw(mode, number, hash(seed_text))
+		var seed_text := seed_name + ("" if attempt == 0 else "-%d" % attempt)
+		level = _draw(mode, number, d, hash(seed_text))
 		var run := SummandosRun.simulate(level, best_sides(level))
 		if run.state == SummandosRun.State.WON and run.lowest >= floor_soldiers(level, mode):
 			break
@@ -127,24 +154,25 @@ static func floor_soldiers(level: SummandosLevel, mode: Mode) -> int:
 	return maxi(MIN_SQUAD, gates_low)
 
 
-static func _draw(mode: Mode, number: int, seed_value: int) -> SummandosLevel:
+static func _draw(mode: Mode, number: int, d: float, seed_value: int) -> SummandosLevel:
 	var random := RandomNumberGenerator.new()
 	random.seed = seed_value
-	var d := clampf((number - 1) / float(level_count(mode) - 1), 0.0, 1.0)
 	var expert := mode == Mode.EXPERT
 	var level := SummandosLevel.new()
 	level.strict = expert
 	level.start_soldiers = 5 + random.randi_range(0, 5)
-	var row_count := 6 + number / 3 if expert else 5 + mini(4, number / 6)
+	# Past a rank's last level (endless) the gates stay as hard as there; the waves keep growing.
+	var gate_d := minf(d, 1.0)
+	var row_count := 6 + number / 3 if expert else 5 + (4 if d > 1.0 else mini(4, number / 6))
 	var weapon_row := random.randi_range(2, row_count - 1) if number >= 3 and not expert else -1
 	var crowd := level.start_soldiers
-	var think_left := 1 + int(d * 2.0) if mode == Mode.ADULT else 0
+	var think_left := 1 + int(gate_d * 2.0) if mode == Mode.ADULT else 0
 	for i in row_count:
 		var row := {"z": 20.0 + i * ROW_GAP}
-		var left := _option(mode, d, crowd, random)
-		var right := _option(mode, d, crowd, random)
+		var left := _option(mode, gate_d, crowd, random)
+		var right := _option(mode, gate_d, crowd, random)
 		while LilloGate.better(left.gate, right.gate, crowd) == -1:
-			right = _option(mode, d, crowd, random)
+			right = _option(mode, gate_d, crowd, random)
 		if expert or (mode == Mode.ADULT and think_left > 0 and (left.gate.note != "" or left.gate.shown != "") \
 				and random.randf() < 0.6):
 			row["think"] = true
@@ -176,13 +204,13 @@ static func _draw(mode: Mode, number: int, seed_value: int) -> SummandosLevel:
 
 
 ## How the boss of level `number` looks: models and colours rotate so no two bosses in a mode
-## share both, and each is bigger than the last.
+## share both, and each is bigger than the last, up to the size of the ninth.
 static func boss_look(mode: Mode, number: int) -> Dictionary:
 	var turn := maxi(0, number / 5 - 1)
 	return {
 		"model": BOSS_MODELS[turn % BOSS_MODELS.size()],
 		"colour": (turn + turn / BOSS_MODELS.size() + mode * 2) % SummandosPalette.BOSS_COLOURS.size(),
-		"height": 3.6 + turn * 0.45,
+		"height": 3.6 + mini(turn, 8) * 0.45,
 	}
 
 

@@ -2,7 +2,7 @@
 ## handles input and the back button. Options after `--`: `--mode=play|stress` starts a run at
 ## once (stress is the 1,000-unit performance test, reachable only from here;
 ## `--difficulty=easy|normal|adult|expert --level=<n>` pick a level, `--autosteer` takes the better gate),
-## `--paused` pauses the run a moment after it starts, `--levels` opens the level map, `--cast` lines up the characters (store), `--about` the About card, `--palette=sunset|night` and `--squad=<colour>` override the saved choices, `--colours` opens the
+## `--endless` plays the endless run from `--level`, `--paused` pauses the run a moment after it starts, `--levels` opens the level map, `--cast` lines up the characters (store), `--about` the About card, `--palette=sunset|night` and `--squad=<colour>` override the saved choices, `--colours` opens the
 ## squad colour picker, and
 ## `--lang=es|en` overrides the phone's language, and LilloCapture's `--shot=<png> --after=<s>
 ## [--shot-size=WxH]` saves a screenshot and quits.
@@ -18,6 +18,8 @@ var squad_choice: String = LilloSettings.read("squad", "default")
 var palette := SummandosPalette.named(theme_name, squad_choice)
 var difficulty: SummandosLevel.Mode = LilloSettings.read("difficulty", SummandosLevel.Mode.EASY)
 var level_number := 1
+## The run in progress (or just over) is the endless one: level_number counts its levels.
+var endless := false
 var mode := "play"
 var run: SummandosRun
 var target_x := 0.0
@@ -72,17 +74,24 @@ func _ready() -> void:
 	add_child(ui)
 	add_child(LilloCapture.new())
 	ui.mode_picked.connect(_open_levels)
+	ui.endless_picked.connect(_start_endless.bind(1))
 	ui.level_picked.connect(func(number: int) -> void: _start("play", number))
 	ui.night_toggled.connect(_toggle_night)
 	ui.squad_picked.connect(_pick_squad)
 	ui.next_picked.connect(func() -> void: _start("play", level_number + 1))
-	ui.again_picked.connect(func() -> void: _start(mode, level_number))
-	ui.levels_picked.connect(_open_levels.bind(-1))
+	ui.again_picked.connect(func() -> void:
+		if endless:
+			_start_endless(1)
+		else:
+			_start(mode, level_number))
+	ui.levels_picked.connect(_leave_result)
 	ui.menu_picked.connect(_show_menu)
 	ui.pause_picked.connect(_pause)
 	ui.resume_picked.connect(_resume)
 	ui.show_boss(_next_boss())
-	if start != "":
+	if args.has("--endless"):
+		_start_endless(level_number)
+	elif start != "":
 		_start(start, level_number)
 		if args.has("--paused"):
 			get_tree().create_timer(PAUSED_AFTER).timeout.connect(_pause)
@@ -121,10 +130,23 @@ func _music(name: String) -> void:
 func _show_menu() -> void:
 	get_tree().paused = false
 	run = null
+	endless = false
 	_music("menu")
 	world.draw_idle()
 	ui.show_boss(_next_boss())
+	ui.show_endless(SummandosProgress.endless_unlocked(), SummandosProgress.endless_best())
 	ui.show_screen("menu")
+	if SummandosProgress.endless_unlocked():
+		levels.prepare(SummandosLevel.ENDLESS, 1)
+
+
+## The result card's second button and the back button after a run: the level map, or the menu
+## after an endless run.
+func _leave_result() -> void:
+	if endless:
+		_show_menu()
+	else:
+		_open_levels(-1)
 
 
 ## The look of the next boss the player will meet in the current mode.
@@ -140,6 +162,7 @@ func _open_levels(picked: int) -> void:
 		LilloSettings.write("difficulty", picked)
 	get_tree().paused = false
 	run = null
+	endless = false
 	_music("menu")
 	world.draw_idle()
 	ui.show_boss(_next_boss())
@@ -160,11 +183,26 @@ func _toggle_night() -> void:
 func _start(run_mode: String, number := level_number) -> void:
 	get_tree().paused = false
 	mode = run_mode
+	if endless:
+		level_number = maxi(1, number)
+		_begin(levels.take(SummandosLevel.ENDLESS, level_number), true)
+		levels.prepare(SummandosLevel.ENDLESS, level_number + 1)
+		return
 	level_number = clampi(number, 1, SummandosLevel.level_count(difficulty))
 	var level := SummandosLevel.stress() if mode == "stress" else levels.take(difficulty, level_number)
+	_begin(level, mode == "play" and difficulty >= SummandosLevel.Mode.ADULT)
+
+
+## Starts the endless run at level `number` (1 from the menu).
+func _start_endless(number: int) -> void:
+	endless = true
+	_start("play", number)
+
+
+func _begin(level: SummandosLevel, puzzles: bool) -> void:
 	run = SummandosRun.new(level)
 	target_x = 0.0
-	world.reset(level, mode == "play" and difficulty >= SummandosLevel.Mode.ADULT)
+	world.reset(level, puzzles)
 	heard = {"row": 0, "soldiers": run.soldiers, "kills": 0, "think": 0, "boss": false}
 	_music("run")
 	ui.show_screen("run")
@@ -172,6 +210,9 @@ func _start(run_mode: String, number := level_number) -> void:
 
 func _finish() -> void:
 	var won := run.state == SummandosRun.State.WON
+	if endless:
+		_finish_endless(won)
+		return
 	var playing := mode == "play"
 	var stars := run.stars() if playing else 0
 	if playing:
@@ -182,6 +223,21 @@ func _finish() -> void:
 	audio.buzz(80 if won else 200)
 	ui.show_result(_heading(), won, run.soldiers, run.kills, stars,
 		won and playing and level_number < SummandosLevel.level_count(difficulty), run.failed_gate)
+
+
+## An endless level over: a win goes on to the next one; a loss ends the run with its score, kept
+## as the record when it beats it.
+func _finish_endless(won: bool) -> void:
+	audio.play("win" if won else "lose")
+	audio.buzz(80 if won else 200)
+	ui.show_result(_heading(), won, run.soldiers, run.kills, 0, won, run.failed_gate)
+	if won:
+		return
+	var cleared := level_number - 1
+	if SummandosProgress.record_endless(cleared):
+		ui.result_detail.text = texts.endless_record % cleared
+	else:
+		ui.result_detail.text = texts.endless_over % [cleared, SummandosProgress.endless_best()]
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -224,7 +280,7 @@ func _notification(what: int) -> void:
 	elif run != null and run.state == SummandosRun.State.RUNNING:
 		_pause()
 	elif run != null:
-		_open_levels(-1)
+		_leave_result()
 	elif ui.about.visible or ui.swatches.visible:
 		ui.show_screen("settings")
 	elif ui.level_map.visible or ui.settings.visible or ui.help.visible:
@@ -293,7 +349,7 @@ func _sound_run() -> void:
 func _heading() -> String:
 	if mode != "play":
 		return ""
-	return "%s  ·  %s" % [texts.modes[difficulty], texts.level % level_number]
+	return "%s  ·  %s" % [texts.endless if endless else texts.modes[difficulty], texts.level % level_number]
 
 
 func _hud_text() -> String:

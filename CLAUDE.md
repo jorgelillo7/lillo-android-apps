@@ -109,7 +109,7 @@ Project skills are indexed in [`.claude/CLAUDE.md`](.claude/CLAUDE.md).
   goes once the library pulling the old version ships the fix itself.
 - **AGP 9 has Kotlin built in**: never apply `org.jetbrains.kotlin.android`. The Compose compiler
   plugin is still needed (applied by the compose convention plugin).
-- AndroidX versions are chained to compileSdk/AGP (e.g. Compose 1.13 needs compileSdk 37.1, set as `"37.1"` in the catalog; Compose 1.12+ needs compileSdk 37 and
+- AndroidX versions are chained to compileSdk/AGP (e.g. Compose 1.13 needs compileSdk 37.1 or later, a minor level written as `"37.2"` in the catalog; Compose 1.12+ needs compileSdk 37 and
   AGP 9.1+). If `checkDebugAarMetadata` fails, bump the platform/AGP, not a single library.
 - Type-safe project accessors are on: `implementation(projects.apps.<appCamel>.domain)`,
   `implementation(projects.core.designsystem)`. New modules must be included in `settings.gradle.kts`.
