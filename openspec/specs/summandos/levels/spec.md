@@ -92,7 +92,9 @@ equation SHALL shrink and a short label SHALL stay at full size.
 
 Once the last level of Recruit, Soldier, Captain and Legend has been won, or the menu's
 crossbowman has been tapped seven times in a row (a hidden shortcut, like Android's developer
-options), the menu SHALL offer Endless with the record underneath. It SHALL play generated levels one after another, each the
+options), the menu SHALL offer Endless with the record underneath; until then its button SHALL
+show dimmed, saying under its name how to open it, and a tap SHALL explain it instead of
+starting a run. The store description and the How to play card SHALL mention it too. It SHALL play generated levels one after another, each the
 same every time, with Captain's gates and waves, enemies and a boss every fifth level that grow
 past Captain's last level; every one SHALL be winnable with the best choices. A won level SHALL
 lead to the next; the first lost one SHALL end the run, and the levels cleared SHALL be kept as

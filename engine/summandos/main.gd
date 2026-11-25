@@ -76,7 +76,7 @@ func _ready() -> void:
 	add_child(ui)
 	add_child(LilloCapture.new())
 	ui.mode_picked.connect(_open_levels)
-	ui.endless_picked.connect(_start_endless.bind(1))
+	ui.endless_picked.connect(_pick_endless)
 	ui.hero_tapped.connect(_tap_hero)
 	ui.level_picked.connect(func(number: int) -> void: _start("play", number))
 	ui.night_toggled.connect(_toggle_night)
@@ -141,6 +141,14 @@ func _show_menu() -> void:
 	ui.show_screen("menu")
 	if SummandosProgress.endless_unlocked():
 		levels.prepare(SummandosLevel.ENDLESS, 1)
+
+
+## The menu's Endless button: starts the run once open, else says how to open it.
+func _pick_endless() -> void:
+	if SummandosProgress.endless_unlocked():
+		_start_endless(1)
+	else:
+		ui.toast(texts.endless_how)
 
 
 ## A tap on the menu's crossbowman: the last few of seven quick ones count down, the seventh opens

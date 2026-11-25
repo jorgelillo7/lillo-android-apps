@@ -59,7 +59,7 @@ var result_title: Label
 var result_detail: Label
 var result_stars: CenterContainer
 var next_button: Button
-## The menu's Endless button, shown once every rank's last level is won.
+## The menu's Endless button: dimmed with how to open it until every rank's last level is won.
 var endless_button: Button
 var endless_hint: Label
 var menu_box: VBoxContainer
@@ -297,11 +297,11 @@ func _build_menu() -> Control:
 		menu_buttons.append(_mode_button(i))
 		box.add_child(menu_buttons[-1])
 	endless_button = _mode_button(-1)
-	endless_button.visible = false
 	menu_buttons.append(endless_button)
 	box.add_child(endless_button)
 	menu_box = box
 	get_viewport().size_changed.connect(_fit_menu)
+	_fit_menu.call_deferred()
 	hero_zone = Control.new()
 	hero_zone.gui_input.connect(func(event: InputEvent) -> void:
 		# A touch also arrives as an emulated mouse click: count only the click.
@@ -394,16 +394,15 @@ func toast(text: String) -> void:
 	LilloFx.toast(menu, text, palette.weapon, palette.outline)
 
 
-## Shows the menu's Endless button when it is open, with the record.
+## The menu's Endless button: with the record when it is open, dimmed with how to open it if not.
 func show_endless(open: bool, best: int) -> void:
-	endless_button.visible = open
-	endless_hint.text = texts.endless_hint % best
-	_fit_menu()
+	endless_button.modulate = Color.WHITE if open else Color(1, 1, 1, 0.6)
+	endless_hint.text = texts.endless_hint % best if open else texts.endless_locked
 
 
 ## Five buttons do not fit a landscape phone at full height: shorter buttons, closer together.
 func _fit_menu() -> void:
-	var short := endless_button.visible and get_viewport().get_visible_rect().size.y < 900.0
+	var short := get_viewport().get_visible_rect().size.y < 900.0
 	menu_box.add_theme_constant_override("separation", 8 if short else 18)
 	for button in menu_buttons:
 		button.custom_minimum_size.y = 84.0 if short else 100.0
