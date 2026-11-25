@@ -21,8 +21,33 @@ Apps today, live on Play: `christmas-countdown` ("¿Ya es Navidad?", `com.jorgel
 is private and lives outside this public repo), `slipper` ("¿Te pilla la chancla?",
 `com.jorgelillo.slipper`, a pixel-art runner) and `stadium-events` ("¿Hay jaleo?
 Metropolitano", `com.jorgelillo.stadiumevents`; it reads a static events feed from
-`jorgelillo7.github.io`). Write code,
+`jorgelillo7.github.io`). Engine games, live on Play: `summandos` ("Sumandos",
+`com.jorgelillo.summandos`, a maths crowd runner in Godot, under `engine/`). Write code,
 docs and scripts so they work for any app.
+
+### Two kinds of app
+
+Most of the repo is Kotlin + Compose; games that need a 3D world or crowds of hundreds are Godot
+projects under `engine/`. They share the Play account, the signing approach, the store graphics
+generator, the privacy pages and the Release workflow, and little else:
+
+| | Kotlin + Compose app | Godot engine game |
+|---|---|---|
+| Folder | `apps/<app>/` (`app/`, `domain/`, `baselineprofile/`) | `engine/<game>/` (`game/` rules, `view/` drawing, `main.gd`) |
+| Shared code | `core/` (Compose design system, platform, reminders) | `engine/core/addons/lillo_core/`, linked into each game |
+| Language and tests | Kotlin; JUnit/Robolectric, Roborazzi screenshots, `./gradlew test` | GDScript; GUT, `scripts/engine-test.sh engine/<game>` |
+| Version | `versionCode`/`versionName` in `app/build.gradle.kts` | `version/code`/`version/name` in `export_presets.cfg` (+ `config/version` in `project.godot`) |
+| SDK levels | from the version catalog (targetSdk 37) | from Godot's export template (targetSdk 36 with Godot 4.7.2) |
+| Build | `./gradlew :apps:<app>:app:bundleRelease`, R8, baseline profile | `scripts/engine-export.sh [--arm64\|--aab] engine/<game>`, slim engine from `engine-profile.py` |
+| Upload key | `apps/<app>/keystore.properties`, also in the app's GitHub environment | `engine/<game>/keystore.properties`, on the Mac only |
+| Release | Release workflow builds and uploads from `master` | `scripts/engine-release.sh engine/<game>` uploads from the Mac (the bundle carries bought models); the workflow only promotes and publishes the listing |
+| Play listing | `apps/<app>/app/src/main/play/` | `engine/<game>/play/src/main/play/` (a thin `play/` Gradle module) |
+| Smoke test | `apps/<app>/tools/smoke_test.sh`, by test tag; CI runs it | `engine/<game>/tools/smoke_test.sh`, by screen position (Godot draws everything itself); run it on the Mac before an upload |
+| Screenshots | `scripts/capture_lib.sh` on the emulator | `scripts/engine-shot.sh`, off-screen on the Mac |
+| Assets | vector drawables, generated icons | models fetched by `scripts/engine-assets.sh`; bought packs never in the repo |
+| Skills | `new-android-app`, `release-android-app`, `upgrade-android-deps` | `engine-game`, `slim-engine` |
+
+Details for games: `engine/README.md` and each game's `OPERATIONS.md`.
 
 ## Environment
 
