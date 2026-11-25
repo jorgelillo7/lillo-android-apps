@@ -134,13 +134,16 @@ on 2026-11-07). Below Google's minimum of users an app gets no data ("—"): on 
 Once, in your own terminal (values go to GitHub through stdin, never through the chat):
 
 ```bash
-scripts/set-release-secrets.sh --play            # the service account key above
 scripts/set-release-secrets.sh <app>             # each app's upload key (+ league-cards' private deck)
 scripts/set-release-secrets.sh --approval        # production waits for your approval (already set)
 ```
 
-Each app's upload key lives in a GitHub environment named like the app folder; the service
-account in the repository secret `PLAY_SERVICE_ACCOUNT_JSON`. With Play App Signing, a leaked
+Each app's upload key lives in a GitHub environment named like the app folder. The service
+account has **no key in GitHub**: the workflows (Release, Play status) exchange GitHub's OIDC token
+for it through Workload Identity Federation, in `lilloapps-play-publishing` (pool `github`,
+provider `lillo-android-apps`, accepting this repository's runs from `master` only; the service
+account grants it `roles/iam.workloadIdentityUser`). A run from another branch can't publish.
+The JSON key above stays on the Mac for the terminal. With Play App Signing, a leaked
 upload key can be reset from Play Console: Google keeps the key that signs what users install.
 Run the script again after changing a key or league-cards' private deck.
 

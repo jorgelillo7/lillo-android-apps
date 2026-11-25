@@ -28,5 +28,9 @@ configure<PlayPublisherExtension> {
     track.set("internal")
     val credentials = providers.gradleProperty("play.credentials").orNull?.let(::File)
         ?: File(System.getProperty("user.home"), ".config/lillo-android-apps/play-service-account.json")
-    if (credentials.isFile) serviceAccountCredentials.set(credentials)
+    if (credentials.isFile) {
+        serviceAccountCredentials.set(credentials)
+    } else if (providers.environmentVariable("GOOGLE_APPLICATION_CREDENTIALS").isPresent) {
+        useApplicationDefaultCredentials.set(true)
+    }
 }

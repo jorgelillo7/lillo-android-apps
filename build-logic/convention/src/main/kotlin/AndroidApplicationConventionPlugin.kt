@@ -28,7 +28,9 @@ import org.gradle.kotlin.dsl.dependencies
  * its notes to the internal testing track, `promoteArtifact --track production` moves it on and
  * `publishListing` updates the listing. One Google Cloud service account serves every app: its key
  * is read from the Gradle property `play.credentials`, else
- * `~/.config/lillo-android-apps/play-service-account.json`, else `ANDROID_PUBLISHER_CREDENTIALS`.
+ * `~/.config/lillo-android-apps/play-service-account.json`, else Application Default Credentials
+ * when `GOOGLE_APPLICATION_CREDENTIALS` is set (the Release workflow, through Workload Identity
+ * Federation), else `ANDROID_PUBLISHER_CREDENTIALS`.
  *
  * An app with a sibling `baselineprofile` module (`jorgelillo.android.baselineprofile`) ships its
  * baseline profile: generated into `app/src/release/generated/baselineProfiles/`, committed, and
@@ -94,7 +96,11 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
             track.set("internal")
             val credentials = providers.gradleProperty("play.credentials").orNull?.let(::File)
                 ?: File(System.getProperty("user.home"), ".config/lillo-android-apps/play-service-account.json")
-            if (credentials.isFile) serviceAccountCredentials.set(credentials)
+            if (credentials.isFile) {
+                serviceAccountCredentials.set(credentials)
+            } else if (providers.environmentVariable("GOOGLE_APPLICATION_CREDENTIALS").isPresent) {
+                useApplicationDefaultCredentials.set(true)
+            }
         }
     }
 }
