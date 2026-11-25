@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Every app's version in this repo next to what each Google Play track holds.
 
-For each apps/<app>: the versionCode/versionName in its build.gradle.kts, and per Play track
+For each apps/<app>: the versionCode/versionName in its build.gradle.kts (an engine/<game>: in its
+export_presets.cfg), and per Play track
 (production, internal…) the releases there with their versionCodes and status (completed, draft,
 inProgress for a staged rollout, halted). Google's publishing API doesn't say whether a release is
 "in review": that only shows in Play Console. When `gh` works (the workflow gives it a token), each
@@ -51,6 +52,13 @@ def repo_apps():
         name = re.search(r'versionName\s*=\s*"([^"]+)"', text)
         if app_id:
             yield build.parent.parent.name, app_id.group(1), code and int(code.group(1)), name and name.group(1)
+    for presets in sorted(ROOT.glob("engine/*/export_presets.cfg")):
+        text = presets.read_text()
+        app_id = re.search(r'^package/unique_name="([^"]+)"', text, re.M)
+        code = re.search(r"^version/code=(\d+)", text, re.M)
+        name = re.search(r'^version/name="([^"]+)"', text, re.M)
+        if app_id:
+            yield presets.parent.name, app_id.group(1), code and int(code.group(1)), name and name.group(1)
 
 
 def play_tracks(session, package):

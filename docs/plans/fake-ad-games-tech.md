@@ -63,15 +63,16 @@ engine/
   core/addons/lillo_core/   shared by every game: crowd/, maths/, render/, ui/, save/, dev/
   <game>/                   one Godot project per game: game/ (rules), view/ (drawing), assets/,
                             store/, tools/, tests/; README, DESIGN, OPERATIONS like an app
-    play/                   (S4) thin Gradle module: Gradle Play Publisher + listing in src/main/play
+    play/                   thin Gradle module: Gradle Play Publisher + listing in src/main/play
 ```
 
 The full layout and the class list: [engine/README.md](../../engine/README.md).
 
-- **Publishing reuses the Release workflow.** Godot exports the AAB; the game's `play/` module
-  applies Gradle Play Publisher with `artifactDir` pointing at that AAB, so upload, promote,
-  listing, production approval and `scripts/play_status.py` work as for the apps. To verify in S4:
-  that `artifactDir` uploads a bundle Gradle did not build.
+- **Publishing**: Godot exports the AAB; the game's `play/` module applies Gradle Play Publisher
+  with `artifactDir` pointing at that AAB. The upload runs on the Mac (`scripts/engine-release.sh`):
+  the bundle carries models from bought packs, which never reach CI, and the slim engine built from
+  Godot's source. Promote, listing, production approval and `scripts/play_status.py` go through the
+  Release workflow as for the apps.
 - **Signing**: one upload key per game with `scripts/new-upload-key.sh`, in its own GitHub
   environment, as today.
 - **CI**: a job installs the pinned Godot and templates (official release, SHA-256 checked, no
@@ -86,7 +87,7 @@ The full layout and the class list: [engine/README.md](../../engine/README.md).
 | S1 ✅ | Pinned Godot install script, an `engine/core` addon and tests running headless, locally and in CI | Done: `scripts/godot.sh`, `scripts/engine-test.sh` (GUT 9.6.1), the Engine workflow; `LilloGate` and its tests in core, linked from `engine/summandos` |
 | S2 ✅ | Crowd runner prototype: 1,000 units on a track through two gates; a debug APK for a real phone | Passed on the owner's Android handheld: the performance test holds **60 fps** in landscape with about 350 soldiers and 500 enemies on screen plus bullets; the first level is won. Prototype in `engine/summandos`. APK 50 MB with arm64 + x86_64, about 25 MB arm64 only |
 | S3 | Pull-the-pin prototype: two pins, 300 bodies, lava meeting water | Pours read clearly and stay smooth on the phone |
-| S4 | Headless AAB export plus Gradle Play Publisher `artifactDir` dry run to the internal track | The bundle reaches internal testing through the Release workflow. Half done: `scripts/engine-export.sh --aab` builds the signed bundle with the slim engine (Summandos 19 MB; its Gradle-built APK passes the smoke test). The `play/` module (`:engine:summandos:play`) is in and published Summandos' listing; the Release workflow is still to wire, and the first bundle can go up from it with `publishReleaseBundle --artifact-dir` |
+| S4 ✅ | Headless AAB export plus Gradle Play Publisher `artifactDir` upload | Done: `scripts/engine-export.sh --aab` builds the signed bundle with the slim engine; the `play/` module uploaded Summandos 1.0 with `publishReleaseBundle --artifact-dir` (live 2026-11-25). Uploads go from the Mac (`scripts/engine-release.sh`), since the bundle carries bought models; the Release workflow promotes and publishes the listing |
 | S3b ✅ | Smaller engine: Godot's Android export template built without the modules a game does not use, pinned and checksummed like the stock ones | Done (`slim-engine` skill): Summandos' arm64 APK **27 → 19 MB** (engine 24 → 15 MB compressed; library 71 → 43 MB). Physics, navigation, XR, networking, video, OGG/MP3, glTF at run time, CSG, GridMap, RegEx and lightmaps out; the advanced text server stays (the fallback one broke the font's kerning). Runs clean on the arm64 emulator; frame rate to confirm on the phone. Further: Godot's class-level build profile could take a few MB more |
 
 S3 needs the owner with a phone; the rest runs here. The engine decision is in
